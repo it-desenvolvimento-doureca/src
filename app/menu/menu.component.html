@@ -1,0 +1,122 @@
+<div class="logo">
+    <a [routerLink]="['/home']" class="simple-text">
+        <div class="logo-img">
+            <img src="assets/img/logo.png" />
+        </div>
+    </a>
+</div>
+<div class="sidebar-wrapper">
+    <div class="nav-container">
+        <div style="margin-top:20px">
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-default">
+                    <div class="panel-heading" [ngClass]="{ 'active':router.isActive('/manutencao',true) || router.isActive('/registo',true) ||router.isActive('/fornecedor',true) || router.isActive('/tinas',true)|| router.isActive('/componentes',true)|| router.isActive('/banhos',true)
+                    || router.isActive('/operacoes',true) || router.isActive('/linhas',true) || router.isActive('/unidades',true)|| router.isActive('/zonas',true)|| router.isActive('/turnos',true) || router.isActive('/adicoes',true) || router.isActive('/manutencoes',true)}">
+                        <h4 class="panel-title">
+                            <a id="node0" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="glyphicon glyphicon-list-alt ">
+                            </span>Gestão de Banhos</a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <table class="table">
+                                <tr>
+                                    <td>
+                                        <li id="node00" (click)="linha()" data-toggle="collapse" data-target="#movi" class="collapsed" [ngClass]="{ 'active':router.isActive('/manutencao',true) || router.isActive('/registo',true)}">
+                                            <a>Movimentos <span class="arrow"></span></a>
+                                        </li>
+                                        <ul class="sub-menu collapse" id="movi">
+                                            <li id="node000" [routerLinkActive]="['active']" [routerLink]="['/registo']"><a >Análises</a></li>
+                                            <li id="node001" [routerLinkActive]="['active']"  [routerLink]="['/manutencao']"><a>Manutenções</a></li>
+                                            <li id="node002" [routerLinkActive]="['active']" [routerLink]="['/registopara']"><a >Reg. Parâm. de Operação</a></li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <li id="node01" data-toggle="collapse" data-target="#tabelas" class="collapsed" [ngClass]="{ 'active': router.isActive('/fornecedor',true) || router.isActive('/tinas',true)|| router.isActive('/componentes',true)||router.isActive('/banhos',true)}">
+                                            <a (click)="linha()">Tabelas <span class="arrow"></span></a>
+                                        </li>
+                                        <ul class="sub-menu collapse" id="tabelas">
+                                            <li id="node010" [routerLinkActive]="['active']" [routerLink]="['/tinas']"><a >Tinas</a></li>
+                                            <li id="node011" [routerLinkActive]="['active']" [routerLink]="['/componentes']"><a >Componentes</a></li>
+                                            <li id="node012" [routerLinkActive]="['active']" [routerLink]="['/banhos']"><a >Banhos</a></li>
+                                            <li id="node013" [routerLinkActive]="['active']" [routerLink]="['/fornecedor']"><a >Fornecedores</a></li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <li id="node02" data-toggle="collapse" data-target="#parametros" class="collapsed" [ngClass]="{ 'active': router.isActive('/operacoes',true) || router.isActive('/linhas',true) || router.isActive('/unidades',true)|| router.isActive('/zonas',true)|| router.isActive('/turnos',true) || router.isActive('/adicoes',true) || router.isActive('/manutencoes',true)}">
+                                            <a>Parâmetros <span class="arrow"></span></a>
+                                        </li>
+                                        <ul class="sub-menu collapse" id="parametros">
+                                            <li id="node020" [routerLinkActive]="['active']" [routerLink]="['/linhas']"><a>Linhas</a></li>
+                                            <li id="node021" [routerLinkActive]="['active']" [routerLink]="['/unidades']"><a>Unidades de Medida</a></li>
+                                            <li id="node022" [routerLinkActive]="['active']" [routerLink]="['/zonas']"><a>Zonas</a></li>
+                                            <li id="node023" [routerLinkActive]="['active']" [routerLink]="['/turnos']"><a>Turnos</a></li>
+                                            <li id="node024" [routerLinkActive]="['active']" [routerLink]="['/adicoes']"><a>Tipo Adição</a></li>
+                                            <li id="node025" [routerLinkActive]="['active']" [routerLink]="['/manutencoes']"><a>Tipo Manutenção</a></li>
+                                            <li id="node026" [routerLinkActive]="['active']" [routerLink]="['/operacoes']"><a>Tipo Operação</a></li>
+                                            <li id="node027" [routerLinkActive]="['active']" [routerLink]="['/armazens']"><a>Armazéns</a></li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" [ngClass]="{ 'active': router.isActive('/utilizadores',true) || router.isActive('/config',true)}">
+                        <h4 class="panel-title">
+                            <a id="node1" data-toggle="collapse" data-parent="#accordion" href="#collapseConf"><span class="glyphicon glyphicon-cog ">
+                            </span>Configurações</a>
+                        </h4>
+                    </div>
+                    <div id="collapseConf" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <table class="table">
+                                <tr>
+                                    <td>
+                                        <li id="node10" [routerLinkActive]="['active']" [routerLink]="['/utilizadores']"><a>Utilizadores</a></li>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <li id="node11" [routerLinkActive]="['active']" [routerLink]="['/config']"><a>Perfis</a></li>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" [class.active]="router.isActive('/perfil',true)">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><span class="glyphicon glyphicon-user">
+                            </span>Conta</a>
+                        </h4>
+                    </div>
+                    <div id="collapseThree" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <table class="table">
+                                <tr>
+                                    <td>
+                                        <li [routerLinkActive]="['active']"><a [routerLink]="['/perfil/view']">Perfil</a></li>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <li><a (click)="logout()">Sair</a></li>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button class="btn btn-primary btn-lg" #dialog data-toggle="modal" [hidden]="true" data-target="#myModalSElLinhas"></button>

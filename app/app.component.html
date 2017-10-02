@@ -1,0 +1,214 @@
+<style>
+  body {
+    background: blue;
+  }
+</style>
+<div class="wrapper" [hidden]="!isMaps('login')">
+
+  <div class="sidebar" data-color='red' data-image="" [hidden]="!isMaps('login')">
+    <app-menu *ngIf="isMaps('login')"></app-menu>
+    <div class="sidebar-background" style="background-image: url(assets/img/sidebar-4.jpg)"></div>
+  </div>
+
+  <div class="main-panel" *ngIf="isMaps('login')">
+    <div class="top_text" style="color:black; position: sticky; top: 0; z-index: 1041; background: #eeeeee; -webkit-ruby-position: before; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+      <nav class="navbar navbar-transparent navbar-absolute gradient" style="padding-top: 3px;">
+        <div class="container-fluid" style="position: relative">
+          <div class="col-md-12">
+            <div class="col-md-7" style="max-height:37px; margin: auto; padding: 0;">
+              <div style="float: left;">
+                <img src="assets/img/logo.png" style="max-height:42px;" />
+              </div>
+              <div class="versao" style="display: -webkit-inline-box; margin-left: 5px; margin-top: 11px; color: black;">
+                <b style="font-size: 13pt;">Sistema de Gestão Integrado de Informação da Doureca</b>
+                <span style="font-size: 11pt;">
+                    ({{versao}})
+                    </span>
+              </div>
+            </div>
+            <div class="col-md-5 utz" style=" margin: auto; text-align:right; padding: 0;">
+              <div style="font-size: 11pt; display: -webkit-inline-box; margin-left: 5px; margin-top: 11px; color: black;">
+                <b style="vertical-align: middle;">Utilizador:</b><span style="vertical-align: middle;"> {{isnome()}}</span>
+                <a class="dropdown-toggle" title="Sair" (click)="logout()" style="margin-top: -4px; margin-left: 32px; float: right; background: black; color: white; cursor: pointer; border:1px solid  white;">
+                    <i class="material-icons">close</i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <app-cabecalho></app-cabecalho>
+
+    <router-cmp></router-cmp>
+    <app-rodape></app-rodape>
+
+  </div>
+</div>
+<div class="scrollup"></div>
+<p-confirmDialog header="Confirmation" icon="fa fa-question-circle" width="425"></p-confirmDialog>
+<app-login *ngIf="!isMaps('login')"></app-login>
+<script src="assets/js/initMenu.js"></script>
+
+<div id="dialog_novo_componente_banho" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="ui-dialog-titlebar-close" style="font-size: 23px;" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">AVISO</h4>
+      </div>
+      <div class="modal-body">
+        <p>Data fim do último resgisto para este componente não está preenchida!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="ui-button" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="aviso_datas" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="ui-dialog-titlebar-close" style="font-size: 23px;" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">AVISO</h4>
+      </div>
+      <div class="modal-body">
+        <p>Atenção! Existe uma Data Fim superior ou igual à data inserida para este componente!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="ui-button" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="aviso_datafim" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="ui-dialog-titlebar-close" style="font-size: 23px;" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">AVISO</h4>
+      </div>
+      <div class="modal-body">
+        <p>Data Fim é inferior à Data Início!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="ui-button" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="aviso_gravar" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="ui-dialog-titlebar-close" style="font-size: 23px;" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">AVISO</h4>
+      </div>
+      <div class="modal-body">
+        <p>É necessário guardar primeiro!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="ui-button" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="aviso_concluir_planeamento" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="ui-dialog-titlebar-close" style="font-size: 23px;" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">AVISO</h4>
+      </div>
+      <div class="modal-body">
+        <p>Existe uma ficha de Manutenção com o Registo de Operação por preencher!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="ui-button" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="aviso_concluir_planeamento2" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="ui-dialog-titlebar-close" style="font-size: 23px;" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">AVISO</h4>
+      </div>
+      <div class="modal-body">
+        <p>Para concluir o Planeamento é necessário que exista pelo menos uma ficha!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="ui-button" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="aviso_concluir_planeamento3" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="ui-dialog-titlebar-close" style="font-size: 23px;" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">AVISO</h4>
+      </div>
+      <div class="modal-body">
+        <p>Data prevista é inferior à data Planeamento!</p>
+        Na linha: <b>{{teste()}}</b> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="ui-button" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal sel. Linhas-->
+<div *ngIf="isMaps('login')" class="modal fade" id="myModalSElLinhas" role="dialog">
+  <div class="modal-dialog modal-lg" >
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+        <h4 class="modal-title" id="myModalLabel">
+          Selecionar Linha
+        </h4>
+      </div>
+      <form role="form" ngNativeValidate (ngSubmit)="confirmar()">
+        <!-- Modal Body -->
+        <div class="modal-body">
+          <div class="form-group form-black label-floating">
+            <label style="font-size: 14px;">Linha</label>
+            <p-dropdown  [options]="linhas" [style]="{'width':'100px'}" [(ngModel)]="linha" [ngModelOptions]="{standalone: true}"></p-dropdown>
+          </div>
+        </div>
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" #closedialog data-dismiss="modal">Fechar</button>
+          <button type="submit" class="btn btn-success ">Confirmar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

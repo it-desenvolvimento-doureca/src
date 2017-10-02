@@ -1,0 +1,96 @@
+import { Injectable } from '@angular/core';
+import { CanActivate, Router, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
+import { GERUTILIZADORESService } from "app/servicos/ger-utilizadores.service";
+import { GERPERFILLINService } from "app/servicos/ger-perfil-lin.service";
+import { AppGlobals } from "app/menu/sidebar.metadata";
+
+
+@Injectable()
+export class LoginService implements CanActivate {
+    constructor(private GERPERFILLINService: GERPERFILLINService, private globalVar: AppGlobals, private router: Router) { }
+
+    private userIsAuthenticated: boolean;
+    private user;
+    private password;
+    private nodes = { node000: "registo", node001: "manutencao", node002: "registopara", node010: "tinas", node011: "componentes", node012: "banhos", node013: "fornecedor", node020: "linhas", node021: "unidades", node022: "zonas", node023: "turnos", node024: "adicoes", node025: "manutencoes", node026: "operacoes", node027: "armazens", node10: "utilizadores", node11: "config" };
+
+    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+
+        if (localStorage.getItem('time')) {
+            var data_storage = new Date(JSON.parse(localStorage.getItem('time'))["data"]).getTime();
+            if ((data_storage + 7200000) <= new Date().getTime()) {
+                localStorage.clear();
+            } else {
+                localStorage.setItem('time', JSON.stringify({ data: new Date() }));
+            }
+        }
+
+        var access = JSON.parse(localStorage.getItem('acessos'));
+
+        if (!localStorage.getItem('userapp') || !localStorage.getItem('time')) {
+            // alert('Efetue o Login!');
+            this.router.navigate(['./login']);
+            return false;
+        } else if (localStorage.getItem('acessos')) {
+            var url = state.url;
+            url = url.slice(1);
+            var urlarray = url.split("/");
+            for (var x in this.nodes) {
+                if (this.nodes[x] == urlarray[0]) {
+                    if (urlarray[1] != null) {
+                        if (urlarray[1].match("editar")) {
+                            if (!access.find(item => item.node == x + "editar")) {
+                                this.router.navigate(['./home']);
+                                return false;
+                            }
+                        } else if (urlarray[1].match("view")) {
+                            if (!access.find(item => item.node == x)) {
+                                this.router.navigate(['./home']);
+                                return false;
+                            }
+                        } else if (urlarray[1].match("novo")) {
+                            if (!access.find(item => item.node == x + "criar")) {
+                                this.router.navigate(['./home']);
+                                return false;
+                            }
+                        }
+                    } else {
+                        if (!access.find(item => item.node == x)) {
+                            this.router.navigate(['./home']);
+                            return false;
+                        }
+                    }
+                }
+                /*if(this.nodes[access[x].node]){
+                    console.log(this.nodes[access[x].node])
+                }*/
+            }
+
+
+            //alert('Acesso Negado!');
+            //this.router.navigate(['./login']);
+            //return false;
+        }
+
+        //carregar acessos
+        this.GERPERFILLINService.getbyID_node(JSON.parse(localStorage.getItem('userapp'))["id"], "null").subscribe(
+            response2 => {
+                var count = Object.keys(response2).length;
+                var array = [];
+                if (count > 0) {
+                    for (var x in response2) {
+                        array.push({ node: response2[x].id_CAMPO });
+                        if (!(!JSON.parse(localStorage.getItem('userapp'))["admin"] && response2[x].id_CAMPO == "node1")) {
+                            var elem = (<HTMLInputElement>document.getElementById(response2[x].id_CAMPO));
+                            if (elem) elem.setAttribute("style", "pointer-events: auto; cursor: pointer; opacity: 1;");
+                        }
+                    }
+                }
+                localStorage.setItem('acessos', JSON.stringify(array));
+            }, error => { console.log(error); });
+
+        return true;
+    }
+
+}
+
