@@ -3405,6 +3405,19 @@ input[type="date"]::-webkit-input-placeholder {
     width: 40px;
     height: 40px;
     opacity: 0.5;
+    bottom: 105px;
+    position: fixed;
+    right: 29px;
+    text-indent: -999px;
+    background: url('http://i66.tinypic.com/6t3jba.png') no-repeat;
+    display: none;
+    cursor: pointer;
+}
+
+.scrolldown {
+    width: 40px;
+    height: 40px;
+    opacity: 0.5;
     bottom: 55px;
     position: fixed;
     right: 29px;
@@ -3412,6 +3425,7 @@ input[type="date"]::-webkit-input-placeholder {
     background: url('http://i66.tinypic.com/6t3jba.png') no-repeat;
     display: none;
     cursor: pointer;
+    transform: rotate(180deg);
 }
 
 .radio, .checkbox {
@@ -4278,7 +4292,7 @@ checkbox {
 
 .ui-autocomplete-multiple-container {
     display: inline-block;
-    padding: 0.3em 0.5em  !important;
+    padding: 0.3em 0.5em !important;
 }
 
 .ui-autocomplete-multiple-container.ui-inputtext {

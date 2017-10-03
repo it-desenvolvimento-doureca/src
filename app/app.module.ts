@@ -74,6 +74,7 @@ import { GERARMAZEMService } from 'app/servicos/ger-armazem.service';
 import { GestaoeventosComponent } from './paginas/gestaoeventos/gestaoeventos.component';
 import { DragDropModule } from 'primeng/components/dragdrop/dragdrop';
 import { EventoslistaComponent } from './paginas/eventoslista/eventoslista.component';
+import { GEREVENTOSCONFService } from 'app/servicos/ger-eventos-conf.service';
 
 const routes: Routes = [
   { path: 'dashboard', component: HomeComponent, canActivate: [LoginService] },
@@ -157,7 +158,8 @@ const routes: Routes = [
     path: 'eventos', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Eventos" },
     children: [
       { path: '', component: EventoslistaComponent, canActivate: [LoginService], data: { breadcrumb: "" } },
-      { path: 'view', component: GestaoeventosComponent, canActivate: [LoginService], data: { breadcrumb: "Gestão Evento" } }]
+      { path: 'view', component: GestaoeventosComponent, canActivate: [LoginService], data: { breadcrumb: "Gestão Evento" }},
+      { path: 'editar', component: GestaoeventosComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } }]
   },
   { path: 'login', component: LoginComponent },
   {
@@ -269,6 +271,7 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     GERPERFILCABService,
     GERUTZPERFILService,
     GERARMAZEMService,
+    GEREVENTOSCONFService,
     GERFORNECEDORService],
   bootstrap: [AppComponent]
 })

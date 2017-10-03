@@ -97,7 +97,7 @@
                         <label class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" style="height: 37px;">{{row['nome_comp']}}</label>
                       </ng-template>
                     </p-column>
-                    <p-column field="vlimite_VERDE_INF" header="LIMI. INF" [style]="{'background':'#c5e0b4','width':'5%'}">
+                    <p-column field="vlimite_VERDE_INF" header="LIMI. INF" [style]="{'background':'#c5e0b4','width':'6%'}">
                       <ng-template pTemplate="body" let-col2 let-row2="rowData ">
                         <input style=" text-align: center;" type="text" class="form-control" [(ngModel)]="row2['vlimite_VERDE_INF']" [ngModelOptions]="{standalone: true}"
                           [disabled]="true">
@@ -109,7 +109,7 @@
                           [disabled]="true">
                       </ng-template>
                     </p-column>
-                    <p-column field="vlimite_AMARELO_INF" header="LIMI. INF" [style]="{'background':'#ffe699','width':'5%'}">
+                    <p-column field="vlimite_AMARELO_INF" header="LIMI. INF" [style]="{'background':'#ffe699','width':'6%'}">
                       <ng-template pTemplate="body" let-col2 let-row2="rowData ">
                         <input style=" text-align: center;" type="text" class="form-control" [(ngModel)]="row2['vlimite_AMARELO_INF']" [ngModelOptions]="{standalone: true}"
                           [disabled]="true">
@@ -127,7 +127,7 @@
                           [disabled]="!modoedicao">
                       </ng-template>
                     </p-column>
-                    <p-column field="sinal" header="Dif." [style]="{'width':'6%'}">
+                    <p-column field="sinal" header="SINAL" [style]="{'width':'6%'}">
                       <ng-template pTemplate="body" let-col3 let-row3="rowData ">
                         <input type="text" style="text-align:center" class="form-control" [(ngModel)]="row3['sinal']" [ngModelOptions]="{standalone: true}"
                           [disabled]="!modoedicao">

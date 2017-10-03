@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { AppGlobals } from 'app/menu/sidebar.metadata';
 import { Router } from '@angular/router';
 import { DataTable } from 'primeng/primeng';
+import { GEREVENTOSCONFService } from 'app/servicos/ger-eventos-conf.service';
 
 @Component({
   selector: 'app-eventoslista',
@@ -11,8 +12,9 @@ import { DataTable } from 'primeng/primeng';
 export class EventoslistaComponent implements OnInit {
   cols: any[];
   @ViewChild(DataTable) dataTableComponent: DataTable;
+  estados = [{ label: "Todos", value: "" }, { label: "Ativo", value: true }, { label: "Inativo", value: false }];
 
-  constructor(private globalVar: AppGlobals, private router: Router) { }
+  constructor(private GEREVENTOSCONFService: GEREVENTOSCONFService, private globalVar: AppGlobals, private router: Router) { }
 
   ngOnInit() {
 
@@ -33,15 +35,15 @@ export class EventoslistaComponent implements OnInit {
   }
 
   preenche_tabela() {
-    this.cols = [{ id: 1, nome: "TESTE", num: "0022",momento:"Ao Gravar",estado:"Ativo" }];
-    /*this.GERFORNECEDORService.getAll().subscribe(
+    this.cols = [];
+    this.GEREVENTOSCONFService.getAll().subscribe(
       response => {
         for (var x in response) {
-          this.cols.push({ id: response[x].id_FORNECEDOR, nome: response[x].nome_FORNECEDOR, num: response[x].num_FORNECEDOR });
+          this.cols.push({ id: response[x][0].id_EVENTO, modulo: response[x][1].nome_MODULO, pagina: response[x][0].pagina, momento: response[x][0].momento, estado: response[x][0].estado });
         }
         this.cols = this.cols.slice();
       },
-      error => console.log(error));*/
+      error => console.log(error));
   }
   //clicar 2 vezes na tabela abre linha
   abrir(event) {
@@ -59,4 +61,18 @@ export class EventoslistaComponent implements OnInit {
   atualizar() {
     this.preenche_tabela();
   }
+
+  //filtro coluna linha
+  filtrar(value, coluna) {
+  
+    this.dataTableComponent.filter(value.toString(), coluna, 'contains');
+
+    /*this.globalVar.setfiltros("eventos", this.dataTableComponent.filters);
+    var ids = [];
+    for (var x in this.dataTableComponent.dataToRender) {
+      ids.push(this.dataTableComponent.dataToRender[x].id);
+    }
+    this.globalVar.setfiltros("eventoss_id", ids);*/
+  }
+
 }
