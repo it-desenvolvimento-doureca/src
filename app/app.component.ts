@@ -16,6 +16,7 @@ export class AppComponent {
     linhas: any[];
     location: Location;
     versao = "versão 1.0.1";
+    modulo = "Gestão de Banhos Químicos";
     mensagem = "";
 
     @ViewChild('closedialog') closedialog: ElementRef;
