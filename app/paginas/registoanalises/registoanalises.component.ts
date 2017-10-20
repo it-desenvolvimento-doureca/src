@@ -23,7 +23,7 @@ export class RegistoanalisesComponent implements OnInit {
   linha = null;
   linhas: any[];
   estados = [{ label: "--", value: 0 }, { label: "Concluída", value: "Concluída" }, { label: "Em Elaboração", value: "Em Elaboração" }, { label: "Validada", value: "Validada" }]
-  tipo_analise = [{ label: "--", value: 0 }, { label: "INTERNA", value: "INTERNA" }, { label: "EXTERNA", value: "EXTERNA" }];
+  tipo_analise = [{ label: "--", value: 0 }, { label: "INTERNA", value: "INTERNA" }, { label: "EXTERNA", value: "EXTERNA" },{ label: "PURIFICAÇÃO", value: "PURIFICAÇÃO" }];
   tipo_anali;
 
   constructor(private ABMOVANALISELINHAService: ABMOVANALISELINHAService, private ABDICLINHAService: ABDICLINHAService, private router: Router, private globalVar: AppGlobals, private ABMOVANALISEService: ABMOVANALISEService) { }
@@ -92,8 +92,10 @@ export class RegistoanalisesComponent implements OnInit {
 
           if (response[x][0].analise_INT_EXT == "I") {
             tipoanalise = "INTERNA";
-          } else {
+          } else if (response[x][0].analise_INT_EXT == "E") {
             tipoanalise = "EXTERNA";
+          }else if (response[x][0].analise_INT_EXT == "P") {
+            tipoanalise = "PURIFICAÇÃO";
           }
           var cor = "";
           if (response[x][0].cor_LIMITES == "vermelho") {

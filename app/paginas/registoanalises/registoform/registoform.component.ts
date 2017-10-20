@@ -72,7 +72,7 @@ export class RegistoformComponent implements OnInit {
     s.src = "assets/js/jqbtk.js";
     this.elementRef.nativeElement.appendChild(s);
 
-    this.tipo_analise = [{ label: "INTERNA", value: "I" }, { label: "EXTERNA", value: "E" }];
+    this.tipo_analise = [{ label: "INTERNA", value: "I" }, { label: "EXTERNA", value: "E" },{ label: "PURIFICAÇÃO", value: "P" }];
     this.analise_valor = "I";
 
     this.globalVar.setapagar(true);
