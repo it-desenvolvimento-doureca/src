@@ -179,7 +179,7 @@ export class CompformComponent implements OnInit {
             this.componentes_dados = response[0];
             for (var x in response) {
               this.codigo = response[x].id_COMPONENTE;
-              this.data = new Date(response[x].data_ULT_MODIF).toLocaleDateString();
+              this.data = this.formatDate(response[x].data_ULT_MODIF);
               this.nome = response[x].nome_COMPONENTE;
               this.medidas_valor = response[x].id_UNIDADE_COMPONENTE;
               this.obs = response[x].obs;
@@ -216,6 +216,19 @@ export class CompformComponent implements OnInit {
   //bt cancelar
   backview() {
     this.location.back();
+  }
+
+  //formatar a data para yyyy-mm-dd
+  formatDate(date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
   }
 
   //bt gravar

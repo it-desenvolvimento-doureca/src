@@ -26,14 +26,14 @@
                   <div class="checkbox" style="float: none; margin-top: 0px;">
                     <input [disabled]="!modoedicao" type="checkbox" name="componete" id="radio5" [(ngModel)]="componente_check">
                     <label for="radio5" style="color:black">
-                                    Componente
-                        </label>
+                      Componente
+                    </label>
                   </div>
                   <div class="checkbox" style="float: none; margin-left: 0px;">
                     <input [disabled]="!modoedicao" type="checkbox" name="distribuicao" id="radio6" [(ngModel)]="aditivo_check">
                     <label for="radio6" style="color:black">
-                                    Aditivo
-                        </label>
+                      Aditivo
+                    </label>
                   </div>
                 </div>
                 <div class="col-md-6" style="padding: 0px;">
@@ -54,8 +54,8 @@
                   <div class="col-md-12" style="padding: 0px;">
                     <div class="form-group form-black label-floating">
                       <label style="font-size: 14px;">Fornecedor Habitual</label>
-                      <p-dropdown [filter]="true" [options]="fornecedores" [style]="{'width':'65%'}"  [(ngModel)]="id_fornecedor" [ngModelOptions]="{standalone: true}"
-                        [disabled]="!modoedicao" ></p-dropdown>
+                      <p-dropdown [filter]="true" [options]="fornecedores" [style]="{'width':'65%'}" [(ngModel)]="id_fornecedor" [ngModelOptions]="{standalone: true}"
+                        [disabled]="!modoedicao"></p-dropdown>
                     </div>
                   </div>
                 </div>
@@ -90,7 +90,7 @@
                 <div class="col-md-6" style="padding-top: 14px;">
                   <div class="form-group">
                     <div [ngClass]="obs == '' ? 'is-empty' : null" class="form-group form-black label-floating">
-                      <label class="control-label">Observações</label>
+                      <label style="top: -13px;" class="control-label">Observações</label>
                       <textarea class="form-control" rows="4" [(ngModel)]="obs" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao"></textarea>
                     </div>
                   </div>

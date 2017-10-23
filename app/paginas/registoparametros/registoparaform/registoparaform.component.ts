@@ -139,7 +139,7 @@ export class RegistoparaformComponent implements OnInit {
         var dirtyFormID = 'formPara';
         var resetForm = <HTMLFormElement>document.getElementById(dirtyFormID);
         resetForm.reset();
-        this.data_criacao = this.data_actual.toLocaleString();
+        this.data_criacao = this.formatDate(this.data_actual.toDateString()) + ', ' + this.data_actual.toLocaleTimeString();
         this.nome_criacao = JSON.parse(localStorage.getItem('userapp'))["nome"];
 
         var id;
@@ -170,7 +170,7 @@ export class RegistoparaformComponent implements OnInit {
           for (var x in response) {
 
             if (response[x][0].data_VALIDA != null) {
-              this.data_validado = new Date(response[x][0].data_VALIDA).toLocaleString();
+              this.data_validado = this.formatDate(response[x][0].data_VALIDA) + ', ' + new Date(response[x][0].data_VALIDA).toLocaleTimeString();
               this.nome_validado = response[x][2];
               this.validado = true;
               this.globalVar.seteditar(false);
@@ -180,7 +180,7 @@ export class RegistoparaformComponent implements OnInit {
             this.reg_dados = response[x][0];
             this.nome_criacao = response[x][1];
             this.id = response[x][0].id_REG_PARAM_OPERA;
-            this.data_criacao = new Date(response[x][0].data_CRIA).toLocaleString();
+            this.data_criacao = this.formatDate(response[x][0].data_CRIA) + ', ' + new Date(response[x][0].data_CRIA).toLocaleTimeString();
             this.carregacab(response[x][0].id_MANUTENCAO_CAB);
             this.acao_corretiva = response[x][0].acao_CORRETIVA;
             this.acao_preventiva = response[x][0].acao_PREVENTIVA;
@@ -199,6 +199,19 @@ export class RegistoparaformComponent implements OnInit {
         }
       },
       error => console.log(error));
+  }
+
+  //formatar a data para yyyy-mm-dd
+  formatDate(date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
   }
 
   carregacab(id) {

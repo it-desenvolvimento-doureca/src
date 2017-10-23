@@ -46,7 +46,7 @@
               </div>
               <div class="row">
                 <div class="col-md-12">
-                  <div [ngClass]="capacidade == '' ? 'is-empty' : null" class="form-group form-black label-floating">
+                  <div [ngClass]="capacidade == null ? 'is-empty' : null" class="form-group form-black label-floating">
                     <label class="control-label">Capacidade Tina (L)</label>
                     <input type="number" class="form-control" [(ngModel)]="capacidade" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao"
                       required>

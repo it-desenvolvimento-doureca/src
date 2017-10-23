@@ -331,7 +331,7 @@ export class BanhosformComponent implements OnInit {
             for (var x in response) {
 
               this.codigo = response[x][0].id_BANHO;
-              this.data = new Date(response[x][0].data_ULT_MODIF).toLocaleDateString();
+              this.data = this.formatDate(response[x][0].data_ULT_MODIF);
               this.estado = response[x][0].estado;
               this.nome = response[x][0].nome_BANHO;
               this.linha = response[x][0].id_LINHA;
@@ -602,9 +602,9 @@ export class BanhosformComponent implements OnInit {
       },
       error => console.log(error));
 
-      if (id != null) {
-        this.cor_linha = this.linhas.find(item => item.value == id).cor;
-      }
+    if (id != null) {
+      this.cor_linha = this.linhas.find(item => item.value == id).cor;
+    }
   }
 
   //apagar linha
@@ -615,6 +615,19 @@ export class BanhosformComponent implements OnInit {
 
   apagarlinha_aditivo(pos, id, id_banho) {
     this.confirmapagarlinha_aditivo(pos, id, id_banho);
+  }
+
+  //formatar a data para yyyy-mm-dd
+  formatDate(date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
   }
 
   //ao alterar cod_Tina

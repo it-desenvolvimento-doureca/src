@@ -190,13 +190,14 @@ export class ManutencaoformComponent implements OnInit {
         var resetForm = <HTMLFormElement>document.getElementById(dirtyFormID);
         resetForm.reset();
         this.data_actual = new Date();
-        this.data_planeamento = this.data_actual.toLocaleString();
+        this.data_planeamento = this.formatDate(this.data_actual.toDateString()) + " " + this.data_actual.toLocaleTimeString();
         this.responsavel = JSON.parse(localStorage.getItem('userapp'))["nome"];
         this.estado = "Em Planeamento";
         this.planeamento = false;
         this.novalinha();
         this.arrayForm = null;
-
+        //preenceh combobox
+        this.preenchedados();
 
       } else if (urlarray[1].match("view")) {
         this.globalVar.setcriar(true);
@@ -221,7 +222,7 @@ export class ManutencaoformComponent implements OnInit {
             this.manutencao_dados = response[x][0];
             this.num_manutencao = response[x][0].id_MANUTENCAO;
             this.tipo_manu_id = response[x][0].id_TIPO_MANUTENCAO;
-            this.data_planeamento = new Date(new Date(response[x][0].data_PLANEAMENTO).toDateString() + " " + response[x][0].hora_PLANEAMENTO.slice(0, 5)).toLocaleString();
+            this.data_planeamento = this.formatDate(response[x][0].data_PLANEAMENTO) + " " + response[x][0].hora_PLANEAMENTO.slice(0, 5);
             this.data_planeamendth = new Date(new Date(response[x][0].data_PLANEAMENTO).toDateString() + " " + response[x][0].hora_PLANEAMENTO.slice(0, 5));
             this.datapl = response[x][0].data_PLANEAMENTO;
             this.responsavel = response[x][4].nome_UTILIZADOR;
@@ -290,13 +291,13 @@ export class ManutencaoformComponent implements OnInit {
             if (response[x][0].id_ANALISE != "" && response[x][0].id_ANALISE != null) nome_analise = response[x][0].id_ANALISE + ' - ' + response[x][1];
             if (response[x][0].id_TIPO_ADICAO != null) if (id_adicao.id195 != "" && id_adicao.id195 != null) disable = true;
             if (response[x][0].data_EXECUCAO != null) {
-              data_exec = new Date(new Date(response[x][0].data_EXECUCAO).toDateString() + ' ' + response[x][0].hora_EXECUCAO.slice(0, 5)).toLocaleString();
+              data_exec = this.formatDate(response[x][0].data_EXECUCAO) + ' ' + response[x][0].hora_EXECUCAO.slice(0, 5);
               this.executado = true;
             }
 
             if (response[x][0].data_PREPARACAO != null) {
               preparado = true;
-              data_prep = new Date(new Date(response[x][0].data_PREPARACAO).toDateString() + ' ' + response[x][0].hora_PREPARACAO.slice(0, 5)).toLocaleString();
+              data_prep = this.formatDate(response[x][0].data_PREPARACAO) + ' ' + response[x][0].hora_PREPARACAO.slice(0, 5);
             }
 
             this.pos++;

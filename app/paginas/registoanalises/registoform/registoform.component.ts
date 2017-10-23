@@ -72,7 +72,7 @@ export class RegistoformComponent implements OnInit {
     s.src = "assets/js/jqbtk.js";
     this.elementRef.nativeElement.appendChild(s);
 
-    this.tipo_analise = [{ label: "INTERNA", value: "I" }, { label: "EXTERNA", value: "E" },{ label: "PURIFICAÇÃO", value: "P" }];
+    this.tipo_analise = [{ label: "INTERNA", value: "I" }, { label: "EXTERNA", value: "E" }, { label: "PURIFICAÇÃO", value: "P" }];
     this.analise_valor = "I";
 
     this.globalVar.setapagar(true);
@@ -294,7 +294,7 @@ export class RegistoformComponent implements OnInit {
                 this.analise_dados = response[0][0];
                 for (var x in response) {
                   this.codigo = response[x][0].id_ANALISE;
-                  this.data = new Date(response[x][0].data_ULT_MODIF).toLocaleDateString();
+                  this.data = this.formatDate(response[x][0].data_ULT_MODIF);
                   this.celula = response[x][0].celulahull;
                   this.cor_linha = response[x][1].cor;
                   this.data_ANALISE = new Date(response[x][0].data_ANALISE);
@@ -335,6 +335,19 @@ export class RegistoformComponent implements OnInit {
     } else {
       this.router.navigate(['registo']);
     }
+  }
+
+  //formatar a data para yyyy-mm-dd
+  formatDate(date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
   }
 
   //bt cancelar
