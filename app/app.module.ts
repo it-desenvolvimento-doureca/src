@@ -75,6 +75,7 @@ import { GestaoeventosComponent } from './paginas/gestaoeventos/gestaoeventos.co
 import { DragDropModule } from 'primeng/components/dragdrop/dragdrop';
 import { EventoslistaComponent } from './paginas/eventoslista/eventoslista.component';
 import { GEREVENTOSCONFService } from 'app/servicos/ger-eventos-conf.service';
+import { HistoricoAnalisesComponent } from './paginas/historico-analises/historico-analises.component';
 
 const routes: Routes = [
   { path: 'dashboard', component: HomeComponent, canActivate: [LoginService] },
@@ -124,7 +125,9 @@ const routes: Routes = [
       { path: '', component: RegistoanalisesComponent, canActivate: [LoginService], data: { breadcrumb: "" } },
       { path: 'view', component: RegistoformComponent, canActivate: [LoginService], data: { breadcrumb: "Análise" } },
       { path: 'editar', component: RegistoformComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } },
-      { path: 'novo', component: RegistoformComponent, canActivate: [LoginService], data: { breadcrumb: "Novo" } }]
+      { path: 'novo', component: RegistoformComponent, canActivate: [LoginService], data: { breadcrumb: "Novo" } },
+      { path: 'historico', component: HistoricoAnalisesComponent, canActivate: [LoginService], data: { breadcrumb: "Histórico" } },]
+
   },
   {
     path: 'manutencao', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Manutenções" },
@@ -158,7 +161,7 @@ const routes: Routes = [
     path: 'eventos', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Eventos" },
     children: [
       { path: '', component: EventoslistaComponent, canActivate: [LoginService], data: { breadcrumb: "" } },
-      { path: 'view', component: GestaoeventosComponent, canActivate: [LoginService], data: { breadcrumb: "Gestão Evento" }},
+      { path: 'view', component: GestaoeventosComponent, canActivate: [LoginService], data: { breadcrumb: "Gestão Evento" } },
       { path: 'editar', component: GestaoeventosComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } }]
   },
   { path: 'login', component: LoginComponent },
@@ -215,6 +218,7 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     ArmazensComponent,
     GestaoeventosComponent,
     EventoslistaComponent,
+    HistoricoAnalisesComponent,
   ],
   imports: [
     BrowserModule,

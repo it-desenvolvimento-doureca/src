@@ -8,26 +8,30 @@ import { AppGlobals } from "app/menu/sidebar.metadata";
 @Injectable()
 export class LoginService implements CanActivate {
     constructor(private GERPERFILLINService: GERPERFILLINService, private globalVar: AppGlobals, private router: Router) { }
-
+    headers = new Headers({
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+        'Expires': 'Sat, 01 Jan 2000 00:00:00 GMT'
+    });
     private userIsAuthenticated: boolean;
     private user;
     private password;
-    private nodes = { node000: "registo", node001: "manutencao", node002: "registopara", node010: "tinas", node011: "componentes", node012: "banhos", node013: "fornecedor", node020: "linhas", node021: "unidades", node022: "zonas", node023: "turnos", node024: "adicoes", node025: "manutencoes", node026: "operacoes", node027: "armazens", node10: "utilizadores", node11: "config",node12: "eventos" };
+    private nodes = { node000: "registo", node001: "manutencao", node002: "registopara", node010: "tinas", node011: "componentes", node012: "banhos", node013: "fornecedor", node020: "linhas", node021: "unidades", node022: "zonas", node023: "turnos", node024: "adicoes", node025: "manutencoes", node026: "operacoes", node027: "armazens", node10: "utilizadores", node11: "config", node12: "eventos" };
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 
-        if (localStorage.getItem('time')) {
-            var data_storage = new Date(JSON.parse(localStorage.getItem('time'))["data"]).getTime();
+        if (localStorage.getItem('time_sgiid')) {
+            var data_storage = new Date(JSON.parse(localStorage.getItem('time_sgiid'))["data"]).getTime();
             if ((data_storage + 7200000) <= new Date().getTime()) {
                 localStorage.clear();
             } else {
-                localStorage.setItem('time', JSON.stringify({ data: new Date() }));
+                localStorage.setItem('time_sgiid', JSON.stringify({ data: new Date() }));
             }
         }
 
         var access = JSON.parse(localStorage.getItem('acessos'));
 
-        if (!localStorage.getItem('userapp') || !localStorage.getItem('time')) {
+        if (!localStorage.getItem('userapp') || !localStorage.getItem('time_sgiid')) {
             // alert('Efetue o Login!');
             this.router.navigate(['./login']);
             return false;

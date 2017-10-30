@@ -28,6 +28,7 @@ export class ZonasComponent implements OnInit {
     this.globalVar.setseguinte(false);
     this.globalVar.setanterior(false);
     this.globalVar.setatualizar(false);
+    this.globalVar.sethistorico(false);
     this.listar_zonas();
   }
 

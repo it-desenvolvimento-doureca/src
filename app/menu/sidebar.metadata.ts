@@ -25,6 +25,7 @@ export class AppGlobals {
   voltar: boolean = false;
   seguinte: boolean = false;
   anterior: boolean = false;
+  historico: boolean = false;
   menu_edi: boolean = false;
   atualizar: boolean = false;
   duplicar: boolean = false;
@@ -163,5 +164,12 @@ export class AppGlobals {
   }
   getapagar() {
     return this.apagar;
+  }
+
+  sethistorico(var_historico) {
+    this.historico = var_historico;
+  }
+  gethistorico() {
+    return this.historico;
   }
 }

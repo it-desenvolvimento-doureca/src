@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from "@angular/router";
   styleUrls: ['./controlos.component.css']
 })
 export class ControlosComponent implements OnInit {
+  historico: boolean;
   validar: any;
   modo: string;
   currentpage: string;
@@ -36,6 +37,8 @@ export class ControlosComponent implements OnInit {
   @Output() duplicarbt: EventEmitter<any> = new EventEmitter();
   @Output() atualiza: EventEmitter<any> = new EventEmitter();
   @Output() validarbt: EventEmitter<any> = new EventEmitter();
+  @Output() hitoricobt: EventEmitter<any> = new EventEmitter();
+
 
   constructor(private route: ActivatedRoute, private router: Router, private globalVar: AppGlobals, location: Location) {
     this.location = location;
@@ -53,6 +56,7 @@ export class ControlosComponent implements OnInit {
     this.voltar = this.globalVar.getvoltar();
     this.pesquisar = this.globalVar.getatualizar();
     this.duplica = this.globalVar.getduplicar();
+    this.historico = this.globalVar.gethistorico();
 
     this.disCriar = this.globalVar.getdisCriar();
     this.disApagar = this.globalVar.getdisApagar();
@@ -151,10 +155,16 @@ export class ControlosComponent implements OnInit {
 
   }
   backClicked() {
-    this.router.navigate([this.currentpage]);
+
     if (this.currentpage == "registopara") {
       this.location.back();
+    } else if (this.router.routerState.snapshot.url.search("registo/historico") > -1) {
+      this.location.back();
+    }else{
+      this.router.navigate([this.currentpage]);
     }
+    
+
   }
 
 
@@ -174,6 +184,10 @@ export class ControlosComponent implements OnInit {
 
   valida() {
     this.validarbt.emit()
+  }
+
+  historico_f() {
+    this.hitoricobt.emit()
   }
 
   editarclick(val) {

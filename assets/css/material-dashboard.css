@@ -1596,7 +1596,7 @@ Copyright (c) 2015 Daniel Eden
  
  .form-control, .form-group .form-control {
    border: 0;
-   background-image: linear-gradient(#9c27b0, #9c27b0), linear-gradient(#D2D2D2, #D2D2D2);
+   /*background-image: linear-gradient(#9c27b0, #9c27b0), linear-gradient(#D2D2D2, #D2D2D2);*/
    background-size: 0 2px, 100% 1px;
    background-repeat: no-repeat;
    background-position: center bottom, center calc(100% - 1px);
@@ -1632,8 +1632,8 @@ Copyright (c) 2015 Daniel Eden
    border-bottom: 1px dotted #212020;
  }
  
- .form-group {
-   /*  position: relative;*/
+ .row .form-group {
+     position: relative;
  }
  
  .form-group.label-static label.control-label, .form-group.label-placeholder label.control-label, .form-group.label-floating label.control-label {
@@ -1871,7 +1871,7 @@ Copyright (c) 2015 Daniel Eden
  .form-group.label-static label.control-label, .form-group.label-floating.is-focused label.control-label, .form-group.label-floating:not(.is-empty) label.control-label {
    top: -28px;
    left: 0;
-   font-size: 11px;
+   font-size: 13px;
    line-height: 1.07143;
  }
  

@@ -52,6 +52,7 @@ export class RegistoformComponent implements OnInit {
   user;
   pos = 0;
   display: boolean = true;
+  selected_plano;
 
   @ViewChild('inputnotifi') inputnotifi: ElementRef;
   @ViewChild('inputgravou') inputgravou: ElementRef;
@@ -82,6 +83,7 @@ export class RegistoformComponent implements OnInit {
     this.globalVar.setseguinte(true);
     this.globalVar.setanterior(true);
     this.globalVar.setatualizar(false);
+    this.globalVar.sethistorico(JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node000historico"));
     this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node000editar"));
     this.globalVar.setdisCriar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node000criar"));
     this.globalVar.setdisApagar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node000apagar"));
@@ -152,10 +154,12 @@ export class RegistoformComponent implements OnInit {
         this.modoedicao = true;
 
       } else if (urlarray[1].match("novo")) {
+        this.selected_plano = true;
         this.globalVar.setseguinte(false);
         this.globalVar.setanterior(false);
         this.globalVar.setapagar(false);
         this.globalVar.setcriar(false);
+        this.globalVar.sethistorico(false);
         this.novo = true;
         this.globalVar.seteditar(false);
         this.modoedicao = true;
@@ -304,6 +308,7 @@ export class RegistoformComponent implements OnInit {
                   this.nome_tina = this.banhos.find(item => item.value.id === response[x][0].id_BANHO).value['nome_tina'];
                   this.capacidade_tina = this.banhos.find(item => item.value.id === response[x][0].id_BANHO).value['capacidade_tina'];
                   this.obs = response[x][0].obs;
+                  this.selected_plano = (response[x][0].planeada == null || response[x][0].planeada == false) ? false : true;
                   this.linha = this.linhas.find(item => item.value.id === response[x][0].id_LINHA).value;
                   if (response[x][0].estado == "C") {
                     this.estado = "Concluída";
@@ -380,6 +385,7 @@ export class RegistoformComponent implements OnInit {
         analise.analise_INT_EXT = this.analise_valor;
         analise.inativo = false;
         analise.estado = this.bt_click;
+        analise.planeada = (this.selected_plano == 1) ? true : false;
         if (this.cores.find(item => item == "vermelho")) {
           analise.cor_LIMITES = "vermelho";
         } else if (this.cores.find(item => item == "amarelo")) {
@@ -414,6 +420,7 @@ export class RegistoformComponent implements OnInit {
         analise.analise_INT_EXT = this.analise_valor;
         analise.celulahull = this.celula;
         analise.hora_ANALISE = this.hora_ANALISE;
+        analise.planeada = (this.selected_plano == 1) ? true : false;
         if (this.cores.find(item => item == "vermelho")) {
           analise.cor_LIMITES = "vermelho";
         } else if (this.cores.find(item => item == "amarelo")) {
@@ -697,6 +704,11 @@ export class RegistoformComponent implements OnInit {
       this.banho_componentes.find(item => item.pos == pos).cor = "none";
       this.cores[pos] = "none";
     }
+  }
+
+  //ver historico
+  historico(){
+    this.router.navigate(['registo/historico'], { queryParams: { id: this.analises[this.i] } });
   }
 
 }

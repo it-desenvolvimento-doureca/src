@@ -44,6 +44,7 @@ export class PerfilComponent implements OnInit {
     this.globalVar.setvoltar(false);
     this.globalVar.setatualizar(false);
     this.globalVar.setduplicar(false);
+    this.globalVar.sethistorico(false);
 
     this.user = JSON.parse(localStorage.getItem('userapp'))["id"];
 

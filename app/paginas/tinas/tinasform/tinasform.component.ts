@@ -47,6 +47,7 @@ export class TinasformComponent implements OnInit {
     this.globalVar.setseguinte(true);
     this.globalVar.setanterior(true);
     this.globalVar.setatualizar(false);
+    this.globalVar.sethistorico(false);
 
     this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node010editar"));
     this.globalVar.setdisCriar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node010criar"));
@@ -282,11 +283,11 @@ export class TinasformComponent implements OnInit {
 
   //só deixa introduzir numeros no código tina
   mascara(event) {
-    if ((event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode == 45) {
+   /* if ((event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode == 45) {
       return true;
     } else {
       return false
-    }
+    }*/
   }
 
   alteracorlinha(event) {

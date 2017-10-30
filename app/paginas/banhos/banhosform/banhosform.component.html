@@ -130,7 +130,7 @@
                     </p-column>
                     <p-column field="data_ini" header="DATA ÍNICIO" [style]="{'width':'11%','font-size': '12px'}">
                       <ng-template pTemplate="body" let-col2 let-row2="rowData ">
-                        <p-calendar [style]="{'width':'110px','float': 'left'}" (onInput)="verificadatas(row2[col2.field],row2['pos'],row2['id_componente'])"
+                        <p-calendar [style]="{'width':'110px'}" (onInput)="verificadatas(row2[col2.field],row2['pos'],row2['id_componente'])"
                           (onSelect)="verificadatas(row2[col2.field],row2['pos'],row2['id_componente'])" dateFormat="yy-mm-dd"
                           [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2030" [(ngModel)]="row2['data_ini']"
                           [ngModelOptions]="{standalone: true}" [showIcon]="true" [hidden]="!modoedicao"></p-calendar>
@@ -141,7 +141,7 @@
                     </p-column>
                     <p-column field="data_fim" header="DATA FIM" [style]="{'width':'11%','font-size': '12px'}">
                       <ng-template pTemplate="body" let-col3 let-row3="rowData ">
-                        <p-calendar [style]="{'width':'110px','float': 'left'}" (onInput)="verificadatafim(row3[col3.field],row3['data_ini'])" (onSelect)="verificadatafim(row3[col3.field],row3['data_ini'])"
+                        <p-calendar [style]="{'width':'110px'}" (onInput)="verificadatafim(row3[col3.field],row3['data_ini'])" (onSelect)="verificadatafim(row3[col3.field],row3['data_ini'])"
                           dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2030" [(ngModel)]="row3['data_fim']"
                           [ngModelOptions]="{standalone: true}" [showIcon]="true" [hidden]="!modoedicao"></p-calendar>
                         <label class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{row3[col3.field] | date: 'yyyy-MM-dd'}}</label>

@@ -46,8 +46,8 @@ export class LoginComponent implements OnInit {
         if (count == 1) {
           if (atob(response[0].password) == this.password) {
             localStorage.setItem('userapp', JSON.stringify({ nome: response[0].nome_UTILIZADOR, id: response[0].id_UTILIZADOR, admin: response[0].admin }));
-            localStorage.setItem('time', JSON.stringify({ data: new Date() }));
-            if (localStorage.getItem('userapp') || localStorage.getItem('time')) {
+            localStorage.setItem('time_sgiid', JSON.stringify({ data: new Date() }));
+            if (localStorage.getItem('userapp') || localStorage.getItem('time_sgiid')) {
               //carregar acessos
               this.GERPERFILLINService.getbyID_node(JSON.parse(localStorage.getItem('userapp'))["id"], "null").subscribe(
                 response2 => {
@@ -121,8 +121,8 @@ export class LoginComponent implements OnInit {
           var count = Object.keys(response).length;
           if (count == 1) {
             localStorage.setItem('userapp', JSON.stringify({ nome: response[0].nome_UTILIZADOR, id: response[0].id_UTILIZADOR, admin: response[0].admin }));
-            localStorage.setItem('time', JSON.stringify({ data: new Date() }));
-            if (localStorage.getItem('userapp') || localStorage.getItem('time')) {
+            localStorage.setItem('time_sgiid', JSON.stringify({ data: new Date() }));
+            if (localStorage.getItem('userapp') || localStorage.getItem('time_sgiid')) {
               //carregar acessos
               this.GERPERFILLINService.getbyID_node(JSON.parse(localStorage.getItem('userapp'))["id"], "null").subscribe(
                 response2 => {

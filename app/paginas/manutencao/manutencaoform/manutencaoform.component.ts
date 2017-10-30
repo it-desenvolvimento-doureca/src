@@ -101,6 +101,7 @@ export class ManutencaoformComponent implements OnInit {
     this.globalVar.setanterior(true);
     this.globalVar.setatualizar(false);
     this.globalVar.setduplicar(true);
+    this.globalVar.sethistorico(false);
 
 
     this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001editar"));

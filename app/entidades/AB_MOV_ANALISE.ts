@@ -19,5 +19,5 @@ export class AB_MOV_ANALISE {
     utz_VALIDA: number;
     data_VALIDA: Date;
     cor_LIMITES: string;
-
+    planeada: boolean;
 }

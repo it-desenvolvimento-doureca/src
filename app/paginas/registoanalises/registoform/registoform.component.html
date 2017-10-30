@@ -1,4 +1,4 @@
-<app-controlos (anteriorbt)="anterior()" (validarbt)="validar()" (seguintebt)="seguinte()" (apagarbt)="apagar()"></app-controlos>
+<app-controlos (hitoricobt)="historico()" (anteriorbt)="anterior()" (validarbt)="validar()" (seguintebt)="seguinte()" (apagarbt)="apagar()"></app-controlos>
 <div class="main-content">
   <div class="container-fluid">
     <div class="row">
@@ -23,18 +23,24 @@
                     <input type="text" class="form-control" value="{{data}}" disabled>
                   </div>
                 </div>
-                <div class="col-md-5">
-                  <div class="form-group form-black label-floating analisepag">
-                    <label style="font-size: 11px; position: absolute; top: -13px;">Data/Hora Análise</label>
-                    <p-calendar [style]="{'height':'36px','padding':'5px 4px'}" dateFormat="yy-mm-dd" placeholder="yy-mm-dd" [monthNavigator]="true"
-                      [yearNavigator]="true" yearRange="2000:2050" [(ngModel)]="data_ANALISE" [ngModelOptions]="{standalone: true}"
-                      [showIcon]="true" [hidden]="!modoedicao" [required]="true"></p-calendar>
-                    <label style="width:100px" class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{data_ANALISE | date: 'yyyy-MM-dd'}}</label>
-                    <input [hidden]="!modoedicao" style="width:80px; margin-left:30px; padding: 5px 4px;" [(ngModel)]="hora_ANALISE" [ngModelOptions]="{standalone: true}"
-                      type="time" class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all" ng-reflect-ng-class="ui-inputtext ui-widget ui-stat"
-                      required="true" placeholder="hh:mm">
-                    <label style="width:70px;" class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{hora_ANALISE}}</label>
-                    <b style="margin-left: 5px;">Estado: </b> {{estado}}
+                <div class="col-md-8">
+                  <div class="form-group form-black label-floating analisepag" style="width:100%; float: left; padding-top: 5px;">
+                    <div style="float: left;">
+                      <label style="font-size: 13px; position: absolute; top: -15px;">Data/Hora Análise</label>
+                      <p-calendar [style]="{'height':'31px'}" dateFormat="yy-mm-dd" placeholder="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true"
+                        yearRange="2000:2050" [(ngModel)]="data_ANALISE" [ngModelOptions]="{standalone: true}" [showIcon]="true"
+                        [hidden]="!modoedicao" [required]="true"></p-calendar>
+                      <label style="width:100px; height: 31px" class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{data_ANALISE | date: 'yyyy-MM-dd'}}</label>
+                      <input [hidden]="!modoedicao" style="width:80px; margin-left:30px; padding: 5px 4px;height: 31px;" [(ngModel)]="hora_ANALISE"
+                        [ngModelOptions]="{standalone: true}" type="time" class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all"
+                        ng-reflect-ng-class="ui-inputtext ui-widget ui-stat" required="true" placeholder="hh:mm">
+                      <label style="width:70px; height: 31px;" class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{hora_ANALISE}}</label>
+                      <b style="margin-left: 5px;">Estado: </b> {{estado}}
+                    </div>
+                    <div style="float: left; width: 41%; margin-top: 6px; margin-left: 12px;">
+                      <p-radioButton name="groupname" value="1" label="Planeada " [(ngModel)]="selected_plano"></p-radioButton>
+                      <p-radioButton name="groupname" value="0" label="Não Planeada" [(ngModel)]="selected_plano" [style]="{'margin-left': '5px'}"></p-radioButton>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -52,22 +58,31 @@
                     </p-dropdown>
                   </div>
                 </div>
-                <div class="col-md-5" style="width: 36.333333%">
-                  <div class="form-group form-black label-floating">
+                <div class="col-md-10">
+                  <div class="form-group form-black label-floating" style="float: left;">
                     <label style="font-size: 14px;">Banho</label>
                     <p-dropdown [filter]="true" [options]="banhos" [style]="{'width':'300px'}" [(ngModel)]="banhos_valor" [ngModelOptions]="{standalone: true}"
                       (onChange)="nome_tinas($event)" [disabled]="disablebanho" [required]="true"></p-dropdown>
                     <label style="font-size: 14px;">Tina: </label>
-                    <span style="font-size: 12px; padding-right: 20px;"><b> {{nome_tina}}</b></span>
-                    <span style="font-size: 12px; padding-right: 10px;"><b> {{capacidade_tina}} L</b></span>
+                    <span style="font-size: 12px; padding-right: 20px;">
+                      <b> {{nome_tina}}</b>
+                    </span>
+                    <span style="font-size: 12px; padding-right: 10px;">
+                      <b> {{capacidade_tina}} L</b>
+                    </span>
                   </div>
-                </div>
-                <div class="col-md-5">
-                  <div class="form-group form-black label-floating">
+                  <div class="form-group form-black label-floating" style="float: left;">
                     <label style="font-size: 14px;">Tipo de Análise</label>
-                    <p-dropdown [options]="tipo_analise" [(ngModel)]="analise_valor" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao"
+                    <p-dropdown [options]="tipo_analise" [style]="{'width':'125px'}" [(ngModel)]="analise_valor" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao"
                       [required]="true"></p-dropdown>
                   </div>
+                  <div class=" form-black label-floating" style="padding-top: 7px; float: left; margin-left: 11px;">
+                      <label class="pull-left" style="font-size: 14px; color:black;">Célula HULL</label>
+                      <div class="material-switch pull-left">
+                        <input id="someSwitchOptionSuccess" type="checkbox" [(ngModel)]="celula" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
+                        <label for="someSwitchOptionSuccess" class="label-success" style="margin-left: 24px;"></label>
+                      </div>
+                    </div>
                 </div>
               </div>
               <div class="row">
@@ -76,15 +91,6 @@
                     <div [ngClass]="obs == '' ? 'is-empty' : null" class="form-group form-black label-floating">
                       <label class="control-label">Observações</label>
                       <textarea class="form-control" rows="3" [(ngModel)]="obs" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao"></textarea>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class=" form-black label-floating" style="padding-top: 11px;">
-                    <label class="pull-left" style="font-size: 14px; color:black;">Célula HULL</label>
-                    <div class="material-switch pull-left">
-                      <input id="someSwitchOptionSuccess" type="checkbox" [(ngModel)]="celula" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
-                      <label for="someSwitchOptionSuccess" class="label-success" style="margin-left: 24px;"></label>
                     </div>
                   </div>
                 </div>

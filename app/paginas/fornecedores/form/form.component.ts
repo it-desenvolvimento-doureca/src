@@ -41,6 +41,7 @@ export class FormComponent implements OnInit {
     this.globalVar.setseguinte(true);
     this.globalVar.setanterior(true);
     this.globalVar.setatualizar(false);
+    this.globalVar.sethistorico(false);
 
     this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node013editar"));
     this.globalVar.setdisCriar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node013criar"));

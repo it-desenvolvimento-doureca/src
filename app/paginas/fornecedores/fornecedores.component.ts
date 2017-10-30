@@ -24,6 +24,7 @@ export class FornecedoresComponent implements OnInit {
     this.globalVar.setcriar(true);
     this.globalVar.setduplicar(false);
     this.globalVar.setatualizar(true);
+    this.globalVar.sethistorico(false);
 
     this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node013editar"));
     this.globalVar.setdisCriar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node013criar"));

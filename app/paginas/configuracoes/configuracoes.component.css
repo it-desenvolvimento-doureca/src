@@ -63,6 +63,10 @@
 .acidjs-css3-treeview .validar::before {
     content: "\f00c" !important;
 }
+
+.acidjs-css3-treeview .historico::before {
+    content: "\f080" !important;
+}
 .acidjs-css3-treeview label[for]::before, .acidjs-css3-treeview label span::before {
     content: "\25b6";
     display: inline-block;

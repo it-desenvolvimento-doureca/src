@@ -44,6 +44,7 @@ export class RegistoanalisesComponent implements OnInit {
 
 
     this.globalVar.setvoltar(false);
+    this.globalVar.sethistorico(false);
     this.globalVar.seteditar(false);
     this.globalVar.setapagar(false);
     this.globalVar.setseguinte(false);

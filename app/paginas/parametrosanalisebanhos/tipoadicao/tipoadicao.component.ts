@@ -32,6 +32,7 @@ export class TipoadicaoComponent implements OnInit {
     this.globalVar.setseguinte(false);
     this.globalVar.setanterior(false);
     this.globalVar.setatualizar(false);
+    this.globalVar.sethistorico(false);
     //preenche combobox Intervalo Oper.
     this.ABDICTIPOOPERACAOService.getAll().subscribe(
       response => {
