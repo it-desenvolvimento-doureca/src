@@ -38,8 +38,8 @@
                       <b style="margin-left: 5px;">Estado: </b> {{estado}}
                     </div>
                     <div style="float: left; width: 41%; margin-top: 6px; margin-left: 12px;">
-                      <p-radioButton name="groupname" value="1" label="Planeada " [(ngModel)]="selected_plano"></p-radioButton>
-                      <p-radioButton name="groupname" value="0" label="Não Planeada" [(ngModel)]="selected_plano" [style]="{'margin-left': '5px'}"></p-radioButton>
+                      <p-radioButton [disabled]="!modoedicao" name="groupname" value="1" label="Planeada " [(ngModel)]="selected_plano"></p-radioButton>
+                      <p-radioButton [disabled]="!modoedicao" name="groupname" value="0" label="Não Planeada" [(ngModel)]="selected_plano" [style]="{'margin-left': '5px'}"></p-radioButton>
                     </div>
                   </div>
                 </div>

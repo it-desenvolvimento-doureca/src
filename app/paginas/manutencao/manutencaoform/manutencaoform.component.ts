@@ -23,6 +23,7 @@ import { ADMOVREGPARAMOPERACAOService } from "app/servicos/ad-mov-reg-param-oper
 import { AD_MOV_REG_PARAM_OPERACAO } from "app/entidades/AD_MOV_REG_PARAM_OPERACAO";
 import { ABDICCOMPONENTEService } from "app/servicos/ab-dic-componente.service";
 import { GERARMAZEMService } from 'app/servicos/ger-armazem.service';
+import { GERUTILIZADORESService } from 'app/servicos/ger-utilizadores.service';
 
 
 @Component({
@@ -31,6 +32,9 @@ import { GERARMAZEMService } from 'app/servicos/ger-armazem.service';
   styleUrls: ['./manutencaoform.component.css']
 })
 export class ManutencaoformComponent implements OnInit {
+  utilizadores: any[];
+  hora_planeamento;
+  admin: any;
   data_planeamendth: Date;
   datapl: any;
   acessoprep: boolean = false;
@@ -86,7 +90,7 @@ export class ManutencaoformComponent implements OnInit {
   @ViewChild('alteraeditar') alteraeditar: ElementRef;
   @ViewChild('alteraeditartrue') alteraeditartrue: ElementRef;
 
-  constructor(private elementRef: ElementRef, private GERARMAZEMService: GERARMAZEMService, private ADMOVREGPARAMOPERACAOService: ADMOVREGPARAMOPERACAOService, private ABMOVMANUTENCAOLINHAService: ABMOVMANUTENCAOLINHAService, private ABMOVMANUTENCAOCABService: ABMOVMANUTENCAOCABService, private ABMOVANALISEService: ABMOVANALISEService, private ABDICTIPOOPERACAOService: ABDICTIPOOPERACAOService, private ABDICTIPOADICAOService: ABDICTIPOADICAOService, private ABDICBANHOADITIVOService: ABDICBANHOADITIVOService, private ABMOVMANUTENCAOService: ABMOVMANUTENCAOService, private ABDICTURNOService: ABDICTURNOService, private ABDICTIPOMANUTENCAOService: ABDICTIPOMANUTENCAOService, private confirmationService: ConfirmationService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private ABDICBANHOService: ABDICBANHOService, private ABDICLINHAService: ABDICLINHAService, private globalVar: AppGlobals, private ABUNIDADADEMEDIDAService: ABUNIDADADEMEDIDAService, private location: Location, private router: Router, private renderer: Renderer, private route: ActivatedRoute) { }
+  constructor(private GERUTILIZADORESService: GERUTILIZADORESService, private elementRef: ElementRef, private GERARMAZEMService: GERARMAZEMService, private ADMOVREGPARAMOPERACAOService: ADMOVREGPARAMOPERACAOService, private ABMOVMANUTENCAOLINHAService: ABMOVMANUTENCAOLINHAService, private ABMOVMANUTENCAOCABService: ABMOVMANUTENCAOCABService, private ABMOVANALISEService: ABMOVANALISEService, private ABDICTIPOOPERACAOService: ABDICTIPOOPERACAOService, private ABDICTIPOADICAOService: ABDICTIPOADICAOService, private ABDICBANHOADITIVOService: ABDICBANHOADITIVOService, private ABMOVMANUTENCAOService: ABMOVMANUTENCAOService, private ABDICTURNOService: ABDICTURNOService, private ABDICTIPOMANUTENCAOService: ABDICTIPOMANUTENCAOService, private confirmationService: ConfirmationService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private ABDICBANHOService: ABDICBANHOService, private ABDICLINHAService: ABDICLINHAService, private globalVar: AppGlobals, private ABUNIDADADEMEDIDAService: ABUNIDADADEMEDIDAService, private location: Location, private router: Router, private renderer: Renderer, private route: ActivatedRoute) { }
 
   ngOnInit() {
     var s = document.createElement("script");
@@ -96,14 +100,13 @@ export class ManutencaoformComponent implements OnInit {
     this.globalVar.setapagar(true);
     this.globalVar.seteditar(true);
     this.globalVar.setvoltar(true);
-    this.globalVar.seteditar(true);
     this.globalVar.setseguinte(true);
     this.globalVar.setanterior(true);
     this.globalVar.setatualizar(false);
     this.globalVar.setduplicar(true);
     this.globalVar.sethistorico(false);
 
-
+    this.admin = JSON.parse(localStorage.getItem('userapp'))["admin"];
     this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001editar"));
     this.globalVar.setdisCriar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001criar"));
     this.globalVar.setdisApagar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001apagar"));
@@ -191,7 +194,8 @@ export class ManutencaoformComponent implements OnInit {
         var resetForm = <HTMLFormElement>document.getElementById(dirtyFormID);
         resetForm.reset();
         this.data_actual = new Date();
-        this.data_planeamento = this.formatDate(this.data_actual.toDateString()) + " " + this.data_actual.toLocaleTimeString();
+        this.data_planeamento = this.formatDate(this.data_actual.toDateString());
+        this.hora_planeamento = this.data_actual.toLocaleTimeString().slice(0, 5);
         this.responsavel = JSON.parse(localStorage.getItem('userapp'))["nome"];
         this.estado = "Em Planeamento";
         this.planeamento = false;
@@ -223,7 +227,8 @@ export class ManutencaoformComponent implements OnInit {
             this.manutencao_dados = response[x][0];
             this.num_manutencao = response[x][0].id_MANUTENCAO;
             this.tipo_manu_id = response[x][0].id_TIPO_MANUTENCAO;
-            this.data_planeamento = this.formatDate(response[x][0].data_PLANEAMENTO) + " " + response[x][0].hora_PLANEAMENTO.slice(0, 5);
+            this.data_planeamento = this.formatDate(response[x][0].data_PLANEAMENTO);
+            this.hora_planeamento = response[x][0].hora_PLANEAMENTO.slice(0, 5);
             this.data_planeamendth = new Date(new Date(response[x][0].data_PLANEAMENTO).toDateString() + " " + response[x][0].hora_PLANEAMENTO.slice(0, 5));
             this.datapl = response[x][0].data_PLANEAMENTO;
             this.responsavel = response[x][4].nome_UTILIZADOR;
@@ -257,6 +262,10 @@ export class ManutencaoformComponent implements OnInit {
               this.globalVar.seteditar(false);
               this.simular(this.alteraeditar);
             }
+            if (this.admin) {
+              this.globalVar.seteditar(true);
+              this.simular(this.alteraeditartrue);
+            }
           }
           this.preenche_banhos(id);
         }
@@ -275,6 +284,7 @@ export class ManutencaoformComponent implements OnInit {
             var data_prev = null;
             var hora_prev = null;
             var data_exec = null;
+            var hora_exc = null;
             var id_adicao = null;
             var int_op = this.intervalo_op.find(item => item.value.id == response[x][0].id_TIPO_OPERACAO).value;
             var id_banho = this.banhos.find(item => item.value.id == response[x][0].id_BANHO).value;
@@ -292,7 +302,9 @@ export class ManutencaoformComponent implements OnInit {
             if (response[x][0].id_ANALISE != "" && response[x][0].id_ANALISE != null) nome_analise = response[x][0].id_ANALISE + ' - ' + response[x][1];
             if (response[x][0].id_TIPO_ADICAO != null) if (id_adicao.id195 != "" && id_adicao.id195 != null) disable = true;
             if (response[x][0].data_EXECUCAO != null) {
-              data_exec = this.formatDate(response[x][0].data_EXECUCAO) + ' ' + response[x][0].hora_EXECUCAO.slice(0, 5);
+              var hora = (response[x][0].hora_EXECUCAO != null)? response[x][0].hora_EXECUCAO.slice(0, 5) : null;
+              data_exec = this.formatDate(response[x][0].data_EXECUCAO) + ' ' + hora;
+              hora_exc = response[x][0].hora_EXECUCAO.slice(0, 5);
               this.executado = true;
             }
 
@@ -306,8 +318,8 @@ export class ManutencaoformComponent implements OnInit {
               executado: this.executado, preparado: preparado, obs_prep: response[x][0].obs_PREPARACAO,
               id_manu: response[x][0].id_MANUTENCAO, data: data_prev, cod_analise: response[x][0].id_ANALISE, nome_analise: nome_analise, disable_op: disable,
               pos: this.pos, id: response[x][0].id_MANUTENCAO_CAB, id_banho: id_banho, hora_pre: hora_prev, data_pre: data_prev, tipo_adicao: id_adicao,
-              interva_ope: int_op, id_195: response[x][3], obs_pla: response[x][0].obs_PLANEAMENTO, obs_exec: response[x][0].obs_EXECUCAO,
-              resp_exe: response[x][4], data_exc: data_exec, resp_prep: response[x][5], data_prep: data_prep,
+              interva_ope: int_op, id_195: response[x][3], obs_pla: response[x][0].obs_PLANEAMENTO, obs_exec: response[x][0].obs_EXECUCAO, resp_exe_id: response[x][0].utz_EXECUCAO,
+              resp_exe: response[x][4], hora_exc: hora_exc, data_exc: data_exec, resp_prep: response[x][5], data_prep: data_prep,
               id_tina: response[x][0].id_TINA, tina: response[x][6], capacidade: response[x][2], aditivos: [], data_valida: response[x][6]
             });
             this.carregaraditivoslinhas(response[x][0].id_MANUTENCAO_CAB, this.pos);
@@ -355,7 +367,7 @@ export class ManutencaoformComponent implements OnInit {
       executado: false, preparado: false, obs_prep: null,
       id_manu: id, data: new Date(), cod_analise: null, nome_analise: null, disable_op: false,
       pos: this.pos, id: null, id_banho: null, hora_pre: null, data_pre: null, tipo_adicao: null, data_valida: null,
-      interva_ope: null, id_195: null, obs_pla: null, obs_exec: null, resp_exe: null, data_exc: null, resp_prep: null, data_prep: null, tina: null, id_tina: null, capacidade: null, aditivos: []
+      interva_ope: null, id_195: null, obs_pla: null, obs_exec: null, resp_exe: null, resp_exe_id: null, hora_exc: null, data_exc: null, resp_prep: null, data_prep: null, tina: null, id_tina: null, capacidade: null, aditivos: []
     });
   }
 
@@ -503,14 +515,15 @@ export class ManutencaoformComponent implements OnInit {
   }
 
   gravar() {
-    if (!this.planeamento) {
+
+    if (!this.planeamento && this.novo) {
       var MOV_MANUTENCAO = new AB_MOV_MANUTENCAO;
       MOV_MANUTENCAO.id_LINHA = this.linha["id"];
       MOV_MANUTENCAO.estado = this.estado;
-      MOV_MANUTENCAO.hora_PLANEAMENTO = this.data_actual.toLocaleTimeString().slice(0, 5);
+      MOV_MANUTENCAO.hora_PLANEAMENTO = this.hora_planeamento;
       MOV_MANUTENCAO.inativo = false;
       MOV_MANUTENCAO.id_TURNO = this.id_turno;
-      MOV_MANUTENCAO.data_PLANEAMENTO = this.data_actual;
+      MOV_MANUTENCAO.data_PLANEAMENTO = this.data_planeamento;
       MOV_MANUTENCAO.id_TIPO_MANUTENCAO = this.tipo_manu_id;
       MOV_MANUTENCAO.data_CRIA = new Date();
       MOV_MANUTENCAO.utz_CRIA = this.user;
@@ -525,6 +538,19 @@ export class ManutencaoformComponent implements OnInit {
           console.log(error); this.simular(this.inputerro);
         });
 
+    } else {
+      var MOV_MANUTENCAO = new AB_MOV_MANUTENCAO;
+      MOV_MANUTENCAO = this.manutencao_dados;
+      MOV_MANUTENCAO.data_ULT_MODIF = new Date();
+      MOV_MANUTENCAO.utz_ULT_MODIF = this.user;
+      MOV_MANUTENCAO.hora_PLANEAMENTO = this.hora_planeamento;
+      MOV_MANUTENCAO.data_PLANEAMENTO = this.data_planeamento;
+      MOV_MANUTENCAO.estado = this.estado
+      this.ABMOVMANUTENCAOService.update(MOV_MANUTENCAO).then(() => {
+        this.simular(this.inputgravou);
+      }, error => {
+        console.log(error); this.simular(this.inputerro);
+      });
     }
   }
 
@@ -532,6 +558,7 @@ export class ManutencaoformComponent implements OnInit {
     var MOV_MANUTENCAO_CAB = new AB_MOV_MANUTENCAO_CAB;
     this.gravarlinhas = false;
     var data = new Date(new Date(this.arrayForm.find(item => item.pos == pos).data_pre).toDateString() + " " + this.arrayForm.find(item => item.pos == pos).hora_pre);
+    this.data_planeamendth = new Date(new Date(this.data_planeamento).toDateString() + " " + this.hora_planeamento.slice(0, 5));
     if (data > this.data_planeamendth) {
       if (this.arrayForm.find(item => item.pos == pos).id != null) {
         //update
@@ -551,6 +578,34 @@ export class ManutencaoformComponent implements OnInit {
               MOV_MANUTENCAO_CAB.hora_PREVISTA = this.arrayForm.find(item => item.pos == pos).hora_pre;
               MOV_MANUTENCAO_CAB.utz_ULT_MODIF = this.user;
 
+              if (this.admin) {
+                MOV_MANUTENCAO_CAB.data_EXECUCAO = (this.arrayForm.find(item => item.pos == pos).data_exc == null) ? null : new Date(this.arrayForm.find(item => item.pos == pos).data_exc);
+                MOV_MANUTENCAO_CAB.hora_EXECUCAO = this.arrayForm.find(item => item.pos == pos).hora_exc;
+                MOV_MANUTENCAO_CAB.utz_EXECUCAO = this.arrayForm.find(item => item.pos == pos).resp_exe_id;
+                if (MOV_MANUTENCAO_CAB.hora_EXECUCAO != null) {
+                  this.arrayForm.find(item => item.pos == pos).executado = true;
+                } else {
+                  this.arrayForm.find(item => item.pos == pos).executado = false;
+                }
+                var tamanho = this.arrayForm.length;
+                var count = 0;
+                for (var y in this.arrayForm) {
+                  if (this.arrayForm[y].executado) count++;
+                }
+                //this.estado = "Em Execução";
+                if (tamanho == count) {
+                  this.estado = "Executado";
+                }
+                var MOV_MANUTENCAO = new AB_MOV_MANUTENCAO;
+                MOV_MANUTENCAO = this.manutencao_dados;
+                MOV_MANUTENCAO.estado = this.estado;
+                MOV_MANUTENCAO.data_ULT_MODIF = new Date();
+                MOV_MANUTENCAO.utz_ULT_MODIF = this.user;
+                this.ABMOVMANUTENCAOService.update(MOV_MANUTENCAO).then(() => {
+                }, error => {
+                  console.log(error); this.simular(this.inputerro);
+                });
+              }
               this.ABMOVMANUTENCAOCABService.update(MOV_MANUTENCAO_CAB).then(() => {
                 this.gravarlinhasaditivos(response[x][0].id_MANUTENCAO_CAB, pos)
               }, error => {
@@ -575,6 +630,12 @@ export class ManutencaoformComponent implements OnInit {
         MOV_MANUTENCAO_CAB.obs_EXECUCAO = this.arrayForm.find(item => item.pos == pos).obs_exec;
         MOV_MANUTENCAO_CAB.obs_PLANEAMENTO = this.arrayForm.find(item => item.pos == pos).obs_pla;
         MOV_MANUTENCAO_CAB.inativo = false;
+
+        if (this.admin) {
+          MOV_MANUTENCAO_CAB.data_EXECUCAO = (this.arrayForm.find(item => item.pos == pos).data_exc == null) ? null : new Date(this.arrayForm.find(item => item.pos == pos).data_exc);
+          MOV_MANUTENCAO_CAB.hora_EXECUCAO = this.arrayForm.find(item => item.pos == pos).hora_exc;
+          MOV_MANUTENCAO_CAB.utz_EXECUCAO = this.arrayForm.find(item => item.pos == pos).resp_exe_id;
+        }
         this.ABMOVMANUTENCAOCABService.create(MOV_MANUTENCAO_CAB).subscribe(
           res => {
             this.arrayForm.find(item => item.pos == pos).id = res.id_MANUTENCAO_CAB;
@@ -604,6 +665,7 @@ export class ManutencaoformComponent implements OnInit {
           MOV_MANUTENCAO_LINHA.stock = parseFloat(this.arrayForm.find(item => item.pos == pos).aditivos[x].stock);
           MOV_MANUTENCAO_LINHA.cod_REF = this.arrayForm.find(item => item.pos == pos).aditivos[x].cod_REF;
           MOV_MANUTENCAO_LINHA.stkunit = this.arrayForm.find(item => item.pos == pos).aditivos[x].unidstock;
+
           this.criar(MOV_MANUTENCAO_LINHA, pos, x);
         } else {
           this.atualizalinhasaditivos(this.arrayForm.find(item => item.pos == pos).aditivos[x].id_LIN, pos, x)
@@ -775,7 +837,9 @@ export class ManutencaoformComponent implements OnInit {
           }
         }
         var data = new Date(new Date(this.arrayForm[x].data_pre).toDateString() + " " + this.arrayForm[x].hora_pre);
-        if (data < new Date()) {
+        var data2 = new Date();
+        if (this.admin) { data2 = new Date(new Date(this.data_planeamento).toDateString() + " " + this.hora_planeamento.slice(0, 5)); }
+        if (data < data2) {
           encontrou_data = true;
           banho = this.arrayForm[x].pos + " - Banho: " + this.banhos.find(item => item.value.id == this.arrayForm[x].id_banho.id).label;
         }
@@ -786,12 +850,19 @@ export class ManutencaoformComponent implements OnInit {
         this.globalVar.setMensagem(banho);
         this.simular(this.aviso_concluir_planeamento3);
       } else {
+        var hora_p = new Date().toLocaleTimeString().slice(0, 5);
+        var  data_p= new Date();
+        if(this.admin){
+          data_p = new Date(this.data_planeamento);
+          hora_p = this.hora_planeamento.slice(0, 5);
+        }
+        
         var MOV_MANUTENCAO = new AB_MOV_MANUTENCAO;
         MOV_MANUTENCAO = this.manutencao_dados;
         MOV_MANUTENCAO.data_ULT_MODIF = new Date();
         MOV_MANUTENCAO.utz_ULT_MODIF = this.user;
-        MOV_MANUTENCAO.hora_PLANEAMENTO = new Date().toLocaleTimeString().slice(0, 5);
-        MOV_MANUTENCAO.data_PLANEAMENTO = new Date();
+        MOV_MANUTENCAO.hora_PLANEAMENTO = hora_p;
+        MOV_MANUTENCAO.data_PLANEAMENTO = data_p;
         MOV_MANUTENCAO.estado = "Planeado";
         this.ABMOVMANUTENCAOService.update(MOV_MANUTENCAO).then(() => {
           this.router.navigate(['manutencao']);
@@ -830,7 +901,7 @@ export class ManutencaoformComponent implements OnInit {
             MOV_MANUTENCAO = response[x][0];
             MOV_MANUTENCAO.id_MANUTENCAO = null;
             MOV_MANUTENCAO.estado = this.estado;
-            MOV_MANUTENCAO.hora_PLANEAMENTO = this.data_actual.toLocaleTimeString().slice(0, 5);
+            MOV_MANUTENCAO.hora_PLANEAMENTO = this.hora_planeamento;
             MOV_MANUTENCAO.inativo = false;
             MOV_MANUTENCAO.data_PLANEAMENTO = this.data_actual;
             MOV_MANUTENCAO.data_CRIA = new Date();
@@ -1082,6 +1153,16 @@ export class ManutencaoformComponent implements OnInit {
           MOV_MANUTENCAO_CAB.hora_EXECUCAO = new Date().toLocaleTimeString().slice(0, 5);
           MOV_MANUTENCAO_CAB.obs_EXECUCAO = this.arrayForm.find(item => item.pos == pos).obs_exec;
           this.arrayForm.find(item => item.pos == pos).executado = true
+          if (this.admin && this.arrayForm.find(item => item.pos == pos).data_exc != null) {
+            MOV_MANUTENCAO_CAB.data_EXECUCAO = (this.arrayForm.find(item => item.pos == pos).data_exc == null) ? null : new Date(this.arrayForm.find(item => item.pos == pos).data_exc);
+            MOV_MANUTENCAO_CAB.hora_EXECUCAO = this.arrayForm.find(item => item.pos == pos).hora_exc;
+            MOV_MANUTENCAO_CAB.utz_EXECUCAO = this.arrayForm.find(item => item.pos == pos).resp_exe_id;
+            if (MOV_MANUTENCAO_CAB.hora_EXECUCAO != null) {
+              this.arrayForm.find(item => item.pos == pos).executado = true;
+            } else {
+              this.arrayForm.find(item => item.pos == pos).executado = false;
+            }
+          }
           this.ABMOVMANUTENCAOCABService.update(MOV_MANUTENCAO_CAB).then(() => {
             var tamanho = this.arrayForm.length;
             var count = 0;
@@ -1272,6 +1353,17 @@ export class ManutencaoformComponent implements OnInit {
           this.intervalo_op.push({ label: response[x].nome_TIPO_OPERACAO, value: { id: response[x].id_TIPO_OPERACAO, id195: response[x].id195 } });
         }
         this.intervalo_op = this.intervalo_op.slice();
+      },
+      error => console.log(error));
+
+
+    this.GERUTILIZADORESService.getAll().subscribe(
+      response => {
+        this.utilizadores = [];
+        for (var x in response) {
+          this.utilizadores.push({ label: response[x].id_UTILIZADOR + ' - ' + response[x].nome_UTILIZADOR, value: response[x].id_UTILIZADOR });
+        }
+        this.utilizadores = this.utilizadores.slice();
       },
       error => console.log(error));
   }

@@ -8,12 +8,14 @@
             <h4 class="title">Manutenções</h4>
             <button [disabled]="novo || disimprimir" title="Imprimir em folhas separadas" type="button" style="color: black; float:right; margin-top: -19px; background-color: #ccc1c1;"
               class="btn btn-white btn-round btn-just-icon" (click)="imprimir('manutencao_separadas',num_manutencao)">
-                <i class="material-icons">print</i><div class="ripple-container"></div>
-              </button>
+              <i class="material-icons">print</i>
+              <div class="ripple-container"></div>
+            </button>
             <button [disabled]="novo || disimprimir" title="Imprimir na mesma folha" type="button" style="color:white; float:right; margin-top: -19px;background-color: #ccc1c1;"
               class="btn btn-white btn-round btn-just-icon" (click)="imprimir('manutencao_juntas',num_manutencao)">
-                <i class="material-icons">print</i><div class="ripple-container"></div>
-              </button>
+              <i class="material-icons">print</i>
+              <div class="ripple-container"></div>
+            </button>
           </div>
           <div class="card-content">
             <form id="formArranque" (ngSubmit)="gravar()" ngNativeValidate>
@@ -28,15 +30,26 @@
                 <div class="col-md-2">
                   <div class="form-group form-black label-floating">
                     <label style="font-size: 14px;">Tipo Manutenção</label>
-                    <p-dropdown [options]="tipo_manu" [style]="{'width':'200px'}" [(ngModel)]="tipo_manu_id" [ngModelOptions]="{standalone: true}"
+                    <p-dropdown [options]="tipo_manu" [style]="{'width':'210px'}" [(ngModel)]="tipo_manu_id" [ngModelOptions]="{standalone: true}"
                       [disabled]="!novo" [required]="true"></p-dropdown>
                   </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2 calendarmanu">
                   <div [ngClass]="data_planeamento == '' ? 'is-empty' : null" class="form-group form-black label-floating">
                     <label style="font-size: 14px;">Data Planeamento</label>
-                    <input disabled type="text" style="background: white;" [disabled]="true" class="form-control" style=" margin-top: -13px; padding-bottom: 0px;"
-                      [(ngModel)]="data_planeamento" [ngModelOptions]="{standalone: true}">
+                    <br>
+                    <p-calendar [style]="{'height':'31px','width':'111px'}" dateFormat="yy-mm-dd" placeholder="yy-mm-dd" [monthNavigator]="true"
+                      [yearNavigator]="true" yearRange="2000:2050" [(ngModel)]="data_planeamento" [ngModelOptions]="{standalone: true}"
+                      [showIcon]="true" [hidden]="!modoedicao || (modoedicao && !admin)" [required]="true"></p-calendar>
+                    <label style="width:115px; height: 31px; " class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao && admin">{{data_planeamento | date: 'yyyy-MM-dd'}}</label>
+                    <input [hidden]="!modoedicao || (modoedicao && !admin)" style="width:75px; margin-left:22px; padding: 5px 4px;height: 31px;" [(ngModel)]="hora_planeamento"
+                      [ngModelOptions]="{standalone: true}" type="time" class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all"
+                      ng-reflect-ng-class="ui-inputtext ui-widget ui-stat" required="true" placeholder="hh:mm">
+                    <label style="width:70px; height: 31px; margin-left:4px;" class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all"
+                      [hidden]="modoedicao && admin">{{hora_planeamento}}</label>
+
+                    <!--<input disabled type="text" style="background: white;" [disabled]="true" class="form-control" style=" margin-top: -13px; padding-bottom: 0px;"
+                      [(ngModel)]="data_planeamento" [ngModelOptions]="{standalone: true}">-->
                   </div>
                 </div>
                 <div class="col-md-2">
@@ -49,8 +62,8 @@
                 <div class="col-md-1">
                   <div class="form-group form-black label-floating">
                     <label style="font-size: 14px;">Linha</label>
-                    <p-dropdown [style.background]="cor_linha" (onChange)="alteracorlinha($event)" [options]="linhas"  class="droplinha"  [style]="{'width':'100px'}" [(ngModel)]="linha" [ngModelOptions]="{standalone: true}"
-                      [disabled]="!novo" [required]="true">
+                    <p-dropdown [style.background]="cor_linha" (onChange)="alteracorlinha($event)" [options]="linhas" class="droplinha" [style]="{'width':'100px'}"
+                      [(ngModel)]="linha" [ngModelOptions]="{standalone: true}" [disabled]="!novo" [required]="true">
                       <ng-template let-car pTemplate="item">
                         <div class="ui-helper-clearfix" [style.background]="car.value.cor" style="position: relative;height: 25px;">
                           {{car.label}}
@@ -101,20 +114,22 @@
                           [(ngModel)]="item.nome_analise" [ngModelOptions]="{standalone: true}">
                         <button id="close" (click)="limpar(item.pos)" class="btn btn-white btn-round btn-just-icon" style="padding: 3px 3px; margin: auto;"
                           type="button" [hidden]=" item.cod_analise == null" [disabled]="!modoedicao || item.id_banho == null">
-                              <i class="material-icons">close</i><div class="ripple-container"></div>
-                          </button>
+                          <i class="material-icons">close</i>
+                          <div class="ripple-container"></div>
+                        </button>
                         <button id="pesquisa" (click)="showDialog($event,item.pos,item.id_banho.id)" class="btn btn-white btn-round btn-just-icon"
                           style="padding: 3px 3px; margin: auto;" type="button" [disabled]="!modoedicao || item.id_banho == null">
-                              <i class="material-icons">search</i><div class="ripple-container"></div>
-                          </button>
+                          <i class="material-icons">search</i>
+                          <div class="ripple-container"></div>
+                        </button>
                       </div>
-                      <div class="col-md-12 form-group form-black label-floating" style="padding: 0px; margin-bottom: 6px;">
+                      <div class="col-md-12 form-group form-black label-floating calendarmanu" style="padding: 0px; margin-bottom: 6px;">
                         <label style="font-size: 14px; float: left; margin-top: 3%;">Data/Hora Prev</label>
-                        <p-calendar [style]="{'width':'150px','height':'36px','padding':'5px 4px'}" dateFormat="yy-mm-dd" placeholder="yy-mm-dd"
+                        <p-calendar [style]="{'width':'150px','height':'31px','padding':'5px 4px'}" dateFormat="yy-mm-dd" placeholder="yy-mm-dd"
                           [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [(ngModel)]="item.data_pre"
                           [ngModelOptions]="{standalone: true}" [showIcon]="true" [hidden]="!modoedicao" [required]="true"></p-calendar>
                         <label style="width:100px; margin-left: 4px;" class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{item.data_pre | date: 'yyyy-MM-dd'}}</label>
-                        <input [hidden]="!modoedicao" style="width:80px; margin-left:30px; padding: 5px 4px;" [(ngModel)]="item.hora_pre" [ngModelOptions]="{standalone: true}"
+                        <input [hidden]="!modoedicao" style="width:80px; padding: 5px 4px;" [(ngModel)]="item.hora_pre" [ngModelOptions]="{standalone: true}"
                           type="time" class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all" ng-reflect-ng-class="ui-inputtext ui-widget ui-stat"
                           required="true" placeholder="hh:mm">
                         <label style="width:70px; margin-top: 2%;" class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{item.hora_pre}}</label>
@@ -137,9 +152,11 @@
                           <div *ngIf="op.value != null && op.value != ''" style="float: left; margin-left: 10px; padding-top: 5px;">
                             <button (click)="preencher_id195(item.id,item.id_195,item.pos,item.data_valida)" [hidden]="op.value.id195 == false " class="btn btn-white btn-round btn-just-icon"
                               style="padding: 3px 3px; margin: auto;" type="button" title="Registo dos Parâmetros de Operação">
-                              <i [hidden]="item.id_195 != null" style="color: red;" class="material-icons">insert_drive_file</i><div class="ripple-container"></div>
-                              <i [hidden]="item.id_195 == null" style="color: green;" class="material-icons">insert_drive_file</i><div class="ripple-container"></div>
-                          </button>
+                              <i [hidden]="item.id_195 != null" style="color: red;" class="material-icons">insert_drive_file</i>
+                              <div class="ripple-container"></div>
+                              <i [hidden]="item.id_195 == null" style="color: green;" class="material-icons">insert_drive_file</i>
+                              <div class="ripple-container"></div>
+                            </button>
                           </div>
                         </div>
                         <div *ngIf="op.value != null && op.value != ''" [hidden]="true" class="col-md-3 form-group form-black label-floating" style="padding: 0px;">
@@ -176,14 +193,24 @@
                           [disabled]="(!modoedicao && !item.preparado) || item.executado || planeamento">
                       </div>
                       <div class="col-md-12 form-group form-black label-floating" style="padding: 0px;">
-                        <div class=" col-md-6 form-group form-black label-floating" style="padding: 0px;">
+                        <div [ngClass]="{ 'col-md-12': modoedicao && admin,'col-md-6':  !modoedicao || !admin }" class=" form-group form-black label-floating" style="padding: 0px;">
                           <label style="font-size: 14px; float: left;">Resp. Exec</label>
-                          <input type="text" style="background: white;" [disabled]="true" class="form-control" style="width: 55%; float: left; margin-top: -13px; margin-left: 8px; padding-bottom: 0px; padding-top: 13px;"
+                          <p-dropdown [filter]="true" [options]="utilizadores" [style]="{'width':'250px'}" [(ngModel)]="item.resp_exe_id" [ngModelOptions]="{standalone: true}"
+                           [hidden]="!modoedicao || (modoedicao && !admin)"  [disabled]="!modoedicao"></p-dropdown>                         
+                          <input [hidden]="modoedicao && admin" type="text" style="background: white;" [disabled]="true" class="form-control" style="width: 55%; float: left; margin-top: -13px; margin-left: 8px; padding-bottom: 0px; padding-top: 13px;"
                             [(ngModel)]="item.resp_exe" [ngModelOptions]="{standalone: true}">
                         </div>
-                        <div class=" col-md-6 form-group form-black label-floating" style="padding: 0px;">
+                        <div [ngClass]="{ 'col-md-12': modoedicao && admin,'col-md-6': !modoedicao || !admin }" class="calendarmanu  form-group form-black label-floating" style="padding: 0px;">
                           <label style="font-size: 14px; float: left;">Data/Hora Exec</label>
-                          <input type="text" style="background: white;" [disabled]="true" class="form-control" style="width: 56%; float: left; margin-top: -13px; margin-left: 8px; padding-bottom: 0px; padding-top: 13px;"
+                          <p-calendar [style]="{'width':'120px','height':'31px','padding':'0px 5px'}" dateFormat="yy-mm-dd" placeholder="yy-mm-dd"
+                            [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [(ngModel)]="item.data_exc"
+                            [ngModelOptions]="{standalone: true}" [showIcon]="true" [hidden]="!modoedicao || (modoedicao && !admin)"></p-calendar>
+
+                          <input [hidden]="!modoedicao || (modoedicao && !admin)" style="width: 72px; padding: 5px 4px; margin-left: 29px;" [(ngModel)]="item.hora_exc"
+                            [ngModelOptions]="{standalone: true}" type="time" class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all"
+                            ng-reflect-ng-class="ui-inputtext ui-widget ui-stat"  placeholder="hh:mm">
+
+                          <input  [hidden]="modoedicao && admin" type="text" style="background: white;" [disabled]="true" class="form-control" style="width: 56%; float: left; margin-top: -13px; margin-left: 8px; padding-bottom: 0px; padding-top: 13px;"
                             [(ngModel)]="item.data_exc" [ngModelOptions]="{standalone: true}">
                         </div>
                       </div>
@@ -192,14 +219,14 @@
                       <p-dataTable [value]="item.aditivos" dataKey="id">
                         <p-column styleclass="text-danger" field="nome" header="Aditivo">
                           <ng-template pTemplate="body" let-col2 let-row2="rowData ">
-                            <input type="text" style="background: white;" class="form-control" [(ngModel)]="row2['nome']" [ngModelOptions]="{standalone: true}"
+                            <input type="text" style="background: white; height: 31px;" class="form-control" [(ngModel)]="row2['nome']" [ngModelOptions]="{standalone: true}"
                               [disabled]="true">
                           </ng-template>
                         </p-column>
                         <p-column styleclass="text-danger" field="valor1" header="Valor 1" [style]="{'width':'8%'}">
                           <ng-template pTemplate="body" let-col3 let-row3="rowData ">
-                            <input type="text" style="background: white; text-align: center;" class="form-control" [(ngModel)]="row3['valor1']" [ngModelOptions]="{standalone: true}"
-                              [disabled]="!modoedicao">
+                            <input type="text" style="background: white; text-align: center; height: 31px;" class="form-control" [(ngModel)]="row3['valor1']"
+                              [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
                           </ng-template>
                         </p-column>
                         <p-column styleclass="text-danger" field="unidade1" header="Unid. 1" [style]="{'width':'10%'}">
@@ -210,8 +237,8 @@
                         </p-column>
                         <p-column styleclass="text-danger" field="valor2" header="Valor 2" [style]="{'width':'8%'}">
                           <ng-template pTemplate="body" let-col5 let-row5="rowData ">
-                            <input type="text" style="background: white;  text-align: center;" class="form-control" [(ngModel)]="row5['valor2']" [ngModelOptions]="{standalone: true}"
-                              [disabled]="!modoedicao">
+                            <input type="text" style="background: white;  text-align: center; height: 31px;" class="form-control" [(ngModel)]="row5['valor2']"
+                              [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
                           </ng-template>
                         </p-column>
                         <p-column styleclass="text-danger" field="unidade2" header="Unid. 2" [style]="{'width':'10%'}">
@@ -232,7 +259,7 @@
                         </p-column>
                         <p-column styleclass="text-danger" field="obs" header="Observações">
                           <ng-template pTemplate="body" let-col let-row="rowData ">
-                            <input type="text" style="background: white;" class="form-control" [(ngModel)]="row['obs']" [ngModelOptions]="{standalone: true}"
+                            <input type="text" style="background: white; height: 31px;" class="form-control" [(ngModel)]="row['obs']" [ngModelOptions]="{standalone: true}"
                               [disabled]="!modoedicao">
                           </ng-template>
                         </p-column>
@@ -242,19 +269,23 @@
                       <div style=" margin: auto 0;">
                         <button [disabled]="item.id == null || disimprimir" type="button" style="color: black;" class="btn btn-white btn-round btn-just-icon"
                           (click)="imprimir('manutencao_individual',item.id)">
-                          <i class="material-icons">print</i><div class="ripple-container"></div>
+                          <i class="material-icons">print</i>
+                          <div class="ripple-container"></div>
                         </button>
                         <button [disabled]="item.id == null || disimprimir" type="button" style="color: black;" class="btn btn-white btn-round btn-just-icon"
                           (click)="imprimir('manutencao_etiquetas',item.id)">
-                          <i class="fa fa-tags" aria-hidden="true"></i><div class="ripple-container"></div>
-                      </button>
+                          <i class="fa fa-tags" aria-hidden="true"></i>
+                          <div class="ripple-container"></div>
+                        </button>
                         <button [hidden]="!modoedicao" class="btn btn-white btn-round btn-just-icon" style="color: black; background: rgba(0, 128, 0, 0.61)"
                           type="submit" [disabled]="!modoedicao">
-                          <i class="material-icons">save</i><div class="ripple-container"></div>
+                          <i class="material-icons">save</i>
+                          <div class="ripple-container"></div>
                         </button>
                         <button [hidden]="!modoedicao" type="button" style="color: black; margin-top: 50px; background: rgba(255, 0, 0, 0.56);" class="btn btn-white btn-round btn-just-icon"
                           (click)="apagarlinha(item.pos,item.id)" [disabled]="!modoedicao">
-                          <i class="material-icons">delete</i><div class="ripple-container"></div>
+                          <i class="material-icons">delete</i>
+                          <div class="ripple-container"></div>
                         </button>
                       </div>
                       <div class="[ form-group ]" [hidden]="!planeado || !acessoprep">
@@ -264,9 +295,9 @@
                         <div class="[ btn-group ]" style="margin-right: 37px;">
                           <label style=" padding: 2px 24px 5px 16px; font-size: 24px;" [ngClass]="{ 'cor_amarelo': !item.preparado,'disabled': item.preparado }"
                             for="fancy-checkbox-success{{item.pos}}" class="[ btn btn-success ] " id="burst-8">
-                           <span class="[ glyphicon glyphicon-ok ]" id="burst-9"></span>
-                          <span> </span>
-                        </label>
+                            <span class="[ glyphicon glyphicon-ok ]" id="burst-9"></span>
+                            <span> </span>
+                          </label>
                         </div>
                       </div>
                       <div class="[ form-group ]" [hidden]="!preparado || !acessoexec">
@@ -276,9 +307,9 @@
                         <div class="[ btn-group ]" style="margin-right: 37px;">
                           <label style=" padding: 2px 24px 5px 16px; font-size: 24px;" [ngClass]="{ 'cor_amarelo': !item.executado,'disabled': item.executado }"
                             for="fancy-checkbox-succ{{item.pos}}" class="[ btn btn-success ]" id="burst-8">
-                           <span class="[ glyphicon glyphicon-ok ] execucao" id="burst-9"></span>
-                          <span> </span>
-                        </label>
+                            <span class="[ glyphicon glyphicon-ok ] execucao" id="burst-9"></span>
+                            <span> </span>
+                          </label>
                         </div>
                       </div>
                     </div>
@@ -288,11 +319,11 @@
               <div class="row" style="border-top: 2px solid #ddd;" [hidden]="!planeamento">
                 <a (click)="novalinha()" [ngClass]="!modoedicao ? 'not-active' : null" style="color: black; cursor:pointer; margin-left:10px;"
                   title="Adicionar nova linha">
-                         <i class="material-icons">playlist_add</i>
-                        </a>
+                  <i class="material-icons">playlist_add</i>
+                </a>
               </div>
               <button type="reset" (click)="backview()" class="btn btn-danger pull-right" [hidden]="!modoedicao">Cancelar</button>
-              <button type="submit" class="btn btn-success pull-right" [hidden]="!novo">Gravar</button>
+              <button type="submit" class="btn btn-success pull-right" [hidden]="!(novo || admin) || !modoedicao">Gravar</button>
               <button type="button" (click)="concluir()" class="btn btn-success pull-right" [hidden]="!modoedicao || !planeamento || ( executado && preparado)">Concluir Planeamento</button>
 
               <div class="clearfix"></div>
@@ -324,9 +355,9 @@
       <!-- Modal Header -->
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">
-                       <span style="font-size: 30px;" aria-hidden="true">&times;</span>
-                       <span  class="sr-only">Close</span>
-                </button>
+          <span style="font-size: 30px;" aria-hidden="true">&times;</span>
+          <span class="sr-only">Close</span>
+        </button>
         <h4 class="modal-title" id="myModalLabel">
           Análises
         </h4>
