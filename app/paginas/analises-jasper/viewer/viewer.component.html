@@ -1,0 +1,29 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12" style="height: 100%; position: absolute;">
+        <div class="col-md-12" style="padding:0px">
+          <div class="card-header" data-background-color="orange">
+            <div class="nav-tabs-navigation">
+              <div class="nav-tabs-wrapper">
+                <ul class="nav nav-tabs" style="background:black">
+                  <li>
+                    <a (click)=" backClicked()">
+                                <i class="material-icons">arrow_back</i>Voltar
+                                <div class="ripple-container"></div>
+                            </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+         <h5 align="center" *ngIf="fileURL == null" style="display: inline; margin-left: 10px; color: black; vertical-align: bottom;">A Ler Dados...</h5>
+        <iframe [src]="sanitizer.bypassSecurityTrustResourceUrl(fileURL)" *ngIf="fileURL!=null" width="100%" height="100%" style="overflow: auto;">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+

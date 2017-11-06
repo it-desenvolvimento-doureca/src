@@ -14,6 +14,7 @@ import { GER_EVENTOS_CONF } from 'app/entidades/GER_EVENTOS_CONF';
   styleUrls: ['./gestaoeventos.component.css']
 })
 export class GestaoeventosComponent implements OnInit {
+  bt_select: any;
   momento: string;
   pagina: string;
   modulo: string;
@@ -169,21 +170,30 @@ export class GestaoeventosComponent implements OnInit {
       error => console.log(error));
   }
 
-  gravar() {
-    var eventos = new GER_EVENTOS_CONF;
-    eventos = this.evento;
-    eventos.data_ULT_MODIF = new Date();
-    eventos.email_ANEXO = this.inclui_anexo;
-    eventos.email_ASSUNTO = this.email_assunto;
-    eventos.email_MENSAGEM = this.email_mensagem;
-    eventos.email_PARA = this.email_para.toString();
-    eventos.estado = this.estado;
-    eventos.obs = this.observacoes;
-    this.GEREVENTOSCONFService.update(eventos).then(() => {
-      this.simular(this.inputgravou);
-      this.router.navigate(['eventos/view'], { queryParams: { id: this.id } });
-    },
-      error => { console.log(error); this.simular(this.inputerro); });
+  selectbt(bt) {
+    this.bt_select = bt;
+  }
+
+  gravar(a) {
+    if (this.bt_select == 1) {
+      var eventos = new GER_EVENTOS_CONF;
+      eventos = this.evento;
+      eventos.data_ULT_MODIF = new Date();
+      eventos.email_ANEXO = this.inclui_anexo;
+      eventos.email_ASSUNTO = this.email_assunto;
+      eventos.email_MENSAGEM = this.email_mensagem;
+      eventos.email_PARA = this.email_para.toString();
+      eventos.estado = this.estado;
+      eventos.obs = this.observacoes;
+      this.GEREVENTOSCONFService.update(eventos).then(() => {
+        this.simular(this.inputgravou);
+        this.router.navigate(['eventos/view'], { queryParams: { id: this.id } });
+      },
+        error => { console.log(error); this.simular(this.inputerro); });
+    }
+    else {
+      this.enviar();
+    }
   }
 
   enviar() {

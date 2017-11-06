@@ -10,7 +10,7 @@ import { HomeComponent } from './paginas/home/home.component';
 import { RouterComponent } from "app/router.component";
 import { FornecedoresComponent } from './paginas/fornecedores/fornecedores.component';
 import { TinasComponent } from './paginas/tinas/tinas.component';
-import { DataTableModule, SharedModule, ConfirmDialogModule, ConfirmationService, DropdownModule, CalendarModule, DialogModule, ColorPickerModule, RadioButtonModule, TreeNode, TreeModule, ChartModule, PickListModule, MultiSelectModule, EditorModule, AutoCompleteModule } from 'primeng/primeng';
+import { DataTableModule, SharedModule, ConfirmDialogModule, ConfirmationService, DropdownModule, CalendarModule, DialogModule, ColorPickerModule, RadioButtonModule, TreeNode, ChartModule, PickListModule, MultiSelectModule, EditorModule, AutoCompleteModule } from 'primeng/primeng';
 import { AppGlobals } from "app/menu/sidebar.metadata";
 import { FormComponent } from './paginas/fornecedores/form/form.component';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -76,6 +76,11 @@ import { DragDropModule } from 'primeng/components/dragdrop/dragdrop';
 import { EventoslistaComponent } from './paginas/eventoslista/eventoslista.component';
 import { GEREVENTOSCONFService } from 'app/servicos/ger-eventos-conf.service';
 import { HistoricoAnalisesComponent } from './paginas/historico-analises/historico-analises.component';
+import { ListaComponent } from './paginas/analises-jasper/lista/lista.component';
+import { ConfComponent } from './paginas/analises-jasper/conf/conf.component';
+import { ViewerComponent } from './paginas/analises-jasper/viewer/viewer.component';
+import { TreeModule } from 'angular-tree-component';
+import { GERANALISESService } from 'app/servicos/ger-analises.service';
 
 const routes: Routes = [
   { path: 'dashboard', component: HomeComponent, canActivate: [LoginService] },
@@ -164,6 +169,13 @@ const routes: Routes = [
       { path: 'view', component: GestaoeventosComponent, canActivate: [LoginService], data: { breadcrumb: "Gestão Evento" } },
       { path: 'editar', component: GestaoeventosComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } }]
   },
+  {
+    path: 'analises', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Análises Jasper" },
+    children: [
+      { path: '', component: ListaComponent, canActivate: [LoginService], data: { breadcrumb: "" } },
+      { path: 'view', component: ViewerComponent, canActivate: [LoginService], data: { breadcrumb: "Vizualização" } },
+      { path: 'editar', component: ConfComponent, canActivate: [LoginService], data: { breadcrumb: "Configurações" } }]
+  },
   { path: 'login', component: LoginComponent },
   {
     path: '',
@@ -219,6 +231,9 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     GestaoeventosComponent,
     EventoslistaComponent,
     HistoricoAnalisesComponent,
+    ListaComponent,
+    ConfComponent,
+    ViewerComponent,
   ],
   imports: [
     BrowserModule,
@@ -275,6 +290,7 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     GERPERFILCABService,
     GERUTZPERFILService,
     GERARMAZEMService,
+    GERANALISESService,
     GEREVENTOSCONFService,
     GERFORNECEDORService],
   bootstrap: [AppComponent]

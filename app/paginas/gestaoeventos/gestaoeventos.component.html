@@ -12,7 +12,7 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="tab-content">
-                  <form role="form" ngNativeValidate (ngSubmit)="gravar()">
+                  <form role="form" ngNativeValidate (ngSubmit)="gravar($event)">
                     <!-- Modal Body -->
                     <div class="col-md-12">
                       <div class="form-group col-md-12" style="padding: 6px;">
@@ -71,8 +71,9 @@
                     </div>
                     <div class="col-md-12" style="text-align: center;">
                       <button [hidden]="!modoedicao" (click)="backview()" type="reset" class="btn btn-default">Cancelar</button>
+                      <button [hidden]="!modoedicao" (click)="selectbt(2)" id="testar"  type="submit" class="btn btn-info"><i class="fa fa-paper-plane" aria-hidden="true"></i> Testar Envio </button>                                            
                       <!-- <button type="button" class="btn btn-default" #closedialog data-dismiss="modal">Fechar</button> -->
-                      <button [hidden]="!modoedicao" type="submit" [disabled]="bt_disable" class="btn btn-success ">Gravar</button>
+                      <button [hidden]="!modoedicao" (click)="selectbt(1)"  id="gravar" type="submit" [disabled]="bt_disable" class="btn btn-success ">Gravar</button>
                     </div>
                   </form>
                 </div>
