@@ -302,7 +302,7 @@ export class ManutencaoformComponent implements OnInit {
             if (response[x][0].id_ANALISE != "" && response[x][0].id_ANALISE != null) nome_analise = response[x][0].id_ANALISE + ' - ' + response[x][1];
             if (response[x][0].id_TIPO_ADICAO != null) if (id_adicao.id195 != "" && id_adicao.id195 != null) disable = true;
             if (response[x][0].data_EXECUCAO != null) {
-              var hora = (response[x][0].hora_EXECUCAO != null)? response[x][0].hora_EXECUCAO.slice(0, 5) : null;
+              var hora = (response[x][0].hora_EXECUCAO != null) ? response[x][0].hora_EXECUCAO.slice(0, 5) : null;
               data_exec = this.formatDate(response[x][0].data_EXECUCAO) + ' ' + hora;
               hora_exc = response[x][0].hora_EXECUCAO.slice(0, 5);
               this.executado = true;
@@ -337,16 +337,23 @@ export class ManutencaoformComponent implements OnInit {
       response => {
         var count = Object.keys(response).length;
         if (count > 0) {
+          var pos2 = 0;
           for (var x in response) {
             var stock = null;
+            var value = 0;
             if (response[x][0].stock != null) { stock = response[x][0].stock.toFixed(2); stock = stock.replace(".", ",") }
+            
+            if (response[x][0].valor_AGUA != null) value = response[x][0].valor_AGUA.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
+
             this.arrayForm.find(item => item.pos == pos).aditivos.push(
               {
+                pos: pos2,
                 id_LIN: response[x][0].id_MANUTENCAO_LIN, id: response[x][0].id_ADITIVO, nome: response[x][1].nome_COMPONENTE, valor1: response[x][0].valor1, valor2: response[x][0].valor2,
                 unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: response[x][0].obs_PLANEAMENTO,
-                stock: stock, cod_REF: response[x][0].cod_REF, unidstock: response[x][0].stkunit,
+                stock: stock, cod_REF: response[x][0].cod_REF, unidstock: response[x][0].stkunit, valor_agua: value, factor: response[x][1].factor_MULTIPLICACAO_AGUA
               }
             );
+            pos2++;
           }
           this.arrayForm.find(item => item.pos == pos).aditivos = this.arrayForm.find(item => item.pos == pos).aditivos.slice();
         }
@@ -383,21 +390,22 @@ export class ManutencaoformComponent implements OnInit {
           var count = Object.keys(response).length;
           //se existir componente Componente
           if (count > 0) {
+            var pos2 = 0;
             for (var x in response) {
               if (response[x][1].cod_REF != null) {
-                this.carregaaditivosstock(response, x, pos);
+                this.carregaaditivosstock(response, x, pos, pos2);
               } else {
-                this.arrayForm.find(item => item.pos == pos).aditivos.push({ id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, unidstock: null, cod_REF: response[x][1].cod_REF });
+                this.arrayForm.find(item => item.pos == pos).aditivos.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, cod_REF: response[x][1].cod_REF });
                 this.arrayForm.find(item => item.pos == pos).aditivos = this.arrayForm.find(item => item.pos == pos).aditivos.slice();
               }
-
+              pos2++;
             }
           }
         }, error => console.log(error));
     }
   }
 
-  carregaaditivosstock(response, x, pos) {
+  carregaaditivosstock(response, x, pos, pos2) {
     var query = [];
     var total = null;
     this.GERARMAZEMService.getAll().subscribe(
@@ -415,13 +423,13 @@ export class ManutencaoformComponent implements OnInit {
                 total = parseFloat(res1[0].STOQTE).toFixed(2);
                 total = total.replace(".", ",");
               }
-              this.arrayForm.find(item => item.pos == pos).aditivos.push({ id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: res1[0].UNIUTI, cod_REF: response[x][1].cod_REF });
+              this.arrayForm.find(item => item.pos == pos).aditivos.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: res1[0].UNIUTI, cod_REF: response[x][1].cod_REF });
               this.arrayForm.find(item => item.pos == pos).aditivos = this.arrayForm.find(item => item.pos == pos).aditivos.slice();
 
             },
             error => console.log(error));
         } else {
-          this.arrayForm.find(item => item.pos == pos).aditivos.push({ id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, cod_REF: response[x][1].cod_REF });
+          this.arrayForm.find(item => item.pos == pos).aditivos.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, cod_REF: response[x][1].cod_REF });
           this.arrayForm.find(item => item.pos == pos).aditivos = this.arrayForm.find(item => item.pos == pos).aditivos.slice();
         }
 
@@ -448,6 +456,13 @@ export class ManutencaoformComponent implements OnInit {
 
   }
 
+  //atulizar valor agua ao alterar Valor 1
+  atualizarvaloragua(val, fator, pos_adi, pos_item) {
+
+    var num = val * fator;
+    var num2 = num.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
+    this.arrayForm.find(item => item.pos == pos_item).aditivos.find(item => item.pos == pos_adi).valor_agua = num2;
+  }
 
   //apagar linha
   apagarlinha(pos, id) {
@@ -660,6 +675,9 @@ export class ManutencaoformComponent implements OnInit {
           MOV_MANUTENCAO_LINHA.id_UNIDADE2 = this.arrayForm.find(item => item.pos == pos).aditivos[x].unidade2;
           MOV_MANUTENCAO_LINHA.valor1 = this.arrayForm.find(item => item.pos == pos).aditivos[x].valor1;
           MOV_MANUTENCAO_LINHA.valor2 = this.arrayForm.find(item => item.pos == pos).aditivos[x].valor2;
+          var value = 0;
+          if (this.arrayForm.find(item => item.pos == pos).aditivos[x].valor_agua != null) value = parseFloat(String(this.arrayForm.find(item => item.pos == pos).aditivos[x].valor_agua).replace(",", "."));
+          MOV_MANUTENCAO_LINHA.valor_AGUA = value;
           MOV_MANUTENCAO_LINHA.obs_PLANEAMENTO = this.arrayForm.find(item => item.pos == pos).aditivos[x].obs;
           MOV_MANUTENCAO_LINHA.hora_PREVISTA = this.arrayForm.find(item => item.pos == pos).hora_pre;
           MOV_MANUTENCAO_LINHA.stock = parseFloat(this.arrayForm.find(item => item.pos == pos).aditivos[x].stock);
@@ -708,6 +726,9 @@ export class ManutencaoformComponent implements OnInit {
     MOV_MANUTENCAO_LINHA.id_UNIDADE2 = this.arrayForm.find(item => item.pos == pos).aditivos[x].unidade2;
     MOV_MANUTENCAO_LINHA.valor1 = this.arrayForm.find(item => item.pos == pos).aditivos[x].valor1;
     MOV_MANUTENCAO_LINHA.valor2 = this.arrayForm.find(item => item.pos == pos).aditivos[x].valor2;
+    var value = 0;
+    if (this.arrayForm.find(item => item.pos == pos).aditivos[x].valor_agua != null) value = parseFloat(String(this.arrayForm.find(item => item.pos == pos).aditivos[x].valor_agua).replace(",", "."));
+    MOV_MANUTENCAO_LINHA.valor_AGUA = value;
     MOV_MANUTENCAO_LINHA.obs_PLANEAMENTO = this.arrayForm.find(item => item.pos == pos).aditivos[x].obs;
     MOV_MANUTENCAO_LINHA.hora_PREVISTA = this.arrayForm.find(item => item.pos == pos).hora_pre;
     this.ABMOVMANUTENCAOLINHAService.update(MOV_MANUTENCAO_LINHA).then(() => {
@@ -851,12 +872,12 @@ export class ManutencaoformComponent implements OnInit {
         this.simular(this.aviso_concluir_planeamento3);
       } else {
         var hora_p = new Date().toLocaleTimeString().slice(0, 5);
-        var  data_p= new Date();
-        if(this.admin){
+        var data_p = new Date();
+        if (this.admin) {
           data_p = new Date(this.data_planeamento);
           hora_p = this.hora_planeamento.slice(0, 5);
         }
-        
+
         var MOV_MANUTENCAO = new AB_MOV_MANUTENCAO;
         MOV_MANUTENCAO = this.manutencao_dados;
         MOV_MANUTENCAO.data_ULT_MODIF = new Date();

@@ -42,8 +42,8 @@
                       [yearNavigator]="true" yearRange="2000:2050" [(ngModel)]="data_planeamento" [ngModelOptions]="{standalone: true}"
                       [showIcon]="true" [hidden]="!modoedicao || (modoedicao && !admin)" [required]="true"></p-calendar>
                     <label style="width:115px; height: 31px; " class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao && admin">{{data_planeamento | date: 'yyyy-MM-dd'}}</label>
-                    <input [hidden]="!modoedicao || (modoedicao && !admin)" style="width:75px; margin-left:22px; padding: 5px 4px;height: 31px;" [(ngModel)]="hora_planeamento"
-                      [ngModelOptions]="{standalone: true}" type="time" class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all"
+                    <input [hidden]="!modoedicao || (modoedicao && !admin)" style="width:75px; margin-left:22px; padding: 5px 4px;height: 31px;"
+                      [(ngModel)]="hora_planeamento" [ngModelOptions]="{standalone: true}" type="time" class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all"
                       ng-reflect-ng-class="ui-inputtext ui-widget ui-stat" required="true" placeholder="hh:mm">
                     <label style="width:70px; height: 31px; margin-left:4px;" class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all"
                       [hidden]="modoedicao && admin">{{hora_planeamento}}</label>
@@ -193,14 +193,16 @@
                           [disabled]="(!modoedicao && !item.preparado) || item.executado || planeamento">
                       </div>
                       <div class="col-md-12 form-group form-black label-floating" style="padding: 0px;">
-                        <div [ngClass]="{ 'col-md-12': modoedicao && admin,'col-md-6':  !modoedicao || !admin }" class=" form-group form-black label-floating" style="padding: 0px;">
+                        <div [ngClass]="{ 'col-md-12': modoedicao && admin,'col-md-6':  !modoedicao || !admin }" class=" form-group form-black label-floating"
+                          style="padding: 0px;">
                           <label style="font-size: 14px; float: left;">Resp. Exec</label>
                           <p-dropdown [filter]="true" [options]="utilizadores" [style]="{'width':'250px'}" [(ngModel)]="item.resp_exe_id" [ngModelOptions]="{standalone: true}"
-                           [hidden]="!modoedicao || (modoedicao && !admin)"  [disabled]="!modoedicao"></p-dropdown>                         
+                            [hidden]="!modoedicao || (modoedicao && !admin)" [disabled]="!modoedicao"></p-dropdown>
                           <input [hidden]="modoedicao && admin" type="text" style="background: white;" [disabled]="true" class="form-control" style="width: 55%; float: left; margin-top: -13px; margin-left: 8px; padding-bottom: 0px; padding-top: 13px;"
                             [(ngModel)]="item.resp_exe" [ngModelOptions]="{standalone: true}">
                         </div>
-                        <div [ngClass]="{ 'col-md-12': modoedicao && admin,'col-md-6': !modoedicao || !admin }" class="calendarmanu  form-group form-black label-floating" style="padding: 0px;">
+                        <div [ngClass]="{ 'col-md-12': modoedicao && admin,'col-md-6': !modoedicao || !admin }" class="calendarmanu  form-group form-black label-floating"
+                          style="padding: 0px;">
                           <label style="font-size: 14px; float: left;">Data/Hora Exec</label>
                           <p-calendar [style]="{'width':'120px','height':'31px','padding':'0px 5px'}" dateFormat="yy-mm-dd" placeholder="yy-mm-dd"
                             [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [(ngModel)]="item.data_exc"
@@ -208,14 +210,36 @@
 
                           <input [hidden]="!modoedicao || (modoedicao && !admin)" style="width: 72px; padding: 5px 4px; margin-left: 29px;" [(ngModel)]="item.hora_exc"
                             [ngModelOptions]="{standalone: true}" type="time" class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all"
-                            ng-reflect-ng-class="ui-inputtext ui-widget ui-stat"  placeholder="hh:mm">
+                            ng-reflect-ng-class="ui-inputtext ui-widget ui-stat" placeholder="hh:mm">
 
-                          <input  [hidden]="modoedicao && admin" type="text" style="background: white;" [disabled]="true" class="form-control" style="width: 56%; float: left; margin-top: -13px; margin-left: 8px; padding-bottom: 0px; padding-top: 13px;"
+                          <input [hidden]="modoedicao && admin" type="text" style="background: white;" [disabled]="true" class="form-control" style="width: 56%; float: left; margin-top: -13px; margin-left: 8px; padding-bottom: 0px; padding-top: 13px;"
                             [(ngModel)]="item.data_exc" [ngModelOptions]="{standalone: true}">
                         </div>
                       </div>
                     </div>
                     <div class="col-md-7" style="width: 60%; padding:0px;">
+                      <!--<div class="card-content table-responsive">
+                        <table class="table">
+                          <thead class="text-danger">
+                            <tr>
+                              <th>Name</th>
+                              <th>Country</th>
+                              <th>City</th>
+                              <th>Salary</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr  *ngFor="let item of item.aditivos">
+                              <td>Dakota Rice</td>
+                              <td>Niger</td>
+                              <td>Oud-Turnhout</td>
+                              <td class="text-danger">$36,738</td>
+                            </tr>
+
+                          </tbody>
+                        </table>
+
+                      </div>-->
                       <p-dataTable [value]="item.aditivos" dataKey="id">
                         <p-column styleclass="text-danger" field="nome" header="Aditivo">
                           <ng-template pTemplate="body" let-col2 let-row2="rowData ">
@@ -225,8 +249,13 @@
                         </p-column>
                         <p-column styleclass="text-danger" field="valor1" header="Valor 1" [style]="{'width':'8%'}">
                           <ng-template pTemplate="body" let-col3 let-row3="rowData ">
-                            <input type="text" style="background: white; text-align: center; height: 31px;" class="form-control" [(ngModel)]="row3['valor1']"
+                            <input (ngModelChange)="atualizarvaloragua(valoruni.value,row3['factor'],row3['pos'],item.pos)" #valoruni type="text" style="background: white; text-align: center; height: 31px;" class="form-control" [(ngModel)]="row3['valor1']"
                               [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
+                          </ng-template>
+                        </p-column>
+                        <p-column styleclass="text-danger" field="valor_agua" header="Valor Água" [style]="{'width':'8%'}">
+                          <ng-template pTemplate="body" let-col55 let-row55="rowData ">
+                            <span style="padding: 9px; display: block;"> {{row55['valor_agua']}}</span>
                           </ng-template>
                         </p-column>
                         <p-column styleclass="text-danger" field="unidade1" header="Unid. 1" [style]="{'width':'10%'}">

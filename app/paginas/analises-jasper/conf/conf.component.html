@@ -11,8 +11,12 @@
           <div class="card-content" style="min-height: 372px;">
             <div class="row">
               <div class="col-md-12">
-                <button class="btn btn-default btn-sm" (click)="diffTree.treeModel.expandAll()">Expandir Tudo <span style="font-size: 14px;" class="fa fa-plus-square-o"></span></button>
-                <button class="btn btn-default btn-sm" (click)="diffTree.treeModel.collapseAll()">Ocultar Tudo <span style="font-size: 14px;" class="fa fa-minus-square-o"></span></button>
+                <button class="btn btn-default btn-sm" (click)="diffTree.treeModel.expandAll()">Expandir Tudo
+                  <span style="font-size: 14px;" class="fa fa-plus-square-o"></span>
+                </button>
+                <button class="btn btn-default btn-sm" (click)="diffTree.treeModel.collapseAll()">Ocultar Tudo
+                  <span style="font-size: 14px;" class="fa fa-minus-square-o"></span>
+                </button>
               </div>
               <div class="col-md-12">
                 <div class="col-md-3">
@@ -70,3 +74,5 @@
 <button class="btn btn-danger btn-block" #inputgravou [hidden]="true" onclick="demo.showNotification('top','right','Alterado com Sucesso!',2)"></button>
 
 <button class="btn btn-danger btn-block" #inputerro [hidden]="true" onclick="demo.showNotification('top','right','ERRO!! Registo não foi Gravado!',4)"></button>
+
+

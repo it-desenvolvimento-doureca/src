@@ -39,7 +39,7 @@
                 <div class="col-md-6" style="padding: 0px;">
                   <div class="col-md-6" style="padding: 0px;">
                     <div class="form-group form-black label-floating">
-                      <label style="font-size: 14px;">Unidade Medição</label>
+                      <label style="font-size: 14px;  min-width: 126px;">Unidade Medição</label>
                       <p-dropdown [filter]="true" [options]="medidas" [style]="{'width':'179px'}" [(ngModel)]="medidas_valor" [ngModelOptions]="{standalone: true}"
                         [disabled]="!modoedicao" [required]="true"></p-dropdown>
                     </div>
@@ -53,8 +53,8 @@
                   </div>
                   <div class="col-md-12" style="padding: 0px;">
                     <div class="form-group form-black label-floating">
-                      <label style="font-size: 14px;">Fornecedor Habitual</label>
-                      <p-dropdown [filter]="true" [options]="fornecedores" [style]="{'width':'65%'}" [(ngModel)]="id_fornecedor" [ngModelOptions]="{standalone: true}"
+                      <label style="font-size: 14px; min-width: 126px;">Fornecedor Habitual</label>
+                      <p-dropdown [filter]="true" [options]="fornecedores" [style]="{'width':'70.8%'}" [(ngModel)]="id_fornecedor" [ngModelOptions]="{standalone: true}"
                         [disabled]="!modoedicao"></p-dropdown>
                     </div>
                   </div>
@@ -74,8 +74,8 @@
                       <div [ngClass]="cod_ref == '' ? 'is-empty' : null" class="form-group form-black label-floating">
                         <div class="form-group form-black label-floating">
                           <label class="control-label">Código Referência</label>
-                          <p-dropdown [filter]="true" (onChange)="cod_refe($event)" [options]="componentes_silver" [style]="{'width':'300px'}" [(ngModel)]="cod_ref"
-                            [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao"></p-dropdown>
+                          <p-dropdown [filter]="true" (onChange)="cod_refe($event)" [options]="componentes_silver" [style]="{'width':'98%','margin-top':'5px'}"
+                            [(ngModel)]="cod_ref" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao"></p-dropdown>
                         </div>
                       </div>
                     </div>
@@ -90,10 +90,17 @@
                 <div class="col-md-6" style="padding-top: 14px;">
                   <div class="form-group">
                     <div [ngClass]="obs == '' ? 'is-empty' : null" class="form-group form-black label-floating">
-                      <label style="top: -13px;" class="control-label">Observações</label>
-                      <textarea class="form-control" rows="4" [(ngModel)]="obs" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao"></textarea>
+                      <label style="top: -28px;" class="control-label">Observações</label>
+                      <textarea class="form-control" style="padding: 2px;" rows="4" [(ngModel)]="obs" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao"></textarea>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div [ngClass]="fator_multiplicacao == null ? 'is-empty' : null" class="form-group form-black label-floating">
+                  <label class="control-label">Factor Multiplicação Água</label>
+                  <input type="text" class="form-control" [(ngModel)]="fator_multiplicacao" [ngModelOptions]="{standalone: true}"
+                    [disabled]="!modoedicao">
                 </div>
               </div>
               <button type="reset" (click)="backview()" class="btn btn-danger pull-right" [hidden]="!modoedicao">Cancelar</button>

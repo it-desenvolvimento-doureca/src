@@ -406,6 +406,23 @@
                             </ul>
                           </li>
                         </ul>
+                        
+
+                        <ul>
+                          <ng-template #recursiveList let-list>
+                            <li *ngFor="let item of list">
+                            <input type="checkbox" id="node-t{{item.id}}" class="parent" *ngIf="item.children.length > 0"  />
+                            <input type="checkbox" id="node-t{{item.id}}" *ngIf="item.children.length == 0"  />                            
+                            <label><input type="checkbox" [ngModelOptions]="{standalone: true}" #cbx id="nodet{{item.id}}" [(ngModel)]="checkbox['nodet'+item.id]" /><span></span></label>
+                            <label *ngIf="item.children.length == 0" for="node-t{{item.id}}" class="parametros"> {{item.name}}</label>
+                            <label *ngIf="item.children.length > 0" for="node-t{{item.id}}" > {{item.name}}</label>
+                              <ul *ngIf="item.children.length > 0">
+                                <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: item.children }"></ng-container>
+                              </ul>
+                            </li>
+                          </ng-template>
+                          <ng-container *ngTemplateOutlet="recursiveList; context:{ $implicit: list }"></ng-container>
+                        </ul>
 
                         <button type="reset" (click)="backview()" class="btn btn-default pull-right" style="padding: 5px;">Cancelar</button>
                         <button type="button" (click)="apagarperfil()" class="btn btn-danger pull-right" style="padding: 5px;" data-dismiss="modal">Remover</button>

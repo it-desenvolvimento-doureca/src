@@ -14,6 +14,7 @@ import { GERFORNECEDORService } from "app/servicos/ger-fornecedor.service";
   styleUrls: ['./compform.component.css']
 })
 export class CompformComponent implements OnInit {
+  fator_multiplicacao;
   aditivo_check: boolean;
   componente_check: boolean;
   fornecedores: any[];
@@ -188,6 +189,7 @@ export class CompformComponent implements OnInit {
               this.nome_ref = response[x].nome_REF;
               this.id_fornecedor = response[x].id_FORNECEDOR;
               this.medidas_valor_adicao = response[x].id_UNIDADE_ADITIVO;
+              if (response[x].factor_MULTIPLICACAO_AGUA != null) this.fator_multiplicacao = response[x].factor_MULTIPLICACAO_AGUA.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
 
               if (response[x].tipo == "T") {
                 this.componente_check = true;
@@ -248,6 +250,9 @@ export class CompformComponent implements OnInit {
       componente.nome_REF = this.nome_ref;
       componente.id_FORNECEDOR = this.id_fornecedor;
       componente.id_UNIDADE_ADITIVO = this.medidas_valor_adicao;
+      var fator = 0;
+      if (this.fator_multiplicacao != null) fator = parseFloat(String(this.fator_multiplicacao).replace(",", "."));
+      componente.factor_MULTIPLICACAO_AGUA = fator;
       if (this.componente_check && this.aditivo_check) {
         componente.tipo = "T";
       } else if (this.componente_check && !this.aditivo_check) {
@@ -285,6 +290,9 @@ export class CompformComponent implements OnInit {
       componente.nome_REF = this.nome_ref;
       componente.id_FORNECEDOR = this.id_fornecedor;
       componente.id_UNIDADE_ADITIVO = this.medidas_valor_adicao;
+      var fator = 0;
+      if (this.fator_multiplicacao != null) fator = parseFloat(String(this.fator_multiplicacao).replace(",", "."));
+      componente.factor_MULTIPLICACAO_AGUA = fator;
       if (this.componente_check && this.aditivo_check) {
         componente.tipo = "T";
       } else if (this.componente_check && !this.aditivo_check) {

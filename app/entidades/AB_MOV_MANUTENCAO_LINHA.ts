@@ -11,4 +11,5 @@ export class AB_MOV_MANUTENCAO_LINHA {
     stock: number;
     cod_REF: string;
     stkunit: string;
+    valor_AGUA: number;
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer, ElementRef, ViewChild, ViewChildren } from '@angular/core';
+import { Component, OnInit, Renderer, ElementRef, ViewChild, ViewChildren, Input } from '@angular/core';
 import { ABUNIDADADEMEDIDAService } from "app/servicos/ab-unidade-medida.service";
 import { ABDICLINHAService } from "app/servicos/ab-dic-linha.service";
 import { AB_DIC_LINHA } from "app/entidades/AB_DIC_LINHA";
@@ -11,6 +11,8 @@ import { GER_PERFIL_CAB } from "app/entidades/GER_PERFIL_CAB";
 import { GER_PERFIL_LIN } from "app/entidades/GER_PERFIL_LIN";
 import { GERPERFILLINService } from "app/servicos/ger-perfil-lin.service";
 import { ConfirmationService } from "primeng/primeng";
+import { DomSanitizer } from '@angular/platform-browser';
+import { GERANALISESService } from 'app/servicos/ger-analises.service';
 
 @Component({
   selector: 'app-configuracoes',
@@ -18,6 +20,7 @@ import { ConfirmationService } from "primeng/primeng";
   styleUrls: ['./configuracoes.component.css']
 })
 export class ConfiguracoesComponent implements OnInit {
+  nodes = [];
   checkbox_values: any = [];
   nome_existe: boolean = false;
   class_numexiste: string = "";
@@ -36,7 +39,9 @@ export class ConfiguracoesComponent implements OnInit {
   @ViewChild('inputgravou') inputgravou: ElementRef;
   @ViewChild('inputerro') inputerro: ElementRef;
 
-  constructor(private confirmationService: ConfirmationService, private GERPERFILLINService: GERPERFILLINService, private GERMODULOService: GERMODULOService, private GERPERFILCABService: GERPERFILCABService, private elementRef: ElementRef, private renderer: Renderer, private location: Location) {
+  public list = [];
+
+  constructor(private GERANALISESService: GERANALISESService, private sanitizer: DomSanitizer, private confirmationService: ConfirmationService, private GERPERFILLINService: GERPERFILLINService, private GERMODULOService: GERMODULOService, private GERPERFILCABService: GERPERFILCABService, private elementRef: ElementRef, private renderer: Renderer, private location: Location) {
   }
 
   ngOnInit() {
@@ -53,6 +58,8 @@ export class ConfiguracoesComponent implements OnInit {
         this.modulos = this.modulos.slice();
       },
       error => console.log(error));
+
+    //this.tree_nodes();
   }
   //ao alterar combo modulo
   atualizaperfil() {
@@ -247,5 +254,39 @@ export class ConfiguracoesComponent implements OnInit {
     });
 
   }
+
+  //criar array arvore analises
+  tree_nodes() {
+    var array = [{ id: 0, parent: null, name: 'Análises', link: null, ativo: true }];
+
+    this.GERANALISESService.getAll().subscribe(result => {
+      for (var x in result) {
+        array.push({ id: result[x].id, parent: result[x].id_PAI, name: result[x].descricao, link: result[x].link, ativo: result[x].ativo })
+      }
+
+      for (var x in array) {
+        if (array[x].parent == null) {
+          this.nodes.push({ id: array[x].id, parent: array[x].parent, name: array[x].name, link: array[x].link, children: [], ativo: array[x].ativo });
+
+          this.getFilhos(array, array[x].id, this.nodes.find(item => item.id == array[x].id));
+        }
+      }
+
+      this.list = this.nodes;
+
+    }, error => { console.log(error); });
+  }
+
+  //ver filhos arvore
+  getFilhos(array, id_pai, arr) {
+    for (var x in array) {
+      if (array[x].parent == id_pai) {
+
+        arr.children.push({ id: array[x].id, parent: array[x].parent, name: array[x].name, link: array[x].link, children: [], ativo: array[x].ativo });
+        this.getFilhos(array, array[x].id, arr.children.find(item => item.id == array[x].id));
+      }
+    }
+  }
+
 
 }

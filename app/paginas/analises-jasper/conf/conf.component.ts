@@ -4,6 +4,7 @@ import { TreeModule, IActionMapping, TREE_ACTIONS, TreeComponent } from 'angular
 import * as _ from 'lodash';
 import { GERANALISESService } from 'app/servicos/ger-analises.service';
 import { GER_ANALISES } from 'app/entidades/GER_ANALISES';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-conf',
@@ -11,6 +12,7 @@ import { GER_ANALISES } from 'app/entidades/GER_ANALISES';
   styleUrls: ['./conf.component.css']
 })
 export class ConfComponent implements OnInit {
+  node_string;
   nome_no: string;
   node_id: any;
   tree_select = false;
@@ -68,6 +70,8 @@ export class ConfComponent implements OnInit {
           this.getFilhos(array, array[x].id, this.nodes.find(item => item.id == array[x].id));
         }
       }
+
+
       this.tree.treeModel.update();
     }, error => { console.log(error); });
   }
@@ -112,6 +116,7 @@ export class ConfComponent implements OnInit {
     }
   }
 
+
   //gravar dados nó
   gravar() {
     this.GERANALISESService.getbyID(this.node_id).subscribe(result => {
@@ -131,6 +136,8 @@ export class ConfComponent implements OnInit {
       }, error => { console.log(error); this.simular(this.inputerro); });
     }, error => { console.log(error); this.simular(this.inputerro); });
   }
+
+
 
   //remover nó
   remover() {

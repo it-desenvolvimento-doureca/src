@@ -30,6 +30,8 @@ export class TipomanutenacaoComponent implements OnInit {
     this.globalVar.setanterior(false);
     this.globalVar.setatualizar(false);
     this.globalVar.sethistorico(false);
+    this.globalVar.setcriar(false);
+    
     this.listar_manutencoes();
   }
 
