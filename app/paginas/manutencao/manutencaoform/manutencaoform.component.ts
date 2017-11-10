@@ -32,6 +32,7 @@ import { GERUTILIZADORESService } from 'app/servicos/ger-utilizadores.service';
   styleUrls: ['./manutencaoform.component.css']
 })
 export class ManutencaoformComponent implements OnInit {
+  textotabela: string = null;
   utilizadores: any[];
   hora_planeamento;
   admin: any;
@@ -333,6 +334,7 @@ export class ManutencaoformComponent implements OnInit {
   }
 
   carregaraditivoslinhas(id, pos) {
+    this.textotabela = "A PESQUISAR...";
     this.ABMOVMANUTENCAOLINHAService.getbyID(id).subscribe(
       response => {
         var count = Object.keys(response).length;
@@ -342,7 +344,7 @@ export class ManutencaoformComponent implements OnInit {
             var stock = null;
             var value = 0;
             if (response[x][0].stock != null) { stock = response[x][0].stock.toFixed(2); stock = stock.replace(".", ",") }
-            
+
             if (response[x][0].valor_AGUA != null) value = response[x][0].valor_AGUA.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
 
             this.arrayForm.find(item => item.pos == pos).aditivos.push(
@@ -356,6 +358,9 @@ export class ManutencaoformComponent implements OnInit {
             pos2++;
           }
           this.arrayForm.find(item => item.pos == pos).aditivos = this.arrayForm.find(item => item.pos == pos).aditivos.slice();
+          this.textotabela = null;
+        } else {
+          this.textotabela = null;
         }
       },
       error => console.log(error));
@@ -384,19 +389,25 @@ export class ManutencaoformComponent implements OnInit {
     this.arrayForm.find(item => item.pos == pos).id_tina = event.value.id_tina;
     this.arrayForm.find(item => item.pos == pos).capacidade = event.value.capacidade;
     this.arrayForm.find(item => item.pos == pos).aditivos = [];
+    var array = [];
     if (event.value.id != "" && event.value.id != null) {
       this.ABDICBANHOADITIVOService.getbyID_banho(event.value.id).subscribe(
         response => {
           var count = Object.keys(response).length;
           //se existir componente Componente
           if (count > 0) {
-            var pos2 = 0;
+            this.textotabela = "A PESQUISAR...";
+            var pos2 = 1;
             for (var x in response) {
               if (response[x][1].cod_REF != null) {
-                this.carregaaditivosstock(response, x, pos, pos2);
+                this.carregaaditivosstock(response, x, pos, pos2, count, array);
               } else {
-                this.arrayForm.find(item => item.pos == pos).aditivos.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, cod_REF: response[x][1].cod_REF });
-                this.arrayForm.find(item => item.pos == pos).aditivos = this.arrayForm.find(item => item.pos == pos).aditivos.slice();
+                array.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, cod_REF: response[x][1].cod_REF });
+                this.ordernar(array);
+                if (pos2 == count) {
+                  this.arrayForm.find(item => item.pos == pos).aditivos = array;
+                  this.textotabela = null;
+                }
               }
               pos2++;
             }
@@ -405,7 +416,7 @@ export class ManutencaoformComponent implements OnInit {
     }
   }
 
-  carregaaditivosstock(response, x, pos, pos2) {
+  carregaaditivosstock(response, x, pos, pos2, total2, array) {
     var query = [];
     var total = null;
     this.GERARMAZEMService.getAll().subscribe(
@@ -423,18 +434,48 @@ export class ManutencaoformComponent implements OnInit {
                 total = parseFloat(res1[0].STOQTE).toFixed(2);
                 total = total.replace(".", ",");
               }
-              this.arrayForm.find(item => item.pos == pos).aditivos.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: res1[0].UNIUTI, cod_REF: response[x][1].cod_REF });
-              this.arrayForm.find(item => item.pos == pos).aditivos = this.arrayForm.find(item => item.pos == pos).aditivos.slice();
+              array.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: res1[0].UNIUTI, cod_REF: response[x][1].cod_REF });
+              this.ordernar(array);
+              if (pos2 == total2) {
+                this.arrayForm.find(item => item.pos == pos).aditivos = array;
+                this.textotabela = null;
+              }
 
             },
-            error => console.log(error));
+            error => {
+              array.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, cod_REF: response[x][1].cod_REF });
+              this.ordernar(array);
+              if (pos2 == total2) {
+                this.arrayForm.find(item => item.pos == pos).aditivos = array;
+                this.textotabela = null;
+              }
+              console.log(error);
+            });
         } else {
-          this.arrayForm.find(item => item.pos == pos).aditivos.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, cod_REF: response[x][1].cod_REF });
-          this.arrayForm.find(item => item.pos == pos).aditivos = this.arrayForm.find(item => item.pos == pos).aditivos.slice();
+          array.find(item => item.pos == pos).aditivos.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, cod_REF: response[x][1].cod_REF });
+          this.ordernar(array);
+          if (pos2 == total2) {
+            this.arrayForm.find(item => item.pos == pos).aditivos = array;
+            this.textotabela = null;
+          }
         }
 
       },
       error => console.log(error));
+  }
+
+  ordernar(array) {
+    array.sort((n1, n2) => {
+      if (n1.pos > n2.pos) {
+        return 1;
+      }
+
+      if (n1.pos < n2.pos) {
+        return -1;
+      }
+
+      return 0;
+    });
   }
 
   //preenche combobox banhos

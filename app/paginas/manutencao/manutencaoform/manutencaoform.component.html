@@ -218,29 +218,69 @@
                       </div>
                     </div>
                     <div class="col-md-7" style="width: 60%; padding:0px;">
-                      <!--<div class="card-content table-responsive">
-                        <table class="table">
-                          <thead class="text-danger">
+                      <div class="ui-datatable-tablewrapper ui-datatable ui-widget">
+                        <table class="table table-striped">
+                          <thead class="ui-datatable-thead">
                             <tr>
-                              <th>Name</th>
-                              <th>Country</th>
-                              <th>City</th>
-                              <th>Salary</th>
+                              <th style="font-weight: 700;">Aditivo</th>
+                              <th style="width: 8%; font-weight: 700;">Valor 1</th>
+                              <th style="width: 9%;  padding: .75em 0 .75em 0; font-weight: 700;">Valor Água</th>
+                              <th style="width: 10%; font-weight: 700;">Unid. 1</th>
+                              <th style="width: 8%; font-weight: 700;">Valor 2</th>
+                              <th style="width: 10%; font-weight: 700;">Unid. 2</th>
+                              <th style="width: 7%; font-weight: 700;">Stock</th>
+                              <th style="width: 5%; font-weight: 700;">Unid.</th>
+                              <th style="font-weight: 700;">Observações</th>
                             </tr>
                           </thead>
                           <tbody>
-                            <tr  *ngFor="let item of item.aditivos">
-                              <td>Dakota Rice</td>
-                              <td>Niger</td>
-                              <td>Oud-Turnhout</td>
-                              <td class="text-danger">$36,738</td>
+                            <tr *ngIf="item.aditivos.length == 0 && textotabela == null">
+                              <td  style="text-align: center;" colspan="9"> O BANHO NÃO CONTÉM ADITIVOS... </td>
+                            </tr>
+                            <tr *ngIf="textotabela != null">
+                                <td  style="text-align: center;" colspan="9"> {{textotabela}} </td>
+                              </tr>
+                            <tr *ngFor="let aditem of item.aditivos">
+                              <td style="padding: 5px 4px 0px 0px">
+                                <input type="text" style="background: white; height: 31px;" class="form-control" [(ngModel)]="aditem.nome" [ngModelOptions]="{standalone: true}"
+                                  [disabled]="true">
+                              </td>
+                              <td style="padding: 5px 4px 0px 0px">
+                                <input (ngModelChange)="atualizarvaloragua(valoruni.value,aditem.factor,aditem.pos,item.pos)" #valoruni type="text" style="background: white; text-align: center; height: 31px;"
+                                  class="form-control" [(ngModel)]="aditem.valor1" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
+                              </td>
+                              <td style="padding: 11px 0px 0px 0px; text-align: center;">
+                                <span style="display: block;"> {{aditem.valor_agua}}</span>
+                              </td>
+                              <td style="padding: 5px 4px 0px 0px">
+                                <p-dropdown [filter]="true" [options]="medidas" [style]="{'width':'100%'}" [(ngModel)]="aditem.unidade1" [ngModelOptions]="{standalone: true}"
+                                  [disabled]="!modoedicao" [required]="true"> </p-dropdown>
+                              </td>
+                              <td style="padding: 5px 4px 0px 0px">
+                                <input type="text" style="background: white;  text-align: center; height: 31px;" class="form-control" [(ngModel)]="aditem.valor2"
+                                  [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
+                              </td>
+                              <td style="padding: 5px 4px 0px 0px">
+                                <p-dropdown [filter]="true" [options]="medidas" [style]="{'width':'100%'}" [(ngModel)]="aditem.unidade2" [ngModelOptions]="{standalone: true}"
+                                  [disabled]="!modoedicao" [required]="true"> </p-dropdown>
+                              </td>
+                              <td style="padding: 11px 0px 0px 0px; text-align: center;">
+                                <span style="display: block;"> {{aditem.stock}}</span>
+                              </td>
+                              <td style="padding: 11px 0px 0px 0px; text-align: center;">
+                                <span style=" display: block;"> {{aditem.unidstock}}</span>
+                              </td>
+                              <td style="padding: 5px 4px 0px 0px">
+                                <input type="text" style="background: white; height: 31px;" class="form-control" [(ngModel)]="aditem.obs" [ngModelOptions]="{standalone: true}"
+                                  [disabled]="!modoedicao">
+                              </td>
                             </tr>
 
                           </tbody>
                         </table>
 
-                      </div>-->
-                      <p-dataTable [value]="item.aditivos" dataKey="id">
+                      </div>
+                      <!-- <p-dataTable [value]="item.aditivos" dataKey="id">
                         <p-column styleclass="text-danger" field="nome" header="Aditivo">
                           <ng-template pTemplate="body" let-col2 let-row2="rowData ">
                             <input type="text" style="background: white; height: 31px;" class="form-control" [(ngModel)]="row2['nome']" [ngModelOptions]="{standalone: true}"
@@ -292,7 +332,7 @@
                               [disabled]="!modoedicao">
                           </ng-template>
                         </p-column>
-                      </p-dataTable>
+                      </p-dataTable>-->
                     </div>
                     <div class="col-md-1" style="padding:0px; text-align: -webkit-center; display: inline-grid; width: 5%; height: 100%; position: absolute;">
                       <div style=" margin: auto 0;">

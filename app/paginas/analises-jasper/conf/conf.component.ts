@@ -5,6 +5,9 @@ import * as _ from 'lodash';
 import { GERANALISESService } from 'app/servicos/ger-analises.service';
 import { GER_ANALISES } from 'app/entidades/GER_ANALISES';
 import { DomSanitizer } from '@angular/platform-browser';
+import { GERMODULOService } from 'app/servicos/ger-modulo.service';
+import { ConfirmationService } from 'primeng/primeng';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-conf',
@@ -12,6 +15,7 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./conf.component.css']
 })
 export class ConfComponent implements OnInit {
+  id_modulo = null;
   node_string;
   nome_no: string;
   node_id: any;
@@ -22,6 +26,7 @@ export class ConfComponent implements OnInit {
   private tree: TreeComponent;
   modoedicao = true;
   nodes = [];
+  modulos = [{ label: "Seleccione Módulo", value: null }];
 
   @ViewChild('inputgravou') inputgravou: ElementRef;
   @ViewChild('inputerro') inputerro: ElementRef;
@@ -39,7 +44,7 @@ export class ConfComponent implements OnInit {
   }
   treeOptions = { actionMapping: this.actionMapping }
 
-  constructor(private renderer: Renderer, private GERANALISESService: GERANALISESService, private globalVar: AppGlobals) { }
+  constructor(private location: Location, private confirmationService: ConfirmationService, private GERMODULOService: GERMODULOService, private renderer: Renderer, private GERANALISESService: GERANALISESService, private globalVar: AppGlobals) { }
 
   ngOnInit() {
     this.globalVar.setvoltar(true);
@@ -54,10 +59,40 @@ export class ConfComponent implements OnInit {
 
     this.globalVar.setdisEditar(false);
 
+    //carregar modulos
+    this.GERMODULOService.getAll().subscribe(
+      response => {
+        for (var x in response) {
+          this.modulos.push({ label: response[x].nome_MODULO, value: response[x].id_MODULO });
+        }
+        this.modulos = this.modulos.slice();
+      },
+      error => console.log(error));
 
+
+
+  }
+
+  //ao atualizar modulo atualiza arvore
+  atualizartree() {
+    this.tree_select = false;
+    this.nodes = [];
+    this.tree.treeModel.collapseAll();
+    if (this.tree.treeModel.getActiveNode() != null) {
+      console.log("a")
+      console.log(this.tree.treeModel.getActiveNode())
+      this.tree.treeModel.getActiveNode().setIsActive(false);
+    }
+
+    if (this.id_modulo != null) {
+      this.preencher_arvore(this.id_modulo);
+    }
+
+  }
+  preencher_arvore(id) {
     var array = [{ id: 0, parent: null, name: 'Root', link: null, ativo: true }];
 
-    this.GERANALISESService.getAll().subscribe(result => {
+    this.GERANALISESService.getbyidmodulo(id).subscribe(result => {
       for (var x in result) {
         array.push({ id: result[x].id, parent: result[x].id_PAI, name: result[x].descricao, link: result[x].link, ativo: result[x].ativo })
       }
@@ -85,6 +120,7 @@ export class ConfComponent implements OnInit {
     data.ativo = false;
     data.id_PAI = this.node_id;
     data.descricao = 'Novo';
+    data.modulo = this.id_modulo;
 
     this.GERANALISESService.create(data).subscribe(result => {
       selected.data.children.push({ id: result.id, parent: this.node_id, name: 'Novo', link: null, children: [], ativo: result.ativo });
@@ -142,11 +178,32 @@ export class ConfComponent implements OnInit {
   //remover nó
   remover() {
 
-    this.GERANALISESService.delete(this.node_id).then(result => {
-      let nodeToDelete = this.tree.treeModel.getNodeById(this.node_id);
-      this.removeNode(nodeToDelete);
-      this.tree_select = false;
-    }, error => { console.log(error); });
+    this.confirmationService.confirm({
+      message: 'Tem a certeza que pretende apagar?',
+      header: 'Apagar Nó',
+      icon: 'fa fa-trash',
+      accept: () => {
+
+        this.GERANALISESService.delete(this.node_id).then(result => {
+          this.removerfilhos(this.node_id);
+          let nodeToDelete = this.tree.treeModel.getNodeById(this.node_id);
+          this.removeNode(nodeToDelete);
+          this.tree_select = false;
+        }, error => { console.log(error); });
+      }
+    });
+  }
+
+  removerfilhos(id) {
+    var array = this.tree.treeModel.getNodeById(id);
+    if (array != null) {
+      array = array.data.children;
+      for (var x in array) {
+        this.GERANALISESService.delete(array[x].id).then(result => {
+          this.removerfilhos(array[x].id);
+        }, error => { console.log(error); });
+      }
+    }
 
   }
 
@@ -160,5 +217,10 @@ export class ConfComponent implements OnInit {
     let event = new MouseEvent('click', { bubbles: true });
     this.renderer.invokeElementMethod(
       element.nativeElement, 'dispatchEvent', [event]);
+  }
+
+  //bt cancelar
+  backview() {
+    this.location.back();
   }
 }

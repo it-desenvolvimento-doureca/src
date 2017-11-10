@@ -81,6 +81,9 @@ import { ConfComponent } from './paginas/analises-jasper/conf/conf.component';
 import { ViewerComponent } from './paginas/analises-jasper/viewer/viewer.component';
 import { TreeModule } from 'angular-tree-component';
 import { GERANALISESService } from 'app/servicos/ger-analises.service';
+import { AgGridModule } from 'ag-grid-angular';
+import { HeaderComponent } from 'app/paginas/header-componente/header.component';
+import { HeaderGroupComponent } from 'app/paginas/header-group-componente/header-group.component';
 
 const routes: Routes = [
   { path: 'dashboard', component: HomeComponent, canActivate: [LoginService] },
@@ -233,7 +236,9 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     HistoricoAnalisesComponent,
     ListaComponent,
     ConfComponent,
+    HeaderComponent,
     ViewerComponent,
+    HeaderGroupComponent
   ],
   imports: [
     BrowserModule,
@@ -258,6 +263,13 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     EditorModule,
     AutoCompleteModule,
     DragDropModule,
+    AgGridModule.withComponents(
+      [
+        HeaderGroupComponent,
+        HeaderComponent,
+
+      ]
+    ),
     routing
   ],
   providers: [AppGlobals,

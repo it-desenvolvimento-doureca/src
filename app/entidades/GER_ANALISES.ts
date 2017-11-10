@@ -4,4 +4,5 @@ export class GER_ANALISES {
     link: string;
     descricao: string;
     ativo: boolean;
+    modulo: number;
 }
