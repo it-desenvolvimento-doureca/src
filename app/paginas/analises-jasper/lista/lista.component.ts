@@ -5,6 +5,8 @@ import { AppGlobals } from 'app/menu/sidebar.metadata';
 import { Router } from '@angular/router';
 import { HeaderComponent } from 'app/paginas/header-componente/header.component';
 import { GridOptions } from 'ag-grid';
+import { ABMOVANALISEService } from 'app/servicos/ab-mov-analise.service';
+import { ABMOVANALISELINHAService } from 'app/servicos/ab-mov-analise-linha.service';
 
 
 @Component({
@@ -22,7 +24,7 @@ export class ListaComponent {
   public HeaderGroupComponent = this.HeaderGroupComponent;
 
 
-  constructor() {
+  constructor(private ABMOVANALISEService: ABMOVANALISEService, private ABMOVANALISELINHAService: ABMOVANALISELINHAService) {
     // we pass an empty gridOptions in, so we can grab the api out
     this.gridOptions = {
       columnDefs: this.columnDefs,
@@ -44,15 +46,107 @@ export class ListaComponent {
     }
   }
 
+
+
+  analises() {
+    this.ABMOVANALISEService.getbyid_banho(5, 0, 30, 55).subscribe(
+      response => {
+        var count = Object.keys(response).length;
+        if (count > 0) {
+          var days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+          this.columnDefs.push({ headerName: "Componentes", field: "componente", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true })
+          this.columnDefs.push({ headerName: "Utilizadores", field: "utilizador", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true })
+          for (var x in response) {
+            var data = this.formatDate(response[x][1]);
+            this.columnDefs.push({ id: response[x][0], headerName: data, field: "c" + response[x][0], width: 120, enableValue: true, enableRowGroup: true, enablePivot: true })
+
+            //this.cabecalho.push({ id: response[x][0], data: data, hora: (response[x][2]).slice(0, 5), dia: days[new Date(response[x][1]).getDay()] });
+          }
+          this.componentes(55, 5, true);
+        }
+        this.columnDefs = this.columnDefs.slice();
+      },
+      error => { console.log(error); });
+  }
+
+
+
+  componentes(id, id_banho, graf) {
+    this.ABMOVANALISELINHAService.getbyid_analise(id, id_banho).subscribe(
+      response => {
+
+        var count = Object.keys(response).length;
+        //se existir componentes do banho
+
+        if (count > 0) {
+          var id_comp = [];
+          var rowData = [];
+          for (var x in response) {
+            id_comp.push(response[x][1].id_COMPONENTE)
+
+            rowData.push({ id: response[x][1].id_COMPONENTE, componente: response[x][1].nome_COMPONENTE,utilizador: response[x][1].utz_CRIA })
+
+            this.rowData = rowData;
+            ///this.corpo.push({ cor: cor, id: response[x][1].id_COMPONENTE, componente: response[x][1].nome_COMPONENTE, resultado: calculo, valores: dados })
+
+          }
+
+
+          for (var n in this.columnDefs) {
+            if (this.columnDefs[n].id  != null) {
+              this.getresultados(x, this.columnDefs[n].id, this.columnDefs[n].field, id_comp, id_banho);
+            }
+          }
+        }
+
+      },
+      error => { console.log(error); });
+
+  }
+
+
+  getresultados(num, id, col, id_comp, id_banho) {
+
+    this.ABMOVANALISELINHAService.getbyid_analise_comp(id, id_comp, id_banho).subscribe(
+      response => {
+
+        for (var x in response) {
+          //console.log(response)
+
+          this.rowData.find(item => item.id == response[x][0].id_COMPONENTE)[col] = (response[x][0].calculo != null) ? parseFloat(response[x][0].calculo) : "";
+
+          this.rowData = this.rowData.slice();
+
+        }
+
+      },
+      error => { console.log(error); });
+  }
+
+  //formatar a data para yyyy-mm-dd
+  formatDate(date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+  }
+
   private createRowData() {
     var rowData: any[] = [];
-
+    this.rowData = [];
+    this.columnDefs = [];
     for (var i = 0; i < 50; i++) {
 
       rowData.push({
-        /*athlete: RefData.firstNames[i % RefData.firstNames.length] + ' ' + RefData.lastNames[i % RefData.lastNames.length],
-        age: RefData.DOBs[i % RefData.DOBs.length],
-        address: RefData.addresses[i % RefData.addresses.length],*/
+        athlete: "Nome Teste",
+        age: Math.round(Math.random() * 100),
+        address: "Morada Teste",
         year: Math.round(Math.random() * 100),
         proficiency: Math.round(Math.random() * 100),
         country: Math.round(Math.random() * 100),
@@ -61,8 +155,8 @@ export class ListaComponent {
         date: new Date(),
       });
     }
-
-    this.rowData = rowData;
+    this.analises();
+    //this.rowData = rowData;
   }
 
   private createColumnDefs() {
@@ -73,9 +167,9 @@ export class ListaComponent {
     { headerName: "Date", field: "date", width: 110, enableValue: true, enableRowGroup: true, enablePivot: true },
     { headerName: "Sport", field: "sport", width: 110, enableValue: true, enableRowGroup: true, enablePivot: true },]
     this.columnDefs = [];
-    for (var x in array) {
-      this.columnDefs.push({ headerName: array[x].headerName, field: array[x].field, width: array[x].width, enableValue: array[x].enableValue, enableRowGroup: array[x].enableRowGroup, enablePivot: array[x].enablePivot })
-    }
+    /* for (var x in array) {
+       this.columnDefs.push({ headerName: array[x].headerName, field: array[x].field, width: array[x].width, enableValue: array[x].enableValue, enableRowGroup: array[x].enableRowGroup, enablePivot: array[x].enablePivot })
+     }*/
   }
 
 
@@ -94,7 +188,7 @@ export class ListaComponent {
   }
 
   public onReady() {
-   // console.log('onReady');
+    // console.log('onReady');
     this.calculateRowCount();
   }
 
@@ -164,7 +258,7 @@ export class ListaComponent {
   // here we use one generic event to handle all the column type events.
   // the method just prints the event name
   private onColumnEvent($event) {
-   // console.log('onColumnEvent: ' + $event);
+    // console.log('onColumnEvent: ' + $event);
   }
 
 }

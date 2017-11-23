@@ -10,7 +10,7 @@ import { HomeComponent } from './paginas/home/home.component';
 import { RouterComponent } from "app/router.component";
 import { FornecedoresComponent } from './paginas/fornecedores/fornecedores.component';
 import { TinasComponent } from './paginas/tinas/tinas.component';
-import { DataTableModule, SharedModule, ConfirmDialogModule, ConfirmationService, DropdownModule, CalendarModule, DialogModule, ColorPickerModule, RadioButtonModule, TreeNode, ChartModule, PickListModule, MultiSelectModule, EditorModule, AutoCompleteModule } from 'primeng/primeng';
+import { DataTableModule, SharedModule, ConfirmDialogModule, ConfirmationService, DropdownModule, CalendarModule, DialogModule, ColorPickerModule, RadioButtonModule, TreeNode, ChartModule, PickListModule, MultiSelectModule, EditorModule, AutoCompleteModule, ProgressBarModule, FileUploadModule, ToggleButtonModule } from 'primeng/primeng';
 import { AppGlobals } from "app/menu/sidebar.metadata";
 import { FormComponent } from './paginas/fornecedores/form/form.component';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -84,6 +84,12 @@ import { GERANALISESService } from 'app/servicos/ger-analises.service';
 import { AgGridModule } from 'ag-grid-angular';
 import { HeaderComponent } from 'app/paginas/header-componente/header.component';
 import { HeaderGroupComponent } from 'app/paginas/header-group-componente/header-group.component';
+import { HistoricoManutencoesComponent } from './paginas/historico-manutencoes/historico-manutencoes.component';
+import { ParametrosComponent } from './paginas/parametros/parametros.component';
+import { GERPARAMETROSService } from 'app/servicos/ger-parametros.service';
+import { GestaoTarefasComponent } from './paginas/gestao-tarefas/gestao-tarefas.component';
+import { FormTarefasComponent } from './paginas/gestao-tarefas/form-tarefas/form-tarefas.component';
+import { UploadService } from 'app/servicos/upload.service';
 
 const routes: Routes = [
   { path: 'dashboard', component: HomeComponent, canActivate: [LoginService] },
@@ -135,7 +141,6 @@ const routes: Routes = [
       { path: 'editar', component: RegistoformComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } },
       { path: 'novo', component: RegistoformComponent, canActivate: [LoginService], data: { breadcrumb: "Novo" } },
       { path: 'historico', component: HistoricoAnalisesComponent, canActivate: [LoginService], data: { breadcrumb: "Histórico" } },]
-
   },
   {
     path: 'manutencao', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Manutenções" },
@@ -143,7 +148,8 @@ const routes: Routes = [
       { path: '', component: ManutencaoComponent, canActivate: [LoginService], data: { breadcrumb: "" } },
       { path: 'view', component: ManutencaoformComponent, canActivate: [LoginService], data: { breadcrumb: "Manutenção" } },
       { path: 'editar', component: ManutencaoformComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } },
-      { path: 'novo', component: ManutencaoformComponent, canActivate: [LoginService], data: { breadcrumb: "Novo" } }]
+      { path: 'novo', component: ManutencaoformComponent, canActivate: [LoginService], data: { breadcrumb: "Novo" } },
+      { path: 'historico', component: HistoricoManutencoesComponent, canActivate: [LoginService], data: { breadcrumb: "Histórico" } }]
   },
   {
     path: 'registopara', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Reg. Parâm. de Operações" },
@@ -155,6 +161,12 @@ const routes: Routes = [
   },
   { path: 'perfil/view', component: PerfilComponent, canActivate: [LoginService], data: { breadcrumb: "Perfil" } },
   { path: 'config', component: ConfiguracoesComponent, canActivate: [LoginService], data: { breadcrumb: "Configurações" } },
+  {
+    path: 'parametros', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Pârametros Aplicação" },
+    children: [
+      { path: '', component: ParametrosComponent, canActivate: [LoginService], data: { breadcrumb: "" } },
+      { path: 'editar', component: ParametrosComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } }]
+  },
   { path: 'unidades', component: UnidadesmedidaComponent, canActivate: [LoginService], data: { breadcrumb: "Unidade de Medida" } },
   { path: 'linhas', component: LinhasComponent, canActivate: [LoginService], data: { breadcrumb: "Linhas" } },
   { path: 'zonas', component: ZonasComponent, canActivate: [LoginService], data: { breadcrumb: "Zonas" } },
@@ -165,6 +177,10 @@ const routes: Routes = [
   { path: 'operacoes', component: TipooperacaoComponent, canActivate: [LoginService], data: { breadcrumb: "Tipo Operação" } },
   { path: 'perfil/editar', component: PerfilComponent, canActivate: [LoginService], data: { breadcrumb: "Perfil" } },
   { path: 'relatorio', component: RelatorioViewerComponent, canActivate: [LoginService], data: { breadcrumb: "Relatório" } },
+
+  { path: 'teste1', component: GestaoTarefasComponent, canActivate: [LoginService], data: { breadcrumb: "Teste1" } },
+  { path: 'teste2', component: FormTarefasComponent, canActivate: [LoginService], data: { breadcrumb: "Teste2" } },
+
   {
     path: 'eventos', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Eventos" },
     children: [
@@ -238,7 +254,11 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     ConfComponent,
     HeaderComponent,
     ViewerComponent,
-    HeaderGroupComponent
+    HeaderGroupComponent,
+    HistoricoManutencoesComponent,
+    ParametrosComponent,
+    GestaoTarefasComponent,
+    FormTarefasComponent
   ],
   imports: [
     BrowserModule,
@@ -249,6 +269,7 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     DropdownModule,
     FormsModule,
     CalendarModule,
+    ToggleButtonModule,
     HttpModule,
     ReactiveFormsModule,
     DialogModule,
@@ -261,7 +282,9 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     CheckboxModule,
     MultiSelectModule,
     EditorModule,
+    FileUploadModule,
     AutoCompleteModule,
+    ProgressBarModule,
     DragDropModule,
     AgGridModule.withComponents(
       [
@@ -304,6 +327,8 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     GERARMAZEMService,
     GERANALISESService,
     GEREVENTOSCONFService,
+    GERPARAMETROSService,
+    UploadService,
     GERFORNECEDORService],
   bootstrap: [AppComponent]
 })

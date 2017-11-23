@@ -16,7 +16,7 @@ export class LoginService implements CanActivate {
     private userIsAuthenticated: boolean;
     private user;
     private password;
-    private nodes = { node000: "registo", node001: "manutencao", node002: "registopara", node010: "tinas", node011: "componentes", node012: "banhos", node013: "fornecedor", node020: "linhas", node021: "unidades", node022: "zonas", node023: "turnos", node024: "adicoes", node025: "manutencoes", node026: "operacoes", node027: "armazens", node10: "utilizadores", node11: "config", node12: "eventos6" };
+    private nodes = { node000: "registo", node001: "manutencao", node002: "registopara", node010: "tinas", node011: "componentes", node012: "banhos", node013: "fornecedor", node020: "linhas", node021: "unidades", node022: "zonas", node023: "turnos", node024: "adicoes", node025: "manutencoes", node026: "operacoes", node027: "armazens", node10: "utilizadores", node11: "config", node12: "parametros" ,node13: "eventos6" };
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 

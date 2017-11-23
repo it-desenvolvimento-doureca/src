@@ -43,6 +43,11 @@ export class HistoricoAnalisesComponent implements OnInit {
     this.globalVar.setatualizar(false);
     this.globalVar.setduplicar(false);
 
+    var acessohistorico = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node000historico");
+
+    if(!acessohistorico){
+      this.location.back();
+    }
     var id;
     var sub = this.route
       .queryParams

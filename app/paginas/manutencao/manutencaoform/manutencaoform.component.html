@@ -235,11 +235,11 @@
                           </thead>
                           <tbody>
                             <tr *ngIf="item.aditivos.length == 0 && textotabela == null">
-                              <td  style="text-align: center;" colspan="9"> O BANHO NÃO CONTÉM ADITIVOS... </td>
+                              <td style="text-align: center;" colspan="9"> O BANHO NÃO CONTÉM ADITIVOS... </td>
                             </tr>
                             <tr *ngIf="textotabela != null">
-                                <td  style="text-align: center;" colspan="9"> {{textotabela}} </td>
-                              </tr>
+                              <td style="text-align: center;" colspan="9"> {{textotabela}} </td>
+                            </tr>
                             <tr *ngFor="let aditem of item.aditivos">
                               <td style="padding: 5px 4px 0px 0px">
                                 <input type="text" style="background: white; height: 31px;" class="form-control" [(ngModel)]="aditem.nome" [ngModelOptions]="{standalone: true}"
@@ -336,12 +336,17 @@
                     </div>
                     <div class="col-md-1" style="padding:0px; text-align: -webkit-center; display: inline-grid; width: 5%; height: 100%; position: absolute;">
                       <div style=" margin: auto 0;">
-                        <button [disabled]="item.id == null || disimprimir" type="button" style="color: black;" class="btn btn-white btn-round btn-just-icon"
+                        <button title="Histórico" [disabled]="item.id == null || dishistorico" type="button" style="color: black;" class="btn btn-white btn-round btn-just-icon"
+                          (click)="historico(item.id)">
+                          <i class="material-icons">show_chart</i>
+                          <div class="ripple-container"></div>
+                        </button>
+                        <button title="Imprimir Ficha" [disabled]="item.id == null || disimprimir" type="button" style="color: black;" class="btn btn-white btn-round btn-just-icon"
                           (click)="imprimir('manutencao_individual',item.id)">
                           <i class="material-icons">print</i>
                           <div class="ripple-container"></div>
                         </button>
-                        <button [disabled]="item.id == null || disimprimir" type="button" style="color: black;" class="btn btn-white btn-round btn-just-icon"
+                        <button  title="Imprimir Etiquetas" [disabled]="item.id == null || disimprimir" type="button" style="color: black;" class="btn btn-white btn-round btn-just-icon"
                           (click)="imprimir('manutencao_etiquetas',item.id)">
                           <i class="fa fa-tags" aria-hidden="true"></i>
                           <div class="ripple-container"></div>

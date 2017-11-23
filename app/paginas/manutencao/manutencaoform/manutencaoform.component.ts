@@ -32,6 +32,7 @@ import { GERUTILIZADORESService } from 'app/servicos/ger-utilizadores.service';
   styleUrls: ['./manutencaoform.component.css']
 })
 export class ManutencaoformComponent implements OnInit {
+  dishistorico = true;
   textotabela: string = null;
   utilizadores: any[];
   hora_planeamento;
@@ -114,6 +115,7 @@ export class ManutencaoformComponent implements OnInit {
     this.globalVar.setdisDuplicar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001duplicar"));
 
     this.disimprimir = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001imprimir");
+    this.dishistorico = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001historico");
     // this.pos=3;
     /* this.arrayForm = [{pos: 1, id: null, id_banho: 1, tina: 2, capacidade: "11 L", aditivos: [{ id: 1, valor: 10, unidade: "aa", obs: "" }] },
      {pos: 2, id: null, id_banho: 1, tina: 2, capacidade: "11 L", aditivos: [{ id: 1, valor: 10, unidade: "aa", obs: "" }] }];*/
@@ -134,14 +136,13 @@ export class ManutencaoformComponent implements OnInit {
           id = params['id'] || 0;
         });
 
-      //preenceh combobox
-      this.preenchedados();
+
 
       //preenche array para navegar nas manutenções 
       if (this.globalVar.getfiltros("manutencao_id") && this.globalVar.getfiltros("manutencao_id").length > 0) {
         this.manutencao = this.globalVar.getfiltros("manutencao_id");
         this.i = this.manutencao.indexOf(+id);
-        this.inicia(this.manutencao[this.i]);
+        this.preenchedados(true, this.manutencao[this.i]);
       }
       else {
         if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001planeamento")) {
@@ -166,8 +167,10 @@ export class ManutencaoformComponent implements OnInit {
             }
             this.i = this.manutencao.indexOf(+id);
             if (this.manutencao[this.i] == null) {
-              this.inicia(id)
-            } else this.inicia(this.manutencao[this.i]);
+
+              //preenceh combobox
+              this.preenchedados(true, id);
+            } else this.preenchedados(true, this.manutencao[this.i]);
           }, error => { console.log(error); });
       }
 
@@ -1344,7 +1347,7 @@ export class ManutencaoformComponent implements OnInit {
     }
   }
 
-  preenchedados() {
+  preenchedados(val = false, id = null) {
     //preenche combobox unidades
     this.ABUNIDADADEMEDIDAService.getAll().subscribe(
       response => {
@@ -1354,9 +1357,12 @@ export class ManutencaoformComponent implements OnInit {
           this.medidas.push({ label: response[x].medida, value: response[x].id_MEDIDA });
         }
         this.medidas = this.medidas.slice();
+        this.preenchelinhas(val, id);
       },
       error => console.log(error));
+  }
 
+  preenchelinhas(val, id) {
     //preenche combobox linhas
     this.ABDICLINHAService.getAll().subscribe(
       response => {
@@ -1367,9 +1373,12 @@ export class ManutencaoformComponent implements OnInit {
         }
         if (this.globalVar.getlinha() != 0) this.linha = this.linhas.find(item => item.value.id == this.globalVar.getlinha()).value;
         this.linhas = this.linhas.slice();
+        this.preenchetipo_man(val, id);
       },
       error => console.log(error));
+  }
 
+  preenchetipo_man(val, id) {
     //preenche combobox Tipo Manutenção
     this.ABDICTIPOMANUTENCAOService.getAll().subscribe(
       response => {
@@ -1379,9 +1388,13 @@ export class ManutencaoformComponent implements OnInit {
           this.tipo_manu.push({ label: response[x].nome_TIPO_MANUTENCAO, value: response[x].id_TIPO_MANUTENCAO });
         }
         this.tipo_manu = this.tipo_manu.slice();
+        this.preencheTurno(val, id);
       },
       error => console.log(error));
+  }
 
+
+  preencheTurno(val, id) {
     //preenche combobox Turno
     this.ABDICTURNOService.getAll().subscribe(
       response => {
@@ -1391,9 +1404,11 @@ export class ManutencaoformComponent implements OnInit {
           this.turno.push({ label: response[x].nome_TURNO, value: response[x].id_TURNO });
         }
         this.turno = this.turno.slice();
+        this.preencheAdicao(val, id);
       },
       error => console.log(error));
-
+  }
+  preencheAdicao(val, id) {
     //preenche combobox Tipo Adição
     this.ABDICTIPOADICAOService.getAll().subscribe(
       response => {
@@ -1403,9 +1418,11 @@ export class ManutencaoformComponent implements OnInit {
           this.tipo_adicao.push({ label: response[x].nome_TIPO_ADICAO, value: { id: response[x].id_TIPO_ADICAO, id195: response[x].id_TIPO_OPERACAO } });
         }
         this.tipo_adicao = this.tipo_adicao.slice();
+        this.preencheIntervalo(val, id);
       },
       error => console.log(error));
-
+  }
+  preencheIntervalo(val, id) {
     //preenche combobox Intervalo Oper.
     this.ABDICTIPOOPERACAOService.getAll().subscribe(
       response => {
@@ -1415,10 +1432,12 @@ export class ManutencaoformComponent implements OnInit {
           this.intervalo_op.push({ label: response[x].nome_TIPO_OPERACAO, value: { id: response[x].id_TIPO_OPERACAO, id195: response[x].id195 } });
         }
         this.intervalo_op = this.intervalo_op.slice();
+        this.preenchettz(val, id);
       },
       error => console.log(error));
+  }
 
-
+  preenchettz(val, id) {
     this.GERUTILIZADORESService.getAll().subscribe(
       response => {
         this.utilizadores = [];
@@ -1426,7 +1445,12 @@ export class ManutencaoformComponent implements OnInit {
           this.utilizadores.push({ label: response[x].id_UTILIZADOR + ' - ' + response[x].nome_UTILIZADOR, value: response[x].id_UTILIZADOR });
         }
         this.utilizadores = this.utilizadores.slice();
+        if (val) this.inicia(id)
       },
       error => console.log(error));
+  }
+
+  historico(id) {
+    this.router.navigate(['manutencao/historico'], { queryParams: { id: id } });
   }
 }

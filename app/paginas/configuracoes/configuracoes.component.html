@@ -131,6 +131,10 @@
                                         <input type="checkbox" id="node-0-0-1-7" /><label><input type="checkbox" [ngModelOptions]="{standalone: true}" #cbx id="node001execucao"   [(ngModel)]="checkbox.node001execucao" /><span></span></label>
                                         <label for="node-0-0-1-7" class="estados">Execução</label>
                                       </li>
+                                      <li>
+                                        <input type="checkbox" id="node-0-0-1-8" /><label><input type="checkbox" [ngModelOptions]="{standalone: true}" #cbx id="node001historico"   [(ngModel)]="checkbox.node001historico" /><span></span></label>
+                                        <label for="node-0-0-1-8" class="historico">Histórico</label>
+                                      </li>
                                     </ul>
                                   </li>
 
@@ -402,6 +406,16 @@
                               <li>
                                 <input type="checkbox" id="node-1-1" /><label><input type="checkbox" [ngModelOptions]="{standalone: true}" #cbx id="node11" [(ngModel)]="checkbox.node11" /><span></span></label>
                                 <label for="node-1-1" class="parametros">Perfis</label>
+                              </li>
+                              <li>
+                                <input type="checkbox" id="node-1-2" /><label><input type="checkbox" [ngModelOptions]="{standalone: true}" #cbx id="node12" [(ngModel)]="checkbox.node12" /><span></span></label>
+                                <label for="node-1-2">Parâmetros Aplicação</label>
+                                <ul>
+                                  <li>
+                                    <input type="checkbox" id="node-1-2-1" /><label><input type="checkbox" [ngModelOptions]="{standalone: true}"  #cbx id="node12editar"  [(ngModel)]="checkbox.node12editar" /><span></span></label>
+                                    <label for="node-1-2-1" class="editar">Editar</label>
+                                  </li>
+                                </ul>
                               </li>
                             </ul>
                           </li>

@@ -44,6 +44,13 @@ export class ABMOVMANUTENCAOLINHAService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
+  getbyID_comp(id, data): Observable<AB_MOV_MANUTENCAO_LINHA[]> {
+    const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAO_LINHAbyid_analise_comp/' + id ;
+    return this.http
+      .post(url, JSON.stringify(data), { headers: this.headers })
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
   delete(id) {
     return this.http
       .delete(webUrl.host + '/rest/sirb/deleteAB_MOV_MANUTENCAO_LINHA/' + id + '')

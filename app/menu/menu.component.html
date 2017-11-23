@@ -67,7 +67,7 @@
                     </div>
                 </div>
                 <div class="panel panel-default">
-                    <div class="panel-heading" [ngClass]="{ 'active': router.isActive('/utilizadores',true) || router.isActive('/config',true)}">
+                    <div class="panel-heading" [ngClass]="{ 'active': router.isActive('/utilizadores',true) || router.isActive('/config',true) || router.isActive('/parametros',true)}">
                         <h4 class="panel-title">
                             <a id="node1" data-toggle="collapse" data-parent="#accordion" href="#collapseConf"><span class="glyphicon glyphicon-cog ">
                             </span>Configurações</a>
@@ -84,6 +84,11 @@
                                 <tr>
                                     <td>
                                         <li id="node11" [routerLinkActive]="['active']" [routerLink]="['/config']"><a>Perfis</a></li>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <li id="node12" [routerLinkActive]="['active']" [routerLink]="['/parametros']"><a>Parâmetros Aplicação</a></li>
                                     </td>
                                 </tr>
                             </table>

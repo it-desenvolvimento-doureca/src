@@ -160,6 +160,8 @@ export class ControlosComponent implements OnInit {
       this.location.back();
     } else if (this.router.routerState.snapshot.url.search("registo/historico") > -1) {
       this.location.back();
+    }else if (this.router.routerState.snapshot.url.search("manutencao/historico") > -1) {
+      this.location.back();
     }else{
       this.router.navigate([this.currentpage]);
     }

@@ -1,4 +1,4 @@
-<app-controlos (atualiza)="atualizar()"></app-controlos>
+<app-controlos ></app-controlos>
 <div class="main-content">
   <div class="container-fluid">
     <div class="row">
@@ -10,40 +10,6 @@
           </div>
           <div class="card-content table-responsive">
 
-            <p-dataTable [style]="{'min-height':'100px'}" (onRowDblclick)="abrir($event)" [value]="cols" dataKey="id" [rows]="25" [paginator]="true"
-              [pageLinks]="3" [rowsPerPageOptions]="[25,50,100,'todos']">
-              <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="id" header="ID"></p-column>
-              <p-column [filter]="true" styleclass="text-danger" field="nome" header="Módulo"></p-column>
-              <p-column [filter]="true" styleclass="text-danger" field="estado" header="Estado">
-                <ng-template pTemplate="filter" let-col>
-                  <p-dropdown [options]="estados" [style]="{'width':'100%'}" (onChange)="filtrar($event.value,col.field)" styleClass="ui-column-filter"></p-dropdown>
-                </ng-template>
-                <ng-template let-car="rowData" pTemplate="body">
-                  <i *ngIf="car.estado == false" class="material-icons" style="color: red;">close</i>
-                  <i *ngIf="car.estado == true" class="material-icons" style="color: green;">check</i>
-                </ng-template>
-              </p-column>
-              <p-column styleClass="col-button" [style]="{'width':'10%'}">
-                <ng-template pTemplate="header">
-                  <a (click)="reset()" style="color: black; float: left; cursor: pointer;">
-                    <i class="fa fa-eraser" aria-hidden="true"> Limpar</i>
-                    <div class="ripple-container"></div>
-                  </a>
-                </ng-template>
-                <ng-template let-car="rowData" pTemplate="body">
-                  <a style="color: black; cursor:pointer;" title="Ver mais" [routerLink]="['/analises/view']" [queryParams]="{ id: car.id }">
-                    <i class="material-icons">search</i>
-                  </a>
-                </ng-template>
-              </p-column>
-              <p-column styleClass="col-button" [style]="{'width':'3%'}">
-                <ng-template let-car="rowData" pTemplate="body">
-                  <a style="color: black; cursor:pointer;" title="Ver mais" [routerLink]="['/analises/editar']" [queryParams]="{ id: car.id }">
-                    <span class="glyphicon glyphicon-cog " style="font-size: 20px; padding: 2px;"></span>
-                  </a>
-                </ng-template>
-              </p-column>
-            </p-dataTable>
           </div>
           <div style="width: 100%;">
             <div style="padding: 4px;">
