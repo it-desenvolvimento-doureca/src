@@ -32,7 +32,7 @@
               </p-column>
               <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="linha" header="Linha">
                 <ng-template pTemplate="filter" let-col>
-                  <p-dropdown [options]="linhas" [(ngModel)]="linha" [style]="{'width':'100%'}" (onChange)="filtrar($event.value,col.field)"
+                  <p-dropdown [options]="linhas" [(ngModel)]="linha" [style]="{'width':'100%'}" (onChange)="filtrar($event.value,col.field,true)"
                     styleClass="ui-column-filter"></p-dropdown>
                 </ng-template>
                 <ng-template let-car="rowData" pTemplate="body">

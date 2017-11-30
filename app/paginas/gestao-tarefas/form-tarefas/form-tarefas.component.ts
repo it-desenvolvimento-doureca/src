@@ -9,6 +9,7 @@ import { UploadService } from 'app/servicos/upload.service';
   styleUrls: ['./form-tarefas.component.css']
 })
 export class FormTarefasComponent implements OnInit {
+  progresso;
   username: any;
   user: any;
   listatarefas: any[];
@@ -19,6 +20,11 @@ export class FormTarefasComponent implements OnInit {
   psdTemplates: any;
   modoedicao = true;
   uploadedFiles: any[] = [];
+  tinas_valor;
+  tinas = [];
+  obs = "";
+  data = null;
+
   @ViewChild('fileInput') fileInput: FileUpload;
   @ViewChild('dialoglinhas') dialoglinhas: ElementRef;
   @ViewChild('closedialoglinha') closedialoglinha: ElementRef;
@@ -31,9 +37,9 @@ export class FormTarefasComponent implements OnInit {
     this.user = JSON.parse(localStorage.getItem('userapp'))["id"];
     this.username = JSON.parse(localStorage.getItem('userapp'))["nome"];
 
-    this.comentarios = [{id:"000", utilizador: "TIAGO", letra: "T", mensagem: "Fiz a Etapa 1", data: "2017-11-22" }];
+    this.comentarios = [{ id: "000", utilizador: "TIAGO", letra: "T", mensagem: "Fiz a Etapa 1", data: "2017-11-22 09:33" }];
 
-    this.listatarefas = [{estado : false,titulo:"Controlo Tina 1",user:"Manuel Santos",data_ini:new Date().toLocaleDateString(),data_fim:new Date().toLocaleDateString(),obs:"Atenção ao nível da água"}];
+    this.listatarefas = [{ estado: false, titulo: "Controlo Tina 1", user: "Manuel Santos", data_ini: new Date().toLocaleDateString(), data_fim: new Date().toLocaleDateString(), obs: "Atenção ao nível da água" }];
   }
 
   onUpload(event) {
@@ -53,7 +59,8 @@ export class FormTarefasComponent implements OnInit {
   }
 
   addmessage() {
-    this.comentarios.push({ id:this.user,utilizador: this.username, letra: "U", mensagem: this.mensagem, data: "2017-11-22" })
+    var letra = this.username.slice(0, 1);
+    this.comentarios.push({ id: this.user, utilizador: this.username, letra: letra, mensagem: this.mensagem, data: "2017-11-22 01:23" })
 
     this.mensagem = "";
   }
@@ -65,8 +72,26 @@ export class FormTarefasComponent implements OnInit {
     this.simular(this.dialoglinhas);
   }
 
-  gravaritem(){
-    this.listatarefas.push({estado : false,titulo:"Ver Tina 2",user:"Ana",data_ini: new Date().toLocaleDateString(this.datain_item),data_fim: new Date().toLocaleDateString(this.datafim_item),obs:"Teste obs"});
+  gravaritem() {
+    this.listatarefas.push({ estado: false, titulo: "Ver Tina 2", user: "Ana", data_ini: new Date().toLocaleDateString(this.datain_item), data_fim: new Date().toLocaleDateString(this.datafim_item), obs: "Teste obs" });
+    this.simular(this.closedialoglinha);
+    var count = 0;
+    var total = this.listatarefas.length;
+    for (var x in this.listatarefas) {
+      if (this.listatarefas[x].estado) count++;
+    }
+    this.progresso = (((count) / total) * 100).toFixed(0);
+  }
+
+  handleChange(e) {
+
+    var count = 0;
+    var total = this.listatarefas.length;
+    for (var x in this.listatarefas) {
+      if (this.listatarefas[x].estado) count++;
+    }
+    this.progresso = (((count) / total) * 100).toFixed(0);
+
   }
 
 
@@ -76,5 +101,12 @@ export class FormTarefasComponent implements OnInit {
     this.renderer.invokeElementMethod(
       element.nativeElement, 'dispatchEvent', [event]);
   }
-  
+
+  gravar() { }
+
+  anterior() { }
+  seguinte() { }
+  apagar() { }
+
+  backview() { }
 }

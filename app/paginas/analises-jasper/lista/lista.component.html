@@ -1,4 +1,4 @@
-<app-controlos ></app-controlos>
+<app-controlos></app-controlos>
 <div class="main-content">
   <div class="container-fluid">
     <div class="row">
@@ -15,8 +15,6 @@
             <div style="padding: 4px;">
               <div style="float: right;">
                 <input (keyup)="onQuickFilterChanged($event)" type="text" id="quickFilterInput" placeholder="Type text to filter..." />
-                <button [disabled]="!showGrid" (click)="showGrid=false">Destroy Grid</button>
-                <button [disabled]="showGrid" (click)="showGrid=true">Create Grid</button>
               </div>
               <div>
                 <b>Employees Skills and Contact Details</b>
@@ -36,6 +34,7 @@
                     <input type="checkbox" (change)="showToolPanel=$event.target.checked" /> Show Tool Panel
                   </label>
                   <button (click)="createRowData()">Refresh Data</button>
+                  <p-multiSelect [options]="familias" [style]="{'width':'20%'}"  [(ngModel)]="selectedCars1"></p-multiSelect>
                 </span>
               </div>
               <div style="clear: both;"></div>

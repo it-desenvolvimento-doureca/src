@@ -1,3 +1,11 @@
 #container label{
     width: 98px;
 }
+
+.adititable th{
+    padding-right: 0;
+    padding-left: 0;
+}
+.adititable tr{
+    font-size:  13px;
+}

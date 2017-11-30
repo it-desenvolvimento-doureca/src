@@ -7,6 +7,7 @@ import { HeaderComponent } from 'app/paginas/header-componente/header.component'
 import { GridOptions } from 'ag-grid';
 import { ABMOVANALISEService } from 'app/servicos/ab-mov-analise.service';
 import { ABMOVANALISELINHAService } from 'app/servicos/ab-mov-analise-linha.service';
+import { RegistoProducao } from 'app/servicos/registoproducao.service';
 
 
 @Component({
@@ -15,27 +16,47 @@ import { ABMOVANALISELINHAService } from 'app/servicos/ab-mov-analise-linha.serv
   styleUrls: ['./lista.component.css']
 })
 export class ListaComponent {
+  columdefeito: any[];
+  familias: any[] = [];
   private gridOptions: GridOptions;
   public showGrid: boolean;
   public rowData: any[];
   private columnDefs: any[];
   public rowCount: string;
+  selectedCars1: string[] = [];
   // public dateComponentFramework: DateComponent;
   public HeaderGroupComponent = this.HeaderGroupComponent;
 
 
-  constructor(private ABMOVANALISEService: ABMOVANALISEService, private ABMOVANALISELINHAService: ABMOVANALISELINHAService) {
+  constructor(private RegistoProducao: RegistoProducao, private ABMOVANALISEService: ABMOVANALISEService, private ABMOVANALISELINHAService: ABMOVANALISELINHAService) {
+
+    this.RegistoProducao.getAllfam().subscribe(
+      response => {
+        //console.log(response)
+        for (var x in response) {
+          this.familias.push({ label: response[x], value: response[x] })
+          //this.selectedCars1.push(response[x])
+        }
+
+        this.createRowData();
+      },
+      error => console.log(error));
+
+
+
     // we pass an empty gridOptions in, so we can grab the api out
     this.gridOptions = {
       columnDefs: this.columnDefs,
       rowData: null,
       enableSorting: true,
       enableFilter: true,
+      animateRows: true,
+      isExternalFilterPresent: isExternalFilterPresent,
+      doesExternalFilterPass: doesExternalFilterPass,
       rowGroupPanelShow: 'always'
     };
 
-    this.createRowData();
-    this.createColumnDefs();
+    //this.createColumnDefs();
     this.showGrid = true;
     //this.gridOptions.dateComponentFramework = DateComponent;
     this.gridOptions.defaultColDef = {
@@ -46,83 +67,106 @@ export class ListaComponent {
     }
   }
 
-
-
   analises() {
-    this.ABMOVANALISEService.getbyid_banho(5, 0, 30, 55).subscribe(
-      response => {
-        var count = Object.keys(response).length;
-        if (count > 0) {
-          var days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-
-          this.columnDefs.push({ headerName: "Componentes", field: "componente", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true })
-          this.columnDefs.push({ headerName: "Utilizadores", field: "utilizador", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true })
-          for (var x in response) {
-            var data = this.formatDate(response[x][1]);
-            this.columnDefs.push({ id: response[x][0], headerName: data, field: "c" + response[x][0], width: 120, enableValue: true, enableRowGroup: true, enablePivot: true })
-
-            //this.cabecalho.push({ id: response[x][0], data: data, hora: (response[x][2]).slice(0, 5), dia: days[new Date(response[x][1]).getDay()] });
-          }
-          this.componentes(55, 5, true);
+    this.columnDefs.push({
+      headerName: "Tipo", field: "tipo", width: 120, enableValue: true, filter: 'text', enableRowGroup: true, enablePivot: true, cellStyle: function (params) {
+        if (params.value == 'COMP') {
+          //mark police cells as red
+          return { backgroundColor: 'red' };
+        } else {
+          return { backgroundColor: 'green' };
         }
+      }
+    });
+    this.columnDefs.push({ headerName: "OF", field: "num_of", width: 120, enableValue: true, filter: 'text', enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({
+      headerName: "Data", field: "data", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true, comparator: dateComparator, filter: 'date', filterParams: {
+        comparator: function (filterLocalDateAtMidnight, cellValue) {
+          var dateAsString = cellValue;
+          var dateParts = dateAsString.split("/");
+          var cellDate = new Date(Number(dateParts[2]), Number(dateParts[1]) - 1, Number(dateParts[0]));
+
+          if (filterLocalDateAtMidnight.getTime() == cellDate.getTime()) {
+            return 0
+          }
+
+          if (cellDate < filterLocalDateAtMidnight) {
+            return -1;
+          }
+
+          if (cellDate > filterLocalDateAtMidnight) {
+            return 1;
+          }
+        }
+      }
+    });
+    this.columnDefs.push({ headerName: "Utilizadores", field: "utilizador", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "Componentes", field: "componente", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "Etiqueta", field: "etiqueta", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columdefeito = []
+    var count = 0;
+    for (var n in this.selectedCars1) {
+      count++;
+      this.columnfam(count, this.selectedCars1[n]);
+    }
+
+  }
+
+  columnfam(count, fam) {
+    this.RegistoProducao.getFam([fam]).subscribe(
+      res => {
+        var column = { headerName: "FAM " + fam,suppressMenu: true, field: "defeito", children: [] };
+        for (var x in res) {
+          column.children.push({ id: res[x], headerName: res[x], field: res[x], width: 120, enableValue: true, enableRowGroup: true, enablePivot: true })
+          this.columdefeito.push(res[x]);
+        }
+        this.columnDefs.push(column);
         this.columnDefs = this.columnDefs.slice();
-      },
-      error => { console.log(error); });
-  }
 
-
-
-  componentes(id, id_banho, graf) {
-    this.ABMOVANALISELINHAService.getbyid_analise(id, id_banho).subscribe(
-      response => {
-
-        var count = Object.keys(response).length;
-        //se existir componentes do banho
-
-        if (count > 0) {
-          var id_comp = [];
-          var rowData = [];
-          for (var x in response) {
-            id_comp.push(response[x][1].id_COMPONENTE)
-
-            rowData.push({ id: response[x][1].id_COMPONENTE, componente: response[x][1].nome_COMPONENTE,utilizador: response[x][1].utz_CRIA })
-
-            this.rowData = rowData;
-            ///this.corpo.push({ cor: cor, id: response[x][1].id_COMPONENTE, componente: response[x][1].nome_COMPONENTE, resultado: calculo, valores: dados })
-
-          }
-
-
-          for (var n in this.columnDefs) {
-            if (this.columnDefs[n].id  != null) {
-              this.getresultados(x, this.columnDefs[n].id, this.columnDefs[n].field, id_comp, id_banho);
-            }
-          }
+        if (count == this.selectedCars1.length) {
+          this.componentes(55, 5, true, this.selectedCars1);
         }
-
       },
-      error => { console.log(error); });
-
+      error => console.log(error));
   }
 
 
-  getresultados(num, id, col, id_comp, id_banho) {
 
-    this.ABMOVANALISELINHAService.getbyid_analise_comp(id, id_comp, id_banho).subscribe(
+  componentes(id, id_banho, graf, fam) {
+
+    this.RegistoProducao.getAll(fam).subscribe(
       response => {
-
-        for (var x in response) {
+        var total = Object.keys(response).length;
+        if (total > 0) {
           //console.log(response)
+          for (var y in response) {
 
-          this.rowData.find(item => item.id == response[x][0].id_COMPONENTE)[col] = (response[x][0].calculo != null) ? parseFloat(response[x][0].calculo) : "";
+            var rowData = [];
+            rowData['id'] = response[y][1];
+            rowData['tipo'] = (response[y][2] == null) ? "PF" : "COMP";
+            rowData['componente'] = response[y][8];
+            rowData['utilizador'] = response[y][7];
+            rowData['num_of'] = (response[y][0] == null) ? response[y][3] : response[y][0];
+            rowData['data'] = new Date(response[y][10]).toLocaleDateString();
+            rowData['etiqueta'] = response[y][6];
+            var count = 11;
+            for (var x in this.columdefeito) {
+              rowData[this.columdefeito[x]] = (response[y][count] == null) ? 0 : response[y][count];
+              count++;
+            }
+            this.rowData.push(rowData);
+          }
+
 
           this.rowData = this.rowData.slice();
-
         }
 
       },
       error => { console.log(error); });
+
   }
+
+
 
   //formatar a data para yyyy-mm-dd
   formatDate(date) {
@@ -141,37 +185,8 @@ export class ListaComponent {
     var rowData: any[] = [];
     this.rowData = [];
     this.columnDefs = [];
-    for (var i = 0; i < 50; i++) {
-
-      rowData.push({
-        athlete: "Nome Teste",
-        age: Math.round(Math.random() * 100),
-        address: "Morada Teste",
-        year: Math.round(Math.random() * 100),
-        proficiency: Math.round(Math.random() * 100),
-        country: Math.round(Math.random() * 100),
-        continent: Math.round(Math.random() * 100),
-        sport: Math.round(Math.random() * 100),
-        date: new Date(),
-      });
-    }
     this.analises();
-    //this.rowData = rowData;
   }
-
-  private createColumnDefs() {
-    var array = [{ headerName: "Athlete", field: "athlete", width: 150, enableValue: true, enableRowGroup: true, enablePivot: true },
-    { headerName: "Age", field: "age", width: 90, enableValue: true, enableRowGroup: true, enablePivot: true },
-    { headerName: "Country", field: "country", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true },
-    { headerName: "Year", field: "year", width: 90, enableValue: true, enableRowGroup: true, enablePivot: true },
-    { headerName: "Date", field: "date", width: 110, enableValue: true, enableRowGroup: true, enablePivot: true },
-    { headerName: "Sport", field: "sport", width: 110, enableValue: true, enableRowGroup: true, enablePivot: true },]
-    this.columnDefs = [];
-    /* for (var x in array) {
-       this.columnDefs.push({ headerName: array[x].headerName, field: array[x].field, width: array[x].width, enableValue: array[x].enableValue, enableRowGroup: array[x].enableRowGroup, enablePivot: array[x].enablePivot })
-     }*/
-  }
-
 
   private calculateRowCount() {
     if (this.gridOptions.api && this.rowData) {
@@ -287,5 +302,62 @@ function createRandomPhoneNumber() {
       result += ' ';
     }
   }
+  return result;
+}
+
+var ageType = 'everyone';
+
+function isExternalFilterPresent() {
+  // if ageType is not everyone, then we are filtering
+  return ageType != 'everyone';
+}
+
+function doesExternalFilterPass(node) {
+  switch (ageType) {
+    case 'below30': return node.data.age < 30;
+    case 'between30and50': return node.data.age >= 30 && node.data.age <= 50;
+    case 'above50': return node.data.age > 50;
+    case 'dateAfter2008': return asDate(node.data.date) > new Date(2008, 1, 1);
+    default: return true;
+  }
+}
+
+function asDate(dateAsString) {
+  var splitFields = dateAsString.split("/");
+  return new Date(splitFields[2], splitFields[1], splitFields[0]);
+}
+
+function externalFilterChanged(newValue) {
+  ageType = newValue;
+  this.gridOptions.api.onFilterChanged();
+}
+
+function dateComparator(date1, date2) {
+  var date1Number = monthToComparableNumber(date1);
+  var date2Number = monthToComparableNumber(date2);
+
+  if (date1Number === null && date2Number === null) {
+    return 0;
+  }
+  if (date1Number === null) {
+    return -1;
+  }
+  if (date2Number === null) {
+    return 1;
+  }
+
+  return date1Number - date2Number;
+}
+// eg 29/08/2004 gets converted to 20040829
+function monthToComparableNumber(date) {
+  if (date === undefined || date === null || date.length !== 10) {
+    return null;
+  }
+
+  var yearNumber = date.substring(6, 10);
+  var monthNumber = date.substring(3, 5);
+  var dayNumber = date.substring(0, 2);
+
+  var result = (yearNumber * 10000) + (monthNumber * 100) + dayNumber;
   return result;
 }

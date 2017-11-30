@@ -20,21 +20,21 @@
           <div class="card-content">
             <form id="formArranque" (ngSubmit)="gravar()" ngNativeValidate>
               <div class="row" style="border-bottom: 3px solid #ddd; margin-bottom: 10px;">
-                <div class="col-md-2">
+                <div class="col-md-2" style="width: 11%;">
                   <div [ngClass]="num_manutencao == '' ? 'is-empty' : null" class="form-group form-black label-floating ">
                     <label style="font-size: 14px;">Nº Manutenção</label>
                     <input disabled type="text" style="background: white;" [disabled]="true" class="form-control" style=" margin-top: -13px; padding-bottom: 0px;"
                       [(ngModel)]="num_manutencao" [ngModelOptions]="{standalone: true}">
                   </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2" style="width: 18%;">
                   <div class="form-group form-black label-floating">
                     <label style="font-size: 14px;">Tipo Manutenção</label>
-                    <p-dropdown [options]="tipo_manu" [style]="{'width':'210px'}" [(ngModel)]="tipo_manu_id" [ngModelOptions]="{standalone: true}"
+                    <p-dropdown [options]="tipo_manu" [style]="{'width':'205px'}" [(ngModel)]="tipo_manu_id" [ngModelOptions]="{standalone: true}"
                       [disabled]="!novo" [required]="true"></p-dropdown>
                   </div>
                 </div>
-                <div class="col-md-2 calendarmanu">
+                <div class="col-md-2 calendarmanu" style="width: 20%;">
                   <div [ngClass]="data_planeamento == '' ? 'is-empty' : null" class="form-group form-black label-floating">
                     <label style="font-size: 14px;">Data Planeamento</label>
                     <br>
@@ -62,7 +62,7 @@
                 <div class="col-md-1">
                   <div class="form-group form-black label-floating">
                     <label style="font-size: 14px;">Linha</label>
-                    <p-dropdown [style.background]="cor_linha" (onChange)="alteracorlinha($event)" [options]="linhas" class="droplinha" [style]="{'width':'100px'}"
+                    <p-dropdown [style.background]="cor_linha" (onChange)="alteracorlinha($event)" [options]="linhas" class="droplinha" [style]="{'width':'92px'}"
                       [(ngModel)]="linha" [ngModelOptions]="{standalone: true}" [disabled]="!novo" [required]="true">
                       <ng-template let-car pTemplate="item">
                         <div class="ui-helper-clearfix" [style.background]="car.value.cor" style="position: relative;height: 25px;">
@@ -75,7 +75,7 @@
                 <div class="col-md-1">
                   <div class="form-group form-black label-floating">
                     <label style="font-size: 14px;">Turno</label>
-                    <p-dropdown [options]="turno" [style]="{'width':'100px'}" [(ngModel)]="id_turno" [ngModelOptions]="{standalone: true}" [disabled]="!novo"
+                    <p-dropdown [options]="turno" [style]="{'width':'90px'}" [(ngModel)]="id_turno" [ngModelOptions]="{standalone: true}" [disabled]="!novo"
                       [required]="true"></p-dropdown>
                   </div>
                 </div>
@@ -90,7 +90,7 @@
               <div class="row" *ngFor="let item of arrayForm" id="container">
                 <form (ngSubmit)="gravarlinha(item.pos)" ngNativeValidate>
                   <div class="col-md-12 well">
-                    <div class="col-md-4 " style="width: 35%; padding:0px;">
+                    <div class="col-md-4 " style="width: 32%; padding:0px;">
                       <div class="form-group form-black label-floating">
                         <label style="font-size: 14px;">Banho</label>
                         <p-dropdown [filter]="true" [options]="banhos" [style]="{'width':'250px'}" [(ngModel)]="item.id_banho" [ngModelOptions]="{standalone: true}"
@@ -142,7 +142,7 @@
                           [required]="true" [disabled]="!modoedicao"></p-dropdown>
                       </div>
                       <div class="col-md-12  form-group form-black label-floating" style="padding: 0px;">
-                        <div class="col-md-9 form-group form-black label-floating" style="padding: 0px;">
+                        <div class="col-md-12 form-group form-black label-floating" style="padding: 0px;">
                           <div style="float: left;">
                             <label style="font-size: 14px;">Intervalo Oper.</label>
                             <p-dropdown #op [options]="intervalo_op" (onFocus)="alterarintervalo(op.value,item.pos,item.id_195)" [disabled]="item.disable_op || !modoedicao"
@@ -176,12 +176,12 @@
                           [disabled]="!modoedicao && item.preparado || planeamento">
                       </div>
                       <div class="col-md-12 form-group form-black label-floating" style="padding: 0px;">
-                        <div class=" col-md-6 form-group form-black label-floating" style="padding: 0px;">
+                        <div class=" col-md-12 form-group form-black label-floating" style="padding: 0px;">
                           <label style="font-size: 14px; float: left;">Resp. Prepara.</label>
                           <input type="text" style="background: white;" [disabled]="true" class="form-control" style="width: 55%; float: left; margin-top: -13px; margin-left: 8px; padding-bottom: 0px; padding-top: 13px;"
                             [(ngModel)]="item.resp_prep" [ngModelOptions]="{standalone: true}">
                         </div>
-                        <div class=" col-md-6 form-group form-black label-floating" style="padding: 0px;">
+                        <div class=" col-md-12 form-group form-black label-floating" style="padding: 0px;">
                           <label style="font-size: 14px; float: left;">Data/Hora Prep</label>
                           <input type="text" style="background: white;" [disabled]="true" class="form-control" style="width: 56%; float: left; margin-top: -13px; margin-left: 8px; padding-bottom: 0px; padding-top: 13px;"
                             [(ngModel)]="item.data_prep" [ngModelOptions]="{standalone: true}">
@@ -201,7 +201,7 @@
                           <input [hidden]="modoedicao && admin" type="text" style="background: white;" [disabled]="true" class="form-control" style="width: 55%; float: left; margin-top: -13px; margin-left: 8px; padding-bottom: 0px; padding-top: 13px;"
                             [(ngModel)]="item.resp_exe" [ngModelOptions]="{standalone: true}">
                         </div>
-                        <div [ngClass]="{ 'col-md-12': modoedicao && admin,'col-md-6': !modoedicao || !admin }" class="calendarmanu  form-group form-black label-floating"
+                        <div [ngClass]="{ 'col-md-12': modoedicao && admin,'col-md-12': !modoedicao || !admin }" class="calendarmanu  form-group form-black label-floating"
                           style="padding: 0px;">
                           <label style="font-size: 14px; float: left;">Data/Hora Exec</label>
                           <p-calendar [style]="{'width':'120px','height':'31px','padding':'0px 5px'}" dateFormat="yy-mm-dd" placeholder="yy-mm-dd"
@@ -217,20 +217,20 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-7" style="width: 60%; padding:0px;">
+                    <div class="col-md-7" style="width: 65%; padding:0px;">
                       <div class="ui-datatable-tablewrapper ui-datatable ui-widget">
-                        <table class="table table-striped">
+                        <table class="table table-striped adititable">
                           <thead class="ui-datatable-thead">
                             <tr>
                               <th style="font-weight: 700;">Aditivo</th>
                               <th style="width: 8%; font-weight: 700;">Valor 1</th>
                               <th style="width: 9%;  padding: .75em 0 .75em 0; font-weight: 700;">Valor Água</th>
-                              <th style="width: 10%; font-weight: 700;">Unid. 1</th>
+                              <th style="width: 9%; font-weight: 700;">Unid. 1</th>
                               <th style="width: 8%; font-weight: 700;">Valor 2</th>
-                              <th style="width: 10%; font-weight: 700;">Unid. 2</th>
+                              <th style="width: 9%; font-weight: 700;">Unid. 2</th>
                               <th style="width: 7%; font-weight: 700;">Stock</th>
                               <th style="width: 5%; font-weight: 700;">Unid.</th>
-                              <th style="font-weight: 700;">Observações</th>
+                              <th style="width: 20%; font-weight: 700;">Observações</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -334,7 +334,7 @@
                         </p-column>
                       </p-dataTable>-->
                     </div>
-                    <div class="col-md-1" style="padding:0px; text-align: -webkit-center; display: inline-grid; width: 5%; height: 100%; position: absolute;">
+                    <div class="col-md-1" style="padding:0px; text-align: -webkit-center; display: inline-grid; width: 4%; height: 100%; position: absolute;">
                       <div style=" margin: auto 0;">
                         <button title="Histórico" [disabled]="item.id == null || dishistorico" type="button" style="color: black;" class="btn btn-white btn-round btn-just-icon"
                           (click)="historico(item.id)">
@@ -346,7 +346,7 @@
                           <i class="material-icons">print</i>
                           <div class="ripple-container"></div>
                         </button>
-                        <button  title="Imprimir Etiquetas" [disabled]="item.id == null || disimprimir" type="button" style="color: black;" class="btn btn-white btn-round btn-just-icon"
+                        <button title="Imprimir Etiquetas" [disabled]="item.id == null || disimprimir" type="button" style="color: black;" class="btn btn-white btn-round btn-just-icon"
                           (click)="imprimir('manutencao_etiquetas',item.id)">
                           <i class="fa fa-tags" aria-hidden="true"></i>
                           <div class="ripple-container"></div>
@@ -448,7 +448,13 @@
           </ng-template>
         </p-column>
         <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="id" header="Código da Análise"></p-column>
-        <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="nome" header="Banho"></p-column>
+        <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="nome" header="Banho">
+          <ng-template let-car="rowData" pTemplate="body">
+            <div [style.background]="car['cor_banho']">
+              {{car['nome']}}
+            </div>
+          </ng-template>
+        </p-column>
         <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="tina" header="Tina"></p-column>
         <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="data" header="Data Registo"></p-column>
       </p-dataTable>

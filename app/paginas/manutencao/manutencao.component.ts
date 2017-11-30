@@ -55,7 +55,7 @@ export class ManutencaoComponent implements OnInit {
       this.turno = (array['turno'] != undefined) ? array['turno'].value : "";
       this.data = (array['data'] != undefined) ? array['data'].value : "";
       this.dataTableComponent.filters = array;
-      
+
       if (this.filtro2 != null && this.filtro2 != "") {
         var f = this.filtro2.split(',');
         for (var x in f) {
@@ -110,13 +110,13 @@ export class ManutencaoComponent implements OnInit {
       response => {
 
         for (var x in response) {
-          this.cols.push({ id: response[x][0].id_MANUTENCAO, tipo_manu: response[x][2].nome_TIPO_MANUTENCAO, data: this.formatDate(response[x][0].data_PLANEAMENTO), cor: response[x][1].cor, linha: response[x][1].nome_LINHA, turno: response[x][3].nome_TURNO, estado: response[x][0].estado });
+          this.cols.push({ id: response[x][0].id_MANUTENCAO, tipo_manu: response[x][2].nome_TIPO_MANUTENCAO, data: this.formatDate(response[x][0].data_PLANEAMENTO) + " - " + response[x][0].hora_PLANEAMENTO.slice(0, 5), cor: response[x][1].cor, linha: response[x][1].nome_LINHA, turno: response[x][3].nome_TURNO, estado: response[x][0].estado });
         }
         this.cols = this.cols.slice();
-        if (this.linha == null || this.linha == "" ) this.linha = this.globalVar.getlinha();
-        this.filtrar(this.linha, "linha");
+        if (this.linha == null || this.linha == "") this.linha = this.globalVar.getlinha();
+        this.filtrar(this.linha, "linha",true);
 
-        if (this.filtroval) this.filtrar(this.filtro, "estado", "in");
+        if (this.filtroval) this.filtrar(this.filtro, "estado",true, "in");
       },
       error => console.log(error));
 
@@ -128,7 +128,7 @@ export class ManutencaoComponent implements OnInit {
         for (var x in response) {
           this.linhas.push({ label: response[x].nome_LINHA, value: response[x].id_LINHA });
         }
-        if (this.linha == null || this.linha == "" )this.linha = this.globalVar.getlinha();
+        if (this.linha == null || this.linha == "") this.linha = this.globalVar.getlinha();
         this.linhas = this.linhas.slice();
       },
       error => console.log(error));
@@ -151,8 +151,8 @@ export class ManutencaoComponent implements OnInit {
   }
 
   //filtro coluna linha
-  filtrar(value, coluna, filtro = "contains") {
-    if (value == 0) {
+  filtrar(value, coluna, fil = false, filtro = "contains") {
+    if (value == 0 && fil) {
       value = "";
     }
     this.dataTableComponent.filter(value.toString(), coluna, filtro);

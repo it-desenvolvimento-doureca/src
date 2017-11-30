@@ -1316,7 +1316,16 @@ export class ManutencaoformComponent implements OnInit {
     this.ABMOVANALISEService.getAllmanu(idbanho, d).subscribe(
       response => {
         for (var x in response) {
-          this.pesquisa_analise.push({ id: response[x][0].id_ANALISE, linha: response[x][0].id_LINHA, data: this.formatDate(response[x][0].data_ANALISE), nome: response[x][2].nome_BANHO, tina: response[x][3].cod_TINA, cor: response[x][1].cor });
+          var cor = "";
+          if (response[x][0].cor_LIMITES == "vermelho") {
+            cor = "rgba(239, 19, 19, 0.58)";
+          } else if (response[x][0].cor_LIMITES == "amarelo") {
+            cor = "rgba(255, 255, 0, 0.62)";
+          } else {
+            cor = "none";
+          }
+
+          this.pesquisa_analise.push({ cor_banho: cor,id: response[x][0].id_ANALISE, linha: response[x][0].id_LINHA, data: this.formatDate(response[x][0].data_ANALISE), nome: response[x][2].nome_BANHO, tina: response[x][3].cod_TINA, cor: response[x][1].cor });
         }
         this.pesquisa_analise = this.pesquisa_analise.slice();
       },

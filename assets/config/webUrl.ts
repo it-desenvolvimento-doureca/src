@@ -4,6 +4,7 @@ export var webUrl = {
   mod_pro: true
 */
   host: 'http://localhost:8080/sgiid',
+  host_app: 'http://localhost:8080/app',
   mod_pro: false,
   /*
     mod_pro: false,

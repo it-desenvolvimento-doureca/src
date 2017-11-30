@@ -21,7 +21,7 @@
                   <div class="form-group form-black label-floating">
                     <p style="font-size: 14px;">Estado</p>
                     <p-dropdown [style]="{'width':'100%'}" [options]="tinas" [(ngModel)]="tinas_valor" [ngModelOptions]="{standalone: true}"
-                      (onChange)="num_tina($event)" [disabled]="!modoedicao" [required]="true"></p-dropdown>
+                      [disabled]="!modoedicao" [required]="true"></p-dropdown>
                   </div>
                   <div class="form-group form-black label-floating">
                     <p style="font-size: 14px;">Data Início</p>
@@ -33,7 +33,7 @@
                   <div class="form-group form-black label-floating">
                     <p style="font-size: 14px;">Prioridade</p>
                     <p-dropdown [style]="{'width':'100%'}" [options]="tinas" [(ngModel)]="tinas_valor" [ngModelOptions]="{standalone: true}"
-                      (onChange)="num_tina($event)" [disabled]="!modoedicao" [required]="true"></p-dropdown>
+                       [disabled]="!modoedicao" [required]="true"></p-dropdown>
                   </div>
                   <div class="form-group form-black label-floating">
                     <p style="font-size: 14px;">Data Limite</p>
@@ -48,7 +48,7 @@
                   </div>
                   <div class="form-group form-black label-floating">
                     <p style="font-size: 14px;">Progresso</p>
-                    <p-progressBar [value]="10"></p-progressBar>
+                    <p-progressBar [value]="progresso"></p-progressBar>
                   </div>
                 </div>
               </div>
@@ -78,7 +78,7 @@
                 <div *ngFor="let tarefa of listatarefas" class="dd-milestone">
                   <div class="col-md-12 dd-milestone-title" style="padding: 0;">
                     <div class="col-md-1" style="padding-left: 6px;     padding-bottom: 0;">
-                      <p-toggleButton [(ngModel)]="tarefa.estado" [ngModelOptions]="{standalone: true}" onLabel="Concluída" offLabel="Por Concluir"
+                      <p-toggleButton (onChange)="handleChange($event)" [(ngModel)]="tarefa.estado" [ngModelOptions]="{standalone: true}" onLabel="Concluída" offLabel="Por Concluir"
                         onIcon="fa-check-square" offIcon="fa-square"></p-toggleButton>
                     </div>
 
@@ -100,7 +100,7 @@
                         <i class="fa fa-trash" aria-hidden="true"></i>
                       </button>
                     </div>
-                    <div class="col-md-12 dd-milestone-title" style="padding-top: 0; padding-bottom: 0;">
+                    <div class="col-md-12 dd-milestone-title" style="padding-top: 0; padding-bottom: 0; padding-left: 124px; top: -9px;">
                       <strong>Observações:</strong>
                       {{tarefa.obs}}
                     </div>
@@ -152,8 +152,8 @@
                         </a>
                         <div class="media-body">
                           <div class="well well-lg" style="padding-bottom: 5px; padding-top: 5px; margin-bottom: 1px; width: 100%;">
-                            <h4 class="media-heading text-uppercase reviews">{{message.utilizador}}</h4>
-                            <h5 class="media-date text-uppercase reviews">{{message.data}}</h5>
+                            <h5 class="media-heading text-uppercase reviews">{{message.utilizador}}</h5>
+                            <h6 class="media-date text-uppercase reviews">{{message.data}}</h6>
                             <p class="media-comment" style="word-wrap: break-word;">
                               {{message.mensagem}}
                             </p>
@@ -211,7 +211,7 @@
                   <div class="form-group form-black label-floating">
                     <p style="font-size: 14px;">Estado</p>
                     <p-dropdown [style]="{'width':'100%'}" [options]="tinas" [(ngModel)]="tinas_valor" [ngModelOptions]="{standalone: true}"
-                      (onChange)="num_tina($event)" [disabled]="!modoedicao"></p-dropdown>
+                      [disabled]="!modoedicao"></p-dropdown>
                   </div>
                 </div>
                 <div class="col-md-4">
@@ -242,7 +242,7 @@
 
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+              <button type="button" #closedialoglinha class="btn btn-default" data-dismiss="modal">Fechar</button>
               <button type="submit" class="btn btn-primary">Gravar</button>
             </div>
           </form>

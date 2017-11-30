@@ -102,7 +102,7 @@
                             </span>Conta</a>
                         </h4>
                     </div>
-                    <div id="collapseThree" class="panel-collapse collapse">
+                    <div id="collapseConf"  id="collapseThree" class="panel-collapse collapse">
                         <div class="panel-body">
                             <table class="table">
                                 <tr>
@@ -113,6 +113,35 @@
                                 <tr>
                                     <td>
                                         <li><a (click)="logout()">Sair</a></li>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" [class.active]="router.isActive('/teste1',true)">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapsestats"><span class="glyphicon glyphicon-stats">
+                            </span>Demo</a>
+                        </h4>
+                    </div>
+                    <div id="collapsestats" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <table class="table">
+                                <tr>
+                                    <td>
+                                        <li [routerLinkActive]="['active']"><a [routerLink]="['/analises']">GRID</a></li>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <li [routerLinkActive]="['active']"><a [routerLink]="['/analises/editar']">GRID 1</a></li>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <li [routerLinkActive]="['active']"><a [routerLink]="['/analises/view']">GRID 2</a></li>
                                     </td>
                                 </tr>
                             </table>

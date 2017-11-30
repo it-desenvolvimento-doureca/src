@@ -9,6 +9,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./viewer.component.css']
 })
 export class ViewerComponent implements OnInit {
+  pass: any;
+  user: any;
   link: string;
   user_jasper: string;
   pass_jasper: string;
@@ -18,6 +20,9 @@ export class ViewerComponent implements OnInit {
 
   ngOnInit() {
     //j_username=jasperadmin&j_password=DourecA&
+    this.user = JSON.parse(localStorage.getItem('userapp'))["id"];
+    this.pass = JSON.parse(localStorage.getItem('userapp'))["pass"];
+    console.log(atob(this.pass));
     this.user_jasper= "";
     this.pass_jasper= "";
     this.link = "http://192.168.40.101/jasperserver/flow.html?singlesingon=y&_flowId=viewReportFlow&_flowId=viewReportFlow&ParentFolderUri=%2FAnalises_de_Gest%C3%A3o%2FProdu%C3%A7%C3%A3o&reportUnit=%2FAnalises_de_Gest%C3%A3o%2FProdu%C3%A7%C3%A3o%2FListagem_de_Guias_de_Remessa&standAlone=true";
