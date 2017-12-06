@@ -189,13 +189,10 @@ const routes: Routes = [
       { path: 'view', component: GestaoeventosComponent, canActivate: [LoginService], data: { breadcrumb: "Gestão Evento" } },
       { path: 'editar', component: GestaoeventosComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } }]
   },
-  {
-    path: 'analises', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Análises Jasper" },
-    children: [
-      { path: '', component: ListaComponent, canActivate: [LoginService], data: { breadcrumb: "" } },
-      { path: 'view', component: ViewerComponent, canActivate: [LoginService], data: { breadcrumb: "Vizualização" } },
-      { path: 'editar', component: ConfComponent, canActivate: [LoginService], data: { breadcrumb: "Configurações" } }]
-  },
+  { path: 'grid', component: ListaComponent, canActivate: [LoginService], data: { breadcrumb: "Grid" } },
+  { path: 'analisesjasper', component: ViewerComponent, canActivate: [LoginService], data: { breadcrumb: "Análises Jasper" } },
+  { path: 'configjasper', component: ConfComponent, canActivate: [LoginService], data: { breadcrumb: "Configurações Jasper" } },
+
   { path: 'login', component: LoginComponent },
   {
     path: '',

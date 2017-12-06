@@ -5,7 +5,7 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-header" data-background-color="red">
-            <h4 class="title">Análises Jasper</h4>
+            <h4 class="title">GRID</h4>
             <p class="category"></p>
           </div>
           <div class="card-content table-responsive">
@@ -13,11 +13,9 @@
           </div>
           <div style="width: 100%;">
             <div style="padding: 4px;">
-              <div style="float: right;">
-                <input (keyup)="onQuickFilterChanged($event)" type="text" id="quickFilterInput" placeholder="Type text to filter..." />
-              </div>
+              
               <div>
-                <b>Employees Skills and Contact Details</b>
+                <b>Número de Linhas</b>
                 {{rowCount}}
               </div>
             </div>
@@ -27,14 +25,14 @@
 
               <div style="padding: 4px;" class="toolbar">
                 <span>
-                  Grid API:
-                  <button (click)="gridOptions.api.selectAll()">Select All</button>
-                  <button (click)="gridOptions.api.deselectAll()">Clear Selection</button>
-                  <label>
+                  <button (click)="gridOptions.api.selectAll()">Seleccionar Tudo</button>
+                  <button (click)="gridOptions.api.deselectAll()">Remover Selecção</button>
+                  <!-- <label>
                     <input type="checkbox" (change)="showToolPanel=$event.target.checked" /> Show Tool Panel
-                  </label>
-                  <button (click)="createRowData()">Refresh Data</button>
-                  <p-multiSelect [options]="familias" [style]="{'width':'20%'}"  [(ngModel)]="selectedCars1"></p-multiSelect>
+                  </label>-->
+                  <button (click)="createRowData()">Atualizar Gráfico</button>
+                  <p-multiSelect [options]="familias" [style]="{'width':'20%'}" [(ngModel)]="selectedCars1"></p-multiSelect>
+                  <input (keyup)="onQuickFilterChanged($event)" type="text" id="quickFilterInput" placeholder="Type text to filter..." />
                 </span>
               </div>
               <div style="clear: both;"></div>

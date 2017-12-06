@@ -47,7 +47,7 @@ export class ConfComponent implements OnInit {
   constructor(private location: Location, private confirmationService: ConfirmationService, private GERMODULOService: GERMODULOService, private renderer: Renderer, private GERANALISESService: GERANALISESService, private globalVar: AppGlobals) { }
 
   ngOnInit() {
-    this.globalVar.setvoltar(true);
+    this.globalVar.setvoltar(false);
     this.globalVar.seteditar(false);
     this.globalVar.setapagar(false);
     this.globalVar.setseguinte(false);

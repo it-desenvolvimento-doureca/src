@@ -53,7 +53,86 @@ export class ListaComponent {
       animateRows: true,
       isExternalFilterPresent: isExternalFilterPresent,
       doesExternalFilterPass: doesExternalFilterPass,
-      rowGroupPanelShow: 'always'
+      rowGroupPanelShow: 'always',
+      localeText: {
+        // for filter panel
+        page: 'Página',
+        more: 'mais',
+        to: 'para',
+        of: 'do',
+        next: 'seguinte',
+        last: 'Último',
+        first: 'Primeiro',
+        previous: 'Anterior',
+        loadingOoo: 'A carregar...',
+        // for set filter
+        selectAll: 'Seleccionar tudo',
+        searchOoo: 'Pesquisar...',
+        blanks: 'espaços em branco',
+        // for number filter and text filter
+        filterOoo: 'Filtrar...',
+        applyFilter: 'Aplicar Filtro...',
+        // for number filter
+        equals: 'É igual a',
+        notEqual: 'Não é igual a',
+        lessThanOrEqual: 'Menor ou igual',
+        greaterThanOrEqual: 'Maior ou igual',
+        inRange:'No alcance',
+        lessThan: 'Menor que',
+        greaterThan: 'Maior que',
+        // for text filter
+        contains: 'Contém',
+        notContains: 'Não Contém',
+        startsWith: 'Começa com',
+        endsWith: 'Termina com',
+        // the header of the default group column
+        group: 'Crupo',
+        // tool panel
+        columns: 'Colunas',
+        rowGroupColumns: 'Pivot Cols',
+        rowGroupColumnsEmptyMessage: 'Arraste colunas para agrupar',
+        valueColumns: 'Coluna dos Valores',
+        pivotMode: 'Pivot-Mode',
+        groups: 'Grupos',
+        values: 'Valores',
+        pivots: 'Pivots',
+        valueColumnsEmptyMessage: 'Arraste cols para agregar',
+        pivotColumnsEmptyMessage: 'Arraste para aqui para girar.',
+        // other
+        noRowsToShow: 'Sem linhas',
+        // enterprise menu
+        pinColumn: 'Fixar Coluna',
+        valueAggregation: 'Agregar Valores',
+        autosizeThiscolumn: 'Tamanho automático',
+        autosizeAllColumns: 'Tamanho automático em todas as colunas',
+        groupBy: 'Agrupar por',
+        ungroupBy: 'Desagrupar por',
+        resetColumns: 'Repor as colunas',
+        expandAll: 'Expandir tudo',
+        collapseAll: 'Fechar tudo',
+        toolPanel: 'Painel de Ferramentas',
+        export: 'Exportar',
+        csvExport: 'CSV Export',
+        excelExport: 'Excel Export',
+        // enterprise menu pinning
+        pinLeft: 'Fixar Esquerda',
+        pinRight: 'Fixar Direita',
+        noPin: 'Não Fixar',
+        // enterprise menu aggregation and status panel
+        sum: 'Soma',
+        min: 'Memor',
+        max: 'Maior',
+        none: 'Nada',
+        count: 'Contar',
+        average: 'Média',
+        // standard menu
+        copy: 'Cópiar',
+        ctrlC: 'ctrl + C',
+        paste: 'Colar',
+        ctrlV: 'ctrl + V'
+    }
+      
+
     };
 
     //this.createColumnDefs();

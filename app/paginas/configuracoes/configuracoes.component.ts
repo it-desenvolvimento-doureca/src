@@ -59,7 +59,6 @@ export class ConfiguracoesComponent implements OnInit {
       },
       error => console.log(error));
 
-    //this.tree_nodes();
   }
   //ao alterar combo modulo
   atualizaperfil() {
@@ -103,6 +102,7 @@ export class ConfiguracoesComponent implements OnInit {
     this.id_perfil = event.data.id;
     this.nome_perfil = event.data.nome;
     this.novo_perfil = false;
+    this.tree_nodes(this.id_modulo);
   }
 
   //bt gravar
@@ -256,10 +256,11 @@ export class ConfiguracoesComponent implements OnInit {
   }
 
   //criar array arvore analises
-  tree_nodes() {
+  tree_nodes(id) {
+    this.nodes= [];
     var array = [{ id: 0, parent: null, name: 'Análises', link: null, ativo: true }];
 
-    this.GERANALISESService.getAll().subscribe(result => {
+    this.GERANALISESService.getbyidmodulo(id).subscribe(result => {
       for (var x in result) {
         array.push({ id: result[x].id, parent: result[x].id_PAI, name: result[x].descricao, link: result[x].link, ativo: result[x].ativo })
       }
