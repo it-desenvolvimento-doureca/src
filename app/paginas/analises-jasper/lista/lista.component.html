@@ -12,13 +12,13 @@
 
           </div>
           <div style="width: 100%;">
-            <div style="padding: 4px;">
-              
+            <!--<div style="padding: 4px;">
+
               <div>
                 <b>Número de Linhas</b>
                 {{rowCount}}
               </div>
-            </div>
+            </div>-->
             <div style="clear: both;"></div>
 
             <div *ngIf="showGrid">
@@ -31,10 +31,49 @@
                     <input type="checkbox" (change)="showToolPanel=$event.target.checked" /> Show Tool Panel
                   </label>-->
                   <button (click)="createRowData()">Atualizar Gráfico</button>
-                  <p-multiSelect [options]="familias" [style]="{'width':'20%'}" [(ngModel)]="selectedCars1"></p-multiSelect>
-                  <input (keyup)="onQuickFilterChanged($event)" type="text" id="quickFilterInput" placeholder="Type text to filter..." />
+                  <p-multiSelect [options]="familias" [style]="{'width':'10%','top':'13px','height':'31px'}" [(ngModel)]="selectedCars1"></p-multiSelect>
+                  <p-dropdown [style]="{'width':'20%'}" [(ngModel)]="num_vista" [options]="config" (onChange)="configuracoes($event)" filter="true"></p-dropdown>
+                  <button (click)="gravarState()">Gravar Vista</button>
+                  <button (click)="newState()">Nova Vista</button>
+                  <button (click)="editState()">Editar Vista</button>
+                  <button (click)="restoreState()">Restaurar Vista</button>
+                  <button (click)="resetState()">Reset Vista</button>
                 </span>
               </div>
+              <div class="col-md-12">
+                <div class="col-md-2">
+                  <input (keyup)="onQuickFilterChanged($event)" type="text" id="quickFilterInput" placeholder="Pesquisar..." />
+                </div>
+                <div class="col-md-2">
+                  Por página:
+                  <p-dropdown [(ngModel)]="page_size" #dd [options]="paginasize" (onChange)="onPageSizeChanged($event)" filter="true"></p-dropdown>
+                </div>
+                <div class="col-md-8">
+                  <div>
+                    <ul class="pager" style="margin: 0px; width: 480px;">
+                      <li class="previous">
+                        <a (click)="onBtFirst()">
+                          << Primeira</a>
+                      </li>
+                      <li class="previous">
+                        <a (click)="onBtPrevious()">
+                          < Anterior</a>
+                      </li>
+                      <span style="top: 7px; position: relative;">Página
+                        <span class="value" id="lbCurrentPage">-</span> de
+                        <span class="value" id="lbTotalPages">-</span>
+                      </span>
+                      <li class="next">
+                        <a (click)="onBtLast()" [class.disabled]="ultimodisable">Última >> </a>
+                      </li>
+                      <li class="next">
+                        <a (click)="onBtNext()">Seguinte > </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
               <div style="clear: both;"></div>
               <div style="padding: 4px;" class="toolbar">
 
@@ -46,18 +85,38 @@
                 suppressRowClickSelection rowHeight="22" rowSelection="multiple" (modelUpdated)="onModelUpdated()" (cellClicked)="onCellClicked($event)"
                 (cellDoubleClicked)="onCellDoubleClicked($event)" (cellContextMenu)="onCellContextMenu($event)" (cellValueChanged)="onCellValueChanged($event)"
                 (cellFocused)="onCellFocused($event)" (rowSelected)="onRowSelected($event)" (selectionChanged)="onSelectionChanged()"
-                (beforeFilterChanged)="onBeforeFilterChanged()" (afterFilterChanged)="onAfterFilterChanged()" (filterModified)="onFilterModified()"
-                (beforeSortChanged)="onBeforeSortChanged()" (afterSortChanged)="onAfterSortChanged()" (virtualRowRemoved)="onVirtualRowRemoved($event)"
-                (rowClicked)="onRowClicked($event)" (gridReady)="onReady($event)" (columnEverythingChanged)="onColumnEvent($event)"
-                (columnRowGroupChanged)="onColumnEvent($event)" (columnValueChanged)="onColumnEvent($event)" (columnMoved)="onColumnEvent($event)"
-                (columnVisible)="onColumnEvent($event)" (columnGroupOpened)="onColumnEvent($event)" (columnResized)="onColumnEvent($event)"
-                (columnPinnedCountChanged)="onColumnEvent($event)">
+                [pagination]="true" (beforeFilterChanged)="onBeforeFilterChanged()" (afterFilterChanged)="onAfterFilterChanged()"
+                (filterModified)="onFilterModified()" (beforeSortChanged)="onBeforeSortChanged()" (afterSortChanged)="onAfterSortChanged()"
+                (virtualRowRemoved)="onVirtualRowRemoved($event)" (rowClicked)="onRowClicked($event)" (gridReady)="onReady($event)"
+                (columnEverythingChanged)="onColumnEvent($event)" (columnRowGroupChanged)="onColumnEvent($event)" (columnValueChanged)="onColumnEvent($event)"
+                (columnMoved)="onColumnEvent($event)" (columnVisible)="onColumnEvent($event)" (columnGroupOpened)="onColumnEvent($event)"
+                (columnResized)="onColumnEvent($event)" (columnPinnedCountChanged)="onColumnEvent($event)" (paginationChanged)="onPaginationChanged($event)">
               </ag-grid-angular>
             </div>
-
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+
+<!--- popup gravar VISTA -->
+
+<p-dialog header="Vista Nova/Editar" [(visible)]="displayVista" [draggable]="false"  modal="modal" [responsive]="true">
+  <form role="form" ngNativeValidate (ngSubmit)="saveState()">
+    <div class="col-md-12" style="text-align: center;">
+      <div class="form-group form-black label-floating">
+        <p style="font-size: 14px;">Descrição Vista</p>
+        <input type="text" [(ngModel)]="texto_vista" [ngModelOptions]="{standalone: true}" class="" id="usr" required>
+      </div>
+    </div>
+    <p-footer>
+      <div class="col-md-12" style="text-align: center; margin-top: 10px;">
+        <button type="submit" pButton icon="fa-check" label="Gravar"></button>
+        <button type="button" pButton icon="fa-close" (click)="displayVista=false" label="Cancelar"></button>
+        <button type="button" pButton icon="fa-trash"  [hidden]="novo"  class="ui-button-danger" (click)="remover()" label="Remover"></button>
+      </div>
+    </p-footer>
+  </form>
+</p-dialog>

@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { DataTable } from 'primeng/primeng';
+import { Component, OnInit, ViewChild, Renderer } from '@angular/core';
+import { DataTable, ConfirmationService } from 'primeng/primeng';
 
 import { AppGlobals } from 'app/menu/sidebar.metadata';
 import { Router } from '@angular/router';
@@ -8,6 +8,8 @@ import { GridOptions } from 'ag-grid';
 import { ABMOVANALISEService } from 'app/servicos/ab-mov-analise.service';
 import { ABMOVANALISELINHAService } from 'app/servicos/ab-mov-analise-linha.service';
 import { RegistoProducao } from 'app/servicos/registoproducao.service';
+import { GERVISTASService } from 'app/servicos/ger-vistas.service';
+import { GER_VISTAS } from 'app/entidades/GER_VISTAS';
 
 
 @Component({
@@ -16,19 +18,32 @@ import { RegistoProducao } from 'app/servicos/registoproducao.service';
   styleUrls: ['./lista.component.css']
 })
 export class ListaComponent {
+  page_size;
+  novo: boolean;
+  texto_vista: any;
+  displayVista: boolean;
+  num_vista: any;
+  user: number;
+  array = [];
   columdefeito: any[];
   familias: any[] = [];
-  private gridOptions: GridOptions;
+  public gridOptions: GridOptions;
   public showGrid: boolean;
   public rowData: any[];
   private columnDefs: any[];
   public rowCount: string;
+  public ultimodisable = false;
   selectedCars1: string[] = [];
+  paginasize = [{ label: '10', value: '10' }, { label: '100', value: '100' }, { label: '500', value: '500' }, { label: 'Todos', value: 'todos' }]
+  config = [];
+
   // public dateComponentFramework: DateComponent;
   public HeaderGroupComponent = this.HeaderGroupComponent;
 
 
-  constructor(private RegistoProducao: RegistoProducao, private ABMOVANALISEService: ABMOVANALISEService, private ABMOVANALISELINHAService: ABMOVANALISELINHAService) {
+  constructor(private renderer: Renderer, private confirmationService: ConfirmationService, private GERVISTASService: GERVISTASService, private RegistoProducao: RegistoProducao, private ABMOVANALISEService: ABMOVANALISEService, private ABMOVANALISELINHAService: ABMOVANALISELINHAService) {
+
+    this.user = JSON.parse(localStorage.getItem('userapp'))["id"];
 
     this.RegistoProducao.getAllfam().subscribe(
       response => {
@@ -43,6 +58,25 @@ export class ListaComponent {
       error => console.log(error));
 
 
+    this.GERVISTASService.getAll().subscribe(
+      response => {
+        //console.log(response)
+        this.config.push({ label: 'Sel. Vista', value: 0 });
+        this.num_vista = 0;
+
+        for (var x in response) {
+          this.config.push({ label: response[x].descricao, value: response[x].id })
+          this.array.push({
+            id: response[x].id, descricao: response[x].descricao,
+            colState: JSON.parse(response[x].colstate), sortState: JSON.parse(response[x].sortstate),
+            groupState: JSON.parse(response[x].groupstate), filterState: JSON.parse(response[x].filterstate)
+          });
+
+        }
+
+        this.createRowData();
+      },
+      error => console.log(error));
 
     // we pass an empty gridOptions in, so we can grab the api out
     this.gridOptions = {
@@ -51,6 +85,8 @@ export class ListaComponent {
       enableSorting: true,
       enableFilter: true,
       animateRows: true,
+      paginationPageSize: 10,
+      suppressPaginationPanel: true,
       isExternalFilterPresent: isExternalFilterPresent,
       doesExternalFilterPass: doesExternalFilterPass,
       rowGroupPanelShow: 'always',
@@ -59,8 +95,8 @@ export class ListaComponent {
         page: 'Página',
         more: 'mais',
         to: 'para',
-        of: 'do',
-        next: 'seguinte',
+        of: 'de',
+        next: 'Seguinte',
         last: 'Último',
         first: 'Primeiro',
         previous: 'Anterior',
@@ -77,7 +113,7 @@ export class ListaComponent {
         notEqual: 'Não é igual a',
         lessThanOrEqual: 'Menor ou igual',
         greaterThanOrEqual: 'Maior ou igual',
-        inRange:'No alcance',
+        inRange: 'No alcance',
         lessThan: 'Menor que',
         greaterThan: 'Maior que',
         // for text filter
@@ -120,18 +156,20 @@ export class ListaComponent {
         noPin: 'Não Fixar',
         // enterprise menu aggregation and status panel
         sum: 'Soma',
-        min: 'Memor',
+        min: 'Menor',
         max: 'Maior',
-        none: 'Nada',
-        count: 'Contar',
+        none: 'Nenhum',
+        count: 'Contagem',
         average: 'Média',
+        avg: 'Média',
         // standard menu
-        copy: 'Cópiar',
+        copy: 'Copiar',
+        copyWithHeaders: 'Copiar com Cabeçalhos',
         ctrlC: 'ctrl + C',
         paste: 'Colar',
         ctrlV: 'ctrl + V'
-    }
-      
+      }
+
 
     };
 
@@ -146,13 +184,24 @@ export class ListaComponent {
     }
   }
 
+  onPaginationChanged() {
+    if (this.gridOptions.api) {
+      setText("#lbCurrentPage", this.gridOptions.api.paginationGetCurrentPage() + 1);
+      setText("#lbTotalPages", this.gridOptions.api.paginationGetTotalPages());
+      this.setLastButtonDisabled(!this.gridOptions.api.paginationIsLastPageFound());
+    }
+  }
+
+  setLastButtonDisabled(disabled) {
+    this.ultimodisable = disabled;
+  }
+
   analises() {
     this.columnDefs.push({
       headerName: "Tipo", field: "tipo", width: 120, enableValue: true, filter: 'text', enableRowGroup: true, enablePivot: true, cellStyle: function (params) {
         if (params.value == 'COMP') {
-          //mark police cells as red
           return { backgroundColor: 'red' };
-        } else {
+        } else if(params.value == 'PF')  {
           return { backgroundColor: 'green' };
         }
       }
@@ -194,7 +243,7 @@ export class ListaComponent {
   columnfam(count, fam) {
     this.RegistoProducao.getFam([fam]).subscribe(
       res => {
-        var column = { headerName: "FAM " + fam,suppressMenu: true, field: "defeito", children: [] };
+        var column = { headerName: "FAM " + fam, suppressMenu: true, field: "defeito", children: [] };
         for (var x in res) {
           column.children.push({ id: res[x], headerName: res[x], field: res[x], width: 120, enableValue: true, enableRowGroup: true, enablePivot: true })
           this.columdefeito.push(res[x]);
@@ -245,6 +294,184 @@ export class ListaComponent {
 
   }
 
+  remover() {
+    this.confirmationService.confirm({
+      message: 'Tem a certeza que pretende Eliminar?',
+      header: 'Eliminar Confirmação',
+      icon: 'fa fa-trash',
+      accept: () => {
+
+        this.GERVISTASService.delete(this.num_vista).then(result => {
+          var index = this.config.findIndex(item => item.value == this.num_vista);
+          if (index > -1) {
+            this.config.splice(index, 1);
+          }
+          this.displayVista = false;
+          this.num_vista = 0;
+        }, error => {
+          console.log(error); /*this.simular(this.inputerro);*/
+        });
+      }
+    });
+  }
+
+  gravarState() {
+    this.novo = false;
+    if (this.num_vista != 0) {
+      this.saveState();
+    }
+  }
+
+  editState() {
+    this.novo = false;
+    this.texto_vista = this.config.find(item => item.value == this.num_vista).label;
+    if (this.num_vista != 0) {
+      this.displayVista = true;
+    }
+  }
+
+  newState() {
+    this.novo = true;
+    this.texto_vista = "";
+    this.displayVista = true;
+  }
+
+  saveState() {
+
+    if (!this.novo) {
+
+      this.confirmationService.confirm({
+        message: 'Tem a certeza que pretende Alterar?',
+        header: 'Alterar Confirmação',
+        icon: 'fa fa-save',
+        accept: () => {
+          var vistas = new GER_VISTAS;
+          vistas.id_UTZ = this.user;
+          vistas.id = this.num_vista;
+          vistas.colstate = JSON.stringify(this.gridOptions.columnApi.getColumnState());
+          vistas.groupstate = JSON.stringify(this.gridOptions.columnApi.getColumnGroupState());
+          vistas.sortstate = JSON.stringify(this.gridOptions.api.getSortModel());
+          vistas.filterstate = JSON.stringify(this.gridOptions.api.getFilterModel());
+          vistas.descricao = this.texto_vista;
+          this.GERVISTASService.update(vistas).then(result => {
+            var array = this.array.find(item => item.id == this.num_vista);
+            this.config.find(item => item.value == this.num_vista).label = this.texto_vista;
+
+            if (array) {
+              array.colState = JSON.parse(vistas.colstate);
+              array.groupState = JSON.parse(vistas.groupstate);
+              array.sortState = JSON.parse(vistas.sortstate);
+              array.filterState = JSON.parse(vistas.filterstate);
+              array.descricao = vistas.descricao;
+            }
+            this.displayVista = false;
+
+          }, error => {
+            console.log(error); /*this.simular(this.inputerro);*/
+          });
+        }
+      });
+
+    } else {
+      this.confirmationService.confirm({
+        message: 'Tem a certeza que pretende Gravar?',
+        header: 'Gravar Confirmação',
+        icon: 'fa fa-save',
+        accept: () => {
+          //this.displayVista = true;
+          this.gravarVista();
+        }
+      });
+    }
+
+
+  }
+
+  gravarVista() {
+    var vistas = new GER_VISTAS;
+    vistas.id_UTZ = this.user;
+    vistas.colstate = JSON.stringify(this.gridOptions.columnApi.getColumnState());
+    vistas.groupstate = JSON.stringify(this.gridOptions.columnApi.getColumnGroupState());
+    vistas.sortstate = JSON.stringify(this.gridOptions.api.getSortModel());
+    vistas.filterstate = JSON.stringify(this.gridOptions.api.getFilterModel());
+    vistas.descricao = this.texto_vista;
+    this.GERVISTASService.create(vistas).subscribe(result => {
+
+      this.array.push({
+        id: result.id, descricao: result.descricao,
+        colState: JSON.parse(result.colstate), sortState: JSON.parse(result.sortstate),
+        groupState: JSON.parse(result.groupstate), filterState: JSON.parse(result.filterstate)
+      });
+      this.config.push({ label: result.descricao, value: result.id })
+      this.num_vista = result.id;
+      this.displayVista = false;
+
+    }, error => {
+      console.log(error); /*this.simular(this.inputerro);*/
+    });
+  }
+
+  restoreState() {
+    var array = this.array.find(item => item.id == this.num_vista);
+    if (array) {
+      this.gridOptions.columnApi.setColumnState(array.colState);
+      this.gridOptions.columnApi.setColumnGroupState(array.groupState);
+      this.gridOptions.api.setSortModel(array.sortState);
+      this.gridOptions.api.setFilterModel(array.filterState);
+    }
+  }
+
+  resetState() {
+    this.gridOptions.columnApi.resetColumnState();
+    this.gridOptions.columnApi.resetColumnGroupState();
+    this.gridOptions.api.setSortModel(null);
+    this.gridOptions.api.setFilterModel(null);
+  }
+
+
+  //simular click para mostrar mensagem
+  simular(element) {
+    let event = new MouseEvent('click', { bubbles: true });
+    this.renderer.invokeElementMethod(
+      element.nativeElement, 'dispatchEvent', [event]);
+  }
+
+  onPageSizeChanged(value) {
+    var valor = value.value
+    if (valor == 'todos') valor = this.rowData.length;
+    this.gridOptions.api.paginationSetPageSize(Number(valor));
+  }
+
+  configuracoes(event) {
+    this.texto_vista = this.config.find(item => item.value == this.num_vista).label;
+    if (this.num_vista != 0) {
+      var array = this.array.find(item => item.id == this.num_vista);
+      if (array) {
+        this.gridOptions.columnApi.setColumnState(array.colState);
+        this.gridOptions.columnApi.setColumnGroupState(array.groupState);
+        this.gridOptions.api.setSortModel(array.sortState);
+        this.gridOptions.api.setFilterModel(array.filterState);
+      }
+    } else {
+      this.resetState();
+    }
+  }
+
+  onBtFirst() {
+    this.gridOptions.api.paginationGoToFirstPage();
+  }
+
+  onBtLast() {
+    this.gridOptions.api.paginationGoToLastPage();
+  }
+
+  onBtNext() {
+    this.gridOptions.api.paginationGoToNextPage();
+  }
+
+  onBtPrevious() {
+    this.gridOptions.api.paginationGoToPreviousPage();
+  }
 
 
   //formatar a data para yyyy-mm-dd
@@ -268,6 +495,8 @@ export class ListaComponent {
   }
 
   private calculateRowCount() {
+    if (this.page_size == 'todos') this.gridOptions.api.paginationSetPageSize(Number(this.rowData.length));
+
     if (this.gridOptions.api && this.rowData) {
       var model = this.gridOptions.api.getModel();
       var totalRows = this.rowData.length;
@@ -341,8 +570,8 @@ export class ListaComponent {
     // console.log('onVirtualRowRemoved: ' + $event.rowIndex);
   }
 
-  private onRowClicked($event) {
-    //console.log('onRowClicked: ' + $event.node.data.name);
+  private onRowClicked(event) {
+    //console.log(this.gridOptions.columnApi.getRowGroupColumns());
   }
 
   public onQuickFilterChanged($event) {
@@ -440,3 +669,14 @@ function monthToComparableNumber(date) {
   var result = (yearNumber * 10000) + (monthNumber * 100) + dayNumber;
   return result;
 }
+
+function setText(selector, text) {
+  if (document.querySelector(selector) != null) {
+    document.querySelector(selector).innerHTML = text;
+  }
+
+}
+
+
+
+

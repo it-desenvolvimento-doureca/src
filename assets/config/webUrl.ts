@@ -8,5 +8,6 @@ export var webUrl = {
   mod_pro: false,
   /*
     mod_pro: false,
-    host: 'http://192.168.40.101:8080/sgiid_dev'*/
+    host_app: 'http://192.168.40.126:8080/app',
+    host: 'http://192.168.40.126:8080/sgiid_dev'*/
 }

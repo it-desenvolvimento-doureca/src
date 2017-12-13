@@ -91,6 +91,7 @@ import { GestaoTarefasComponent } from './paginas/gestao-tarefas/gestao-tarefas.
 import { FormTarefasComponent } from './paginas/gestao-tarefas/form-tarefas/form-tarefas.component';
 import { UploadService } from 'app/servicos/upload.service';
 import { RegistoProducao } from 'app/servicos/registoproducao.service';
+import { GERVISTASService } from 'app/servicos/ger-vistas.service';
 
 const routes: Routes = [
   { path: 'dashboard', component: HomeComponent, canActivate: [LoginService] },
@@ -327,6 +328,7 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     GEREVENTOSCONFService,
     GERPARAMETROSService,
     UploadService,
+    GERVISTASService,
     RegistoProducao,
     GERFORNECEDORService],
   bootstrap: [AppComponent]
