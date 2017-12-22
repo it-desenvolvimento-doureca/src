@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { webUrl } from 'assets/config/webUrl';
-import { Http, Headers, ResponseContentType } from '@angular/http';
+import { Response } from '@angular/http';
+import { Observable } from "rxjs/Observable";
+import { Http, Headers, ResponseContentType } from '@angular/http';;
 
 @Injectable()
 export class RelatoriosService {
@@ -20,6 +22,19 @@ export class RelatoriosService {
         }
 
       });
+  }
+
+  teste():any {
+    const url = 'http://localhost:5050/teste/teste.php';
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
+  private extractData(res: Response) {
+    let body = res.json();
+    return body;
   }
 
 }

@@ -346,9 +346,15 @@
                           <i class="material-icons">print</i>
                           <div class="ripple-container"></div>
                         </button>
-                        <button title="Imprimir Etiquetas" [disabled]="item.id == null || disimprimir" type="button" style="color: black;" class="btn btn-white btn-round btn-just-icon"
+                        <button title="Ver Etiquetas" [disabled]="item.id == null || disimprimir" type="button" style="color: black;" class="btn btn-white btn-round btn-just-icon"
                           (click)="imprimir('manutencao_etiquetas',item.id)">
                           <i class="fa fa-tags" aria-hidden="true"></i>
+                          <div class="ripple-container"></div>
+                        </button>
+                        <button title="Imprimir Etiquetas" [disabled]="item.id == null || disimprimir" type="button" style="color: black; height: 42px; width: 44px;"
+                          class="btn btn-white btn-round btn-just-icon" (click)="imprimiretiquetas('manutencao_etiquetas',item.id)">
+                          <i class="fa fa-print" style="font-size: 14px; position: absolute; left: 12px; top:7px;" aria-hidden="true"></i>
+                          <i class="fa fa-tags" style="font-size: 14px; position: absolute; left: 12px; bottom: 3px;" aria-hidden="true"></i>
                           <div class="ripple-container"></div>
                         </button>
                         <button [hidden]="!modoedicao" class="btn btn-white btn-round btn-just-icon" style="color: black; background: rgba(0, 128, 0, 0.61)"

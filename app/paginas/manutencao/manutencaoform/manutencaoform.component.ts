@@ -24,6 +24,9 @@ import { AD_MOV_REG_PARAM_OPERACAO } from "app/entidades/AD_MOV_REG_PARAM_OPERAC
 import { ABDICCOMPONENTEService } from "app/servicos/ab-dic-componente.service";
 import { GERARMAZEMService } from 'app/servicos/ger-armazem.service';
 import { GERUTILIZADORESService } from 'app/servicos/ger-utilizadores.service';
+import { RelatoriosService } from 'app/servicos/relatorios.service';
+import { DomSanitizer } from '@angular/platform-browser';
+import { setTimeout } from 'core-js/library/web/timers';
 
 
 @Component({
@@ -32,6 +35,8 @@ import { GERUTILIZADORESService } from 'app/servicos/ger-utilizadores.service';
   styleUrls: ['./manutencaoform.component.css']
 })
 export class ManutencaoformComponent implements OnInit {
+  fileURL;
+  filename: string;
   dishistorico = true;
   textotabela: string = null;
   utilizadores: any[];
@@ -91,8 +96,9 @@ export class ManutencaoformComponent implements OnInit {
   @ViewChild('aviso_concluir_planeamento3') aviso_concluir_planeamento3: ElementRef;
   @ViewChild('alteraeditar') alteraeditar: ElementRef;
   @ViewChild('alteraeditartrue') alteraeditartrue: ElementRef;
+  @ViewChild('imprime') imprime: ElementRef;
 
-  constructor(private GERUTILIZADORESService: GERUTILIZADORESService, private elementRef: ElementRef, private GERARMAZEMService: GERARMAZEMService, private ADMOVREGPARAMOPERACAOService: ADMOVREGPARAMOPERACAOService, private ABMOVMANUTENCAOLINHAService: ABMOVMANUTENCAOLINHAService, private ABMOVMANUTENCAOCABService: ABMOVMANUTENCAOCABService, private ABMOVANALISEService: ABMOVANALISEService, private ABDICTIPOOPERACAOService: ABDICTIPOOPERACAOService, private ABDICTIPOADICAOService: ABDICTIPOADICAOService, private ABDICBANHOADITIVOService: ABDICBANHOADITIVOService, private ABMOVMANUTENCAOService: ABMOVMANUTENCAOService, private ABDICTURNOService: ABDICTURNOService, private ABDICTIPOMANUTENCAOService: ABDICTIPOMANUTENCAOService, private confirmationService: ConfirmationService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private ABDICBANHOService: ABDICBANHOService, private ABDICLINHAService: ABDICLINHAService, private globalVar: AppGlobals, private ABUNIDADADEMEDIDAService: ABUNIDADADEMEDIDAService, private location: Location, private router: Router, private renderer: Renderer, private route: ActivatedRoute) { }
+  constructor(private sanitizer: DomSanitizer, private RelatoriosService: RelatoriosService, private GERUTILIZADORESService: GERUTILIZADORESService, private elementRef: ElementRef, private GERARMAZEMService: GERARMAZEMService, private ADMOVREGPARAMOPERACAOService: ADMOVREGPARAMOPERACAOService, private ABMOVMANUTENCAOLINHAService: ABMOVMANUTENCAOLINHAService, private ABMOVMANUTENCAOCABService: ABMOVMANUTENCAOCABService, private ABMOVANALISEService: ABMOVANALISEService, private ABDICTIPOOPERACAOService: ABDICTIPOOPERACAOService, private ABDICTIPOADICAOService: ABDICTIPOADICAOService, private ABDICBANHOADITIVOService: ABDICBANHOADITIVOService, private ABMOVMANUTENCAOService: ABMOVMANUTENCAOService, private ABDICTURNOService: ABDICTURNOService, private ABDICTIPOMANUTENCAOService: ABDICTIPOMANUTENCAOService, private confirmationService: ConfirmationService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private ABDICBANHOService: ABDICBANHOService, private ABDICLINHAService: ABDICLINHAService, private globalVar: AppGlobals, private ABUNIDADADEMEDIDAService: ABUNIDADADEMEDIDAService, private location: Location, private router: Router, private renderer: Renderer, private route: ActivatedRoute) { }
 
   ngOnInit() {
     var s = document.createElement("script");
@@ -1308,6 +1314,28 @@ export class ManutencaoformComponent implements OnInit {
 
   }
 
+
+  imprimiretiquetas(relatorio, id) {
+    this.filename = new Date().toLocaleString().replace(/\D/g, '');
+    this.RelatoriosService.downloadPDF("pdf", this.filename, id, relatorio).subscribe(
+      (res) => {
+        this.fileURL = URL.createObjectURL(res);
+        // this.fileURL = this.sanitizer.bypassSecurityTrustResourceUrl(this.fileURL);
+        // console.log(this.fileURL)
+        //var a = window.open(this.fileURL);
+
+       /* this.RelatoriosService.teste().subscribe(
+          response2 => { console.log(response2) });*/
+        var a = window.open("http://teste.com:5050/teste/index.php?file=" + this.filename + "");
+        //a.close();
+
+
+        //  a.print();
+        //a.close();
+      }
+    );
+  }
+
   //preenche tabela das análises
   preencheanalises(idbanho) {
     this.pesquisa_analise = [];
@@ -1325,7 +1353,7 @@ export class ManutencaoformComponent implements OnInit {
             cor = "none";
           }
 
-          this.pesquisa_analise.push({ cor_banho: cor,id: response[x][0].id_ANALISE, linha: response[x][0].id_LINHA, data: this.formatDate(response[x][0].data_ANALISE), nome: response[x][2].nome_BANHO, tina: response[x][3].cod_TINA, cor: response[x][1].cor });
+          this.pesquisa_analise.push({ cor_banho: cor, id: response[x][0].id_ANALISE, linha: response[x][0].id_LINHA, data: this.formatDate(response[x][0].data_ANALISE), nome: response[x][2].nome_BANHO, tina: response[x][3].cod_TINA, cor: response[x][1].cor });
         }
         this.pesquisa_analise = this.pesquisa_analise.slice();
       },
