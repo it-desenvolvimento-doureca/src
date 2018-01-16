@@ -33,7 +33,8 @@ export class LoginService implements CanActivate {
 
         if (!localStorage.getItem('userapp') || !localStorage.getItem('time_sgiid')) {
             // alert('Efetue o Login!');
-            this.router.navigate(['./login']);
+           
+            this.router.navigate(['./login'], { queryParams: { redirect_url: state.url } });
             return false;
         } else if (localStorage.getItem('acessos')) {
             var url = state.url;

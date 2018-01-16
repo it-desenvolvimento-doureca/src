@@ -31,7 +31,7 @@
                     <input type="checkbox" (change)="showToolPanel=$event.target.checked" /> Show Tool Panel
                   </label>-->
                   <button (click)="createRowData()">Atualizar Gráfico</button>
-                  <p-multiSelect [options]="familias" [style]="{'width':'10%','top':'13px','height':'31px'}" [(ngModel)]="selectedCars1"></p-multiSelect>
+                  <p-multiSelect defaultLabel="Escolher Famílias" [options]="familias" [style]="{'width':'10%','top':'13px','height':'31px'}" [(ngModel)]="selectedCars1"></p-multiSelect>
                   <p-dropdown [style]="{'width':'20%'}" [(ngModel)]="num_vista" [options]="config" (onChange)="configuracoes($event)" filter="true"></p-dropdown>
                   <button (click)="gravarState()">Gravar Vista</button>
                   <button (click)="newState()">Nova Vista</button>
@@ -81,7 +81,7 @@
               <div style="clear: both;"></div>
 
               <ag-grid-angular style="width: 100%; height: 450px;" class="ag-fresh" [gridOptions]="gridOptions" [columnDefs]="columnDefs"
-                [showToolPanel]="showToolPanel" [rowData]="rowData" enableColResize enableSorting enableFilter groupHeaders
+                [showToolPanel]="showToolPanel" [rowData]="rowData" enableColResize [enableSorting]="true" enableFilter groupHeaders
                 suppressRowClickSelection rowHeight="22" rowSelection="multiple" (modelUpdated)="onModelUpdated()" (cellClicked)="onCellClicked($event)"
                 (cellDoubleClicked)="onCellDoubleClicked($event)" (cellContextMenu)="onCellContextMenu($event)" (cellValueChanged)="onCellValueChanged($event)"
                 (cellFocused)="onCellFocused($event)" (rowSelected)="onRowSelected($event)" (selectionChanged)="onSelectionChanged()"

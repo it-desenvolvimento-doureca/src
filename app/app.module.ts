@@ -10,7 +10,7 @@ import { HomeComponent } from './paginas/home/home.component';
 import { RouterComponent } from "app/router.component";
 import { FornecedoresComponent } from './paginas/fornecedores/fornecedores.component';
 import { TinasComponent } from './paginas/tinas/tinas.component';
-import { DataTableModule, SharedModule, ConfirmDialogModule, ConfirmationService, DropdownModule, CalendarModule, DialogModule, ColorPickerModule, RadioButtonModule, TreeNode, ChartModule, PickListModule, MultiSelectModule, EditorModule, AutoCompleteModule, ProgressBarModule, FileUploadModule, ToggleButtonModule } from 'primeng/primeng';
+import { DataTableModule, SharedModule, ConfirmDialogModule, ConfirmationService, DropdownModule, CalendarModule, DialogModule, ColorPickerModule, RadioButtonModule, TreeNode, ChartModule, PickListModule, MultiSelectModule, EditorModule, AutoCompleteModule, ProgressBarModule, FileUploadModule, ToggleButtonModule, ListboxModule } from 'primeng/primeng';
 import { AppGlobals } from "app/menu/sidebar.metadata";
 import { FormComponent } from './paginas/fornecedores/form/form.component';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -92,6 +92,7 @@ import { FormTarefasComponent } from './paginas/gestao-tarefas/form-tarefas/form
 import { UploadService } from 'app/servicos/upload.service';
 import { RegistoProducao } from 'app/servicos/registoproducao.service';
 import { GERVISTASService } from 'app/servicos/ger-vistas.service';
+import { GERCAMPOSDISPService } from 'app/servicos/ger-campos-disp.service';
 
 const routes: Routes = [
   { path: 'dashboard', component: HomeComponent, canActivate: [LoginService] },
@@ -281,6 +282,7 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     CheckboxModule,
     MultiSelectModule,
     EditorModule,
+    ListboxModule,
     FileUploadModule,
     AutoCompleteModule,
     ProgressBarModule,
@@ -330,6 +332,7 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     UploadService,
     GERVISTASService,
     RegistoProducao,
+    GERCAMPOSDISPService,
     GERFORNECEDORService],
   bootstrap: [AppComponent]
 })

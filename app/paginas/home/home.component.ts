@@ -15,6 +15,12 @@ export class HomeComponent implements OnInit {
   data: any;
   data1: any;
   constructor(private elementRef: ElementRef) {
+
+    if (document.getElementById("script1")) document.getElementById("script1").remove();
+    var script1 = document.createElement("script");
+    script1.setAttribute("id", "script1");
+    script1.setAttribute("src", "assets/js/jqbtk.js");
+    document.body.appendChild(script1);
   }
 
   ngOnInit() {
@@ -24,7 +30,7 @@ export class HomeComponent implements OnInit {
     this.elementRef.nativeElement.appendChild(s);
     this.mod_prod = webUrl.mod_pro;
 
-    if(!this.mod_prod) this.carregagraficos();
+    if (!this.mod_prod) this.carregagraficos();
 
   }
 

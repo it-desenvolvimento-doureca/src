@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef, ViewChild, Renderer, HostListener } from '@angular/core';
 import { LoginService } from "app/servicos/LoginService";
 import { GERUTILIZADORESService } from "app/servicos/ger-utilizadores.service";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { AppGlobals } from "app/menu/sidebar.metadata";
 import { GERPERFILLINService } from "app/servicos/ger-perfil-lin.service";
 
@@ -11,6 +11,7 @@ import { GERPERFILLINService } from "app/servicos/ger-perfil-lin.service";
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+  url: any = "";
   encontrou: boolean = true;
   login_statuspopup: boolean;
   count = 1;
@@ -23,7 +24,7 @@ export class LoginComponent implements OnInit {
   @ViewChild('closedialoglinha') closedialog: ElementRef;
   @ViewChild('dialogopen') dialogopen: ElementRef;
 
-  constructor(private renderer: Renderer, private GERPERFILLINService: GERPERFILLINService, private globalVar: AppGlobals, private elementRef: ElementRef, private service: LoginService, private utilizadores: GERUTILIZADORESService, private router: Router) { }
+  constructor(private route: ActivatedRoute, private renderer: Renderer, private GERPERFILLINService: GERPERFILLINService, private globalVar: AppGlobals, private elementRef: ElementRef, private service: LoginService, private utilizadores: GERUTILIZADORESService, private router: Router) { }
 
   ngOnInit() {
     this.globalVar.setlinha(0);
@@ -34,9 +35,18 @@ export class LoginComponent implements OnInit {
     if (localStorage.getItem("userapp")) {
       this.router.navigate(['home']);
     }
+
+
+    var sub = this.route
+      .queryParams
+      .subscribe(params => {
+        this.url = params['redirect_url'];
+      });
+
   }
 
   login() {
+    
     this.globalVar.setlinha(0);
     this.erro = true;
     this.login_status = true;
@@ -63,11 +73,19 @@ export class LoginComponent implements OnInit {
                     }
                     localStorage.setItem('acessos', JSON.stringify(array));
                     location.reload(true);
-                    this.router.navigate(['home']);
+                    if (this.url != "") {
+                      this.router.navigateByUrl(this.url);
+                    } else {
+                      this.router.navigate(['home']);
+                    }
                   } else {
                     localStorage.setItem('acessos', JSON.stringify(array));
                     location.reload(true);
-                    this.router.navigate(['home']);
+                    if (this.url != "") {
+                      this.router.navigateByUrl(this.url);
+                    } else {
+                      this.router.navigate(['home']);
+                    }
 
                   }
                   localStorage.setItem('acessos', JSON.stringify(array));
@@ -137,10 +155,19 @@ export class LoginComponent implements OnInit {
                       }
                     }
                     localStorage.setItem('acessos', JSON.stringify(array));
-                    this.router.navigate(['home']);
+
+                    if (this.url != "") {
+                      this.router.navigate([this.url]);
+                    } else {
+                      this.router.navigate(['home']);
+                    }
                   } else {
                     localStorage.setItem('acessos', JSON.stringify(array));
-                    this.router.navigate(['home']);
+                    if (this.url != "") {
+                      this.router.navigate([this.url]);
+                    } else {
+                      this.router.navigate(['home']);
+                    }
 
                   }
                   localStorage.setItem('acessos', JSON.stringify(array));

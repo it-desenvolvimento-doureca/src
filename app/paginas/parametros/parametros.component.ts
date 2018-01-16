@@ -4,6 +4,7 @@ import { GERPARAMETROSService } from 'app/servicos/ger-parametros.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { GER_PARAMETROS } from 'app/entidades/GER_PARAMETROS';
+import { UploadService } from 'app/servicos/upload.service';
 
 @Component({
   selector: 'app-parametros',
@@ -11,6 +12,8 @@ import { GER_PARAMETROS } from 'app/entidades/GER_PARAMETROS';
   styleUrls: ['./parametros.component.css']
 })
 export class ParametrosComponent implements OnInit {
+  impressoras = [];
+  postos = [{ label: "POST 1", value: "1" }];
   url_SILVER: string;
   modoedicao: boolean;
   pasta_ficheiro: string;
@@ -19,10 +22,12 @@ export class ParametrosComponent implements OnInit {
   @ViewChild('inputgravou') inputgravou: ElementRef;
   @ViewChild('inputerro') inputerro: ElementRef;
 
-  constructor(private renderer: Renderer, private route: ActivatedRoute, private router: Router, private location: Location, private GERPARAMETROSService: GERPARAMETROSService, private globalVar: AppGlobals) { }
+  constructor(private UploadService: UploadService, private renderer: Renderer, private route: ActivatedRoute, private router: Router, private location: Location, private GERPARAMETROSService: GERPARAMETROSService, private globalVar: AppGlobals) { }
 
   ngOnInit() {
-
+    this.impressoras = [
+      { label: 'Seleccionar Impressora', value: null },
+    ];
     this.globalVar.setvoltar(false);
     this.globalVar.seteditar(true);
     this.globalVar.setapagar(false);
@@ -52,6 +57,15 @@ export class ParametrosComponent implements OnInit {
 
 
   inicia() {
+
+    this.UploadService.getImpressora().subscribe(
+      response => {
+        for (var x in response) {
+          this.impressoras.push({ label: response[x], value: response[x] });
+        }
+      },
+      error => console.log(error));
+
     this.GERPARAMETROSService.getAll().subscribe(
       response => {
         this.parametros = response[0];

@@ -78,10 +78,13 @@ export class AppComponent {
 
         var titlee = this.router.routerState.snapshot.url;
         titlee = titlee.slice(1);
-        if (titlee == 'login') {
+        var urlarray = titlee.split("/");
+        
+        titlee = urlarray[0];
+        if (titlee.match('login')) {
             this.linha = 0;
         }
-        if (path == titlee) {
+        if (titlee.match(path)) {
             return false;
         }
         else {

@@ -14,21 +14,29 @@
                 <div class="tab-content">
                   <form role="form" ngNativeValidate (ngSubmit)="gravar()">
                     <!-- Modal Body -->
-                    <div class="col-md-12">
-                      <div class="form-group col-md-9" style="padding: 0px;">
+                    <div class="col-md-7">
+                      <div class="form-group col-md-12" style="padding: 0px;">
                         <label for="pasta_ficheiro">Pasta:</label>
                         <input [disabled]="!modoedicao" type="text" class="form-control" id="pasta_ficheiro" [(ngModel)]="pasta_ficheiro" [ngModelOptions]="{standalone: true}"
                           placeholder="c:\exemplo" required />
                       </div>
-                      <div class="form-group col-md-9" style="padding: 0px;">
+                      <div class="form-group col-md-12" style="padding: 0px;">
                         <label for="url_SILVER">URL Silver:</label>
                         <input [disabled]="!modoedicao" type="text" class="form-control" id="url_SILVER" [(ngModel)]="url_SILVER" [ngModelOptions]="{standalone: true}"
                           placeholder="" required />
                       </div>
                     </div>
+                    <div class="col-md-5">
+                      <div class="col-md-3">
+                        <p-dropdown [options]="postos" [(ngModel)]="posto" [ngModelOptions]="{standalone: true}"></p-dropdown>
+                      </div>
+                      <div class="col-md-9">
+                        <p-listbox  [options]="impressoras" [style]="{'width':'250px','max-height':'200px'}" ></p-listbox>
+                      </div>
+                    </div>
                     <div class="col-md-12" style="text-align: center;">
-                      <button [hidden]="!modoedicao" (click)="backview()" type="reset" class="btn btn-default">Cancelar</button>                     
-                      <button [hidden]="!modoedicao"  id="gravar" type="submit"  class="btn btn-success ">Gravar</button>
+                      <button [hidden]="!modoedicao" (click)="backview()" type="reset" class="btn btn-default">Cancelar</button>
+                      <button [hidden]="!modoedicao" id="gravar" type="submit" class="btn btn-success ">Gravar</button>
                     </div>
                   </form>
                 </div>

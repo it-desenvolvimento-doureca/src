@@ -84,6 +84,7 @@ export class ListaComponent {
       rowData: null,
       enableSorting: true,
       enableFilter: true,
+      floatingFilter: true,
       animateRows: true,
       paginationPageSize: 10,
       suppressPaginationPanel: true,
@@ -197,18 +198,21 @@ export class ListaComponent {
   }
 
   analises() {
+    this.columnDefs.push({ headerName: "ID_OF", field: "id_of", hide: true, width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
     this.columnDefs.push({
       headerName: "Tipo", field: "tipo", width: 120, enableValue: true, filter: 'text', enableRowGroup: true, enablePivot: true, cellStyle: function (params) {
         if (params.value == 'COMP') {
-          return { backgroundColor: 'red' };
-        } else if(params.value == 'PF')  {
-          return { backgroundColor: 'green' };
+          //return { backgroundColor: 'red' };
+        } else if (params.value == 'PF') {
+          // return { backgroundColor: 'green' };
         }
       }
     });
     this.columnDefs.push({ headerName: "OF", field: "num_of", width: 120, enableValue: true, filter: 'text', enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "Referência", field: "componente", width: 135, enableValue: true, filter: 'text', enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "Descrição", field: "descricao", width: 125, enableValue: true, filter: 'text', enableRowGroup: true, enablePivot: true });
     this.columnDefs.push({
-      headerName: "Data", field: "data", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true, comparator: dateComparator, filter: 'date', filterParams: {
+      headerName: "Data", field: "data", width: 135, enableValue: true, enableRowGroup: true, enablePivot: true, comparator: dateComparator, filter: 'date', filterParams: {
         comparator: function (filterLocalDateAtMidnight, cellValue) {
           var dateAsString = cellValue;
           var dateParts = dateAsString.split("/");
@@ -228,9 +232,13 @@ export class ListaComponent {
         }
       }
     });
-    this.columnDefs.push({ headerName: "Utilizadores", field: "utilizador", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "Componentes", field: "componente", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "Etiqueta", field: "etiqueta", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "Hora", filter: 'text', field: "hora", hide: true, width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "Mês", filter: 'text', field: "mes", hide: true, width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "Dia", filter: 'text', field: "dia", hide: true, width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "Ano", filter: 'text', field: "ano", hide: true, width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "Utilizadores", filter: 'text', field: "utilizador", width: 140, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "Etiqueta", filter: 'text', field: "etiqueta", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "Operação", filter: 'text', field: "operacao", width: 125, enableValue: true, enableRowGroup: true, enablePivot: true });
     this.columdefeito = []
     var count = 0;
     for (var n in this.selectedCars1) {
@@ -261,7 +269,8 @@ export class ListaComponent {
 
 
   componentes(id, id_banho, graf, fam) {
-
+    var days = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado-Feira'];
+    var month = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
     this.RegistoProducao.getAll(fam).subscribe(
       response => {
         var total = Object.keys(response).length;
@@ -271,13 +280,20 @@ export class ListaComponent {
 
             var rowData = [];
             rowData['id'] = response[y][1];
+            rowData['id_of'] = (response[y][2] == null) ? response[y][1] : response[y][2];
             rowData['tipo'] = (response[y][2] == null) ? "PF" : "COMP";
             rowData['componente'] = response[y][8];
+            rowData['descricao'] = response[y][9];
             rowData['utilizador'] = response[y][7];
             rowData['num_of'] = (response[y][0] == null) ? response[y][3] : response[y][0];
-            rowData['data'] = new Date(response[y][10]).toLocaleDateString();
+            rowData['data'] = (response[y][10] == null) ? new Date(response[y][14]).toLocaleDateString() : new Date(response[y][10]).toLocaleDateString();
+            rowData['hora'] = (response[y][13] == null) ? new Date(response[y][14]).toTimeString().slice(0, 8) : response[y][13].slice(0, 8);
+            rowData['mes'] = month[new Date(response[y][10]).getMonth()];
+            rowData['dia'] = days[new Date(response[y][10]).getDay()];
+            rowData['ano'] = new Date(response[y][10]).getFullYear();
             rowData['etiqueta'] = response[y][6];
-            var count = 11;
+            rowData['operacao'] = (response[y][11] == null) ? "" : response[y][11] + '-' + response[y][12];
+            var count = 15;
             for (var x in this.columdefeito) {
               rowData[this.columdefeito[x]] = (response[y][count] == null) ? 0 : response[y][count];
               count++;

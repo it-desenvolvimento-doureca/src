@@ -1327,7 +1327,7 @@ export class ManutencaoformComponent implements OnInit {
        /* this.RelatoriosService.teste().subscribe(
           response2 => { console.log(response2) });*/
         var a = window.open("http://teste.com:5050/teste/index.php?file=" + this.filename + "");
-        //a.close();
+        a.close();
 
 
         //  a.print();

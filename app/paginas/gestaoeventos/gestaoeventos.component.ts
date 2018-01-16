@@ -7,6 +7,7 @@ import { AppGlobals } from 'app/menu/sidebar.metadata';
 import { Router, ActivatedRoute } from '@angular/router';
 import { GEREVENTOSCONFService } from 'app/servicos/ger-eventos-conf.service';
 import { GER_EVENTOS_CONF } from 'app/entidades/GER_EVENTOS_CONF';
+import { GERCAMPOSDISPService } from 'app/servicos/ger-campos-disp.service';
 
 @Component({
   selector: 'app-gestaoeventos',
@@ -14,6 +15,8 @@ import { GER_EVENTOS_CONF } from 'app/entidades/GER_EVENTOS_CONF';
   styleUrls: ['./gestaoeventos.component.css']
 })
 export class GestaoeventosComponent implements OnInit {
+  itememail: any[] = [];
+  event: any;
   bt_select: any;
   momento: string;
   pagina: string;
@@ -35,9 +38,14 @@ export class GestaoeventosComponent implements OnInit {
   draggedCar: any;
   @ViewChild('inputgravou') inputgravou: ElementRef;
   @ViewChild('inputerro') inputerro: ElementRef;
-  campos = [{ label: "Nome Banho", id: "nomebanho" }, { label: "Número Banho", id: "numerobanho" }, { label: "Observação", id: "observacao" }];
+  @ViewChild('inputenvio') inputenvio: ElementRef;
+  @ViewChild('inputerroenvio') inputerroenvio: ElementRef;
+  @ViewChild('dialog') dialog: ElementRef;
+  @ViewChild('closedialog') closedialog: ElementRef;
 
-  constructor(private renderer: Renderer, private GEREVENTOSCONFService: GEREVENTOSCONFService, private route: ActivatedRoute, private router: Router, private location: Location, private globalVar: AppGlobals, private EmailService: EmailService, private GERUTILIZADORESService: GERUTILIZADORESService) { }
+  campos = [];
+
+  constructor(private GERCAMPOSDISPService: GERCAMPOSDISPService, private renderer: Renderer, private GEREVENTOSCONFService: GEREVENTOSCONFService, private route: ActivatedRoute, private router: Router, private location: Location, private globalVar: AppGlobals, private EmailService: EmailService, private GERUTILIZADORESService: GERUTILIZADORESService) { }
 
   ngOnInit() {
 
@@ -74,6 +82,15 @@ export class GestaoeventosComponent implements OnInit {
     if (id == 0) {
       this.router.navigate(['eventos']);
     }
+
+    this.GERCAMPOSDISPService.getbyid(id).subscribe(
+      response => {
+        this.campos = [];
+        for (var x in response) {
+          this.campos.push({ label: response[x].descricao_CAMPO, id: response[x].nome_CAMPO });
+        }
+      },
+      error => console.log(error));
     this.getutilizadores();
     this.inicia(this.id);
   }
@@ -170,11 +187,12 @@ export class GestaoeventosComponent implements OnInit {
       error => console.log(error));
   }
 
-  selectbt(bt) {
+  selectbt(bt, event) {
     this.bt_select = bt;
+    this.event = event;
   }
 
-  gravar(a) {
+  gravar() {
     if (this.bt_select == 1) {
       var eventos = new GER_EVENTOS_CONF;
       eventos = this.evento;
@@ -192,37 +210,50 @@ export class GestaoeventosComponent implements OnInit {
         error => { console.log(error); this.simular(this.inputerro); });
     }
     else {
-      this.enviar();
+      this.abrirenvioteste(this.event);
     }
+  }
+
+  abrirenvioteste(event) {
+    // this.itememail = [];
+    let elem = document.getElementById("testeEnvio");
+    let elm2 = document.getElementById("myModallinhas");
+    let coords = elem.getBoundingClientRect();
+    elm2.style.paddingTop = Math.abs(coords.bottom ) + 'px';
+    //elm2.style.bottom = 'none';
+    this.simular(this.dialog);
   }
 
   enviar() {
     if (this.email_mensagem != "" && this.email_mensagem != null && this.campos.length > 0) {
+      var email_mens = this.email_mensagem;
       for (var x in this.campos) {
-        this.email_mensagem = this.email_mensagem.split("{" + this.campos[x].id + "}").join(this.campos[x].label + "*")
+        email_mens = email_mens.split("{" + this.campos[x].id + "}").join(this.itememail[this.campos[x].id]);
       }
     }
 
     var email = new EMAIL();
-    //email.para = this.email_para.toString();
-    email.para = "tiago.pereira@datamind.pt";
+    email.para = this.email_para.toString();
+    //email.para = "tiago.pereira@datamind.pt";
     email.assunto = this.email_assunto;
-    email.mensagem = this.email_mensagem;
+    email.mensagem = email_mens;
 
+    email.de = "alertas.it.doureca@gmail.com";
 
+    //email.mensagem = email_mens.replace(/(<p[^>]+?>|<p>|<\/p>)/img, "");
 
-    //email.mensagem = this.email_mensagem.replace(/(<p[^>]+?>|<p>|<\/p>)/img, "");    
     //email.nome_FICHEIRO = this.filename;
-    /* this.bt_disable = true;*/
-    //this.EmailService.enviarEmail(email).subscribe(
-    //  res => {
-    /* this.bt_disable = false;
-     this.simular(this.inputenvio);
-     this.simular(this.closedialog);*/
-    //  }, error => {
-    /*this.simular(this.inputerro);
-    this.bt_disable = false;*/
-    //   });
+
+    this.bt_disable = true;
+    this.EmailService.enviarEmail(email).subscribe(
+      res => {
+        this.bt_disable = false;
+        this.simular(this.inputenvio);
+        this.simular(this.closedialog);
+      }, error => {
+        this.simular(this.inputerroenvio);
+        this.bt_disable = false;
+      });
     console.log(email)
   }
 
