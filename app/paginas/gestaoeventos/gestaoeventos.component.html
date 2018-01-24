@@ -45,12 +45,12 @@
                       </div>
                       <div class="form-group col-md-9">
                         <label for="assunto">Assunto:</label>
-                        <input [disabled]="!modoedicao" type="text" class="form-control" id="assunto" [(ngModel)]="email_assunto" [ngModelOptions]="{standalone: true}"
+                        <input [disabled]="!modoedicao" type="text" pDroppable="dd"  (onDrop)="drop($event)" class="form-control editor_texto2" id="assunto" [(ngModel)]="email_assunto" [ngModelOptions]="{standalone: true}"
                           placeholder="Introduza o Assunto" required />
                       </div>
                       <div class="form-group col-md-3">
-                        <label for="nmlinha">Inclui Anexo:</label>
-                        <p-checkbox [disabled]="!modoedicao" [(ngModel)]="inclui_anexo" [ngModelOptions]="{standalone: true}" binary="true"></p-checkbox>
+                       <!-- <label for="nmlinha">Inclui Anexo:</label>
+                        <p-checkbox [disabled]="!modoedicao" [(ngModel)]="inclui_anexo" [ngModelOptions]="{standalone: true}" binary="true"></p-checkbox>-->
                       </div>
                       <div class="form-group col-md-9">
                         <label for="mensagem">Mensagem:</label>

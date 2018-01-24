@@ -7,10 +7,11 @@
             <div class="acidjs-css3-treeview">
               <ul>
                 <ng-template #recursiveList let-list>
-                  <li *ngFor="let item of list" >
+                  <li *ngFor="let item of list">
                     <input type="checkbox" id="node-t{{item.id}}" class="parent" *ngIf="item.children.length > 0" />
                     <input type="checkbox" id="node-t{{item.id}}" *ngIf="item.children.length == 0" />
-                    <label  [ngClass]="{'ativo': noativo==item.id ,'disabled': item.disable}" *ngIf="item.children.length == 0" for="node-t{{item.id}}" class="parametros">
+                    <label [ngClass]="{'ativo': noativo==item.id ,'disabled': item.disable}" *ngIf="item.children.length == 0" for="node-t{{item.id}}"
+                      class="parametros">
                       <a [ngClass]="{'disabled': item.disable}" (click)="alterarelatorio(item.link,item.id)">{{item.name}}</a>
                     </label>
                     <label [ngClass]="{'ativo': noativo==item.id,'disabled': item.disable }" *ngIf="item.children.length > 0" for="node-t{{item.id}}">
@@ -26,13 +27,17 @@
             </div>
           </div>
           <div id="myDiv" [ngClass]="aumentardiv()" class="col-md-10" style="height: 80vh; padding: 0px; border:1px solid;">
-            <button [hidden]="fileURL == null" (click)="aumentado = !aumentado;" class="buttoncl">
-              <i *ngIf="!aumentado" class="material-icons">fullscreen</i>
-              <i *ngIf="aumentado" class="material-icons">fullscreen_exit</i>
-            </button>
+            <div *ngIf="fileURL!=null" class="divtop">
+              <button [hidden]="fileURL == null" (click)="aumentado = !aumentado;" class="buttoncl">
+                <i *ngIf="!aumentado" class="material-icons">fullscreen</i>
+                <i *ngIf="aumentado" class="material-icons">fullscreen_exit</i>
+              </button>
+            </div>
             <h5 align="center" *ngIf="fileURL == null" style="display: inline; margin-left: 10px; color: black; vertical-align: bottom;">Selecione uma Análise...</h5>
             <iframe [src]="fileURL" *ngIf="fileURL!=null" width="100%" height="100%">
             </iframe>
+            <div class="divbottom" *ngIf="fileURL!=null" >
+            </div>
           </div>
         </div>
       </div>

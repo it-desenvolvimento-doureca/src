@@ -5,26 +5,20 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-header" data-background-color="red">
-            <h4 class="title">Manutenções</h4>
+            <h4 class="title">Construção Banhos</h4>
             <p class="category"></p>
           </div>
           <div class="card-content table-responsive">
 
             <p-dataTable [style]="{'min-height':'300px'}" [value]="cols" dataKey="id" [rows]="25" [paginator]="true" [pageLinks]="3"
               (onRowDblclick)="abrir($event)" [rowsPerPageOptions]="[25,50,100,'todos']">
-              <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="id" header="Nº Manut">
+              <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="id" header="Nº Const">
                 <ng-template pTemplate="filter" let-col>
                   <input class="ui-column-filter ui-inputtext ui-widget ui-state-default ui-corner-all" [(ngModel)]="id_manu" #v (ngModelChange)="filtrar(v.value,col.field,false,'in')"
                     type="text">
                 </ng-template>
               </p-column>
-              <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="tipo_manu" header="Tipo">
-                <ng-template pTemplate="filter" let-col>
-                  <input class="ui-column-filter ui-inputtext ui-widget ui-state-default ui-corner-all" [(ngModel)]="tipo_manu" #v2 (ngModelChange)="filtrar(v2.value,col.field)"
-                    type="text">
-                </ng-template>
-              </p-column>
-              <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="data" header="Data Planea.">
+              <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="data" header="Data Construção">
                 <ng-template pTemplate="filter" let-col>
                   <input class="ui-column-filter ui-inputtext ui-widget ui-state-default ui-corner-all" [(ngModel)]="data" #v3 (ngModelChange)="filtrar(v3.value,col.field)"
                     type="text">
@@ -41,29 +35,33 @@
                   </div>
                 </ng-template>
               </p-column>
-              <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="turno" header="Turno"  [style]="{'width':'10%'}">
+              <p-column [sortable]="true" [filter]="true" filterMatchMode="in" [style]="{'width':'300px'}" styleclass="text-danger" field="banho" header="Banho">
                 <ng-template pTemplate="filter" let-col>
-                  <input class="ui-column-filter ui-inputtext ui-widget ui-state-default ui-corner-all" [(ngModel)]="turno" #v4 (ngModelChange)="filtrar(v4.value,col.field)"
-                    type="text">
+                  <p-dropdown [options]="banhos" [(ngModel)]="banho" scrollHeight="150px" [style]="{'width':'100%'}" (onChange)="filtrar($event.value,col.field,true)"
+                    styleClass="ui-column-filter" filter="true"></p-dropdown>
                 </ng-template>
               </p-column>
+              <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="tina" header="Tina">
+                  <ng-template pTemplate="filter" let-col>
+                    <input class="ui-column-filter ui-inputtext ui-widget ui-state-default ui-corner-all" [(ngModel)]="tina" #v2 (ngModelChange)="filtrar(v2.value,col.field)"
+                      type="text">
+                  </ng-template>
+                </p-column>
               <p-column [sortable]="true" [filter]="true" filterMatchMode="in" styleclass="text-danger" field="estado" header="Estado">
                 <ng-template pTemplate="filter" let-col>
                   <p-multiSelect [(ngModel)]="filtro" [ngModelOptions]="{standalone: true}" [options]="estados" [style]="{'width':'100%'}"
                     (onChange)="filtrar($event.value,col.field,col.filterMatchMode)" styleClass="ui-column-filter"></p-multiSelect>
                 </ng-template>
               </p-column>
-              <p-column styleClass="col-button"  [style]="{'width':'20%'}">
+              <p-column styleClass="col-button">
                 <ng-template pTemplate="header">
-                  <a (click)="reset()" style="color: black; float: right; cursor: pointer;">
+                  <a (click)="reset()" style="color: black; float: left; cursor: pointer;">
                     <i class="fa fa-eraser" aria-hidden="true"> Limpar</i>
                     <div class="ripple-container"></div>
                   </a>
-                  <p-dropdown [options]="banhos" scrollHeight="150px" [(ngModel)]="banho" [style]="{'width':'70%'}" (onChange)="filtrar($event.value,'banho',true)"
-                    styleClass="ui-column-filter" filter="true"></p-dropdown>
                 </ng-template>
                 <ng-template let-car="rowData" pTemplate="body">
-                  <a style="color: black; cursor:pointer;" title="Ver mais" [routerLink]="['/manutencao/view']" [queryParams]="{ id: car.id }">
+                  <a style="color: black; cursor:pointer;" title="Ver mais" [routerLink]="['/construcaobanhos/view']" [queryParams]="{ id: car.id }">
                     <i class="material-icons">search</i>
                   </a>
                   <a [hidden]="disduplicar" (click)="duplicar(car.id)" style="color: black; cursor:pointer;" title="Duplicar">

@@ -5,7 +5,7 @@ import { Location } from '@angular/common';
 import { ActivatedRoute } from "@angular/router";
 import { Router } from "@angular/router";
 import { ABDICLINHAService } from "app/servicos/ab-dic-linha.service";
-import { ABDICBANHOService } from "app/servicos/ab-dic-banho.service";
+import { ABDICBANHOService } from "app/servicos/ab-dic-banho.service"
 import { ConfirmationService } from "primeng/primeng";
 import { ABDICTIPOMANUTENCAOService } from "app/servicos/ab-dic-tipo-manutencao.service";
 import { ABDICTURNOService } from "app/servicos/ab-dic-turno.service";
@@ -27,16 +27,15 @@ import { GERUTILIZADORESService } from 'app/servicos/ger-utilizadores.service';
 import { RelatoriosService } from 'app/servicos/relatorios.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { setTimeout } from 'core-js/library/web/timers';
-import { GERPOSTOSService } from 'app/servicos/ger-postos.service';
-import { UploadService } from 'app/servicos/upload.service';
-
+import { ABDICBANHOCOMPONENTEService } from 'app/servicos/ab-dic-banho-componente.service';
 
 @Component({
-  selector: 'app-manutencaoform',
-  templateUrl: './manutencaoform.component.html',
-  styleUrls: ['./manutencaoform.component.css']
+  selector: 'app-constbanhosform',
+  templateUrl: './constbanhosform.component.html',
+  styleUrls: ['./constbanhosform.component.css']
 })
-export class ManutencaoformComponent implements OnInit {
+export class ConstbanhosformComponent implements OnInit {
+  id_banho = null;
   fileURL;
   filename: string;
   dishistorico = true;
@@ -96,16 +95,16 @@ export class ManutencaoformComponent implements OnInit {
   @ViewChild('aviso_concluir_planeamento') aviso_concluir_planeamento: ElementRef;
   @ViewChild('aviso_concluir_planeamento2') aviso_concluir_planeamento2: ElementRef;
   @ViewChild('aviso_concluir_planeamento3') aviso_concluir_planeamento3: ElementRef;
-  @ViewChild('enviadoparaimpressora') enviadoparaimpressora: ElementRef;
-  @ViewChild('erroimprimir') erroimprimir: ElementRef;
+  @ViewChild('aviso_concluir_planeamento4') aviso_concluir_planeamento4: ElementRef;
+  @ViewChild('aviso_concluir_planeamento5') aviso_concluir_planeamento5: ElementRef;
   @ViewChild('alteraeditar') alteraeditar: ElementRef;
   @ViewChild('alteraeditartrue') alteraeditartrue: ElementRef;
   @ViewChild('imprime') imprime: ElementRef;
 
-  constructor(private UploadService: UploadService, private GERPOSTOSService: GERPOSTOSService, private sanitizer: DomSanitizer, private RelatoriosService: RelatoriosService, private GERUTILIZADORESService: GERUTILIZADORESService, private elementRef: ElementRef, private GERARMAZEMService: GERARMAZEMService, private ADMOVREGPARAMOPERACAOService: ADMOVREGPARAMOPERACAOService, private ABMOVMANUTENCAOLINHAService: ABMOVMANUTENCAOLINHAService, private ABMOVMANUTENCAOCABService: ABMOVMANUTENCAOCABService, private ABMOVANALISEService: ABMOVANALISEService, private ABDICTIPOOPERACAOService: ABDICTIPOOPERACAOService, private ABDICTIPOADICAOService: ABDICTIPOADICAOService, private ABDICBANHOADITIVOService: ABDICBANHOADITIVOService, private ABMOVMANUTENCAOService: ABMOVMANUTENCAOService, private ABDICTURNOService: ABDICTURNOService, private ABDICTIPOMANUTENCAOService: ABDICTIPOMANUTENCAOService, private confirmationService: ConfirmationService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private ABDICBANHOService: ABDICBANHOService, private ABDICLINHAService: ABDICLINHAService, private globalVar: AppGlobals, private ABUNIDADADEMEDIDAService: ABUNIDADADEMEDIDAService, private location: Location, private router: Router, private renderer: Renderer, private route: ActivatedRoute) { }
+  constructor(private ABDICBANHOCOMPONENTEService: ABDICBANHOCOMPONENTEService, private sanitizer: DomSanitizer, private RelatoriosService: RelatoriosService, private GERUTILIZADORESService: GERUTILIZADORESService, private elementRef: ElementRef, private GERARMAZEMService: GERARMAZEMService, private ADMOVREGPARAMOPERACAOService: ADMOVREGPARAMOPERACAOService, private ABMOVMANUTENCAOLINHAService: ABMOVMANUTENCAOLINHAService, private ABMOVMANUTENCAOCABService: ABMOVMANUTENCAOCABService, private ABMOVANALISEService: ABMOVANALISEService, private ABDICTIPOOPERACAOService: ABDICTIPOOPERACAOService, private ABDICTIPOADICAOService: ABDICTIPOADICAOService, private ABDICBANHOADITIVOService: ABDICBANHOADITIVOService, private ABMOVMANUTENCAOService: ABMOVMANUTENCAOService, private ABDICTURNOService: ABDICTURNOService, private ABDICTIPOMANUTENCAOService: ABDICTIPOMANUTENCAOService, private confirmationService: ConfirmationService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private ABDICBANHOService: ABDICBANHOService, private ABDICLINHAService: ABDICLINHAService, private globalVar: AppGlobals, private ABUNIDADADEMEDIDAService: ABUNIDADADEMEDIDAService, private location: Location, private router: Router, private renderer: Renderer, private route: ActivatedRoute) { }
 
   ngOnInit() {
-
+    //console.log(document.cookie)
 
     var s = document.createElement("script");
     s.type = "text/javascript";
@@ -121,13 +120,13 @@ export class ManutencaoformComponent implements OnInit {
     this.globalVar.sethistorico(false);
 
     this.admin = JSON.parse(localStorage.getItem('userapp'))["admin"];
-    this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001editar"));
-    this.globalVar.setdisCriar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001criar"));
-    this.globalVar.setdisApagar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001apagar"));
-    this.globalVar.setdisDuplicar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001duplicar"));
+    this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003editar"));
+    this.globalVar.setdisCriar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003criar"));
+    this.globalVar.setdisApagar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003apagar"));
+    this.globalVar.setdisDuplicar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003duplicar"));
 
-    this.disimprimir = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001imprimir");
-    this.dishistorico = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001historico");
+    this.disimprimir = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003imprimir");
+    this.dishistorico = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003historico");
     // this.pos=3;
     /* this.arrayForm = [{pos: 1, id: null, id_banho: 1, tina: 2, capacidade: "11 L", aditivos: [{ id: 1, valor: 10, unidade: "aa", obs: "" }] },
      {pos: 2, id: null, id_banho: 1, tina: 2, capacidade: "11 L", aditivos: [{ id: 1, valor: 10, unidade: "aa", obs: "" }] }];*/
@@ -151,23 +150,23 @@ export class ManutencaoformComponent implements OnInit {
 
 
       //preenche array para navegar nas manutenções 
-      if (this.globalVar.getfiltros("manutencao_id") && this.globalVar.getfiltros("manutencao_id").length > 0) {
-        this.manutencao = this.globalVar.getfiltros("manutencao_id");
+      if (this.globalVar.getfiltros("construcaobanhos_id") && this.globalVar.getfiltros("construcaobanhos_id").length > 0) {
+        this.manutencao = this.globalVar.getfiltros("construcaobanhos_id");
         this.i = this.manutencao.indexOf(+id);
         this.preenchedados(true, this.manutencao[this.i]);
       }
       else {
-        if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001planeamento")) {
+        if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003planeamento")) {
           this.query.push("Em Planeamento");
         }
-        if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001preparacao") && !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001execucao")) {
+        if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003preparacao") && !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003execucao")) {
           this.query.push("Planeado", "Em Preparação", "Preparado", "Em Execução", "Executado");
         }
 
-        if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001execucao")) {
+        if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003execucao")) {
           this.acessoexec = true;
         }
-        if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001preparacao")) {
+        if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003preparacao")) {
           this.acessoprep = true;
         }
 
@@ -215,10 +214,10 @@ export class ManutencaoformComponent implements OnInit {
         this.responsavel = JSON.parse(localStorage.getItem('userapp'))["nome"];
         this.estado = "Em Planeamento";
         this.planeamento = false;
-        this.novalinha();
         this.arrayForm = null;
         //preenceh combobox
         this.preenchedados();
+        //this.novalinha();
 
       } else if (urlarray[1].match("view")) {
         this.globalVar.setcriar(true);
@@ -314,6 +313,8 @@ export class ManutencaoformComponent implements OnInit {
               hora_prev = response[x][0].hora_PREVISTA.slice(0, 5);
             }
 
+            this.id_banho = id_banho;
+
             if (response[x][0].id_TIPO_ADICAO != null) id_adicao = this.tipo_adicao.find(item => item.value.id == response[x][0].id_TIPO_ADICAO).value;
             if (response[x][0].id_ANALISE != "" && response[x][0].id_ANALISE != null) nome_analise = response[x][0].id_ANALISE + ' - ' + response[x][1];
             if (response[x][0].id_TIPO_ADICAO != null) if (id_adicao.id195 != "" && id_adicao.id195 != null) disable = true;
@@ -338,6 +339,7 @@ export class ManutencaoformComponent implements OnInit {
               resp_exe: response[x][4], hora_exc: hora_exc, data_exc: data_exec, resp_prep: response[x][5], data_prep: data_prep,
               id_tina: response[x][0].id_TINA, tina: response[x][6], capacidade: response[x][2], aditivos: [], data_valida: response[x][6]
             });
+            this.carrega_script();
             this.carregaraditivoslinhas(response[x][0].id_MANUTENCAO_CAB, this.pos);
           }
 
@@ -346,6 +348,14 @@ export class ManutencaoformComponent implements OnInit {
         }
       },
       error => console.log(error));
+  }
+
+  carrega_script() {
+    if (document.getElementById("script1")) document.getElementById("script1").remove();
+    var script1 = document.createElement("script");
+    script1.setAttribute("id", "script1");
+    script1.setAttribute("src", "assets/js/jqbtk.js");
+    document.body.appendChild(script1);
   }
 
   carregaraditivoslinhas(id, pos) {
@@ -372,6 +382,7 @@ export class ManutencaoformComponent implements OnInit {
             );
             pos2++;
           }
+          this.carrega_script();
           this.arrayForm.find(item => item.pos == pos).aditivos = this.arrayForm.find(item => item.pos == pos).aditivos.slice();
           this.textotabela = null;
         } else {
@@ -383,19 +394,48 @@ export class ManutencaoformComponent implements OnInit {
 
   //adicionar novo formulário
   novalinha() {
-    var id;
-    var sub = this.route
-      .queryParams
-      .subscribe(params => {
-        id = params['id'] || 0;
+    var id_banho = null;
+    var encontrou = false
+
+    for (var x in this.arrayForm) {
+      if (this.arrayForm[x].id == null) {
+        encontrou = true;
+      }
+    }
+
+    if (this.arrayForm.length < 2 && (!encontrou)) {
+
+      var id;
+      var sub = this.route
+        .queryParams
+        .subscribe(params => {
+          id = params['id'] || 0;
+        });
+      this.pos++;
+
+      if (this.arrayForm.length > 0) {
+        id_banho = this.id_banho;
+      }
+
+      this.arrayForm.push({
+        executado: false, preparado: false, obs_prep: null,
+        id_manu: id, data: new Date(), cod_analise: null, nome_analise: null, disable_op: false,
+        pos: this.pos, id: null, id_banho: id_banho, hora_pre: null, data_pre: null, tipo_adicao: this.tipo_adicao[0].value, data_valida: null,
+        interva_ope: this.intervalo_op[0].value, id_195: null, obs_pla: null, obs_exec: null, resp_exe: null, resp_exe_id: null, hora_exc: null, data_exc: null, resp_prep: null, data_prep: null, tina: null, id_tina: null, capacidade: null, aditivos: []
       });
-    this.pos++;
-    this.arrayForm.push({
-      executado: false, preparado: false, obs_prep: null,
-      id_manu: id, data: new Date(), cod_analise: null, nome_analise: null, disable_op: false,
-      pos: this.pos, id: null, id_banho: null, hora_pre: null, data_pre: null, tipo_adicao: null, data_valida: null,
-      interva_ope: null, id_195: null, obs_pla: null, obs_exec: null, resp_exe: null, resp_exe_id: null, hora_exc: null, data_exc: null, resp_prep: null, data_prep: null, tina: null, id_tina: null, capacidade: null, aditivos: []
-    });
+
+      this.carrega_script();
+      if (this.arrayForm.length > 1) {
+        this.nome_tinas(this.banhos.find(item => item.value.id == this.id_banho.id), this.pos)
+      }
+    } else {
+      if (encontrou) {
+        this.simular(this.aviso_concluir_planeamento4);
+      } else {
+        this.simular(this.aviso_concluir_planeamento5);
+      }
+    }
+
   }
 
   //preencher nome da tina/capacidade e tabela dos aditivos
@@ -406,7 +446,7 @@ export class ManutencaoformComponent implements OnInit {
     this.arrayForm.find(item => item.pos == pos).aditivos = [];
     var array = [];
     if (event.value.id != "" && event.value.id != null) {
-      this.ABDICBANHOADITIVOService.getbyID_banho(event.value.id).subscribe(
+      this.ABDICBANHOCOMPONENTEService.getbyid_banho(event.value.id).subscribe(
         response => {
           var count = Object.keys(response).length;
           //se existir componente Componente
@@ -417,7 +457,7 @@ export class ManutencaoformComponent implements OnInit {
               if (response[x][1].cod_REF != null) {
                 this.carregaaditivosstock(response, x, pos, pos2, count, array);
               } else {
-                array.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, cod_REF: response[x][1].cod_REF });
+                array.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: response[x][0].quantidade, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, cod_REF: response[x][1].cod_REF });
                 this.ordernar(array);
                 if (pos2 == count) {
                   this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -426,6 +466,7 @@ export class ManutencaoformComponent implements OnInit {
               }
               pos2++;
             }
+            this.carrega_script();
           }
         }, error => console.log(error));
     }
@@ -449,17 +490,19 @@ export class ManutencaoformComponent implements OnInit {
                 total = parseFloat(res1[0].STOQTE).toFixed(2);
                 total = total.replace(".", ",");
               }
-              array.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: res1[0].UNIUTI, cod_REF: response[x][1].cod_REF });
+              array.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: response[x][0].quantidade, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: res1[0].UNIUTI, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
               if (pos2 == total2) {
                 this.arrayForm.find(item => item.pos == pos).aditivos = array;
                 this.textotabela = null;
               }
+              this.carrega_script();
 
             },
             error => {
-              array.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, cod_REF: response[x][1].cod_REF });
+              array.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: response[x][0].quantidade, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
+              this.carrega_script();
               if (pos2 == total2) {
                 this.arrayForm.find(item => item.pos == pos).aditivos = array;
                 this.textotabela = null;
@@ -467,7 +510,7 @@ export class ManutencaoformComponent implements OnInit {
               console.log(error);
             });
         } else {
-          array.find(item => item.pos == pos).aditivos.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, cod_REF: response[x][1].cod_REF });
+          array.find(item => item.pos == pos).aditivos.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: response[x][0].quantidade, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, cod_REF: response[x][1].cod_REF });
           this.ordernar(array);
           if (pos2 == total2) {
             this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -600,12 +643,12 @@ export class ManutencaoformComponent implements OnInit {
       MOV_MANUTENCAO.utz_CRIA = this.user;
       MOV_MANUTENCAO.utz_PLANEAMENTO = this.user;
       MOV_MANUTENCAO.inativo = false;
-      MOV_MANUTENCAO.classif = "M";
+      MOV_MANUTENCAO.classif = "B";
       this.ABMOVMANUTENCAOService.create(MOV_MANUTENCAO).subscribe(
         res => {
 
           this.simular(this.inputnotifi);
-          this.router.navigate(['manutencao/editar'], { queryParams: { id: res.id_MANUTENCAO } });
+          this.router.navigate(['construcaobanhos/editar'], { queryParams: { id: res.id_MANUTENCAO } });
         }, error => {
           console.log(error); this.simular(this.inputerro);
         });
@@ -629,7 +672,14 @@ export class ManutencaoformComponent implements OnInit {
   gravarlinha(pos) {
     var MOV_MANUTENCAO_CAB = new AB_MOV_MANUTENCAO_CAB;
     this.gravarlinhas = false;
-    var data = new Date(new Date(this.arrayForm.find(item => item.pos == pos).data_pre).toDateString() + " " + this.arrayForm.find(item => item.pos == pos).hora_pre);
+    var time2 = new Date(this.arrayForm.find(item => item.pos == pos).hora_pre);
+    var time = null;
+    if (isNaN(time2.getTime())) {
+      time = this.arrayForm.find(item => item.pos == pos).hora_pre;
+    } else {
+      time = time2.toLocaleTimeString();
+    }
+    var data = new Date(new Date(this.arrayForm.find(item => item.pos == pos).data_pre).toDateString() + " " + time);
     this.data_planeamendth = new Date(new Date(this.data_planeamento).toDateString() + " " + this.hora_planeamento.slice(0, 5));
     if (data > this.data_planeamendth) {
       if (this.arrayForm.find(item => item.pos == pos).id != null) {
@@ -717,6 +767,8 @@ export class ManutencaoformComponent implements OnInit {
           });
       }
     } else {
+      var banho = pos + " - Banho: " + this.banhos.find(item => item.value.id == this.arrayForm.find(item => item.pos == pos).id_banho.id).label;
+      this.globalVar.setMensagem(banho);
       this.simular(this.aviso_concluir_planeamento3);
     }
   }
@@ -806,7 +858,7 @@ export class ManutencaoformComponent implements OnInit {
     this.i = this.i % this.manutencao.length;
     if (this.manutencao.length > 0) {
       this.inicia(this.manutencao[this.i]);
-      this.router.navigate(['manutencao/view'], { queryParams: { id: this.manutencao[this.i] } });
+      this.router.navigate(['construcaobanhos/view'], { queryParams: { id: this.manutencao[this.i] } });
     }
   }
 
@@ -815,7 +867,7 @@ export class ManutencaoformComponent implements OnInit {
       this.i = this.manutencao.length;
     }
     this.i = this.i - 1;
-    this.router.navigate(['manutencao/view'], { queryParams: { id: this.manutencao[this.i] } });
+    this.router.navigate(['construcaobanhos/view'], { queryParams: { id: this.manutencao[this.i] } });
     if (this.manutencao.length > 0) {
       this.inicia(this.manutencao[this.i]);
     }
@@ -943,7 +995,7 @@ export class ManutencaoformComponent implements OnInit {
         MOV_MANUTENCAO.data_PLANEAMENTO = data_p;
         MOV_MANUTENCAO.estado = "Planeado";
         this.ABMOVMANUTENCAOService.update(MOV_MANUTENCAO).then(() => {
-          this.router.navigate(['manutencao']);
+          this.router.navigate(['construcaobanhos']);
           this.simular(this.inputgravou);
         }, error => {
           console.log(error); this.simular(this.inputerro);
@@ -990,7 +1042,7 @@ export class ManutencaoformComponent implements OnInit {
             MOV_MANUTENCAO.data_ULT_IMPRES = null;
             MOV_MANUTENCAO.data_ULT_MODIF = null;
             MOV_MANUTENCAO.utz_ULT_MODIF = null;
-            MOV_MANUTENCAO.classif = "M";
+            MOV_MANUTENCAO.classif = "B";
             this.ABMOVMANUTENCAOService.create(MOV_MANUTENCAO).subscribe(
               res => {
                 this.criarmanu_cab(id, res.id_MANUTENCAO);
@@ -1044,12 +1096,12 @@ export class ManutencaoformComponent implements OnInit {
           this.simular(this.inputgduplica);
           this.inicia(this.id);
           this.simular(this.waitingDialogclose);
-          this.router.navigate(['manutencao/editar'], { queryParams: { id: this.id } });
+          this.router.navigate(['construcaobanhos/editar'], { queryParams: { id: this.id } });
         } else {
           this.simular(this.inputgduplica);
           this.inicia(this.id);
           this.simular(this.waitingDialogclose);
-          this.router.navigate(['manutencao/editar'], { queryParams: { id: this.id } });
+          this.router.navigate(['construcaobanhos/editar'], { queryParams: { id: this.id } });
         }
       });
   }
@@ -1083,7 +1135,7 @@ export class ManutencaoformComponent implements OnInit {
         } else {
           if (parseInt(total) - 1 == count2) {
             this.simular(this.inputgravou);
-            this.router.navigate(['manutencao/editar'], { queryParams: { id: this.id } });
+            this.router.navigate(['construcaobanhos/editar'], { queryParams: { id: this.id } });
             this.simular(this.waitingDialogclose);
           }
         }
@@ -1100,7 +1152,7 @@ export class ManutencaoformComponent implements OnInit {
       res => {
         if (parseInt(total) - 1 == count2 && (count - 1) == parseInt(x)) {
           this.simular(this.inputgravou);
-          this.router.navigate(['manutencao/editar'], { queryParams: { id: this.id } });
+          this.router.navigate(['construcaobanhos/editar'], { queryParams: { id: this.id } });
           this.simular(this.waitingDialogclose);
         }
       }, error => {
@@ -1166,7 +1218,7 @@ export class ManutencaoformComponent implements OnInit {
             MOV_MANUTENCAO.utz_ANULACAO = this.user;
             MOV_MANUTENCAO.inativo = true;
             this.ABMOVMANUTENCAOService.update(MOV_MANUTENCAO).then(() => {
-              this.router.navigate(['manutencao']);
+              this.router.navigate(['construcaobanhos']);
               this.simular(this.inputapagar);
             }, error => {
               console.log(error); this.simular(this.inputerro);
@@ -1329,48 +1381,35 @@ export class ManutencaoformComponent implements OnInit {
       (res) => {
         this.fileURL = URL.createObjectURL(res);
         //this.fileURL = this.sanitizer.bypassSecurityTrustResourceUrl(this.fileURL);
+        // console.log(this.fileURL)
+        // var a = window.open(this.fileURL);
 
-        this.GERPOSTOSService.getByIp(this.getCookie("IP_CLIENT")).subscribe(
-          (res) => {
-            var count = Object.keys(res).length;
-            if (count > 0) {
-              this.UploadService.imprimir(this.filename, res[0].impressora).subscribe(
-                response => {
-                  //console.log(response)
-                  //console.log(response._body)
-                  this.simular(this.enviadoparaimpressora);
-                }, error => {
-                  //console.log(error.status);
-                  this.simular(this.erroimprimir);
-                  console.log(error._body);
-                });
+        /* this.RelatoriosService.teste().subscribe(
+           response2 => { console.log(response2) });*/
+        //  var a = window.open("http://teste.com:5050/teste/index.php?file=" + this.filename + "");
+        //a.close();
 
-            } else {
-              var iframe;
-              if (!iframe) {
-                iframe = document.createElement('iframe');
-                document.body.appendChild(iframe);
+        /*
+                a.print();
+                a.close();*/
 
-                iframe.style.display = 'none';
-                iframe.onload = function () {
-                  setTimeout(function () {
-                    iframe.focus();
-                    iframe.contentWindow.print();
-                  }, 1);
-                };
-              }
-              iframe.src = this.fileURL;
-            }
-          }, error => console.log(error));
+
+        var iframe;
+        if (!iframe) {
+          iframe = document.createElement('iframe');
+          document.body.appendChild(iframe);
+
+          iframe.style.display = 'none';
+          iframe.onload = function () {
+            setTimeout(function () {
+              iframe.focus();
+              iframe.contentWindow.print();
+            }, 1);
+          };
+        }
+        iframe.src = this.fileURL;
       }
     );
-  }
-
-  //ver cookies
-  getCookie(name) {
-    var value = "; " + document.cookie;
-    var parts = value.split("; " + name + "=");
-    if (parts.length == 2) return parts.pop().split(";").shift();
   }
 
   //preenche tabela das análises
@@ -1454,7 +1493,7 @@ export class ManutencaoformComponent implements OnInit {
 
   preenchetipo_man(val, id) {
     //preenche combobox Tipo Manutenção
-    this.ABDICTIPOMANUTENCAOService.getAll(["M"]).subscribe(
+    this.ABDICTIPOMANUTENCAOService.getAll(["B"]).subscribe(
       response => {
         this.tipo_manu = [];
         this.tipo_manu.push({ label: "Sel. Tipo Manutenção", value: "" });
@@ -1484,10 +1523,13 @@ export class ManutencaoformComponent implements OnInit {
   }
   preencheAdicao(val, id) {
     //preenche combobox Tipo Adição
-    this.ABDICTIPOADICAOService.getAll(["M"]).subscribe(
+    this.ABDICTIPOADICAOService.getAll(["B"]).subscribe(
       response => {
         this.tipo_adicao = [];
-        this.tipo_adicao.push({ label: "Sel. Tipo Adição", value: "" });
+        var count = Object.keys(response).length;
+        if (count > 1) {
+          this.tipo_adicao.push({ label: "Sel. Tipo Adição", value: "" });
+        }
         for (var x in response) {
           this.tipo_adicao.push({ label: response[x].nome_TIPO_ADICAO, value: { id: response[x].id_TIPO_ADICAO, id195: response[x].id_TIPO_OPERACAO } });
         }
@@ -1498,10 +1540,13 @@ export class ManutencaoformComponent implements OnInit {
   }
   preencheIntervalo(val, id) {
     //preenche combobox Intervalo Oper.
-    this.ABDICTIPOOPERACAOService.getAll(["M"]).subscribe(
+    this.ABDICTIPOOPERACAOService.getAll(["B"]).subscribe(
       response => {
         this.intervalo_op = [];
-        this.intervalo_op.push({ label: "Sel. Intervalo Oper.", value: "" });
+        var count = Object.keys(response).length;
+        if (count > 1) {
+          this.intervalo_op.push({ label: "Sel. Intervalo Oper.", value: "" });
+        }
         for (var x in response) {
           this.intervalo_op.push({ label: response[x].nome_TIPO_OPERACAO, value: { id: response[x].id_TIPO_OPERACAO, id195: response[x].id195 } });
         }
@@ -1525,6 +1570,6 @@ export class ManutencaoformComponent implements OnInit {
   }
 
   historico(id) {
-    this.router.navigate(['manutencao/historico'], { queryParams: { id: id } });
+    this.router.navigate(['construcaobanhos/historico'], { queryParams: { id: id } });
   }
 }

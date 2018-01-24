@@ -61,6 +61,14 @@ export class ABMOVANALISEService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
+  getbyid_banho_comp(id, inicio, fim, data): Observable<AB_MOV_ANALISE[]> {
+    const url = webUrl.host + '/rest/sirb/getallAB_MOV_ANALISEidbanho_comp/' + id + '/' + inicio + '/' + fim;
+    return this.http
+    .post(url, JSON.stringify(data), { headers: this.headers })
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
   getbyID(id): Observable<AB_MOV_ANALISE[]> {
     const url = webUrl.host + '/rest/sirb/getAB_MOV_ANALISEbyid/' + id + '/0';
     return this.http

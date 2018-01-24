@@ -11,6 +11,7 @@ import { AB_MOV_ANALISE } from "app/entidades/AB_MOV_ANALISE";
 import { ABMOVANALISEService } from "app/servicos/ab-mov-analise.service";
 import { AB_MOV_ANALISE_LINHA } from "app/entidades/AB_MOV_ANALISE_LINHA";
 import { ABMOVANALISELINHAService } from "app/servicos/ab-mov-analise-linha.service";
+import { UploadService } from 'app/servicos/upload.service';
 
 
 @Component({
@@ -19,6 +20,11 @@ import { ABMOVANALISELINHAService } from "app/servicos/ab-mov-analise-linha.serv
   styleUrls: ['./registoform.component.css']
 })
 export class RegistoformComponent implements OnInit {
+  email_para: any;
+  bt_disable: boolean;
+  email_mensagem: string = "";;
+  nome_utz: any = "";
+  alerta: any;
   cores = [];
   validada: boolean = false;
   bt_click: any = "";
@@ -59,12 +65,14 @@ export class RegistoformComponent implements OnInit {
   @ViewChild('inputapagar') inputapagar: ElementRef;
   @ViewChild('inputerro') inputerro: ElementRef;
   @ViewChild('dialog') dialog: ElementRef;
+  @ViewChild('dialogemail') dialogemail: ElementRef;
+  @ViewChild('dialogemailclose') dialogemailclose: ElementRef;
   @ViewChild('btvalidar') btvalidar: ElementRef;
   @ViewChild('btvalidarfalse') btvalidarfalse: ElementRef;
   @ViewChild('alteraeditar') alteraeditar: ElementRef;
   @ViewChild('alteraeditartrue') alteraeditartrue: ElementRef;
 
-  constructor(private elementRef: ElementRef, private ABMOVANALISELINHAService: ABMOVANALISELINHAService, private ABMOVANALISEService: ABMOVANALISEService, private ABDICBANHOService: ABDICBANHOService, private ABDICLINHAService: ABDICLINHAService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private ABDICBANHOCOMPONENTEService: ABDICBANHOCOMPONENTEService, private confirmationService: ConfirmationService, private router: Router, private renderer: Renderer, private route: ActivatedRoute, private globalVar: AppGlobals, private location: Location) { }
+  constructor(private UploadService: UploadService, private elementRef: ElementRef, private ABMOVANALISELINHAService: ABMOVANALISELINHAService, private ABMOVANALISEService: ABMOVANALISEService, private ABDICBANHOService: ABDICBANHOService, private ABDICLINHAService: ABDICLINHAService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private ABDICBANHOCOMPONENTEService: ABDICBANHOCOMPONENTEService, private confirmationService: ConfirmationService, private router: Router, private renderer: Renderer, private route: ActivatedRoute, private globalVar: AppGlobals, private location: Location) { }
 
 
   ngOnInit() {
@@ -188,7 +196,7 @@ export class RegistoformComponent implements OnInit {
         response => {
           this.banhos.push({ label: 'Seleccione Banho', value: "" });
           for (var x in response) {
-            this.banhos.push({ label: response[x][0].id_BANHO + " / " + response[x][0].nome_BANHO + " - Tina: " + response[x][2].cod_TINA, value: { id: response[x][0].id_BANHO, celula: response[x][0].celulahull, nome_tina: response[x][2].cod_TINA, capacidade_tina: response[x][2].capacidade } });
+            this.banhos.push({ label: response[x][0].id_BANHO + " / " + response[x][0].nome_BANHO + " - Tina: " + response[x][2].cod_TINA, value: { id: response[x][0].id_BANHO, celula: response[x][0].celulahull, nome_tina: response[x][2].cod_TINA, capacidade_tina: response[x][2].capacidade, nome_banho: response[x][0].id_BANHO + " / " + response[x][0].nome_BANHO } });
           }
           this.banhos = this.banhos.slice();
         },
@@ -287,7 +295,7 @@ export class RegistoformComponent implements OnInit {
           this.banhos = [];
           this.banhos.push({ label: 'Seleccione Banho', value: "" });
           for (var x in response) {
-            this.banhos.push({ label: response[x][0].id_BANHO + " / " + response[x][0].nome_BANHO, value: { id: response[x][0].id_BANHO, celula: response[x][0].celulahull, nome_tina: response[x][2].cod_TINA, capacidade_tina: response[x][2].capacidade } });
+            this.banhos.push({ label: response[x][0].id_BANHO + " / " + response[x][0].nome_BANHO, value: { id: response[x][0].id_BANHO, celula: response[x][0].celulahull, nome_tina: response[x][2].cod_TINA, capacidade_tina: response[x][2].capacidade, nome_banho: response[x][0].id_BANHO + " / " + response[x][0].nome_BANHO } });
           }
           this.banhos = this.banhos.slice();
           this.ABMOVANALISEService.getbyID(id).subscribe(
@@ -298,6 +306,7 @@ export class RegistoformComponent implements OnInit {
                 this.analise_dados = response[0][0];
                 for (var x in response) {
                   this.codigo = response[x][0].id_ANALISE;
+                  this.nome_utz = response[x][4];
                   this.data = this.formatDate(response[x][0].data_ULT_MODIF);
                   this.celula = response[x][0].celulahull;
                   this.cor_linha = response[x][1].cor;
@@ -308,6 +317,7 @@ export class RegistoformComponent implements OnInit {
                   this.nome_tina = this.banhos.find(item => item.value.id === response[x][0].id_BANHO).value['nome_tina'];
                   this.capacidade_tina = this.banhos.find(item => item.value.id === response[x][0].id_BANHO).value['capacidade_tina'];
                   this.obs = response[x][0].obs;
+                  this.email_para = response[x][2].email_PARA;
                   this.selected_plano = (response[x][0].planeada == null || response[x][0].planeada == false) ? false : true;
                   this.linha = this.linhas.find(item => item.value.id === response[x][0].id_LINHA).value;
                   if (response[x][0].estado == "C") {
@@ -361,8 +371,9 @@ export class RegistoformComponent implements OnInit {
   }
 
   //ver o button em que clicou
-  estadobutton(estado) {
+  estadobutton(estado, alerta) {
     this.bt_click = estado;
+    this.alerta = alerta;
   }
   //bt gravar
   gravar(estado = null) {
@@ -520,8 +531,10 @@ export class RegistoformComponent implements OnInit {
 
   //botão de “Concluir” para que o utilizador possa indicar que terminou a análise
   concluir() {
+    var mensagem = "Tem a certeza que pretende Concluir?";
+    if (this.alerta) mensagem = "Tem a certeza que pretende Concluir com envio de Alerta?";
     this.confirmationService.confirm({
-      message: 'Tem a certeza que pretende Concluir?',
+      message: mensagem,
       header: 'Concluir',
       icon: 'fa fa-bell-o',
       accept: () => {
@@ -531,45 +544,92 @@ export class RegistoformComponent implements OnInit {
           .subscribe(params => {
             id = params['id'] || 0;
           });
-        if (this.novo) {
+        if (this.novo && !this.alerta) {
           this.gravar("C");
         } else {
+          if (this.alerta) {
+            this.email_mensagem = "";
+            this.bt_disable = false;
+            this.simular(this.dialogemail);
+          } else {
+            this.email_mensagem = "";
+            if (this.novo) {
+              this.gravar("C");
+            } else {
+              this.conclui(id, false);
+            }
+          }
 
-          this.ABMOVANALISELINHAService.getbyid_analise(id, this.banhos_valor['id']).subscribe(
-            response => {
-
-              var analise = new AB_MOV_ANALISE;
-              analise = this.analise_dados;
-              analise.estado = "C";
-              analise.utz_ULT_MODIF = this.user;
-              analise.data_ULT_MODIF = new Date();
-              analise.obs = this.obs;
-              analise.id_BANHO = this.banhos_valor['id'];
-              analise.id_LINHA = this.linha.id;
-              analise.data_ANALISE = this.data_ANALISE;
-              analise.analise_INT_EXT = this.analise_valor;
-              analise.celulahull = this.celula;
-              analise.hora_ANALISE = this.hora_ANALISE;
-
-              if (this.cores.find(item => item == "vermelho")) {
-                analise.cor_LIMITES = "vermelho";
-              } else if (this.cores.find(item => item == "amarelo")) {
-                analise.cor_LIMITES = "amarelo";
-              } else if (this.cores.find(item => item == "verde")) {
-                analise.cor_LIMITES = "verde";
-              } else {
-                analise.cor_LIMITES = "none";
-              }
-
-              this.ABMOVANALISEService.update(analise).then(() => {
-                this.inserir_linhas(id);
-              });
-
-
-            },
-            error => console.log(error));
         }
       }
+    });
+  }
+
+  enviar() {
+    var id;
+    var sub = this.route
+      .queryParams
+      .subscribe(params => {
+        id = params['id'] || 0;
+      });
+    if (this.novo) {
+      this.gravar("C");
+    } else {
+      this.conclui(id, true);
+    }
+
+  }
+
+  conclui(id, evento) {
+    this.ABMOVANALISELINHAService.getbyid_analise(id, this.banhos_valor['id']).subscribe(
+      response => {
+
+        var analise = new AB_MOV_ANALISE;
+        analise = this.analise_dados;
+        analise.estado = "C";
+        analise.utz_ULT_MODIF = this.user;
+        analise.data_ULT_MODIF = new Date();
+        analise.obs = this.obs;
+        analise.id_BANHO = this.banhos_valor['id'];
+        analise.id_LINHA = this.linha.id;
+        analise.data_ANALISE = this.data_ANALISE;
+        analise.analise_INT_EXT = this.analise_valor;
+        analise.celulahull = this.celula;
+        analise.hora_ANALISE = this.hora_ANALISE;
+        analise.mensagem = this.email_mensagem;
+
+        if (this.cores.find(item => item == "vermelho")) {
+          analise.cor_LIMITES = "vermelho";
+        } else if (this.cores.find(item => item == "amarelo")) {
+          analise.cor_LIMITES = "amarelo";
+        } else if (this.cores.find(item => item == "verde")) {
+          analise.cor_LIMITES = "verde";
+        } else {
+          analise.cor_LIMITES = "none";
+        }
+
+        this.ABMOVANALISEService.update(analise).then(() => {
+          if (evento) this.verifica(this.obs, this.codigo, this.data_ANALISE, this.banhos_valor['nome_banho'], this.banhos_valor['nome_tina'], this.nome_utz, this.estado, this.linha.id, this.email_mensagem);
+          this.inserir_linhas(id);
+        });
+
+
+      },
+      error => console.log(error));
+  }
+
+
+  //verificar eventos
+  verifica(observacao, numero_analise, data_analise, nome_banho, tina, utilizador, estado, linha, email_mensagem) {
+    var dados = "{observacao:" + observacao + ",numero_analise:" + numero_analise + ",mensagem:" + email_mensagem
+      + ",data_analise:" + new Date(data_analise).toLocaleDateString() + ",nome_banho:" + nome_banho
+      + ",tina:" + tina + ",utilizador:" + utilizador + ",estado:" + estado + ",linha:" + linha + "}";
+    var data = [{ MODULO: 1, MOMENTO: "Ao Concluir", PAGINA: "Ánalises", ESTADO: true, DADOS: dados, EMAIL_PARA: this.email_para}];
+    this.UploadService.verficaEventos(data).subscribe(result => {
+      this.simular(this.dialogemailclose)
+      this.bt_disable = true;
+    }, error => {
+      console.log(error);
     });
   }
 
@@ -707,7 +767,7 @@ export class RegistoformComponent implements OnInit {
   }
 
   //ver historico
-  historico(){
+  historico() {
     this.router.navigate(['registo/historico'], { queryParams: { id: this.analises[this.i] } });
   }
 

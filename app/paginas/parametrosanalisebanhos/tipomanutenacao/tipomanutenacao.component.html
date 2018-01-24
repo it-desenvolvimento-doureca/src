@@ -10,11 +10,12 @@
           <div class="card-content">
             <p-dataTable [style]="{'width':'300px'}" [value]="manutencoes" selectionMode="single" (onRowSelect)="onRowSelect($event)"
               [paginator]="true" rows="15">
-              <p-column [style]="{'width':'30px'}" field="nome" header="Tipo Manutenção" [filter]="true" [sortable]="true"></p-column>
+              <p-column [style]="{'width':'80px'}" field="nome" header="Tipo Manutenção" [filter]="true" [sortable]="true"></p-column>
+              <p-column [style]="{'width':'60px'}" field="classif_nome" header="Classificação" [sortable]="true"></p-column>
               <p-footer>
                 <a (click)="showDialogToAdd()" style="color: black; cursor:pointer; margin-left:10px;" title="Adicionar nova linha">
-                         <i class="material-icons">add</i> Adicionar
-                        </a>
+                  <i class="material-icons">add</i> Adicionar
+                </a>
               </p-footer>
             </p-dataTable>
           </div>
@@ -32,9 +33,9 @@
       <!-- Modal Header -->
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">
-                       <span aria-hidden="true">&times;</span>
-                       <span class="sr-only">Close</span>
-                </button>
+          <span aria-hidden="true">&times;</span>
+          <span class="sr-only">Close</span>
+        </button>
         <h4 class="modal-title" id="myModalLabel">
           Tipo Manutenção
         </h4>
@@ -42,10 +43,16 @@
       <form role="form" ngNativeValidate (ngSubmit)="gravarmanutencoes()">
         <!-- Modal Body -->
         <div class="modal-body">
-          <div class="form-group">
+          <div class="form-group col-md-6">
             <label for="manutencao">Nome Manutencao</label>
-            <input type="text" class="form-control" id="manutencao" [(ngModel)]="valor_manutencao" [ngModelOptions]="{standalone: true}" placeholder="Introduza o Tipo Manutenção"
-              required />
+            <input type="text" class="form-control" id="manutencao" [(ngModel)]="valor_manutencao" [ngModelOptions]="{standalone: true}"
+              placeholder="Introduza o Tipo Manutenção" required />
+          </div>
+          <div class="form-group col-md-6">
+            <label for="manutencao">Classificação</label>
+            <br>
+            <p-dropdown [options]="classificacao" [(ngModel)]="classif" [ngModelOptions]="{standalone: true}" [style]="{'width':'300px'}"
+              [required]="true"></p-dropdown>
           </div>
         </div>
         <!-- Modal Footer -->

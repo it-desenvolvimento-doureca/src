@@ -15,6 +15,7 @@ import { ABDICBANHOADITIVOService } from "app/servicos/ab-dic-banho-aditivo.serv
 import { AB_DIC_BANHO_ADITIVO } from "app/entidades/AB_DIC_BANHO_ADITIVO";
 import { ABDICZONAService } from "app/servicos/ab-dic-zona.service";
 import { GERFORNECEDORService } from "app/servicos/ger-fornecedor.service";
+import { GERUTILIZADORESService } from 'app/servicos/ger-utilizadores.service';
 
 @Component({
   selector: 'app-banhosform',
@@ -22,8 +23,11 @@ import { GERFORNECEDORService } from "app/servicos/ger-fornecedor.service";
   styleUrls: ['./banhosform.component.css']
 })
 export class BanhosformComponent implements OnInit {
+  useremail: any;
+  email_para: any;
   celula: any;
   estados;
+  results;
   estado_comp = 1;
   fornecedores: any[];
   zonas: any[];
@@ -63,7 +67,7 @@ export class BanhosformComponent implements OnInit {
   @ViewChild('dialogavisodata') dialogavisodata: ElementRef;
   @ViewChild('dialogavisodatafim') dialogavisodatafim: ElementRef;
 
-  constructor(private GERFORNECEDORService: GERFORNECEDORService, private ABDICZONAService: ABDICZONAService, private ABDICBANHOADITIVOService: ABDICBANHOADITIVOService, private ABUNIDADADEMEDIDAService: ABUNIDADADEMEDIDAService, private ABDICLINHAService: ABDICLINHAService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private ABDICBANHOCOMPONENTEService: ABDICBANHOCOMPONENTEService, private ABDICTINAService: ABDICTINAService, private confirmationService: ConfirmationService, private router: Router, private ABDICBANHOService: ABDICBANHOService, private renderer: Renderer, private route: ActivatedRoute, private globalVar: AppGlobals, private location: Location) { }
+  constructor(private GERUTILIZADORESService:GERUTILIZADORESService, private GERFORNECEDORService: GERFORNECEDORService, private ABDICZONAService: ABDICZONAService, private ABDICBANHOADITIVOService: ABDICBANHOADITIVOService, private ABUNIDADADEMEDIDAService: ABUNIDADADEMEDIDAService, private ABDICLINHAService: ABDICLINHAService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private ABDICBANHOCOMPONENTEService: ABDICBANHOCOMPONENTEService, private ABDICTINAService: ABDICTINAService, private confirmationService: ConfirmationService, private router: Router, private ABDICBANHOService: ABDICBANHOService, private renderer: Renderer, private route: ActivatedRoute, private globalVar: AppGlobals, private location: Location) { }
 
 
   ngOnInit() {
@@ -226,6 +230,7 @@ export class BanhosformComponent implements OnInit {
         this.globalVar.setcriar(true);
       }
     }
+    this.getutilizadores();
   }
 
   //ao alterar combobox aditivos preenche as unidades por defeito
@@ -341,6 +346,7 @@ export class BanhosformComponent implements OnInit {
               this.cor_linha = response[x][1].cor;
               this.celula = response[x][0].celulahull;
               this.obs = response[x][0].obs;
+              this.email_para = (response[x][0].email_PARA != null && response[x][0].email_PARA != "")? response[x][0].email_PARA.split(",") : [];
             }
             this.banhosComp(id);
             this.banhosaditivos(id);
@@ -376,6 +382,7 @@ export class BanhosformComponent implements OnInit {
       banho.id_ZONA = this.zona;
       banho.inativo = false;
       banho.celulahull = this.celula;
+      banho.email_PARA = this.email_para.toString();
 
       this.ABDICBANHOService.create(banho).subscribe(
         res => {
@@ -403,6 +410,7 @@ export class BanhosformComponent implements OnInit {
       banho.data_ULT_MODIF = new Date();
       banho.utz_ULT_MODIF = this.user;
       banho.celulahull = this.celula;
+      banho.email_PARA = this.email_para.toString();
 
       this.ABDICBANHOService.update(banho).then(() => {
         this.inserir_linhas(id);
@@ -792,6 +800,51 @@ export class BanhosformComponent implements OnInit {
   atualizarcomp(event) {
     this.estado_comp = event.value;
     this.banhosComp(this.banho[this.i]);
+  }
+
+  //autocomplete para:
+  search(event) {
+    var input = (<HTMLInputElement><any>document.getElementById('autocompleteinput'));
+    this.results = this.pesquisaemail(event.query);
+    if (event.query.indexOf(";") >= 0) {
+      var email = (event.query.substr(0, event.query.indexOf(";")));
+      if (this.email_para.indexOf(email) < 0 && email.trim().length > 0 && this.validateEmail(email)) {
+        this.email_para.push(email);
+        input.value = "";
+      }
+      if (email.trim().length < 0) {
+        input.value = "";
+      }
+    }
+  }
+
+  //verifica se é email
+  validateEmail(email) {
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+  }
+  //verifica se existe algum email
+  pesquisaemail(text) {
+    var result = [];
+    for (var x in this.useremail) {
+      if (this.useremail[x].email.includes(text)) {
+        result.push(this.useremail[x].email);
+      }
+    }
+    return result;
+  }
+
+  //preenche emails 
+  getutilizadores() {
+    this.useremail = [];
+    this.GERUTILIZADORESService.getAll().subscribe(
+      response => {
+        for (var x in response) {
+          this.useremail.push({ email: response[x].email });
+        }
+        this.useremail = this.useremail.slice();
+      },
+      error => console.log(error));
   }
 
 }

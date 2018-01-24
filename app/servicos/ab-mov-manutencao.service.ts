@@ -21,18 +21,18 @@ export class ABMOVMANUTENCAOService {
       .catch((error: any) => Observable.throw('Server error'))
   }
 
-  getAll(query): Observable<AB_MOV_MANUTENCAO[]> {
+  getAll(query,classif): Observable<AB_MOV_MANUTENCAO[]> {
     if(query.length <= 0) query = null;
-    const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAO/0';
+    const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAO/0/'+classif;
     return this.http
       .post(url, JSON.stringify(query), { headers: this.headers })
       .map(this.extractData)
       .catch((error: any) => Observable.throw('Server error'));
   }
 
-  getAllsrotid(query): Observable<AB_MOV_MANUTENCAO[]> {
+  getAllsrotid(query,classif): Observable<AB_MOV_MANUTENCAO[]> {
     if(query.length <= 0) query = null;
-    const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAOsorid/0';
+    const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAOsorid/0/'+classif;
     return this.http
       .post(url, JSON.stringify(query), { headers: this.headers })
       .map(this.extractData)

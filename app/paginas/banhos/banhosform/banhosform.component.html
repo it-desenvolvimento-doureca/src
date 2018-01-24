@@ -70,8 +70,10 @@
                       <label style="font-size: 14px;">Nº da Tina</label>
                       <p-dropdown [filter]="true" [options]="tinas" [style]="{'width':'150px'}" [(ngModel)]="tinas_valor" [ngModelOptions]="{standalone: true}"
                         (onChange)="num_tina($event)" [disabled]="!modoedicao" [required]="true"></p-dropdown>
-                      <span style="font-size: 12px; padding-right: 20px;"><b>CAP(LT):</b> {{capacidade_tina}}</span>
-                      <span style="font-size: 12px;"><b>OBS. TINA:</b> {{obs_tina}}</span>
+                      <span style="font-size: 12px; padding-right: 20px;">
+                        <b>CAP(LT):</b> {{capacidade_tina}}</span>
+                      <span style="font-size: 12px;">
+                        <b>OBS. TINA:</b> {{obs_tina}}</span>
                     </div>
                   </div>
                   <div>
@@ -83,11 +85,21 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6">
                   <div class="form-group">
                     <div [ngClass]="obs == '' ? 'is-empty' : null" class="form-group form-black label-floating">
                       <label class="control-label">Observações</label>
                       <textarea class="form-control" rows="1" [(ngModel)]="obs" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao"></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="form-group form-black label-floating">
+                      <label for="para" class="control-label">Enviar Para:</label>
+                      <p-autoComplete [disabled]="!modoedicao" required="true" type="email" inputId="autocompleteinput" placeholder="exemplo@exemplo.com;"
+                        styleClass="wid100" forceSelection="true" [minLength]="1" [(ngModel)]="email_para" [suggestions]="results"
+                        [ngModelOptions]="{standalone: true}" [multiple]="true" (completeMethod)="search($event)"></p-autoComplete>
                     </div>
                   </div>
                 </div>
@@ -130,13 +142,12 @@
                     </p-column>
                     <p-column field="data_ini" header="DATA ÍNICIO" [style]="{'width':'11%','font-size': '12px'}">
                       <ng-template pTemplate="body" let-col2 let-row2="rowData ">
-                        <p-calendar [style]="{'width':'110px'}" (onInput)="verificadatas(row2[col2.field],row2['pos'],row2['id_componente'])"
-                          (onSelect)="verificadatas(row2[col2.field],row2['pos'],row2['id_componente'])" dateFormat="yy-mm-dd"
-                          [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2030" [(ngModel)]="row2['data_ini']"
+                        <p-calendar [style]="{'width':'110px'}" (onInput)="verificadatas(row2[col2.field],row2['pos'],row2['id_componente'])" (onSelect)="verificadatas(row2[col2.field],row2['pos'],row2['id_componente'])"
+                          dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2030" [(ngModel)]="row2['data_ini']"
                           [ngModelOptions]="{standalone: true}" [showIcon]="true" [hidden]="!modoedicao"></p-calendar>
                         <label class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">
                           {{row2[col2.field] | date: 'yyyy-MM-dd'}}
-                          </label>
+                        </label>
                       </ng-template>
                     </p-column>
                     <p-column field="data_fim" header="DATA FIM" [style]="{'width':'11%','font-size': '12px'}">
@@ -190,8 +201,8 @@
                     <p-footer>
                       <a (click)="novalinha()" [ngClass]="!modoedicao ? 'not-active' : null" style="color: black; cursor:pointer; margin-left:10px;"
                         title="Adicionar nova linha">
-                         <i class="material-icons">playlist_add</i>
-                        </a>
+                        <i class="material-icons">playlist_add</i>
+                      </a>
                     </p-footer>
                   </p-dataTable>
                 </div>
@@ -236,8 +247,8 @@
                     <p-footer>
                       <a (click)="novalinha_aditivo()" [ngClass]="!modoedicao ? 'not-active' : null" style="color: black; cursor:pointer; margin-left:10px;"
                         title="Adicionar nova linha">
-                         <i class="material-icons">playlist_add</i>
-                        </a>
+                        <i class="material-icons">playlist_add</i>
+                      </a>
                     </p-footer>
                   </p-dataTable>
                 </div>

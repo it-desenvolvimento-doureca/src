@@ -5,7 +5,7 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-header" style="height: 54px;" data-background-color="red">
-            <h4 class="title">Manutenções</h4>
+            <h4 class="title">Construção Banhos</h4>
             <button [disabled]="novo || disimprimir" title="Imprimir em folhas separadas" type="button" style="color: black; float:right; margin-top: -19px; background-color: #ccc1c1;"
               class="btn btn-white btn-round btn-just-icon" (click)="imprimir('manutencao_separadas',num_manutencao)">
               <i class="material-icons">print</i>
@@ -22,14 +22,14 @@
               <div class="row" style="border-bottom: 3px solid #ddd; margin-bottom: 10px;">
                 <div class="col-md-2" style="width: 11%;">
                   <div [ngClass]="num_manutencao == '' ? 'is-empty' : null" class="form-group form-black label-floating ">
-                    <label style="font-size: 14px;">Nº Manutenção</label>
+                    <label style="font-size: 14px;">Nº Construção</label>
                     <input disabled type="text" style="background: white;" [disabled]="true" class="form-control" style=" margin-top: -13px; padding-bottom: 0px;"
                       [(ngModel)]="num_manutencao" [ngModelOptions]="{standalone: true}">
                   </div>
                 </div>
                 <div class="col-md-2" style="width: 18%;">
                   <div class="form-group form-black label-floating">
-                    <label style="font-size: 14px;">Tipo Manutenção</label>
+                    <label style="font-size: 14px;">Tipo Construção</label>
                     <p-dropdown [options]="tipo_manu" [style]="{'width':'205px'}" [(ngModel)]="tipo_manu_id" [ngModelOptions]="{standalone: true}"
                       [disabled]="!novo" [required]="true"></p-dropdown>
                   </div>
@@ -129,9 +129,7 @@
                           [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [(ngModel)]="item.data_pre"
                           [ngModelOptions]="{standalone: true}" [showIcon]="true" [hidden]="!modoedicao" [required]="true"></p-calendar>
                         <label style="width:100px; margin-left: 4px;" class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{item.data_pre | date: 'yyyy-MM-dd'}}</label>
-                        <input [hidden]="!modoedicao" style="width:80px; padding: 5px 4px;" [(ngModel)]="item.hora_pre" [ngModelOptions]="{standalone: true}"
-                          type="time" class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all" ng-reflect-ng-class="ui-inputtext ui-widget ui-stat"
-                          required="true" placeholder="hh:mm">
+                          <p-calendar  [required]="true" placeholder="hh:mm" [hidden]="!modoedicao" class="timeinput" [(ngModel)]="item.hora_pre" [ngModelOptions]="{standalone: true}" timeOnly="true" showTime="true" hourFormat="24"></p-calendar>
                         <label style="width:70px; margin-top: 2%;" class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{item.hora_pre}}</label>
 
                       </div>
@@ -139,13 +137,13 @@
                         <label style="font-size: 14px;">Tipo Adição</label>
                         <p-dropdown (onChange)="verifica_adicao($event,item.pos)" (onFocus)="alterarintervalo(op.value,item.pos,item.id_195)" [options]="tipo_adicao"
                           [style]="{'width':'250px'}" [(ngModel)]="item.tipo_adicao" [ngModelOptions]="{standalone: true}"
-                          [required]="true" [disabled]="!modoedicao"></p-dropdown>
+                          [required]="true" [disabled]="true"></p-dropdown>
                       </div>
                       <div class="col-md-12  form-group form-black label-floating" style="padding: 0px;">
                         <div class="col-md-12 form-group form-black label-floating" style="padding: 0px;">
                           <div style="float: left;">
                             <label style="font-size: 14px;">Intervalo Oper.</label>
-                            <p-dropdown #op [options]="intervalo_op" (onFocus)="alterarintervalo(op.value,item.pos,item.id_195)" [disabled]="item.disable_op || !modoedicao"
+                            <p-dropdown #op [options]="intervalo_op" (onFocus)="alterarintervalo(op.value,item.pos,item.id_195)" [disabled]="true"
                               [style]="{'width':'180px'}" [(ngModel)]="item.interva_ope" [ngModelOptions]="{standalone: true}"
                               [required]="true"></p-dropdown>
                           </div>
@@ -167,18 +165,18 @@
                       </div>
                       <div class="col-md-12  form-group form-black label-floating" style="padding: 0px;">
                         <label style="font-size: 14px; float: left; margin-top: 11px; margin-right: 4px;">Obs. Planea.</label>
-                        <input type="text" style="background: white; width: 77%;" class="form-control" [(ngModel)]="item.obs_pla" [ngModelOptions]="{standalone: true}"
+                        <input type="text" style="background: white; width: 77%;" id="default" class="keyboard form-control" [(ngModel)]="item.obs_pla" [ngModelOptions]="{standalone: true}"
                           [disabled]="!modoedicao">
                       </div>
                       <div class="col-md-12  form-group form-black label-floating" style="padding: 0px;">
                         <label style="font-size: 14px; float: left; margin-top: 11px; margin-right: 4px;">Obs. Prepara.</label>
-                        <input type="text" style="background: white; width: 77%;" class="form-control" [(ngModel)]="item.obs_prep" [ngModelOptions]="{standalone: true}"
+                        <input type="text" style="background: white; width: 77%;" id="default" class="keyboard form-control" [(ngModel)]="item.obs_prep" [ngModelOptions]="{standalone: true}"
                           [disabled]="!modoedicao && item.preparado || planeamento">
                       </div>
                       <div class="col-md-12 form-group form-black label-floating" style="padding: 0px;">
                         <div class=" col-md-12 form-group form-black label-floating" style="padding: 0px;">
                           <label style="font-size: 14px; float: left;">Resp. Prepara.</label>
-                          <input type="text" style="background: white;" [disabled]="true" class="form-control" style="width: 55%; float: left; margin-top: -13px; margin-left: 8px; padding-bottom: 0px; padding-top: 13px;"
+                          <input type="text" style="background: white;" [disabled]="true" id="default" class="keyboard form-control" style="width: 55%; float: left; margin-top: -13px; margin-left: 8px; padding-bottom: 0px; padding-top: 13px;"
                             [(ngModel)]="item.resp_prep" [ngModelOptions]="{standalone: true}">
                         </div>
                         <div class=" col-md-12 form-group form-black label-floating" style="padding: 0px;">
@@ -189,7 +187,7 @@
                       </div>
                       <div class="col-md-12  form-group form-black label-floating" style="padding: 0px;">
                         <label style="font-size: 14px; float: left; margin-top: 11px; margin-right: 4px;">Obs. Exec.</label>
-                        <input type="text" style="background: white; width: 77%;" class="form-control" [(ngModel)]="item.obs_exec" [ngModelOptions]="{standalone: true}"
+                        <input type="text" style="background: white; width: 77%;" id="default" class="keyboard form-control" [(ngModel)]="item.obs_exec" [ngModelOptions]="{standalone: true}"
                           [disabled]="(!modoedicao && !item.preparado) || item.executado || planeamento">
                       </div>
                       <div class="col-md-12 form-group form-black label-floating" style="padding: 0px;">
@@ -207,10 +205,10 @@
                           <p-calendar [style]="{'width':'120px','height':'31px','padding':'0px 5px'}" dateFormat="yy-mm-dd" placeholder="yy-mm-dd"
                             [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [(ngModel)]="item.data_exc"
                             [ngModelOptions]="{standalone: true}" [showIcon]="true" [hidden]="!modoedicao || (modoedicao && !admin)"></p-calendar>
-
-                          <input [hidden]="!modoedicao || (modoedicao && !admin)" style="width: 72px; padding: 5px 4px; margin-left: 29px;" [(ngModel)]="item.hora_exc"
+                            <p-calendar [style]="{'margin-left':'29px'}" placeholder="hh:mm" [hidden]="!modoedicao || (modoedicao && !admin)" class="timeinput" [(ngModel)]="item.hora_exc" [ngModelOptions]="{standalone: true}" timeOnly="true" showTime="true" hourFormat="24"></p-calendar>
+                          <!--<input [hidden]="!modoedicao || (modoedicao && !admin)" style="width: 72px; padding: 5px 4px; margin-left: 29px;" [(ngModel)]="item.hora_exc"
                             [ngModelOptions]="{standalone: true}" type="time" class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all"
-                            ng-reflect-ng-class="ui-inputtext ui-widget ui-stat" placeholder="hh:mm">
+                            ng-reflect-ng-class="ui-inputtext ui-widget ui-stat" placeholder="hh:mm">-->
 
                           <input [hidden]="modoedicao && admin" type="text" style="background: white;" [disabled]="true" class="form-control" style="width: 56%; float: left; margin-top: -13px; margin-left: 8px; padding-bottom: 0px; padding-top: 13px;"
                             [(ngModel)]="item.data_exc" [ngModelOptions]="{standalone: true}">
@@ -222,7 +220,7 @@
                         <table class="table table-striped adititable">
                           <thead class="ui-datatable-thead">
                             <tr>
-                              <th style="font-weight: 700;">Aditivo</th>
+                              <th style="font-weight: 700;">Componente</th>
                               <th style="width: 8%; font-weight: 700;">Valor 1</th>
                               <th style="width: 9%;  padding: .75em 0 .75em 0; font-weight: 700;">Valor Água</th>
                               <th style="width: 9%; font-weight: 700;">Unid. 1</th>
@@ -235,19 +233,19 @@
                           </thead>
                           <tbody>
                             <tr *ngIf="item.aditivos.length == 0 && textotabela == null">
-                              <td style="text-align: center;" colspan="9"> O BANHO NÃO CONTÉM ADITIVOS... </td>
+                              <td style="text-align: center;" colspan="9"> O BANHO NÃO CONTÉM COMPONENTES... </td>
                             </tr>
                             <tr *ngIf="textotabela != null">
                               <td style="text-align: center;" colspan="9"> {{textotabela}} </td>
                             </tr>
                             <tr *ngFor="let aditem of item.aditivos">
                               <td style="padding: 5px 4px 0px 0px">
-                                <input type="text" style="background: white; height: 31px;" class="form-control" [(ngModel)]="aditem.nome" [ngModelOptions]="{standalone: true}"
+                                <input type="text"  style="background: white; height: 31px;" class="form-control" [(ngModel)]="aditem.nome" [ngModelOptions]="{standalone: true}"
                                   [disabled]="true">
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
-                                <input (ngModelChange)="atualizarvaloragua(valoruni.value,aditem.factor,aditem.pos,item.pos)" #valoruni type="text" style="background: white; text-align: center; height: 31px;"
-                                  class="form-control" [(ngModel)]="aditem.valor1" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
+                                <input (ngModelChange)="atualizarvaloragua(valoruni.value,aditem.factor,aditem.pos,item.pos)" #valoruni type="tel" style="background: white; text-align: center; height: 31px;"
+                                id="number1" class="keyboard form-control keyboard-numpad" [(ngModel)]="aditem.valor1" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
                               </td>
                               <td style="padding: 11px 0px 0px 0px; text-align: center;">
                                 <span style="display: block;"> {{aditem.valor_agua}}</span>
@@ -257,7 +255,7 @@
                                   [disabled]="!modoedicao" [required]="true"> </p-dropdown>
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
-                                <input type="text" style="background: white;  text-align: center; height: 31px;" class="form-control" [(ngModel)]="aditem.valor2"
+                                <input type="text" style="background: white;  text-align: center; height: 31px;" id="number2" class="keyboard form-control this.carrega_script();" [(ngModel)]="aditem.valor2"
                                   [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
@@ -271,7 +269,7 @@
                                 <span style=" display: block;"> {{aditem.unidstock}}</span>
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
-                                <input type="text" style="background: white; height: 31px;" class="form-control" [(ngModel)]="aditem.obs" [ngModelOptions]="{standalone: true}"
+                                <input type="text" style="background: white; height: 31px;" id="default3" class="keyboard keyboard-numpad form-control" [(ngModel)]="aditem.obs" [ngModelOptions]="{standalone: true}"
                                   [disabled]="!modoedicao">
                               </td>
                             </tr>
@@ -422,6 +420,8 @@
 <button #aviso_concluir_planeamento data-toggle="modal" [hidden]="true" data-target="#aviso_concluir_planeamento"></button>
 <button #aviso_concluir_planeamento2 data-toggle="modal" [hidden]="true" data-target="#aviso_concluir_planeamento2"></button>
 <button #aviso_concluir_planeamento3 data-toggle="modal" [hidden]="true" data-target="#aviso_concluir_planeamento3"></button>
+<button #aviso_concluir_planeamento4 data-toggle="modal" [hidden]="true" data-target="#aviso_concluir_planeamento4"></button>
+<button #aviso_concluir_planeamento5 data-toggle="modal" [hidden]="true" data-target="#aviso_concluir_planeamento5"></button>
 <button #alteraeditar id="editarclick2" data-toggle="modal" [hidden]="true"></button>
 <button #alteraeditartrue id="editarclick3" data-toggle="modal" [hidden]="true"></button>
 
@@ -476,5 +476,3 @@
 
 <button type="button" [hidden]="true" #waitingDialog class="btn btn-primary" onclick="waitingDialog.show('A Duplicar Registo', {dialogSize: 'md'});"></button>
 <button type="button" [hidden]="true" #waitingDialogclose class="btn btn-primary" onclick="waitingDialog.hide();"></button>
-<button class="btn btn-danger btn-block" #enviadoparaimpressora [hidden]="true" onclick="demo.showNotification('top','right','Enviado para Impressora',2)"></button>
-<button class="btn btn-danger btn-block" #erroimprimir [hidden]="true" onclick="demo.showNotification('top','right','ERRO!! Impressora não existe ou não está disponível!',4)"></button>

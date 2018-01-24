@@ -5,5 +5,6 @@ export class AB_DIC_TIPO_ADICAO {
     utz_ANULACAO: number;
     data_ANULACAO: Date;
     inativo: boolean;
+    classif: string;
 
 }

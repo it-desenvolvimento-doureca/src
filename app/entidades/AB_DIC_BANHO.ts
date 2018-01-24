@@ -3,7 +3,7 @@ export class AB_DIC_BANHO {
     id_LINHA: number;
     id_ZONA: number;
     nome_BANHO: string;
-    estado : boolean;
+    estado: boolean;
     id_TINA: number;
     obs: string;
     utz_CRIA: number;
@@ -14,4 +14,5 @@ export class AB_DIC_BANHO {
     data_ANULACAO: Date;
     inativo: boolean;
     celulahull: boolean;
+    email_PARA: string;
 }

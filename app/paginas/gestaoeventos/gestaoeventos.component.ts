@@ -58,8 +58,7 @@ export class GestaoeventosComponent implements OnInit {
     this.globalVar.setduplicar(false);
     this.globalVar.setatualizar(false);
     this.globalVar.sethistorico(false);
-    // this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node013editar"));
-    this.globalVar.setdisEditar(false);
+    this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node13editar"));
 
     this.user = JSON.parse(localStorage.getItem('userapp'))["id"];
 
@@ -103,7 +102,7 @@ export class GestaoeventosComponent implements OnInit {
         for (var x in response) {
           this.email_assunto = response[x][0].email_ASSUNTO;
           this.email_mensagem = response[x][0].email_MENSAGEM;
-          this.email_para = response[x][0].email_PARA.split(",");
+          this.email_para = (response[x][0].email_PARA != null && response[x][0].email_PARA != "")? response[x][0].email_PARA.split(",") : [];
           this.inclui_anexo = response[x][0].email_ANEXO;
           this.estado = response[x][0].estado;
           this.observacoes = response[x][0].obs;
@@ -126,18 +125,29 @@ export class GestaoeventosComponent implements OnInit {
   drop(event) {
     if (this.modoedicao) {
       var droparea = (<HTMLInputElement><any>document.getElementsByClassName('ql-editor')[0]);
+      var input = false;
+      if (event.target.className.search("editor_texto2")) {
+        droparea = (<HTMLInputElement><any>document.getElementsByClassName("editor_texto2")[0]);
+        input = true;
+      }
       //droparea.focus();
       var sel, range;
       sel = window.getSelection();
       var class_find = ((sel.baseNode.parentNode != null) ? sel.baseNode.parentNode.offsetParent.className.search("editor_texto") : -1);
+
       if (class_find > 0 && sel.getRangeAt && sel.rangeCount) {
+        console.log("a")
         range = sel.getRangeAt(0);
         //range.deleteContents();
         var frag = document.createDocumentFragment();
         frag.appendChild(document.createTextNode("{" + this.draggedCar + "}"));
         range.insertNode(frag);
       } else {
-        droparea.appendChild(document.createTextNode("{" + this.draggedCar + "}"))
+        if (input) {
+          droparea.value = droparea.value + "{" + this.draggedCar + "}";
+        } else {
+          droparea.appendChild(document.createTextNode("{" + this.draggedCar + "}"))
+        }
       }
     }
   }
@@ -197,7 +207,7 @@ export class GestaoeventosComponent implements OnInit {
       var eventos = new GER_EVENTOS_CONF;
       eventos = this.evento;
       eventos.data_ULT_MODIF = new Date();
-      eventos.email_ANEXO = this.inclui_anexo;
+      eventos.email_ANEXO = false;//this.inclui_anexo;
       eventos.email_ASSUNTO = this.email_assunto;
       eventos.email_MENSAGEM = this.email_mensagem;
       eventos.email_PARA = this.email_para.toString();
@@ -219,7 +229,7 @@ export class GestaoeventosComponent implements OnInit {
     let elem = document.getElementById("testeEnvio");
     let elm2 = document.getElementById("myModallinhas");
     let coords = elem.getBoundingClientRect();
-    elm2.style.paddingTop = Math.abs(coords.bottom ) + 'px';
+    elm2.style.paddingTop = Math.abs(coords.bottom) + 'px';
     //elm2.style.bottom = 'none';
     this.simular(this.dialog);
   }
@@ -227,15 +237,17 @@ export class GestaoeventosComponent implements OnInit {
   enviar() {
     if (this.email_mensagem != "" && this.email_mensagem != null && this.campos.length > 0) {
       var email_mens = this.email_mensagem;
+      var email_assunto = this.email_assunto;
       for (var x in this.campos) {
         email_mens = email_mens.split("{" + this.campos[x].id + "}").join(this.itememail[this.campos[x].id]);
+        email_assunto = email_assunto.split("{" + this.campos[x].id + "}").join(this.itememail[this.campos[x].id]);
       }
     }
 
     var email = new EMAIL();
     email.para = this.email_para.toString();
     //email.para = "tiago.pereira@datamind.pt";
-    email.assunto = this.email_assunto;
+    email.assunto = email_assunto;
     email.mensagem = email_mens;
 
     email.de = "alertas.it.doureca@gmail.com";
@@ -254,7 +266,7 @@ export class GestaoeventosComponent implements OnInit {
         this.simular(this.inputerroenvio);
         this.bt_disable = false;
       });
-    console.log(email)
+    ///console.log(email)
   }
 
 

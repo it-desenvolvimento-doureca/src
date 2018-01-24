@@ -93,6 +93,10 @@ import { UploadService } from 'app/servicos/upload.service';
 import { RegistoProducao } from 'app/servicos/registoproducao.service';
 import { GERVISTASService } from 'app/servicos/ger-vistas.service';
 import { GERCAMPOSDISPService } from 'app/servicos/ger-campos-disp.service';
+import { ConstrucaoBanhosComponent } from './paginas/construcao-banhos/construcao-banhos.component';
+import { ConstbanhosformComponent } from './paginas/construcao-banhos/constbanhosform/constbanhosform.component';
+import { GERPOSTOSService } from 'app/servicos/ger-postos.service';
+import { GestaoBanhosComponent } from './paginas/home-modulo/gestao-banhos/gestao-banhos.component';
 
 const routes: Routes = [
   { path: 'dashboard', component: HomeComponent, canActivate: [LoginService] },
@@ -145,6 +149,7 @@ const routes: Routes = [
       { path: 'novo', component: RegistoformComponent, canActivate: [LoginService], data: { breadcrumb: "Novo" } },
       { path: 'historico', component: HistoricoAnalisesComponent, canActivate: [LoginService], data: { breadcrumb: "Histórico" } },]
   },
+  { path: 'homegestaobanhos', component: GestaoBanhosComponent, canActivate: [LoginService], data: { breadcrumb: "Gestão Banhos" } },
   {
     path: 'manutencao', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Manutenções" },
     children: [
@@ -153,6 +158,14 @@ const routes: Routes = [
       { path: 'editar', component: ManutencaoformComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } },
       { path: 'novo', component: ManutencaoformComponent, canActivate: [LoginService], data: { breadcrumb: "Novo" } },
       { path: 'historico', component: HistoricoManutencoesComponent, canActivate: [LoginService], data: { breadcrumb: "Histórico" } }]
+  },
+  {
+    path: 'construcaobanhos', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Construção Banhos" },
+    children: [
+      { path: '', component: ConstrucaoBanhosComponent, canActivate: [LoginService], data: { breadcrumb: "" } },
+      { path: 'view', component: ConstbanhosformComponent, canActivate: [LoginService], data: { breadcrumb: "Construção Banho" } },
+      { path: 'editar', component: ConstbanhosformComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } },
+      { path: 'novo', component: ConstbanhosformComponent, canActivate: [LoginService], data: { breadcrumb: "Novo" } }]
   },
   {
     path: 'registopara', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Reg. Parâm. de Operações" },
@@ -258,7 +271,10 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     HistoricoManutencoesComponent,
     ParametrosComponent,
     GestaoTarefasComponent,
-    FormTarefasComponent
+    FormTarefasComponent,
+    ConstrucaoBanhosComponent,
+    ConstbanhosformComponent,
+    GestaoBanhosComponent
   ],
   imports: [
     BrowserModule,
@@ -333,6 +349,7 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     GERVISTASService,
     RegistoProducao,
     GERCAMPOSDISPService,
+    GERPOSTOSService,
     GERFORNECEDORService],
   bootstrap: [AppComponent]
 })

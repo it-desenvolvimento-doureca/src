@@ -5,5 +5,5 @@ export class AB_DIC_TIPO_OPERACAO {
     utz_ANULACAO: number;
     data_ANULACAO: Date;
     inativo: boolean;
-
+    classif: string;
 }

@@ -9,6 +9,8 @@ import { AppGlobals } from "app/menu/sidebar.metadata";
   styleUrls: ['./tipooperacao.component.css']
 })
 export class TipooperacaoComponent implements OnInit {
+  classificacao = [];
+  classif: string;
   operacoes: any[];
   valor_operacao: string;
   novo: boolean;
@@ -23,6 +25,7 @@ export class TipooperacaoComponent implements OnInit {
 
   constructor(private globalVar: AppGlobals, private ABDICTIPOOPERACAOService: ABDICTIPOOPERACAOService, private renderer: Renderer) { }
   ngOnInit() {
+    this.classificacao = [{ label: "Seleccionar Clasif.", value: "" }, { label: "Manutenção Banho", value: "M" }, { label: "Construção Banho", value: "B" }];
     this.globalVar.setapagar(false);
     this.globalVar.seteditar(false);
     this.globalVar.setvoltar(false);
@@ -41,6 +44,7 @@ export class TipooperacaoComponent implements OnInit {
     this.id_operacao_selected = 0;
     this.valor_operacao = "";
     this.id195 = false;
+    this.classif = null;
     this.simular(this.dialog);
   }
 
@@ -52,6 +56,7 @@ export class TipooperacaoComponent implements OnInit {
     tipo_operacao.nome_TIPO_OPERACAO = this.valor_operacao;
     tipo_operacao.inativo = false;
     tipo_operacao.id195 = this.id195;
+    tipo_operacao.classif = this.classif;
     if (this.novo) {
       this.ABDICTIPOOPERACAOService.create(tipo_operacao).subscribe(response => {
         this.listar_operacoes();
@@ -72,10 +77,12 @@ export class TipooperacaoComponent implements OnInit {
   //listar os dados das unidades de operacoes na tabela
   listar_operacoes() {
     this.operacoes = [];
-    this.ABDICTIPOOPERACAOService.getAll().subscribe(
+    this.ABDICTIPOOPERACAOService.getAll(["M","B"]).subscribe(
       response => {
         for (var x in response) {
-          this.operacoes.push({ id: response[x].id_TIPO_OPERACAO, nome: response[x].nome_TIPO_OPERACAO, id195: response[x].id195 });
+          var classif_nome = "Manutenção Banho";
+          if (response[x].classif == "B") classif_nome = "Construção Banho";
+          this.operacoes.push({ id: response[x].id_TIPO_OPERACAO, nome: response[x].nome_TIPO_OPERACAO, id195: response[x].id195, classif: response[x].classif, classif_nome: classif_nome });
         }
         this.operacoes = this.operacoes.slice();
       },
@@ -90,6 +97,7 @@ export class TipooperacaoComponent implements OnInit {
     tipo_operacao.nome_TIPO_OPERACAO = this.valor_operacao;
     tipo_operacao.id195 = this.id195; tipo_operacao.id_TIPO_OPERACAO = this.id_operacao_selected;
     tipo_operacao.data_ANULACAO = new Date();
+    tipo_operacao.classif = this.classif;
     tipo_operacao.utz_ANULACAO = JSON.parse(localStorage.getItem('userapp'))["id"];
     tipo_operacao.inativo = true;
     this.ABDICTIPOOPERACAOService.update(tipo_operacao).then(() => {
@@ -105,6 +113,7 @@ export class TipooperacaoComponent implements OnInit {
     this.valor_operacao = event.data.nome;
     this.novo = false;
     this.id195 = event.data.id195;
+    this.classif = event.data.classif;
     this.simular(this.dialog);
   }
 

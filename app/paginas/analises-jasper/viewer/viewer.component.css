@@ -15,7 +15,8 @@
  * https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QFUHPWJB2JDBS
  **/
 
- .acidjs-css3-treeview, .acidjs-css3-treeview * {
+.acidjs-css3-treeview,
+.acidjs-css3-treeview * {
     padding: 0;
     /*margin: 0;*/
     list-style: none;
@@ -67,7 +68,9 @@
 .acidjs-css3-treeview .historico::before {
     content: "\f080" !important;
 }
-.acidjs-css3-treeview label[for]::before, .acidjs-css3-treeview label span::before {
+
+.acidjs-css3-treeview label[for]::before,
+.acidjs-css3-treeview label span::before {
     content: "\25b6";
     display: inline-block;
     margin: 2px 0 0;
@@ -81,8 +84,8 @@
     font: normal normal normal 14px/1 FontAwesome;
 }
 
-
-.acidjs-css3-treeview .ativo::before, .acidjs-css3-treeview label span::before {
+.acidjs-css3-treeview .ativo::before,
+.acidjs-css3-treeview label span::before {
     color: #e74c3c !important;
 }
 
@@ -98,7 +101,6 @@
     vertical-align: middle;
     color: black;
 }
-
 
 .acidjs-css3-treeview {
     font: normal 11px/16px "Segoe UI", Arial, Sans-serif;
@@ -120,7 +122,7 @@
 }
 
 .acidjs-css3-treeview label[for]::before {
-  /*  -webkit-transform: translatex(-24px);
+    /*  -webkit-transform: translatex(-24px);
     -moz-transform: translatex(-24px);
     -ms-transform: translatex(-24px);
     -o-transform: translatex(-24px);
@@ -136,11 +138,11 @@
     transform: translatex(16px);
 }
 
-.acidjs-css3-treeview input[type="checkbox"][id]:checked ~ label[for]::before {
+.acidjs-css3-treeview input[type="checkbox"][id]:checked~label[for]::before {
     content: "\25bc";
 }
 
-.acidjs-css3-treeview input[type="checkbox"][id]:not(:checked) ~ ul {
+.acidjs-css3-treeview input[type="checkbox"][id]:not(:checked)~ul {
     display: none;
 }
 
@@ -155,42 +157,57 @@
     opacity: .50;
 }
 
-.acidjs-css3-treeview label input:checked + span::before {
+.acidjs-css3-treeview label input:checked+span::before {
     content: "\2714";
     box-shadow: 0 0 2px rgba(0, 0, 0, .25) inset;
     opacity: 1;
 }
 
-#myDiv.fullscreen{
-    z-index: 9999; 
-    width: 100%; 
-    height: 100% !important; 
-    position: fixed; 
-    top: 0; 
-    left: 0; 
+#myDiv.fullscreen {
+    z-index: 9999;
+    width: 100%;
+    height: 100% !important;
+    position: fixed;
+    top: 0;
+    left: 0;
     background: white;
- }
+}
 
- .buttoncl{
+.buttoncl {
     position: absolute;
     top: 4px;
     left: 50%;
     padding: 0;
     height: 27px;
- }
- .buttoncl:hover {
-    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.buttoncl:hover {
+    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
 }
 
 .disabled {
-    color: gray !important; 
-    cursor: not-allowed !important; 
+    color: gray !important;
+    cursor: not-allowed !important;
     pointer-events: none;
 }
-
 
 .disabled::before {
     color: gray !important;
 }
 
+.divtop {
+    position: absolute;
+    background: #003356;
+    width: 100%;
+    left: 0;
+    top: 0;
+    height: 34px;
+}
 
+.divbottom {
+    width: 100%;
+    height: 19px;
+    background: #003356;
+    bottom: 0;
+    position: absolute;
+}

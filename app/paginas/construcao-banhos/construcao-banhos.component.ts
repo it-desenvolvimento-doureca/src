@@ -12,19 +12,19 @@ import { ABDICLINHAService } from "app/servicos/ab-dic-linha.service";
 import { ABDICBANHOService } from 'app/servicos/ab-dic-banho.service';
 
 @Component({
-  selector: 'app-manutencao',
-  templateUrl: './manutencao.component.html',
-  styleUrls: ['./manutencao.component.css']
+  selector: 'app-construcao-banhos',
+  templateUrl: './construcao-banhos.component.html',
+  styleUrls: ['./construcao-banhos.component.css']
 })
-export class ManutencaoComponent implements OnInit {
-  banho: any;
+export class ConstrucaoBanhosComponent implements OnInit {
+  banho: string;
   banhos: any[];
   filtro2: any;
   filtroval;
   turno: string;
   data: string;
   id_manu: string;
-  tipo_manu: string;
+  tina: string;
   estados: ({ label: string; value: string; } | { label: string; value: boolean; })[];
   query: any = [];
   disduplicar: boolean = true;
@@ -48,13 +48,13 @@ export class ManutencaoComponent implements OnInit {
 
   ngOnInit() {
     this.filtroval = true;
-    var array = this.globalVar.getfiltros("manutencao");
+    var array = this.globalVar.getfiltros("construcaobanhos");
     if (array) {
 
       this.linha = (array['linha'] != undefined) ? array['linha'].value : null;
       this.filtro2 = (array['estado'] != undefined) ? array['estado'].value : null;
       this.id_manu = (array['id'] != undefined) ? array['id'].value : "";
-      this.tipo_manu = (array['tipo_manu'] != undefined) ? array['tipo_manu'].value : "";
+      this.tina = (array['tina'] != undefined) ? array['tina'].value : "";
       this.turno = (array['turno'] != undefined) ? array['turno'].value : "";
       this.data = (array['data'] != undefined) ? array['data'].value : "";
       this.banho = (array['banho'] != undefined) ? array['banho'].value : "";
@@ -112,11 +112,19 @@ export class ManutencaoComponent implements OnInit {
   }
   carregarlista() {
     this.cols = [];
-    this.ABMOVMANUTENCAOService.getAll(this.query,"M").subscribe(
+    this.ABMOVMANUTENCAOService.getAll(this.query, "B").subscribe(
       response => {
-
         for (var x in response) {
-          this.cols.push({ id: response[x][0].id_MANUTENCAO, tipo_manu: response[x][2].nome_TIPO_MANUTENCAO, data: this.formatDate(response[x][0].data_PLANEAMENTO) + " - " + response[x][0].hora_PLANEAMENTO.slice(0, 5), cor: response[x][1].cor, linha: response[x][1].nome_LINHA, turno: response[x][3].nome_TURNO, estado: response[x][0].estado });
+
+          var banho = " -- ";
+          var tina = " -- "
+          if (response[x][7] != null ) tina = response[x][7];
+          if (response[x][5] != null ) banho = response[x][5] + " / " + response[x][6] + " - Tina: " + tina;
+
+          this.cols.push({
+            id: response[x][0].id_MANUTENCAO, tipo_manu: response[x][2].nome_TIPO_MANUTENCAO, data: this.formatDate(response[x][0].data_PLANEAMENTO) + " - " + response[x][0].hora_PLANEAMENTO.slice(0, 5),
+            cor: response[x][1].cor, linha: response[x][1].nome_LINHA, turno: response[x][3].nome_TURNO, estado: response[x][0].estado, tina: tina, banho: banho
+          });
         }
         this.cols = this.cols.slice();
         if (this.linha == null || this.linha == "") this.linha = this.globalVar.getlinha();
@@ -149,11 +157,10 @@ export class ManutencaoComponent implements OnInit {
     this.filtro = [];
     this.linha = null;
     this.id_manu = "";
-    this.tipo_manu = "";
+    this.tina = "";
     this.data = "";
     this.turno = "";
-    this.banho = null;
-
+    this.banho = "";
     this.dataTableComponent.filter("", "", "");
   }
 
@@ -164,21 +171,21 @@ export class ManutencaoComponent implements OnInit {
     }
 
     if (coluna == "linha") this.preenche_banhos();
-    if (coluna == "banho") this.pesquisarbanhos(value.id);
+    //if (coluna == "banho") this.pesquisarbanhos(value.id);
 
     this.dataTableComponent.filter(value.toString(), coluna, filtro);
 
-    this.globalVar.setfiltros("manutencao", this.dataTableComponent.filters);
+    this.globalVar.setfiltros("construcaobanhos", this.dataTableComponent.filters);
     var ids = [];
     for (var x in this.dataTableComponent.dataToRender) {
       ids.push(this.dataTableComponent.dataToRender[x].id);
     }
-    this.globalVar.setfiltros("manutencao_id", ids);
+    this.globalVar.setfiltros("construcaobanhos_id", ids);
   }
 
   //clicar 2 vezes na tabela abre linha
   abrir(event) {
-    this.router.navigate(['manutencao/view'], { queryParams: { id: event.data.id } });
+    this.router.navigate(['construcaobanhos/view'], { queryParams: { id: event.data.id } });
   }
 
   duplicar(id) {
@@ -195,26 +202,26 @@ export class ManutencaoComponent implements OnInit {
   }
 
   pesquisarbanhos(id) {
-    if(id){
-    var ids = [];
-    this.ABMOVMANUTENCAOCABService.getbyID_banhoall(id).subscribe(
-      response => {
-        var count = Object.keys(response).length;
-        if (count > 0) {
-          for (var x in response) {
-            ids.push(response[x].id_MANUTENCAO);
+    if (id) {
+      var ids = [];
+      this.ABMOVMANUTENCAOCABService.getbyID_banhoall(id).subscribe(
+        response => {
+          var count = Object.keys(response).length;
+          if (count > 0) {
+            for (var x in response) {
+              ids.push(response[x].id_MANUTENCAO);
+            }
+            this.id_manu = ids.toString();
+            this.filtrar(ids, "id", false, "in")
           }
-          this.id_manu = ids.toString();
-          this.filtrar(ids, "id", false, "in")
-        }
-        else {
-          this.filtrar('null', "id", false, "in")
-        }
+          else {
+            this.filtrar('null', "id", false, "in")
+          }
 
-      }, error => {
-        console.log(error);
-      });
-    }else{
+        }, error => {
+          console.log(error);
+        });
+    } else {
       this.id_manu = "";
       this.filtrar('', "id", false, "in")
     }
@@ -302,7 +309,7 @@ export class ManutencaoComponent implements OnInit {
 
         } else {
           this.simular(this.inputgravou);
-          this.router.navigate(['manutencao/editar'], { queryParams: { id: this.id } });
+          this.router.navigate(['construcaobanhos/editar'], { queryParams: { id: this.id } });
           this.simular(this.waitingDialogclose);
         }
       });
@@ -339,7 +346,7 @@ export class ManutencaoComponent implements OnInit {
         } else {
           if (parseInt(total) - 1 == count2) {
             this.simular(this.inputgravou);
-            this.router.navigate(['manutencao/editar'], { queryParams: { id: this.id } });
+            this.router.navigate(['construcaobanhos/editar'], { queryParams: { id: this.id } });
             this.simular(this.waitingDialogclose);
           }
         }
@@ -355,7 +362,7 @@ export class ManutencaoComponent implements OnInit {
       res => {
         if (parseInt(total) - 1 == count2 && (count - 1) == parseInt(x)) {
           this.simular(this.inputgravou);
-          this.router.navigate(['manutencao/editar'], { queryParams: { id: this.id } });
+          this.router.navigate(['construcaobanhos/editar'], { queryParams: { id: this.id } });
           this.simular(this.waitingDialogclose);
         }
       }, error => {

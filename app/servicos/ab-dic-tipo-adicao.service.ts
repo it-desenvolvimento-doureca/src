@@ -18,10 +18,10 @@ export class ABDICTIPOADICAOService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
-  getAll(): Observable<AB_DIC_TIPO_ADICAO[]> {
+  getAll(classif): Observable<AB_DIC_TIPO_ADICAO[]> {
     const url = webUrl.host + '/rest/sirb/getAB_DIC_TIPO_ADICAO';
     return this.http
-      .get(url)
+      .post(url, JSON.stringify(classif), { headers: this.headers })
       .map(this.extractData)
       .catch((error: any) => Observable.throw('Server error'));
   }

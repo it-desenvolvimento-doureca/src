@@ -20,4 +20,5 @@ export class AB_MOV_ANALISE {
     data_VALIDA: Date;
     cor_LIMITES: string;
     planeada: boolean;
+    mensagem: string;
 }
