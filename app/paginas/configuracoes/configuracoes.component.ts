@@ -63,11 +63,13 @@ export class ConfiguracoesComponent implements OnInit {
   //ao alterar combo modulo
   atualizaperfil() {
     this.id_perfil = null;
-    this.GERPERFILCABService.getAll().subscribe(
+    var modulo = this.id_modulo;
+    if(this.id_modulo == null) modulo =0;
+    this.GERPERFILCABService.getAllbymodulo(modulo).subscribe(
       response => {
         this.perfis = [];
         for (var x in response) {
-          this.perfis.push({ id: response[x].id_PERFIL_CAB, nome: response[x].nome_PERFIL });
+          this.perfis.push({ id: response[x][0].id_PERFIL_CAB, nome: response[x][0].nome_PERFIL });
         }
         this.perfis = this.perfis.slice();
       },

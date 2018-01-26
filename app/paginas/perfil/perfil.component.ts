@@ -12,6 +12,8 @@ import { GERUTILIZADORESService } from "app/servicos/ger-utilizadores.service";
   styleUrls: ['./perfil.component.css']
 })
 export class PerfilComponent implements OnInit {
+  pass_jasper: string;
+  user_jasper: string;
 
   i: any;
   utilizador: any = [];
@@ -45,6 +47,8 @@ export class PerfilComponent implements OnInit {
     this.globalVar.setatualizar(false);
     this.globalVar.setduplicar(false);
     this.globalVar.sethistorico(false);
+    this.globalVar.setcriarmanutencao(false);
+    this.globalVar.setdisCriarmanutencao(true);
 
     this.user = JSON.parse(localStorage.getItem('userapp'))["id"];
 
@@ -84,6 +88,13 @@ export class PerfilComponent implements OnInit {
               this.email = response[x].email;
               this.password = atob(response[x].password);
               this.login = response[x].login;
+              this.user_jasper = response[x].user_JASPER;
+              if(response[x].pass_JASPER != null){
+                this.pass_jasper = atob(response[x].pass_JASPER);
+              }else{
+                this.pass_jasper = "";
+              }
+              
             }
           } else {
             this.router.navigate(['home']);
@@ -114,6 +125,8 @@ export class PerfilComponent implements OnInit {
     utilizador.login = this.login;
     utilizador.password = btoa(this.password);
     utilizador.email = this.email;
+    utilizador.user_JASPER = this.user_jasper;
+    utilizador.pass_JASPER = btoa(this.pass_jasper);
 
     //verifica se existe utilizadro com o mesmo login
     this.GERUTILIZADORESService.verifica_login(id, this.login).subscribe(

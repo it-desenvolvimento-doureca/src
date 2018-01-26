@@ -97,6 +97,10 @@ import { ConstrucaoBanhosComponent } from './paginas/construcao-banhos/construca
 import { ConstbanhosformComponent } from './paginas/construcao-banhos/constbanhosform/constbanhosform.component';
 import { GERPOSTOSService } from 'app/servicos/ger-postos.service';
 import { GestaoBanhosComponent } from './paginas/home-modulo/gestao-banhos/gestao-banhos.component';
+import { ManutencaoReposicaoComponent } from './paginas/manutencao-reposicao/manutencao-reposicao.component';
+import { ManutecaoReposicaoformComponent } from './paginas/manutencao-reposicao/manutecao-reposicaoform/manutecao-reposicaoform.component';
+import { ManutencaoNaoProgramadaComponent } from './paginas/manutencao-nao-programada/manutencao-nao-programada.component';
+import { MantencaoNaoProgramadafromComponent } from './paginas/manutencao-nao-programada/mantencao-nao-programadafrom/mantencao-nao-programadafrom.component';
 
 const routes: Routes = [
   { path: 'dashboard', component: HomeComponent, canActivate: [LoginService] },
@@ -151,10 +155,10 @@ const routes: Routes = [
   },
   { path: 'homegestaobanhos', component: GestaoBanhosComponent, canActivate: [LoginService], data: { breadcrumb: "Gestão Banhos" } },
   {
-    path: 'manutencao', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Manutenções" },
+    path: 'manutencao', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Manutenções Planedas" },
     children: [
       { path: '', component: ManutencaoComponent, canActivate: [LoginService], data: { breadcrumb: "" } },
-      { path: 'view', component: ManutencaoformComponent, canActivate: [LoginService], data: { breadcrumb: "Manutenção" } },
+      { path: 'view', component: ManutencaoformComponent, canActivate: [LoginService], data: { breadcrumb: "Manutenção Planeada" } },
       { path: 'editar', component: ManutencaoformComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } },
       { path: 'novo', component: ManutencaoformComponent, canActivate: [LoginService], data: { breadcrumb: "Novo" } },
       { path: 'historico', component: HistoricoManutencoesComponent, canActivate: [LoginService], data: { breadcrumb: "Histórico" } }]
@@ -166,6 +170,22 @@ const routes: Routes = [
       { path: 'view', component: ConstbanhosformComponent, canActivate: [LoginService], data: { breadcrumb: "Construção Banho" } },
       { path: 'editar', component: ConstbanhosformComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } },
       { path: 'novo', component: ConstbanhosformComponent, canActivate: [LoginService], data: { breadcrumb: "Novo" } }]
+  }, {
+    path: 'manutencaoreposicao', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Manutenções de Reposição" },
+    children: [
+      { path: '', component: ManutecaoReposicaoformComponent, canActivate: [LoginService], data: { breadcrumb: "" } },
+      { path: 'view', component: ManutecaoReposicaoformComponent, canActivate: [LoginService], data: { breadcrumb: "Manutenção de Reposição" } },
+      { path: 'editar', component: ManutecaoReposicaoformComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } },
+      { path: 'novo', component: ManutecaoReposicaoformComponent, canActivate: [LoginService], data: { breadcrumb: "Novo" } },
+    /*{ path: 'historico', component: HistoricoManutencoesComponent, canActivate: [LoginService], data: { breadcrumb: "Histórico" } }*/]
+  }, {
+    path: 'manutencaonaoprogramada', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Manutenções não Programadas" },
+    children: [
+      { path: '', component: ManutencaoNaoProgramadaComponent, canActivate: [LoginService], data: { breadcrumb: "" } },
+      { path: 'view', component: MantencaoNaoProgramadafromComponent, canActivate: [LoginService], data: { breadcrumb: "Manutenção não Programada" } },
+      { path: 'editar', component: MantencaoNaoProgramadafromComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } },
+      { path: 'novo', component: MantencaoNaoProgramadafromComponent, canActivate: [LoginService], data: { breadcrumb: "Novo" } },
+     /* { path: 'historico', component: HistoricoManutencoesComponent, canActivate: [LoginService], data: { breadcrumb: "Histórico" } }*/]
   },
   {
     path: 'registopara', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Reg. Parâm. de Operações" },
@@ -274,7 +294,11 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     FormTarefasComponent,
     ConstrucaoBanhosComponent,
     ConstbanhosformComponent,
-    GestaoBanhosComponent
+    GestaoBanhosComponent,
+    ManutencaoReposicaoComponent,
+    ManutecaoReposicaoformComponent,
+    ManutencaoNaoProgramadaComponent,
+    MantencaoNaoProgramadafromComponent
   ],
   imports: [
     BrowserModule,

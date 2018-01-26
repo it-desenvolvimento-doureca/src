@@ -16,6 +16,8 @@ import { GERMODULOService } from "app/servicos/ger-modulo.service";
   styleUrls: ['./utlform.component.css']
 })
 export class UtlformComponent implements OnInit {
+  pass_jasper;
+  user_jasper;
   code_user = null;
   users_silver: any = [];
   id_modulo = 0;
@@ -57,6 +59,8 @@ export class UtlformComponent implements OnInit {
     this.globalVar.setanterior(true);
     this.globalVar.setatualizar(false);
     this.globalVar.sethistorico(false);
+    this.globalVar.setcriarmanutencao(false);
+    this.globalVar.setdisCriarmanutencao(true);
 
     this.user = JSON.parse(localStorage.getItem('userapp'))["id"];
 
@@ -163,6 +167,12 @@ export class UtlformComponent implements OnInit {
               this.login = response[x].login;
               this.administrador = response[x].admin;
               this.code_user = response[x].cod_UTZ;
+              this.user_jasper = response[x].user_JASPER;
+              if (response[x].pass_JASPER != null) {
+                this.pass_jasper = atob(response[x].pass_JASPER);
+              } else {
+                this.pass_jasper = "";
+              }
             }
             this.preencheListas();
           } else {
@@ -202,6 +212,8 @@ export class UtlformComponent implements OnInit {
       utilizador.inativo = false;
       utilizador.admin = this.administrador;
       utilizador.cod_UTZ = this.code_user;
+      utilizador.user_JASPER = this.user_jasper;
+      utilizador.pass_JASPER = btoa(this.pass_jasper);
 
       //verifica se existe utilizador com o mesmo login
       this.GERUTILIZADORESService.getbyLogin(this.login).subscribe(
@@ -246,6 +258,8 @@ export class UtlformComponent implements OnInit {
       utilizador.email = this.email;
       utilizador.admin = this.administrador;
       utilizador.cod_UTZ = this.code_user;
+      utilizador.user_JASPER = this.user_jasper;
+      utilizador.pass_JASPER = btoa(this.pass_jasper);
 
       //verifica se existe utilizador com o mesmo login
       this.GERUTILIZADORESService.verifica_login(id, this.login).subscribe(
@@ -253,7 +267,7 @@ export class UtlformComponent implements OnInit {
           var count = Object.keys(response).length;
           if (count == 0) {
             //verifica se existe utilizador com o mesmo codigo
-            this.GERUTILIZADORESService.verifica_code(id,this.code_user).subscribe(
+            this.GERUTILIZADORESService.verifica_code(id, this.code_user).subscribe(
               res => {
                 var count2 = Object.keys(res).length;
                 if (count2 == 0) {
@@ -388,6 +402,6 @@ export class UtlformComponent implements OnInit {
       }, error => { console.log(error); });
 
   }
- 
+
 
 }

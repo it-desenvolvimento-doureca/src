@@ -10,6 +10,8 @@ import { GERANALISESService } from 'app/servicos/ger-analises.service';
   styleUrls: ['./viewer.component.css']
 })
 export class ViewerComponent implements OnInit {
+  pass_jasper_login: string;
+  user_jasper_login: string;
   aumentado: any = false;
   noativo: any;
   nodes: any;
@@ -26,12 +28,23 @@ export class ViewerComponent implements OnInit {
   ngOnInit() {
 
     //j_username=jasperadmin&j_password=DourecA&
-    this.user = JSON.parse(localStorage.getItem('userapp'))["id"];
+    this.user = JSON.parse(localStorage.getItem('userapp'))["user"];
     this.pass = JSON.parse(localStorage.getItem('userapp'))["pass"];
+    this.user_jasper = JSON.parse(localStorage.getItem('userapp'))["user_jasper"];
+    this.pass_jasper = JSON.parse(localStorage.getItem('userapp'))["pass_jasper"];
+
+    if (this.user_jasper != null && this.pass_jasper != null) {
+      this.user_jasper_login = this.user_jasper;
+      this.pass_jasper_login = atob(this.pass_jasper);
+    } else {
+      this.user_jasper_login = this.user.toLowerCase();
+      this.pass_jasper_login = atob(this.pass);
+    }
+
     //console.log(atob(this.pass));
-    this.user_jasper = 'jasperadmin'; //this.user;
-    this.pass_jasper = 'DourecA&'; //tob(this.pass);
-    this.link = "http://192.168.40.101/jasperserver/flow.html?singlesingon=y&_flowId=viewReportFlow&_flowId=viewReportFlow&ParentFolderUri=%2FAnalises_de_Gest%C3%A3o%2FProdu%C3%A7%C3%A3o&reportUnit=%2FAnalises_de_Gest%C3%A3o%2FProdu%C3%A7%C3%A3o%2FListagem_de_Guias_de_Remessa&standAlone=true";
+    //this.user_jasper = 'jasperadmin'; //this.user;
+    //this.pass_jasper = 'DourecA&'; //tob(this.pass);
+    //this.link = "http://192.168.40.101/jasperserver/flow.html?singlesingon=y&_flowId=viewReportFlow&_flowId=viewReportFlow&ParentFolderUri=%2FAnalises_de_Gest%C3%A3o%2FProdu%C3%A7%C3%A3o&reportUnit=%2FAnalises_de_Gest%C3%A3o%2FProdu%C3%A7%C3%A3o%2FListagem_de_Guias_de_Remessa&standAlone=true";
 
     ///this.fileURL = this.sanitizer.bypassSecurityTrustResourceUrl(this.link + "&j_username=" + this.user_jasper + "&j_password=" + this.pass_jasper);
 
@@ -48,7 +61,7 @@ export class ViewerComponent implements OnInit {
   tree_nodes() {
     var array = [{ id: 0, parent: null, name: 'Análises', link: null, ativo: true, disable: false }];
     this.nodes = [];
-    this.GERANALISESService.getAll().subscribe(result => {
+    this.GERANALISESService.getAllativas().subscribe(result => {
       for (var x in result) {
         var disable = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "nodet" + result[x].id);
         array.push({ id: result[x].id, parent: result[x].id_PAI, name: result[x].descricao, link: result[x].link, ativo: result[x].ativo, disable: disable })
@@ -56,7 +69,7 @@ export class ViewerComponent implements OnInit {
 
       for (var x in array) {
         if (array[x].parent == null) {
-          this.nodes.push({ id: array[x].id, parent: array[x].parent, name: array[x].name, link: array[x].link, children: [], ativo: array[x].ativo, disable: array[x].disable});
+          this.nodes.push({ id: array[x].id, parent: array[x].parent, name: array[x].name, link: array[x].link, children: [], ativo: array[x].ativo, disable: array[x].disable });
 
           this.getFilhos(array, array[x].id, this.nodes.find(item => item.id == array[x].id));
         }
@@ -79,7 +92,7 @@ export class ViewerComponent implements OnInit {
 
   alterarelatorio(link, id) {
     if (link != null) {
-      this.fileURL = this.sanitizer.bypassSecurityTrustResourceUrl(link + "&j_username=" + this.user_jasper + "&j_password=" + this.pass_jasper);
+      this.fileURL = this.sanitizer.bypassSecurityTrustResourceUrl(link + "&j_username=" + this.user_jasper_login + "&j_password=" + this.pass_jasper_login);
       this.noativo = id;
     }
 

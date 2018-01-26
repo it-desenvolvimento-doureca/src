@@ -24,7 +24,9 @@ export class TipomanutenacaoComponent implements OnInit {
 
   constructor(private globalVar: AppGlobals, private ABDICTIPOMANUTENCAOService: ABDICTIPOMANUTENCAOService, private renderer: Renderer) { }
   ngOnInit() {
-    this.classificacao = [{ label: "Seleccionar Clasif.", value: "" }, { label: "Manutenção Banho", value: "M" }, { label: "Construção Banho", value: "B" }];
+    this.classificacao = [{ label: "Seleccionar Clasif.", value: "" },
+    { label: "Manutenção Banho", value: "M" }, { label: "Construção Banho", value: "B" },
+    { label: "Reposições", value: "R" }, { label: "Não Programadas", value: "N" }];
     this.globalVar.setapagar(false);
     this.globalVar.seteditar(false);
     this.globalVar.setvoltar(false);
@@ -33,6 +35,8 @@ export class TipomanutenacaoComponent implements OnInit {
     this.globalVar.setanterior(false);
     this.globalVar.setatualizar(false);
     this.globalVar.sethistorico(false);
+    this.globalVar.setcriarmanutencao(false);
+    this.globalVar.setdisCriarmanutencao(true);
     this.globalVar.setcriar(false);
 
     this.listar_manutencoes();
@@ -75,11 +79,12 @@ export class TipomanutenacaoComponent implements OnInit {
   //listar os dados das unidades de manutencoes na tabela
   listar_manutencoes() {
     this.manutencoes = [];
-    this.ABDICTIPOMANUTENCAOService.getAll(["M", "B"]).subscribe(
+    this.ABDICTIPOMANUTENCAOService.getAll(["M", "B", "R", "N"]).subscribe(
       response => {
         for (var x in response) {
           var classif_nome = "Manutenção Banho";
-          if (response[x].classif == "B") classif_nome = "Construção Banho";
+         // if (response[x].classif == "B") classif_nome = "Construção Banho";
+          classif_nome =  this.classificacao.find(item => item.value == response[x].classif).label;
           this.manutencoes.push({ id: response[x].id_TIPO_MANUTENCAO, nome: response[x].nome_TIPO_MANUTENCAO, classif: response[x].classif, classif_nome: classif_nome });
         }
         this.manutencoes = this.manutencoes.slice();

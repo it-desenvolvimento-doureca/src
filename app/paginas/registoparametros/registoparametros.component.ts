@@ -26,6 +26,8 @@ export class RegistoparametrosComponent implements OnInit {
     this.globalVar.setatualizar(true);
     this.globalVar.setduplicar(false);
     this.globalVar.sethistorico(false);
+    this.globalVar.setcriarmanutencao(false);
+    this.globalVar.setdisCriarmanutencao(true);
     this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node002editar"));
     this.globalVar.setdisCriar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node002criar"));
     this.globalVar.setdisApagar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node002apagar"));

@@ -29,6 +29,8 @@ export class TurnosComponent implements OnInit {
     this.globalVar.setanterior(false);
     this.globalVar.setatualizar(false);
     this.globalVar.sethistorico(false);
+    this.globalVar.setcriarmanutencao(false);
+    this.globalVar.setdisCriarmanutencao(true);
     this.globalVar.setcriar(false);
     this.listar_turnos();
   }

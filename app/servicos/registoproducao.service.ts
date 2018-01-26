@@ -43,6 +43,22 @@ export class RegistoProducao {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
+  getOP() {
+    const url = webUrl.host_app + '/rest/demo/allop';
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
+  getUser() {
+    const url = webUrl.host_app + '/rest/demo/users';
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
 
   getAllbyid(id) {
     const url = webUrl.host_app + '/rest/siip/getRP_OF_OP_LINid/' + id + '';

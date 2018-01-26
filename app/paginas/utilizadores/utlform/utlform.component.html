@@ -39,13 +39,25 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6">
                   <div [ngClass]="nome == '' ? 'is-empty' : null" class="form-group form-black label-floating">
                     <label class="control-label">Nome Utilizador</label>
                     <input type="text" class="form-control" [(ngModel)]="nome" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao"
                       required>
                   </div>
                 </div>
+                <div class="col-md-3">
+                    <div [ngClass]="nome == '' ? 'is-empty' : null" class="form-group form-black label-floating">
+                      <label class="control-label">Utilizador Jasper</label>
+                      <input type="text" class="form-control" [(ngModel)]="user_jasper" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div [ngClass]="nome == '' ? 'is-empty' : null" class="form-group form-black label-floating">
+                      <label class="control-label">Password Jasper</label>
+                      <input type="password" class="form-control" [(ngModel)]="pass_jasper" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
+                    </div>
+                  </div>
               </div>
               <div class="row">
                 <div class="col-md-4">

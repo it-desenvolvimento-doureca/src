@@ -16,6 +16,7 @@ export class ControlosComponent implements OnInit {
 
   showGreeting;
   criar: boolean;
+  criarmanutencao: boolean;
   voltar: boolean;
   editar: boolean;
   apagar: boolean;
@@ -26,6 +27,7 @@ export class ControlosComponent implements OnInit {
   duplica: boolean;
 
   disCriar = true;
+  disCriarmanutencao = true;
   disApagar = true;
   disDuplicar = true;
   disEditar = true;
@@ -39,7 +41,6 @@ export class ControlosComponent implements OnInit {
   @Output() validarbt: EventEmitter<any> = new EventEmitter();
   @Output() hitoricobt: EventEmitter<any> = new EventEmitter();
 
-
   constructor(private route: ActivatedRoute, private router: Router, private globalVar: AppGlobals, location: Location) {
     this.location = location;
   }
@@ -48,6 +49,7 @@ export class ControlosComponent implements OnInit {
 
     this.showGreeting = this.globalVar.getmenu_edi();
     this.criar = this.globalVar.getcriar();
+    this.criarmanutencao = this.globalVar.getcriarmanutencao();
     this.anterior = this.globalVar.getanterior();
     this.voltar = this.globalVar.getvoltar();
     this.editar = this.globalVar.geteditar();
@@ -59,6 +61,7 @@ export class ControlosComponent implements OnInit {
     this.historico = this.globalVar.gethistorico();
 
     this.disCriar = this.globalVar.getdisCriar();
+    this.disCriarmanutencao = this.globalVar.getdisCriarmanutencao();
     this.disApagar = this.globalVar.getdisApagar();
     this.disDuplicar = this.globalVar.getdisDuplicar();
     this.disEditar = this.globalVar.getdisEditar();
@@ -97,6 +100,7 @@ export class ControlosComponent implements OnInit {
   //atualizar permissões
   setacessos() {
     this.disCriar = this.globalVar.getdisCriar();
+    this.disCriarmanutencao = this.globalVar.getdisCriarmanutencao();
     this.disApagar = this.globalVar.getdisApagar();
     this.disDuplicar = this.globalVar.getdisDuplicar();
     this.disEditar = this.globalVar.getdisEditar();
@@ -141,6 +145,12 @@ export class ControlosComponent implements OnInit {
 
   }
 
+  novomanute() {
+
+    this.router.navigate(['manutencao/novo'], { queryParams: { redirect: 'back' } });
+
+  }
+
   edita() {
     var page;
     var sub = this.route
@@ -155,17 +165,30 @@ export class ControlosComponent implements OnInit {
 
   }
   backClicked() {
+    var back;
+    var sub = this.route
+      .queryParams
+      .subscribe(params => {
+        // Defaults to 0 if no query param provided.
+        back = params['redirect'] || 0;
+      });
 
-    if (this.currentpage == "registopara") {
+    if (back != 0 && back != 'back') {
+      this.router.navigate([back], { queryParams: { redirect: 1 } });
+    } else if (back == 'back') {
       this.location.back();
-    } else if (this.router.routerState.snapshot.url.search("registo/historico") > -1) {
-      this.location.back();
-    }else if (this.router.routerState.snapshot.url.search("manutencao/historico") > -1) {
-      this.location.back();
-    }else{
-      this.router.navigate([this.currentpage]);
     }
-    
+    else {
+      if (this.currentpage == "registopara") {
+        this.location.back();
+      } else if (this.router.routerState.snapshot.url.search("registo/historico") > -1) {
+        this.location.back();
+      } else if (this.router.routerState.snapshot.url.search("manutencao/historico") > -1) {
+        this.location.back();
+      } else {
+        this.router.navigate([this.currentpage]);
+      }
+    }
 
   }
 

@@ -2,3 +2,8 @@
     cursor: pointer;
     color: black !important;
 }
+
+.disabled{
+    pointer-events: none;
+    color: #848484;
+}

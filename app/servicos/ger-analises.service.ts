@@ -28,6 +28,15 @@ export class GERANALISESService {
   }
 
 
+  getAllativas(): Observable<GER_ANALISES[]> {
+    const url = webUrl.host + '/rest/sirb/getGER_ANALISESativas';
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
+
   getbyID(id): Observable<GER_ANALISES[]> {
     const url = webUrl.host + '/rest/sirb/getGER_ANALISESbyid/' + id + '';
     return this.http

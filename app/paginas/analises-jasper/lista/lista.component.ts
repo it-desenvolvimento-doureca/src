@@ -18,6 +18,32 @@ import { GER_VISTAS } from 'app/entidades/GER_VISTAS';
   styleUrls: ['./lista.component.css']
 })
 export class ListaComponent {
+  op_temp: any;
+  user_temp: any;
+  ref_temp: any;
+  date2_temp: string;
+  fam_temp: any;
+  date_temp: string;
+  selectedall: any = [];
+  disCriar: boolean;
+  disGravar: boolean;
+  disEditar = true;
+  operacao: any;
+  utilizador: any;
+  referencia: any;
+  operacoes: any = [];
+  utilizadores: any = [];
+  op_cod: any;
+  data_ini: Date;
+  data_fim: Date;
+  filterstate;
+  sortstate;
+  groupstate;
+  colstate;
+  csvData: any[];
+  select_table: any;
+  pinnedBottomRowData: any;
+  domLayout: string;
   page_size;
   novo: boolean;
   texto_vista: any;
@@ -30,10 +56,13 @@ export class ListaComponent {
   public gridOptions: GridOptions;
   public showGrid: boolean;
   public rowData: any[];
+  public rowData1: any[];
   private columnDefs: any[];
+  private overlayLoadingTemplate;
+  private overlayNoRowsTemplate;
   public rowCount: string;
   public ultimodisable = false;
-  selectedCars1: string[] = [];
+  famSeleccionadas;
   paginasize = [{ label: '10', value: '10' }, { label: '100', value: '100' }, { label: '500', value: '500' }, { label: 'Todos', value: 'todos' }]
   config = [];
 
@@ -42,39 +71,69 @@ export class ListaComponent {
 
 
   constructor(private renderer: Renderer, private confirmationService: ConfirmationService, private GERVISTASService: GERVISTASService, private RegistoProducao: RegistoProducao, private ABMOVANALISEService: ABMOVANALISEService, private ABMOVANALISELINHAService: ABMOVANALISELINHAService) {
-
+    this.page_size = 'todos';
+    this.data_fim = new Date();
+    this.data_ini = new Date(new Date().getFullYear(), 0, 1);
+    this.overlayLoadingTemplate = '<span class="ag-overlay-loading-center">A pesquisar..</span>';
+    this.disEditar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node31editar");
+    this.disGravar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node31gravar");
+    this.disCriar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node31criar");
     this.user = JSON.parse(localStorage.getItem('userapp'))["id"];
-
+    this.famSeleccionadas = [];
     this.RegistoProducao.getAllfam().subscribe(
       response => {
         //console.log(response)
         for (var x in response) {
           this.familias.push({ label: response[x], value: response[x] })
-          //this.selectedCars1.push(response[x])
+          this.famSeleccionadas.push(response[x]);
+          this.selectedall.push(response[x]);
         }
 
-        this.createRowData();
       },
       error => console.log(error));
 
+    //carrega operações
+    this.RegistoProducao.getOP().subscribe(
+      response => {
+        this.operacoes.push({ label: "Seleccione Operação", value: null })
+        for (var x in response) {
+          this.operacoes.push({ label: response[x].OPECOD + "-" + response[x].OPEDES, value: response[x].OPECOD });
+        }
+        this.operacoes = this.operacoes.slice();
+      },
+      error => console.log(error));
 
+    //carrega utilizadores
+    this.RegistoProducao.getUser().subscribe(
+      response => {
+        this.utilizadores.push({ label: "Seleccione Utilizador", value: null })
+        for (var x in response) {
+          this.utilizadores.push({ label: response[x].RESCOD + " - " + response[x].RESDES, value: response[x].RESDES });
+        }
+        this.utilizadores = this.utilizadores.slice();
+      },
+      error => console.log(error));
+
+    //carregas vistas
     this.GERVISTASService.getAll().subscribe(
       response => {
         //console.log(response)
-        this.config.push({ label: 'Sel. Vista', value: 0 });
-        this.num_vista = 0;
-
+        //this.config.push({ label: 'Sel. Vista', value: 0 });
+        //this.num_vista = 0;
+        var primeiro = true;
         for (var x in response) {
           this.config.push({ label: response[x].descricao, value: response[x].id })
           this.array.push({
+            adminedit: primeiro,
             id: response[x].id, descricao: response[x].descricao,
             colState: JSON.parse(response[x].colstate), sortState: JSON.parse(response[x].sortstate),
-            groupState: JSON.parse(response[x].groupstate), filterState: JSON.parse(response[x].filterstate)
+            groupState: JSON.parse(response[x].groupstate), filterState: JSON.parse(response[x].filterstate), familias: JSON.parse(response[x].familias)
           });
-
+          if (primeiro && response[x].familias != null && response[x].familias != "") this.famSeleccionadas = JSON.parse(response[x].familias);
+          primeiro = false;         
+          this.num_vista = this.config[0].value;
         }
-
-        this.createRowData();
+        this.createRowData(true);
       },
       error => console.log(error));
 
@@ -82,6 +141,7 @@ export class ListaComponent {
     this.gridOptions = {
       columnDefs: this.columnDefs,
       rowData: null,
+      showToolPanel: true,
       enableSorting: true,
       enableFilter: true,
       floatingFilter: true,
@@ -123,7 +183,7 @@ export class ListaComponent {
         startsWith: 'Começa com',
         endsWith: 'Termina com',
         // the header of the default group column
-        group: 'Crupo',
+        group: 'Grupo',
         // tool panel
         columns: 'Colunas',
         rowGroupColumns: 'Pivot Cols',
@@ -173,7 +233,7 @@ export class ListaComponent {
 
 
     };
-
+    this.domLayout = "autoHeight";
     //this.createColumnDefs();
     this.showGrid = true;
     //this.gridOptions.dateComponentFramework = DateComponent;
@@ -197,10 +257,59 @@ export class ListaComponent {
     this.ultimodisable = disabled;
   }
 
-  analises() {
+  imprimir() {
+    this.extractData(this.gridOptions.api.getDataAsCsv())
+  }
+  getfiltroshtml() {
+    var filtros = "<p><strong>Filtros:&nbsp;</strong>";
+    filtros += "Famílias: [" + this.fam_temp + "] ";
+    filtros += (this.date_temp != null) ? "<strong>&nbsp;|&nbsp;</strong> Data Ínicio:" + this.date_temp : "";
+    filtros += (this.date2_temp != null) ? "<strong>&nbsp;|&nbsp;</strong> Data Fim:" + this.date2_temp : "";
+    filtros += (this.user_temp != null) ? "<strong>&nbsp;|&nbsp;</strong>Utilizador:" + this.user_temp : "";
+    filtros += (this.op_temp != null) ? "<strong>&nbsp;|&nbsp;</strong>Operação:" + this.op_temp : "";
+    filtros += (this.ref_temp != null) ? "<strong>&nbsp;|&nbsp;</strong>Referência:" + this.ref_temp : ""
+    filtros += "</p>";
+    return filtros;
+  }
+  extractData(res) {
+    let csvData = res;
+    let allTextLines = csvData.split(/\r\n|\n/);
+    let headers = allTextLines[0].split('","');
+    //let lines = [];
+    var tabela = '<div id="imprimirtabela">' + this.getfiltroshtml() + '<table border="1" class="table table-striped imprimirtab">';
+    for (let i = 0; i < allTextLines.length; i++) {
+      tabela += '<tr>';
+      // split content based on comma
+      let data = allTextLines[i].split('","');
+      if (data.length == headers.length) {
+        //let tarr = [];
+        for (let j = 0; j < headers.length; j++) {
+          tabela += '<td>' + data[j].replace('"', '');
+          //tarr.push(data[j].replace('"', ''));
+          tabela += '</td>';
+        }
+        // lines.push(tarr);
+      }
+      tabela += '</tr>';
+    }
+    tabela += '</div></table>';
+    //this.csvData = lines;
+    this.abririmpressao(tabela);
+  }
+
+  abririmpressao(tabela) {
+    var printContents = document.getElementById("imprimirtabela").innerHTML;
+    var popupWin = window.open();
+    popupWin.document.open();
+    popupWin.document.write('<html><head><link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css" /></head><body onload="window.print(); window.close();">' + tabela + '</body></html>');
+    popupWin.document.close();
+  }
+
+  analises(inicio) {
+    this.gridOptions.api.showLoadingOverlay();
     this.columnDefs.push({ headerName: "ID_OF", field: "id_of", hide: true, width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
     this.columnDefs.push({
-      headerName: "Tipo", field: "tipo", width: 120, enableValue: true, filter: 'text', enableRowGroup: true, enablePivot: true, cellStyle: function (params) {
+      headerName: "Tipo", field: "tipo", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true, cellStyle: function (params) {
         if (params.value == 'COMP') {
           //return { backgroundColor: 'red' };
         } else if (params.value == 'PF') {
@@ -241,14 +350,14 @@ export class ListaComponent {
     this.columnDefs.push({ headerName: "Operação", filter: 'text', field: "operacao", width: 125, enableValue: true, enableRowGroup: true, enablePivot: true });
     this.columdefeito = []
     var count = 0;
-    for (var n in this.selectedCars1) {
+    for (var n in this.famSeleccionadas) {
       count++;
-      this.columnfam(count, this.selectedCars1[n]);
+      this.columnfam(count, this.famSeleccionadas[n], inicio);
     }
-
+    //if (this.famSeleccionadas.length == 0) if (inicio) this.configuracoes(null);
   }
 
-  columnfam(count, fam) {
+  columnfam(count, fam, inicio) {
     this.RegistoProducao.getFam([fam]).subscribe(
       res => {
         var column = { headerName: "FAM " + fam, suppressMenu: true, field: "defeito", children: [] };
@@ -259,8 +368,21 @@ export class ListaComponent {
         this.columnDefs.push(column);
         this.columnDefs = this.columnDefs.slice();
 
-        if (count == this.selectedCars1.length) {
-          this.componentes(55, 5, true, this.selectedCars1);
+        if (count == this.famSeleccionadas.length) {
+          var date2 = new Date(this.data_fim).toLocaleDateString().replace(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/, "$3-$2-$1");
+          var date = new Date(this.data_ini).toLocaleDateString().replace(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/, "$3-$2-$1");
+
+          if (isNaN(new Date(this.data_ini).getDate()) || date2 == '1970-01-01') date2 = null;
+          if (isNaN(new Date(this.data_fim).getDate()) || date == '1970-01-01') date = null;
+
+          this.fam_temp = this.famSeleccionadas;
+          this.date_temp = date;
+          this.date2_temp = date2;
+          this.ref_temp = this.referencia;
+          this.user_temp = this.utilizador;
+          this.op_temp = this.operacao;
+
+          this.componentes(this.famSeleccionadas, inicio, date, date2, this.referencia, this.utilizador, this.operacao);
         }
       },
       error => console.log(error));
@@ -268,10 +390,13 @@ export class ListaComponent {
 
 
 
-  componentes(id, id_banho, graf, fam) {
+  componentes(fam, inicio, date, date2, ref, user, op_cod) {
     var days = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado-Feira'];
     var month = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-    this.RegistoProducao.getAll(fam).subscribe(
+
+    if(this.gridOptions.api != null) this.gridOptions.api.showLoadingOverlay();
+    var data = [{ user: user, ref: ref, fam: (fam != null) ? fam.toString() : "", op_cod: op_cod, date1: (date) ? date : null, date2: (date2) ? date2 : null }]
+    this.RegistoProducao.getAll(data).subscribe(
       response => {
         var total = Object.keys(response).length;
         if (total > 0) {
@@ -292,17 +417,31 @@ export class ListaComponent {
             rowData['dia'] = days[new Date(response[y][10]).getDay()];
             rowData['ano'] = new Date(response[y][10]).getFullYear();
             rowData['etiqueta'] = response[y][6];
-            rowData['operacao'] = (response[y][11] == null) ? "" : response[y][11] + '-' + response[y][12];
+            rowData['operacao'] = (response[y][11] == null) ? "" : response[y][11] + (response[y][12] != null ? '-' + response[y][12] : '');
             var count = 15;
             for (var x in this.columdefeito) {
               rowData[this.columdefeito[x]] = (response[y][count] == null) ? 0 : response[y][count];
               count++;
             }
-            this.rowData.push(rowData);
+            this.rowData1.push(rowData);
           }
 
 
-          this.rowData = this.rowData.slice();
+          this.rowData = this.rowData1.slice();
+          var valor = this.page_size;
+          if (valor == 'todos') valor = this.rowData.length;
+          if(this.gridOptions.api != null)  this.gridOptions.api.paginationSetPageSize(Number(valor));
+
+          if (inicio) {
+            this.configuracoes(null);
+          } else {
+            this.gridOptions.columnApi.setColumnState(this.colstate);
+            this.gridOptions.columnApi.setColumnGroupState(this.groupstate);
+            this.gridOptions.api.setSortModel(this.sortstate);
+            this.gridOptions.api.setFilterModel(this.filterstate);
+          }
+        } else {
+          this.rowData = [];
         }
 
       },
@@ -369,6 +508,7 @@ export class ListaComponent {
           vistas.sortstate = JSON.stringify(this.gridOptions.api.getSortModel());
           vistas.filterstate = JSON.stringify(this.gridOptions.api.getFilterModel());
           vistas.descricao = this.texto_vista;
+          vistas.familias = JSON.stringify(this.famSeleccionadas);
           this.GERVISTASService.update(vistas).then(result => {
             var array = this.array.find(item => item.id == this.num_vista);
             this.config.find(item => item.value == this.num_vista).label = this.texto_vista;
@@ -411,6 +551,7 @@ export class ListaComponent {
     vistas.sortstate = JSON.stringify(this.gridOptions.api.getSortModel());
     vistas.filterstate = JSON.stringify(this.gridOptions.api.getFilterModel());
     vistas.descricao = this.texto_vista;
+    vistas.familias = JSON.stringify(this.famSeleccionadas);
     this.GERVISTASService.create(vistas).subscribe(result => {
 
       this.array.push({
@@ -458,15 +599,35 @@ export class ListaComponent {
     this.gridOptions.api.paginationSetPageSize(Number(valor));
   }
 
-  configuracoes(event) {
+  configuracoes(event, update = false) {
     this.texto_vista = this.config.find(item => item.value == this.num_vista).label;
     if (this.num_vista != 0) {
       var array = this.array.find(item => item.id == this.num_vista);
-      if (array) {
-        this.gridOptions.columnApi.setColumnState(array.colState);
-        this.gridOptions.columnApi.setColumnGroupState(array.groupState);
-        this.gridOptions.api.setSortModel(array.sortState);
-        this.gridOptions.api.setFilterModel(array.filterState);
+      if (array && !update) {
+        if(this.gridOptions.api != null) this.gridOptions.columnApi.setColumnState(array.colState);
+        if(this.gridOptions.api != null) this.gridOptions.columnApi.setColumnGroupState(array.groupState);
+        if(this.gridOptions.api != null) this.gridOptions.api.setSortModel(array.sortState);
+        if(this.gridOptions.api != null) this.gridOptions.api.setFilterModel(array.filterState);
+        if (array.adminedit) {
+          if (JSON.parse(localStorage.getItem('userapp'))["admin"]) {
+            this.disEditar = false;
+            this.disCriar = false;
+            this.disGravar = false;
+          } else {
+            this.disEditar = true;
+            this.disCriar = true;
+            this.disGravar = true;
+          }
+        } else {
+          this.disEditar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node31editar");
+          this.disGravar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node31gravar");
+          this.disCriar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node31criar");
+        }
+        if (array.familias != null) {
+          this.famSeleccionadas = array.familias;
+        } else if (this.famSeleccionadas.length == 0) {
+          this.famSeleccionadas = this.selectedall;
+        }
       }
     } else {
       this.resetState();
@@ -490,6 +651,10 @@ export class ListaComponent {
   }
 
 
+  onBtExport() {
+    this.gridOptions.api.exportDataAsExcel();
+  }
+
   //formatar a data para yyyy-mm-dd
   formatDate(date) {
     var d = new Date(date),
@@ -503,15 +668,39 @@ export class ListaComponent {
     return [year, month, day].join('-');
   }
 
-  private createRowData() {
-    var rowData: any[] = [];
-    this.rowData = [];
-    this.columnDefs = [];
-    this.analises();
+  createRowData(inicio, update = false) {
+    this.colstate = this.gridOptions.columnApi.getColumnState();
+    this.groupstate = this.gridOptions.columnApi.getColumnGroupState();
+    this.sortstate = this.gridOptions.api.getSortModel();
+    this.filterstate = this.gridOptions.api.getFilterModel();
+
+    if (update) {
+      this.rowData1 = [];
+      this.gridOptions.api.showLoadingOverlay();
+      this.componentes(this.fam_temp, inicio, this.date_temp, this.date2_temp, this.ref_temp, this.user_temp, this.op_temp);
+    } else {
+      if (this.famSeleccionadas.length > 0) {
+        this.rowData1 = [];
+        this.gridOptions.api.showLoadingOverlay();
+        this.columnDefs = [];
+        this.analises(inicio);
+      } else {
+        alert("Campo Famílias encontra-se vazio!")
+      }
+    }
+
+  }
+
+  selecttable() {
+    if (this.select_table) {
+      this.gridOptions.api.selectAll();
+    } else {
+      this.gridOptions.api.deselectAll();
+    }
   }
 
   private calculateRowCount() {
-    if (this.page_size == 'todos') this.gridOptions.api.paginationSetPageSize(Number(this.rowData.length));
+    //if (this.page_size == 'todos') this.gridOptions.api.paginationSetPageSize(Number(this.rowData.length));
 
     if (this.gridOptions.api && this.rowData) {
       var model = this.gridOptions.api.getModel();
@@ -692,6 +881,8 @@ function setText(selector, text) {
   }
 
 }
+
+
 
 
 

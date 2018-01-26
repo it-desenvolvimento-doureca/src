@@ -36,6 +36,8 @@ export class HistoricoManutencoesComponent implements OnInit {
   ngOnInit() {
     this.globalVar.setvoltar(true);
     this.globalVar.sethistorico(false);
+    this.globalVar.setcriarmanutencao(false);
+    this.globalVar.setdisCriarmanutencao(true);
     this.globalVar.seteditar(false);
     this.globalVar.setapagar(false);
     this.globalVar.setseguinte(true);

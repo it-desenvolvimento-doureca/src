@@ -56,6 +56,8 @@ export class ConfComponent implements OnInit {
     this.globalVar.setduplicar(false);
     this.globalVar.setatualizar(false);
     this.globalVar.sethistorico(false);
+    this.globalVar.setcriarmanutencao(false);
+    this.globalVar.setdisCriarmanutencao(true);
 
     this.globalVar.setdisEditar(false);
 
@@ -79,8 +81,8 @@ export class ConfComponent implements OnInit {
     this.nodes = [];
     this.tree.treeModel.collapseAll();
     if (this.tree.treeModel.getActiveNode() != null) {
-      console.log("a")
-      console.log(this.tree.treeModel.getActiveNode())
+      //console.log("a")
+      //console.log(this.tree.treeModel.getActiveNode())
       this.tree.treeModel.getActiveNode().setIsActive(false);
     }
 

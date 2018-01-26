@@ -10,4 +10,6 @@ export class GER_UTILIZADORES {
     inativo: boolean;
     admin: boolean;
     cod_UTZ: string;
+    user_JASPER: string;
+    pass_JASPER: string;
 }

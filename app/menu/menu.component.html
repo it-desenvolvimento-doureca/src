@@ -33,7 +33,7 @@
                                                 <a>Análises</a>
                                             </li>
                                             <li id="node001" [routerLinkActive]="['active']" [routerLink]="['/manutencao']">
-                                                <a>Manutenções</a>
+                                                <a>Manutenções Planeadas</a>
                                             </li>
                                             <li id="node002" [routerLinkActive]="['active']" [routerLink]="['/registopara']">
                                                 <a>Reg. Parâm. de Operação</a>
@@ -41,6 +41,12 @@
                                             <li id="node003" [routerLinkActive]="['active']" [routerLink]="['/construcaobanhos']">
                                                 <a>Construção Banho</a>
                                             </li>
+                                            <!--<li id="node004" [routerLinkActive]="['active']" [routerLink]="['/construcaobanhos']">
+                                                <a>Manutenções de Reposição</a>
+                                            </li>
+                                            <li id="node005" [routerLinkActive]="['active']" [routerLink]="['/construcaobanhos']">
+                                                <a>Manutenções não Programadas</a>
+                                            </li>-->
                                         </ul>
                                     </td>
                                 </tr>
@@ -107,9 +113,31 @@
                     </div>
                 </div>
                 <div class="panel panel-default">
+                    <div class="panel-heading" [class.active]="router.isActive('/grid',true)">
+                        <h4 class="panel-title">
+                            <a id="node3" data-toggle="collapse" data-parent="#accordion" href="#collapseLMEP">
+                                <span class="fa fa-industry" style="margin-right: 12px;">
+                                </span>Gestão LMEP</a>
+                        </h4>
+                    </div>
+                    <div id="collapseLMEP" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <table class="table">
+                                <tr>
+                                    <td>
+                                        <li id="node31" [routerLinkActive]="['active']">
+                                            <a [routerLink]="['/grid']">Tabela (GRID)</a>
+                                        </li>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
                     <div class="panel-heading" [class.active]="router.isActive('/analisesjasper',true)">
                         <h4 class="panel-title">
-                            <a id="node6" data-toggle="collapse" data-parent="#accordion" href="#collapsesanalises">
+                            <a id="node2" data-toggle="collapse" data-parent="#accordion" href="#collapsesanalises">
                                 <span class="glyphicon glyphicon-stats">
                                 </span>Análises de Gestão</a>
                         </h4>
@@ -119,7 +147,7 @@
                             <table class="table">
                                 <tr>
                                     <td>
-                                        <li id="node61" [routerLinkActive]="['active']">
+                                        <li id="node21" [routerLinkActive]="['active']">
                                             <a [routerLink]="['/analisesjasper']">Análises Jasper</a>
                                         </li>
                                     </td>
@@ -207,7 +235,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel panel-default">
+                <!--<div class="panel panel-default">
                     <div class="panel-heading" [class.active]="router.isActive('/teste1',true)">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" data-parent="#accordion" href="#collapsestats">
@@ -225,24 +253,10 @@
                                         </li>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <li [routerLinkActive]="['active']">
-                                            <a [routerLink]="['/configjasper']">Configurações Jasper</a>
-                                        </li>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <li [routerLinkActive]="['active']">
-                                            <a [routerLink]="['/analisesjasper']">Análises Jasper</a>
-                                        </li>
-                                    </td>
-                                </tr>
                             </table>
                         </div>
                     </div>
-                </div>
+                </div>-->
             </div>
         </div>
     </div>

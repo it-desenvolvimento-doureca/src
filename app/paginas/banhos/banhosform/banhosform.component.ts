@@ -81,6 +81,8 @@ export class BanhosformComponent implements OnInit {
     this.globalVar.setanterior(true);
     this.globalVar.setatualizar(false);
     this.globalVar.sethistorico(false);
+    this.globalVar.setcriarmanutencao(false);
+    this.globalVar.setdisCriarmanutencao(true);
 
     this.user = JSON.parse(localStorage.getItem('userapp'))["id"];
 

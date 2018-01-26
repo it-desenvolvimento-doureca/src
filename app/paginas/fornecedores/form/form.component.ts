@@ -42,6 +42,8 @@ export class FormComponent implements OnInit {
     this.globalVar.setanterior(true);
     this.globalVar.setatualizar(false);
     this.globalVar.sethistorico(false);
+    this.globalVar.setcriarmanutencao(false);
+    this.globalVar.setdisCriarmanutencao(true);
 
     this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node013editar"));
     this.globalVar.setdisCriar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node013criar"));
@@ -140,7 +142,7 @@ export class FormComponent implements OnInit {
                   this.data = new Date(response[x].data_ULT_MODIF).toLocaleDateString();
                   this.nome = response[x].nome_FORNECEDOR;
                   this.obs = response[x].obs;
-                  this.num_fornecedor = this.fornecedores_silver.find(item => item.value.id == response[x].num_FORNECEDOR).value;
+                  this.num_fornecedor = (this.fornecedores_silver.find(item => item.value.id == response[x].num_FORNECEDOR)) ? this.fornecedores_silver.find(item => item.value.id == response[x].num_FORNECEDOR).value : null;
                 }
               } else {
                 this.router.navigate(['fornecedor']);

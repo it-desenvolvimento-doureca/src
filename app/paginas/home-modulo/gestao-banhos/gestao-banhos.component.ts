@@ -16,6 +16,8 @@ import { ABMOVMANUTENCAOLINHAService } from 'app/servicos/ab-mov-manutencao-linh
   styleUrls: ['./gestao-banhos.component.css']
 })
 export class GestaoBanhosComponent implements OnInit {
+  banho_combo;
+  linha_combo;
   data_fim: any;
   data_ini;
   corpo_manu: any;
@@ -50,25 +52,32 @@ export class GestaoBanhosComponent implements OnInit {
 
 
   ngOnInit() {
+
+    var back;
+    var sub = this.route
+      .queryParams
+      .subscribe(params => {
+        // Defaults to 0 if no query param provided.
+        back = params['redirect'] || 0;
+      });
+
     this.width = 100 / (this.num_items + 1);
     this.data_fim = new Date();
     this.data_ini = new Date(new Date().getFullYear(), 0, 1);
 
-    /*if(!acessohistorico){
-      this.location.back();
+    var linha = 0;
+    var banho = 0;
+
+    if (back == 1) {
+      if (this.globalVar.getfiltros("homegestaobanhos")) {
+        var dados = this.globalVar.getfiltros("homegestaobanhos")[0];
+        this.data_fim = dados.data_fim;
+        this.data_ini = dados.data_ini;
+        this.inicio = dados.inicio;
+        banho = dados.id_banho;
+        linha = dados.linha;
+      }
     }
-    var id;
-    var sub = this.route
-      .queryParams
-      .subscribe(params => {
-        this.id = params['id'] || 0;
-      });
-    if (id != 0) {
-      this.carregadados();
-    } else {
-      this.location.back();
-    }*/
-    this.preenche_banhos_combo(0);
 
     //preenche combobox linhas
     this.ABDICLINHAService.getAll().subscribe(
@@ -79,14 +88,20 @@ export class GestaoBanhosComponent implements OnInit {
           this.linhas.push({ label: response[x].nome_LINHA, value: { id: response[x].id_LINHA, cor: response[x].cor } });
         }
         if (this.globalVar.getlinha() != 0) {
-          this.linha = this.linhas.find(item => item.value.id == this.globalVar.getlinha()).value;
+          this.linha_combo = this.linhas.find(item => item.value.id == this.globalVar.getlinha()).value;
+          this.cor_linha = this.linhas.find(item => item.value.id == this.globalVar.getlinha()).value.cor;
+        }
+        if (linha != 0) {
+          this.linha_combo = this.linhas.find(item => item.value.id == linha).value;
+          this.cor_linha = this.linhas.find(item => item.value.id == linha).value.cor;
         }
         this.linhas = this.linhas.slice();
+        this.preenche_banhos_combo(0, banho);
       },
       error => console.log(error));
 
 
-    this.carregadados();
+    //this.carregadados();
   }
 
   carregadados() {
@@ -102,14 +117,17 @@ export class GestaoBanhosComponent implements OnInit {
     this.data_manu = [];
 
 
+    this.linha = this.banho_combo.linha;
+    this.tina = this.banho_combo.nome_tina;
+    this.banho = this.banho_combo.label;
 
 
-    this.linha = 1;
+    /*this.linha = 1;
     this.tina = "teste";
-    this.banho = "banho";
+    this.banho = "banho";*/
     //this.labelgraf.push(this.data_analise);
 
-    this.analises(5, this.inicio, this.num_items);
+    this.analises(this.banho_combo.id, this.inicio, this.num_items);
 
 
   }
@@ -126,38 +144,45 @@ export class GestaoBanhosComponent implements OnInit {
   }
 
   analises(id_banho, inicio, fim) {
-
+    this.rows_show = 0;
+    this.globalVar.setfiltros("homegestaobanhos", [{ linha: this.linha, id_banho: id_banho, data_ini: this.data_ini, data_fim: this.data_fim, inicio: inicio }]);
     var date2 = new Date(this.data_ini).toLocaleDateString().replace(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/, "$3-$2-$1");;
     var date = new Date(this.data_fim).toLocaleDateString().replace(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/, "$3-$2-$1");
 
     if (isNaN(new Date(this.data_ini).getDate()) || date2 == '1970-01-01') date2 = null;
     if (isNaN(new Date(this.data_fim).getDate()) || date == '1970-01-01') date = null;
 
-    var data = [{ date1: (date) ? date : null, date2: (date2) ? date2 : null }]
-    this.ABMOVANALISEService.getbyid_banho_comp(id_banho, inicio, fim, data).subscribe(
+    var data_filtro = [{ date1: (date) ? date : null, date2: (date2) ? date2 : null }]
+    this.ABMOVANALISEService.getbyid_banho_comp(id_banho, inicio, fim, data_filtro).subscribe(
       response => {
         var count = Object.keys(response).length;
         if (count > 0) {
           var days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
           this.total_rows = response[0][6];
-
+          this.cabecalho = [];
+          this.cabecalho_manutencao = [];
+          this.labelgraf = [];
+          this.labelgraf_manu = [];
           this.rows_show = (this.inicio + this.num_items <= this.total_rows) ? this.inicio + this.num_items : this.total_rows;
           for (var x in response) {
-
+            var data1 = this.formatDate(response[x][2]);
+            var data2 = this.formatDate(response[x][4]);
             if (response[x][0] != null) {
-              var data = this.formatDate(response[x][2]);
-              this.labelgraf.push(data);
-              this.cabecalho.push({ id: response[x][0], data: data, hora: (response[x][3]).slice(0, 5), dia: days[new Date(response[x][2]).getDay()] });
+
+              this.labelgraf.push(data1);
+              this.cabecalho.push({ id: response[x][0], data: data1, hora: (response[x][3]).slice(0, 5), dia: days[new Date(response[x][2]).getDay()] });
             } else {
               this.cabecalho.push({ dia: "---" });
+              this.labelgraf.push("--");
             }
 
             if (response[x][1] != null) {
-              var data = this.formatDate(response[x][4]);
-              this.labelgraf_manu.push(data);
-              this.cabecalho_manutencao.push({ id: response[x][1], id_manu: response[x][7], data: data, hora: new Date(response[x][4]).toLocaleTimeString(), dia: days[new Date(response[x][4]).getDay()] });
+
+              this.labelgraf_manu.push(data2);
+              this.cabecalho_manutencao.push({ id: response[x][1], id_manu: response[x][7], data: data2, hora: new Date(response[x][4]).toLocaleTimeString(), dia: days[new Date(response[x][4]).getDay()] });
             } else {
               this.cabecalho_manutencao.push({ dia: "---" });
+              this.labelgraf_manu.push("--");
             }
           }
           this.componentes(id_banho, true);
@@ -176,7 +201,7 @@ export class GestaoBanhosComponent implements OnInit {
 
         var count = Object.keys(response).length;
         //se existir componentes do banho
-
+        this.datasetsgraf = [];
         if (count > 0) {
           var id_comp = [];
           this.datasetsgraf.push({
@@ -185,6 +210,8 @@ export class GestaoBanhosComponent implements OnInit {
             ],
             borderWidth: 2
           });
+          this.corpo = [];
+
           for (var x in response) {
             id_comp.push(response[x][1].id_COMPONENTE)
 
@@ -219,7 +246,7 @@ export class GestaoBanhosComponent implements OnInit {
       response => {
         var count = Object.keys(response).length;
         //se existir aditivos do banho
-
+        this.datasetsgraf_manu = [];
         if (count > 0) {
           var id_aditiv = [];
           this.datasetsgraf_manu.push({
@@ -228,6 +255,8 @@ export class GestaoBanhosComponent implements OnInit {
             ],
             borderWidth: 2
           });
+          this.corpo_manu = [];
+
           for (var x in response) {
             id_aditiv.push(response[x][1].id_COMPONENTE)
 
@@ -273,12 +302,12 @@ export class GestaoBanhosComponent implements OnInit {
               index_comp.valores[index_analise].cor = this.verificalimites(response[x][0].calculo, response[x][1], response[x][2], response[x][3], response[x][4]);
               var calculo3 = (response[x][0].calculo != null) ? response[x][0].calculo.toFixed(3) : null;
 
-              index_datasetsgraf.data[index_analise + 1] = calculo3
+              index_datasetsgraf.data[index_analise] = calculo3
             }
 
           }
 
-          if ((parseInt(count) + 1) == this.cabecalho.length) this.carregagraficos();
+          this.carregagraficos();
 
         },
         error => { console.log(error); });
@@ -303,11 +332,12 @@ export class GestaoBanhosComponent implements OnInit {
               index_comp.valores[index_manutencao].valor = (response[x].valor1 != null) ? parseFloat(response[x].valor1).toFixed(2) : null;
               var calculo3 = (response[x].valor1 != null) ? parseFloat(response[x].valor1).toFixed(2) : null;
 
-              index_datasetsgraf.data[index_manutencao + 1] = calculo3
+
+              index_datasetsgraf.data[index_manutencao] = calculo3
             }
 
           }
-          if ((parseInt(count) + 1) == this.cabecalho_manutencao.length) this.carregagraficos_manu();
+          this.carregagraficos_manu();
 
         },
         error => { console.log(error); });
@@ -430,7 +460,7 @@ export class GestaoBanhosComponent implements OnInit {
   }
 
   //preenche combobox banhos
-  preenche_banhos_combo(linha) {
+  preenche_banhos_combo(linha, banho = 0) {
     this.banhos = [];
     //preenche combobox banhos
     ///if (this.linha != null) linha = this.linha;
@@ -438,18 +468,19 @@ export class GestaoBanhosComponent implements OnInit {
       response => {
         this.banhos.push({ label: 'Seleccione Banho', value: "" });
         for (var x in response) {
-          this.banhos.push({ label: response[x][0].id_BANHO + " / " + response[x][0].nome_BANHO + " - Tina: " + response[x][2].cod_TINA, value: { id: response[x][0].id_BANHO, id_tina: response[x][2].id_TINA, nome_tina: response[x][2].cod_TINA, capacidade: response[x][2].capacidade } });
+          this.banhos.push({ label: response[x][0].id_BANHO + " / " + response[x][0].nome_BANHO + " - Tina: " + response[x][2].cod_TINA, value: { label: response[x][0].id_BANHO + " / " + response[x][0].nome_BANHO, id: response[x][0].id_BANHO, id_tina: response[x][2].id_TINA, nome_tina: response[x][2].cod_TINA, capacidade: response[x][2].capacidade, linha: response[x][1].id_LINHA } });
         }
         this.banhos = this.banhos.slice();
+        if (banho != 0) {
+          this.banho_combo = this.banhos.find(item => item.value.id == banho).value;
+          this.atualizar();
+        }
       },
       error => console.log(error));
   }
 
   IrPara(pagina, id) {
-    if (pagina == "analise") {
-      this.router.navigate(['registo/view'], { queryParams: { id: id } });
-    } else {
-      this.router.navigate(['manutencao/view'], { queryParams: { id: id } });
-    }
+    this.router.navigate([pagina + '/view'], { queryParams: { id: id, redirect: 'homegestaobanhos' } });
+
   }
 }

@@ -22,6 +22,7 @@ export class AppGlobals {
   editar: boolean = false;
   apagar: boolean = false;
   criar: boolean = false;
+  criarmanutencao: boolean = false;
   voltar: boolean = false;
   seguinte: boolean = false;
   anterior: boolean = false;
@@ -35,6 +36,7 @@ export class AppGlobals {
   disValidar: boolean = true;
   disEditar: boolean = true;
   mensagemlinhas: string = "";
+  disCriarmanutencao: boolean = true;
   filtros = [];
 
   setfiltros(var_item, filtro) {
@@ -90,6 +92,14 @@ export class AppGlobals {
     return this.disCriar;
   }
 
+  setdisCriarmanutencao(var_disCriarmanutencao) {
+    this.disCriarmanutencao = var_disCriarmanutencao;
+  }
+
+  getdisCriarmanutencao() {
+    return this.disCriarmanutencao;
+  }
+
   setlinha(var_linhar) {
     this.id_linha = var_linhar;
   }
@@ -141,9 +151,18 @@ export class AppGlobals {
   setcriar(var_criar) {
     this.criar = var_criar;
   }
+
   getcriar() {
     return this.criar;
   }
+
+  setcriarmanutencao(var_criarmanutencao) {
+    this.criarmanutencao = var_criarmanutencao;
+  }
+
+  getcriarmanutencao() {
+    return this.criarmanutencao;
+  }  
 
   setleitura(var_leitura) {
     this.leitura = var_leitura;

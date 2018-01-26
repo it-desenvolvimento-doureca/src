@@ -118,6 +118,8 @@ export class ConstbanhosformComponent implements OnInit {
     this.globalVar.setatualizar(false);
     this.globalVar.setduplicar(true);
     this.globalVar.sethistorico(false);
+    this.globalVar.setcriarmanutencao(false);
+    this.globalVar.setdisCriarmanutencao(true);
 
     this.admin = JSON.parse(localStorage.getItem('userapp'))["admin"];
     this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003editar"));
@@ -351,11 +353,11 @@ export class ConstbanhosformComponent implements OnInit {
   }
 
   carrega_script() {
-    if (document.getElementById("script1")) document.getElementById("script1").remove();
+   /* if (document.getElementById("script1")) document.getElementById("script1").remove();
     var script1 = document.createElement("script");
     script1.setAttribute("id", "script1");
     script1.setAttribute("src", "assets/js/jqbtk.js");
-    document.body.appendChild(script1);
+    document.body.appendChild(script1);*/
   }
 
   carregaraditivoslinhas(id, pos) {

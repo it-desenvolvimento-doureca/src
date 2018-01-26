@@ -55,6 +55,12 @@
                             <div class="ripple-container"></div>
                         </a>
                     </li>
+                    <li [class.disabled]="disCriarmanutencao" [hidden]="!criarmanutencao" >
+                            <a (click)="novomanute()" [ngClass]="modo == 'novo' ? 'cor_modo' : null">
+                                <i class="material-icons">create_new_folder</i>Nova Manutenção
+                                <div class="ripple-container"></div>
+                            </a>
+                        </li>
                     <li [hidden]="!anterior" style="display: inline-block; position: fixed; right: 52%;">
                         <a (click)="anterior_func()">
                             <i class="material-icons">keyboard_arrow_left</i>

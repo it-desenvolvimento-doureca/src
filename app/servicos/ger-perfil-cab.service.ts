@@ -26,8 +26,16 @@ export class GERPERFILCABService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
-  getAllbyid(id,modulo): Observable<GER_PERFIL_CAB[]> {
-    const url = webUrl.host + '/rest/sirb/getGER_PERFIL_CABbyid/' + id+'/'+modulo;
+  getAllbyid(id, modulo): Observable<GER_PERFIL_CAB[]> {
+    const url = webUrl.host + '/rest/sirb/getGER_PERFIL_CABbyid/' + id + '/' + modulo;
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
+  getAllbymodulo(modulo): Observable<GER_PERFIL_CAB[]> {
+    const url = webUrl.host + '/rest/sirb/getGER_PERFIL_CABbymodulo/' + modulo;
     return this.http
       .get(url)
       .map(this.extractData)

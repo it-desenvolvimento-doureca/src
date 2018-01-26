@@ -6,5 +6,5 @@ export class GER_VISTAS {
     groupstate: string;
     sortstate: string;
     descricao: string;
-
+    familias: string;
 }

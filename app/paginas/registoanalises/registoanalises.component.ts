@@ -52,6 +52,8 @@ export class RegistoanalisesComponent implements OnInit {
     this.globalVar.setcriar(true);
     this.globalVar.setatualizar(true);
     this.globalVar.setduplicar(false);
+    this.globalVar.setcriarmanutencao(false);
+    this.globalVar.setdisCriarmanutencao(true);
 
     this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node000editar"));
     this.globalVar.setdisCriar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node000criar"));

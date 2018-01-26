@@ -56,6 +56,7 @@ export class RegistoformComponent implements OnInit {
   data = null;
   obs = "";
   user;
+  username;
   pos = 0;
   display: boolean = true;
   selected_plano;
@@ -100,6 +101,7 @@ export class RegistoformComponent implements OnInit {
     this.concluirbt = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node000concluir")
 
     this.user = JSON.parse(localStorage.getItem('userapp'))["id"];
+    this.username = JSON.parse(localStorage.getItem('userapp'))["nome"];
 
     var url = this.router.routerState.snapshot.url;
     url = url.slice(1);
@@ -159,6 +161,8 @@ export class RegistoformComponent implements OnInit {
         this.globalVar.setanterior(false);
         this.globalVar.setapagar(false);
         this.globalVar.setcriar(true);
+        this.globalVar.setdisCriarmanutencao(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001criar"));
+        this.globalVar.setcriarmanutencao(true);
         this.modoedicao = true;
 
       } else if (urlarray[1].match("novo")) {
@@ -178,6 +182,8 @@ export class RegistoformComponent implements OnInit {
 
       } else if (urlarray[1].match("view")) {
         this.globalVar.setcriar(true);
+        this.globalVar.setcriarmanutencao(true);
+        this.globalVar.setdisCriarmanutencao(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001criar"));
       }
     }
   }
@@ -322,7 +328,6 @@ export class RegistoformComponent implements OnInit {
                   this.linha = this.linhas.find(item => item.value.id === response[x][0].id_LINHA).value;
                   if (response[x][0].estado == "C") {
                     this.estado = "Concluída";
-                    this.estado2 = true;
                     this.simular(this.btvalidar);
                     this.simular(this.alteraeditartrue);
                   } else if (response[x][0].estado == "E") {
@@ -332,6 +337,7 @@ export class RegistoformComponent implements OnInit {
                   } else if (response[x][0].estado == "V") {
                     this.estado = "Validada"
                     this.validada = true;
+                    this.estado2 = true;
                     this.simular(this.btvalidarfalse);
                     this.simular(this.alteraeditar);
                   }
@@ -409,6 +415,7 @@ export class RegistoformComponent implements OnInit {
 
         this.ABMOVANALISEService.create(analise).subscribe(
           res => {
+            if (this.alerta) this.verifica(this.obs, res.id_ANALISE, this.data_ANALISE, this.banhos_valor['nome_banho'], this.banhos_valor['nome_tina'], this.username, "Concluída", this.linha.id, this.email_mensagem);
             this.inserir_linhas(res.id_ANALISE);
           },
           error => { console.log(error); this.simular(this.inputerro); });
@@ -609,7 +616,7 @@ export class RegistoformComponent implements OnInit {
         }
 
         this.ABMOVANALISEService.update(analise).then(() => {
-          if (evento) this.verifica(this.obs, this.codigo, this.data_ANALISE, this.banhos_valor['nome_banho'], this.banhos_valor['nome_tina'], this.nome_utz, this.estado, this.linha.id, this.email_mensagem);
+          if (evento) this.verifica(this.obs, this.codigo, this.data_ANALISE, this.banhos_valor['nome_banho'], this.banhos_valor['nome_tina'], this.nome_utz, "Concluída", this.linha.id, this.email_mensagem);
           this.inserir_linhas(id);
         });
 
@@ -624,7 +631,7 @@ export class RegistoformComponent implements OnInit {
     var dados = "{observacao:" + observacao + ",numero_analise:" + numero_analise + ",mensagem:" + email_mensagem
       + ",data_analise:" + new Date(data_analise).toLocaleDateString() + ",nome_banho:" + nome_banho
       + ",tina:" + tina + ",utilizador:" + utilizador + ",estado:" + estado + ",linha:" + linha + "}";
-    var data = [{ MODULO: 1, MOMENTO: "Ao Concluir", PAGINA: "Ánalises", ESTADO: true, DADOS: dados, EMAIL_PARA: this.email_para}];
+    var data = [{ MODULO: 1, MOMENTO: "Ao Concluir", PAGINA: "Ánalises", ESTADO: true, DADOS: dados, EMAIL_PARA: this.email_para }];
     this.UploadService.verficaEventos(data).subscribe(result => {
       this.simular(this.dialogemailclose)
       this.bt_disable = true;
