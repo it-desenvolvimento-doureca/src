@@ -25,7 +25,8 @@ export class TipooperacaoComponent implements OnInit {
 
   constructor(private globalVar: AppGlobals, private ABDICTIPOOPERACAOService: ABDICTIPOOPERACAOService, private renderer: Renderer) { }
   ngOnInit() {
-    this.classificacao = [{ label: "Seleccionar Clasif.", value: "" }, { label: "Manutenção Banho", value: "M" }, { label: "Construção Banho", value: "B" }];
+    this.classificacao = [{ label: "Seleccionar Clasif.", value: "" }, { label: "Manutenção Banho", value: "M" }, { label: "Construção Banho", value: "B" }, 
+    { label: "Reposições", value: "R" }, { label: "Não Programadas", value: "N" }];
     this.globalVar.setapagar(false);
     this.globalVar.seteditar(false);
     this.globalVar.setvoltar(false);
@@ -79,11 +80,12 @@ export class TipooperacaoComponent implements OnInit {
   //listar os dados das unidades de operacoes na tabela
   listar_operacoes() {
     this.operacoes = [];
-    this.ABDICTIPOOPERACAOService.getAll(["M","B"]).subscribe(
+    this.ABDICTIPOOPERACAOService.getAll(["M","B","N","R"]).subscribe(
       response => {
         for (var x in response) {
-          var classif_nome = "Manutenção Banho";
-          if (response[x].classif == "B") classif_nome = "Construção Banho";
+          var classif_nome = "";
+          //if (response[x].classif == "B") classif_nome = "Construção Banho";
+          classif_nome =  this.classificacao.find(item => item.value == response[x].classif).label;
           this.operacoes.push({ id: response[x].id_TIPO_OPERACAO, nome: response[x].nome_TIPO_OPERACAO, id195: response[x].id195, classif: response[x].classif, classif_nome: classif_nome });
         }
         this.operacoes = this.operacoes.slice();

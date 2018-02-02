@@ -8,5 +8,7 @@ export class AB_DIC_BANHO_ADITIVO {
     data_CRIA: Date;
     utz_ULT_MODIF: number;
     data_ULT_MODIF: Date;
+    manutencaoreposicao: boolean;
+    manutencaonaoprogramada: boolean;
 
 }

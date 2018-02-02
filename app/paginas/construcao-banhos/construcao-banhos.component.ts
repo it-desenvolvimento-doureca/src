@@ -86,24 +86,24 @@ export class ConstrucaoBanhosComponent implements OnInit {
     this.globalVar.sethistorico(false);
     this.globalVar.setcriarmanutencao(false);
     this.globalVar.setdisCriarmanutencao(true);
-    this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001editar"));
-    this.globalVar.setdisCriar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001criar"));
-    this.globalVar.setdisApagar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001apagar"));
-    this.disduplicar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001duplicar");
+    this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003editar"));
+    this.globalVar.setdisCriar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003criar"));
+    this.globalVar.setdisApagar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003apagar"));
+    this.disduplicar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003duplicar");
 
-    if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001planeamento")) {
+    if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003planeamento")) {
       this.query.push("Em Planeamento");
     }
-    if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001preparacao") && !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001execucao")) {
+    if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003preparacao") && !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003execucao")) {
       this.query.push("Planeado", "Em Preparação", "Preparado", "Em Execução", "Executado");
     }
 
     if (this.filtroval) {
-      if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001preparacao") && JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001execucao")) {
+      if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003preparacao") && JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003execucao")) {
         this.filtro = [];
-      } else if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001execucao")) {
+      } else if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003execucao")) {
         this.filtro.push("Preparado");
-      } else if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001preparacao")) {
+      } else if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003preparacao")) {
         this.filtro.push("Planeado", "Em Preparação");
       }
     }

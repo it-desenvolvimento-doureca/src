@@ -23,6 +23,8 @@ import { GERUTILIZADORESService } from 'app/servicos/ger-utilizadores.service';
   styleUrls: ['./banhosform.component.css']
 })
 export class BanhosformComponent implements OnInit {
+  manutencoesnaoprogramadas: boolean = false;
+  manutencaoreposicao: boolean = false;
   useremail: any;
   email_para: any;
   celula: any;
@@ -67,7 +69,7 @@ export class BanhosformComponent implements OnInit {
   @ViewChild('dialogavisodata') dialogavisodata: ElementRef;
   @ViewChild('dialogavisodatafim') dialogavisodatafim: ElementRef;
 
-  constructor(private GERUTILIZADORESService:GERUTILIZADORESService, private GERFORNECEDORService: GERFORNECEDORService, private ABDICZONAService: ABDICZONAService, private ABDICBANHOADITIVOService: ABDICBANHOADITIVOService, private ABUNIDADADEMEDIDAService: ABUNIDADADEMEDIDAService, private ABDICLINHAService: ABDICLINHAService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private ABDICBANHOCOMPONENTEService: ABDICBANHOCOMPONENTEService, private ABDICTINAService: ABDICTINAService, private confirmationService: ConfirmationService, private router: Router, private ABDICBANHOService: ABDICBANHOService, private renderer: Renderer, private route: ActivatedRoute, private globalVar: AppGlobals, private location: Location) { }
+  constructor(private GERUTILIZADORESService: GERUTILIZADORESService, private GERFORNECEDORService: GERFORNECEDORService, private ABDICZONAService: ABDICZONAService, private ABDICBANHOADITIVOService: ABDICBANHOADITIVOService, private ABUNIDADADEMEDIDAService: ABUNIDADADEMEDIDAService, private ABDICLINHAService: ABDICLINHAService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private ABDICBANHOCOMPONENTEService: ABDICBANHOCOMPONENTEService, private ABDICTINAService: ABDICTINAService, private confirmationService: ConfirmationService, private router: Router, private ABDICBANHOService: ABDICBANHOService, private renderer: Renderer, private route: ActivatedRoute, private globalVar: AppGlobals, private location: Location) { }
 
 
   ngOnInit() {
@@ -316,8 +318,10 @@ export class BanhosformComponent implements OnInit {
         if (count > 0) {
           this.banhos_aditivos = [];
           for (var x in response) {
-            this.banhos_aditivos.push({ id_banho: response[x][0].id_BANHO, pos: this.pos2, ID_BANHO_ADITIVO: response[x][0].id_BANHO_ADITIVO, nome_aditivo: response[x][1].nome_COMPONENTE, ID_ADITIVO: response[x][0].id_ADITIVO, medida1: response[x][2], medida2: response[x][3], ID_UNIDADE1: response[x][0].id_UNIDADE1, ID_UNIDADE2: response[x][0].id_UNIDADE2 });
-            this.pos2++;
+            this.banhos_aditivos.push({
+              manutencaoreposicao: response[x][0].manutencaoreposicao,
+              manutencoesnaoprogramadas: response[x][0].manutencaonaoprogramada, id_banho: response[x][0].id_BANHO, pos: this.pos2, ID_BANHO_ADITIVO: response[x][0].id_BANHO_ADITIVO, nome_aditivo: response[x][1].nome_COMPONENTE, ID_ADITIVO: response[x][0].id_ADITIVO, medida1: response[x][2], medida2: response[x][3], ID_UNIDADE1: response[x][0].id_UNIDADE1, ID_UNIDADE2: response[x][0].id_UNIDADE2
+            }); this.pos2++;
           }
           this.banhos_aditivos = this.banhos_aditivos.slice();
         }
@@ -348,7 +352,10 @@ export class BanhosformComponent implements OnInit {
               this.cor_linha = response[x][1].cor;
               this.celula = response[x][0].celulahull;
               this.obs = response[x][0].obs;
-              this.email_para = (response[x][0].email_PARA != null && response[x][0].email_PARA != "")? response[x][0].email_PARA.split(",") : [];
+              this.email_para = (response[x][0].email_PARA != null && response[x][0].email_PARA != "") ? response[x][0].email_PARA.split(",") : [];
+
+              this.manutencaoreposicao = response[x][0].manutencaoreposicao;
+              this.manutencoesnaoprogramadas = response[x][0].manutencaonaoprogramada;
             }
             this.banhosComp(id);
             this.banhosaditivos(id);
@@ -384,6 +391,8 @@ export class BanhosformComponent implements OnInit {
       banho.id_ZONA = this.zona;
       banho.inativo = false;
       banho.celulahull = this.celula;
+      banho.manutencaoreposicao = this.manutencaoreposicao;
+      banho.manutencaonaoprogramada = this.manutencoesnaoprogramadas;
       banho.email_PARA = this.email_para.toString();
 
       this.ABDICBANHOService.create(banho).subscribe(
@@ -413,6 +422,8 @@ export class BanhosformComponent implements OnInit {
       banho.utz_ULT_MODIF = this.user;
       banho.celulahull = this.celula;
       banho.email_PARA = this.email_para.toString();
+      banho.manutencaoreposicao = this.manutencaoreposicao;
+      banho.manutencaonaoprogramada = this.manutencoesnaoprogramadas;
 
       this.ABDICBANHOService.update(banho).then(() => {
         this.inserir_linhas(id);
@@ -446,7 +457,10 @@ export class BanhosformComponent implements OnInit {
 
   //adicionar nova linha aditivos do Banho
   novalinha_aditivo() {
-    this.banhos_aditivos.push({ pos: this.pos2, ID_BANHO_ADITIVO: "", nome_aditivo: "", ID_ADITIVO: "", medida1: "", medida2: "", ID_UNIDADE1: null, ID_UNIDADE2: null });
+    this.banhos_aditivos.push({
+      manutencaoreposicao: false,
+      manutencoesnaoprogramadas: false, pos: this.pos2, ID_BANHO_ADITIVO: "", nome_aditivo: "", ID_ADITIVO: "", medida1: "", medida2: "", ID_UNIDADE1: null, ID_UNIDADE2: null
+    });
     this.banhos_aditivos = this.banhos_aditivos.slice();
     this.pos2++;
   }
@@ -465,7 +479,8 @@ export class BanhosformComponent implements OnInit {
             banhos_aditivos.id_ADITIVO = this.banhos_aditivos[x].ID_ADITIVO;
             banhos_aditivos.id_UNIDADE1 = this.banhos_aditivos[x].ID_UNIDADE1;
             banhos_aditivos.id_UNIDADE2 = this.banhos_aditivos[x].ID_UNIDADE2;
-
+            banhos_aditivos.manutencaoreposicao = this.banhos_aditivos[x].manutencaoreposicao;
+            banhos_aditivos.manutencaonaoprogramada = this.banhos_aditivos[x].manutencoesnaoprogramadas;
             banhos_aditivos.utz_CRIA = this.user;
             banhos_aditivos.data_CRIA = new Date();
             banhos_aditivos.data_ULT_MODIF = new Date();
@@ -581,6 +596,8 @@ export class BanhosformComponent implements OnInit {
         banhos_aditivos.id_UNIDADE2 = this.banhos_aditivos[x].ID_UNIDADE2;
         banhos_aditivos.utz_ULT_MODIF = this.user;
         banhos_aditivos.data_ULT_MODIF = new Date();
+        banhos_aditivos.manutencaoreposicao = this.banhos_aditivos[x].manutencaoreposicao;
+        banhos_aditivos.manutencaonaoprogramada = this.banhos_aditivos[x].manutencoesnaoprogramadas;
         this.ABDICBANHOADITIVOService.update(banhos_aditivos).then(() => {
           this.banhosaditivos(id);
         });
@@ -604,7 +621,7 @@ export class BanhosformComponent implements OnInit {
           this.tinas.push({ label: response[x][0].cod_TINA, value: { id_zona: response[x][0].id_ZONA, id: response[x][0].id_TINA, capacidade: response[x][0].capacidade, cod: response[x][0].cod_TINA, obs: response[x][0].obs } });
         }
         this.tinas = this.tinas.slice();
-        if (tina != null) {
+        if (tina != null && this.tinas.find(item => item.value.id === tina)) {
           this.tinas_valor = this.tinas.find(item => item.value.id === tina).value;
           this.capacidade_tina = this.tinas.find(item => item.value.id === tina).value.capacidade;
           this.obs_tina = this.tinas.find(item => item.value.id === tina).value.obs;

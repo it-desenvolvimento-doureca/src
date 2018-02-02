@@ -11,6 +11,7 @@ import { ABMOVMANUTENCAOLINHAService } from 'app/servicos/ab-mov-manutencao-linh
   styleUrls: ['./historico-manutencoes.component.css']
 })
 export class HistoricoManutencoesComponent implements OnInit {
+  classif;
   hora_manutencao: string;
   options;
   datasetsgraf = [];
@@ -54,6 +55,7 @@ export class HistoricoManutencoesComponent implements OnInit {
       .queryParams
       .subscribe(params => {
         this.id = params['id'] || 0;
+        this.classif = params['classif'] || 0;
       });
     if (id != 0) {
       this.carregadados();
@@ -86,7 +88,8 @@ export class HistoricoManutencoesComponent implements OnInit {
 
 
   manutencoes(id, id_banho, inicio, fim) {
-    this.ABMOVMANUTENCAOCABService.getbyID_banho(id_banho, inicio, fim, this.id).subscribe(
+    if(this.classif == 0) this.classif = "M";
+    this.ABMOVMANUTENCAOCABService.getbyID_banho(id_banho, inicio, fim, this.id,this.classif).subscribe(
       response => {
         var count = Object.keys(response).length;
         if (count > 0) {

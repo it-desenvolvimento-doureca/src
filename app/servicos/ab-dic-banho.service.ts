@@ -45,6 +45,14 @@ export class ABDICBANHOService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
+  getAllLINHAbylinha_tipo(id,tipo) {
+    const url = webUrl.host + '/rest/sirb/getAllLINHAbylinha_tipo/' + id + '/0/'+tipo;
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
   getbyID(id): Observable<AB_DIC_BANHO[]> {
     const url = webUrl.host + '/rest/sirb/getAB_DIC_BANHOyid_banho/' + id + '/0';
     return this.http

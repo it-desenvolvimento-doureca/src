@@ -10,6 +10,8 @@ import { GERANALISESService } from 'app/servicos/ger-analises.service';
   styleUrls: ['./viewer.component.css']
 })
 export class ViewerComponent implements OnInit {
+  currentpage: string;
+  id_modulo: number;
   pass_jasper_login: string;
   user_jasper_login: string;
   aumentado: any = false;
@@ -26,6 +28,24 @@ export class ViewerComponent implements OnInit {
   constructor(private elementRef: ElementRef, private GERANALISESService: GERANALISESService, private location: Location, private sanitizer: DomSanitizer, private router: Router) { }
 
   ngOnInit() {
+    this.id_modulo = 0;
+
+    var titlee = this.router.routerState.snapshot.url
+    var pag = "";
+
+    if (titlee.charAt(0) === '/') {
+      titlee = titlee.slice(1);
+      var titlearray = titlee.split("/");
+      titlee = titlearray[0];
+      this.currentpage = titlee;
+    }
+    if (this.currentpage == 'gestaobanhos_relatorios') {
+      this.id_modulo = 1;
+    } else if (this.currentpage == 'analisesjasper') {
+      this.id_modulo = 2;
+    }else if (this.currentpage == "lmep_relatorios"){
+      this.id_modulo = 3;
+    }
 
     //j_username=jasperadmin&j_password=DourecA&
     this.user = JSON.parse(localStorage.getItem('userapp'))["user"];
@@ -61,7 +81,7 @@ export class ViewerComponent implements OnInit {
   tree_nodes() {
     var array = [{ id: 0, parent: null, name: 'Análises', link: null, ativo: true, disable: false }];
     this.nodes = [];
-    this.GERANALISESService.getAllativas().subscribe(result => {
+    this.GERANALISESService.getbyidmoduloativas(this.id_modulo).subscribe(result => {
       for (var x in result) {
         var disable = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "nodet" + result[x].id);
         array.push({ id: result[x].id, parent: result[x].id_PAI, name: result[x].descricao, link: result[x].link, ativo: result[x].ativo, disable: disable })

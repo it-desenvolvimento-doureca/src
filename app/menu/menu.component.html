@@ -10,8 +10,8 @@
         <div style="margin-top:20px">
             <div class="panel-group" id="accordion">
                 <div class="panel panel-default">
-                    <div [routerLinkActive]="['active']" [routerLink]="['/homegestaobanhos']" class="panel-heading" [ngClass]="{ 'active':router.isActive('/manutencao',true) || router.isActive('/registo',true) ||router.isActive('/fornecedor',true) || router.isActive('/tinas',true)|| router.isActive('/componentes',true)|| router.isActive('/banhos',true)
-                    || router.isActive('/operacoes',true)|| router.isActive('/homegestaobanhos',true) || router.isActive('/linhas',true) || router.isActive('/unidades',true)|| router.isActive('/zonas',true)|| router.isActive('/turnos',true) || router.isActive('/adicoes',true) || router.isActive('/manutencoes',true) || router.isActive('/registopara',true)  || router.isActive('/construcaobanhos',true) }">
+                    <div  [routerLink]="['/homegestaobanhos']" class="panel-heading" [ngClass]="{ 'active':router.isActive('/manutencao',true) || router.isActive('/registo',true) ||router.isActive('/fornecedor',true) || router.isActive('/tinas',true)|| router.isActive('/componentes',true)|| router.isActive('/banhos',true)
+                    || router.isActive('/gestaobanhos_relatorios',true) || router.isActive('/operacoes',true)|| router.isActive('/homegestaobanhos',true) || router.isActive('/linhas',true) || router.isActive('/unidades',true)|| router.isActive('/zonas',true)|| router.isActive('/turnos',true) || router.isActive('/adicoes',true) || router.isActive('/manutencoes',true) || router.isActive('/registopara',true)  || router.isActive('/manutencaonaoprogramada',true) || router.isActive('/construcaobanhos',true) }">
                         <h4 class="panel-title">
                             <a id="node0" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
                                 <span class="glyphicon glyphicon-list-alt ">
@@ -23,7 +23,7 @@
                             <table class="table">
                                 <tr>
                                     <td>
-                                        <li id="node00" (click)="linha()" data-toggle="collapse" data-target="#movi" class="collapsed" [ngClass]="{ 'active':router.isActive('/manutencao',true) || router.isActive('/registopara',true)  || router.isActive('/construcaobanhos',true) || router.isActive('/registo',true)}">
+                                        <li id="node00" (click)="linha()" data-toggle="collapse" data-target="#movi" class="collapsed" [ngClass]="{'active':router.isActive('/manutencao',true) || router.isActive('/registopara',true)  || router.isActive('/construcaobanhos',true) ||  router.isActive('/manutencaonaoprogramada',true) || router.isActive('/registo',true)}">
                                             <a>Movimentos
                                                 <span class="arrow"></span>
                                             </a>
@@ -41,13 +41,20 @@
                                             <li id="node003" [routerLinkActive]="['active']" [routerLink]="['/construcaobanhos']">
                                                 <a>Construção Banho</a>
                                             </li>
+                                            <li id="node004" [routerLinkActive]="['active']" [routerLink]="['/manutencaonaoprogramada']">
+                                                <a>Manut. não Programadas</a>
+                                            </li>
                                             <!--<li id="node004" [routerLinkActive]="['active']" [routerLink]="['/construcaobanhos']">
                                                 <a>Manutenções de Reposição</a>
-                                            </li>
-                                            <li id="node005" [routerLinkActive]="['active']" [routerLink]="['/construcaobanhos']">
-                                                <a>Manutenções não Programadas</a>
                                             </li>-->
                                         </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <li id="node03" data-toggle="collapse" [routerLinkActive]="['active']">
+                                            <a [routerLink]="['/gestaobanhos_relatorios']">Relatórios de Gestão</a>
+                                        </li>
                                     </td>
                                 </tr>
                                 <tr>
@@ -113,7 +120,7 @@
                     </div>
                 </div>
                 <div class="panel panel-default">
-                    <div class="panel-heading" [class.active]="router.isActive('/grid',true)">
+                    <div class="panel-heading" [class.active]="router.isActive('/grid',true) || router.isActive('/lmep_relatorios',true)">
                         <h4 class="panel-title">
                             <a id="node3" data-toggle="collapse" data-parent="#accordion" href="#collapseLMEP">
                                 <span class="fa fa-industry" style="margin-right: 12px;">
@@ -130,6 +137,12 @@
                                         </li>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td>
+                                        <li id="node32" data-toggle="collapse" [routerLinkActive]="['active']">
+                                            <a [routerLink]="['/lmep_relatorios']">Relatórios de Gestão</a>
+                                        </li>
+                                    
                             </table>
                         </div>
                     </div>

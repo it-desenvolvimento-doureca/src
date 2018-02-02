@@ -173,7 +173,7 @@ export class ConstbanhosformComponent implements OnInit {
         }
 
         //preenche array das manutenções por ordem do id.
-        this.ABMOVMANUTENCAOService.getAllsrotid(this.query, "M").subscribe(
+        this.ABMOVMANUTENCAOService.getAllsrotid(this.query, "B").subscribe(
           response => {
             for (var x in response) {
               this.manutencao.push(response[x][0].id_MANUTENCAO);
@@ -295,6 +295,7 @@ export class ConstbanhosformComponent implements OnInit {
     this.arrayForm = [];
     this.ABMOVMANUTENCAOCABService.getbyID(id).subscribe(
       response => {
+        var fixo = false;
         var count = Object.keys(response).length;
         if (count > 0) {
           for (var x in response) {
@@ -332,9 +333,11 @@ export class ConstbanhosformComponent implements OnInit {
               data_prep = this.formatDate(response[x][0].data_PREPARACAO) + ' ' + response[x][0].hora_PREPARACAO.slice(0, 5);
             }
 
+            if (count > 1) fixo = true;
+
             this.pos++;
             this.arrayForm.push({
-              executado: this.executado, preparado: preparado, obs_prep: response[x][0].obs_PREPARACAO,
+              fixo: fixo, executado: this.executado, preparado: preparado, obs_prep: response[x][0].obs_PREPARACAO,
               id_manu: response[x][0].id_MANUTENCAO, data: data_prev, cod_analise: response[x][0].id_ANALISE, nome_analise: nome_analise, disable_op: disable,
               pos: this.pos, id: response[x][0].id_MANUTENCAO_CAB, id_banho: id_banho, hora_pre: hora_prev, data_pre: data_prev, tipo_adicao: id_adicao,
               interva_ope: int_op, id_195: response[x][3], obs_pla: response[x][0].obs_PLANEAMENTO, obs_exec: response[x][0].obs_EXECUCAO, resp_exe_id: response[x][0].utz_EXECUCAO,
@@ -353,11 +356,11 @@ export class ConstbanhosformComponent implements OnInit {
   }
 
   carrega_script() {
-   /* if (document.getElementById("script1")) document.getElementById("script1").remove();
-    var script1 = document.createElement("script");
-    script1.setAttribute("id", "script1");
-    script1.setAttribute("src", "assets/js/jqbtk.js");
-    document.body.appendChild(script1);*/
+    /* if (document.getElementById("script1")) document.getElementById("script1").remove();
+     var script1 = document.createElement("script");
+     script1.setAttribute("id", "script1");
+     script1.setAttribute("src", "assets/js/jqbtk.js");
+     document.body.appendChild(script1);*/
   }
 
   carregaraditivoslinhas(id, pos) {
@@ -414,12 +417,14 @@ export class ConstbanhosformComponent implements OnInit {
           id = params['id'] || 0;
         });
       this.pos++;
-
+      var fixo = false;
       if (this.arrayForm.length > 0) {
         id_banho = this.id_banho;
+        fixo = true;
       }
 
       this.arrayForm.push({
+        fixo: fixo,
         executado: false, preparado: false, obs_prep: null,
         id_manu: id, data: new Date(), cod_analise: null, nome_analise: null, disable_op: false,
         pos: this.pos, id: null, id_banho: id_banho, hora_pre: null, data_pre: null, tipo_adicao: this.tipo_adicao[0].value, data_valida: null,
@@ -701,7 +706,7 @@ export class ConstbanhosformComponent implements OnInit {
               MOV_MANUTENCAO_CAB.data_PREVISTA = this.arrayForm.find(item => item.pos == pos).data_pre;
               MOV_MANUTENCAO_CAB.hora_PREVISTA = this.arrayForm.find(item => item.pos == pos).hora_pre;
               MOV_MANUTENCAO_CAB.utz_ULT_MODIF = this.user;
-
+              this.id_banho = this.arrayForm.find(item => item.pos == pos).id_banho;
               if (this.admin) {
                 MOV_MANUTENCAO_CAB.data_EXECUCAO = (this.arrayForm.find(item => item.pos == pos).data_exc == null) ? null : new Date(this.arrayForm.find(item => item.pos == pos).data_exc);
                 MOV_MANUTENCAO_CAB.hora_EXECUCAO = this.arrayForm.find(item => item.pos == pos).hora_exc;
@@ -754,7 +759,7 @@ export class ConstbanhosformComponent implements OnInit {
         MOV_MANUTENCAO_CAB.obs_EXECUCAO = this.arrayForm.find(item => item.pos == pos).obs_exec;
         MOV_MANUTENCAO_CAB.obs_PLANEAMENTO = this.arrayForm.find(item => item.pos == pos).obs_pla;
         MOV_MANUTENCAO_CAB.inativo = false;
-
+        this.id_banho = this.arrayForm.find(item => item.pos == pos).id_banho;
         if (this.admin) {
           MOV_MANUTENCAO_CAB.data_EXECUCAO = (this.arrayForm.find(item => item.pos == pos).data_exc == null) ? null : new Date(this.arrayForm.find(item => item.pos == pos).data_exc);
           MOV_MANUTENCAO_CAB.hora_EXECUCAO = this.arrayForm.find(item => item.pos == pos).hora_exc;
@@ -908,7 +913,7 @@ export class ConstbanhosformComponent implements OnInit {
 
   //abre popup de análises
   showDialog(event, pos, id) {
-    this.preencheanalises(id);
+    // this.preencheanalises(id);
     this.pos_sele = pos;
     let elem = document.getElementById("pesquisa");
     let elm2 = document.getElementById("myModallinhas");
@@ -1572,6 +1577,6 @@ export class ConstbanhosformComponent implements OnInit {
   }
 
   historico(id) {
-    this.router.navigate(['construcaobanhos/historico'], { queryParams: { id: id } });
+    this.router.navigate(['construcaobanhos/historico'], { queryParams: { id: id, classif: 'B' } });
   }
 }

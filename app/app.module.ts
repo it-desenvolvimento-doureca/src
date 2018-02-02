@@ -169,15 +169,16 @@ const routes: Routes = [
       { path: '', component: ConstrucaoBanhosComponent, canActivate: [LoginService], data: { breadcrumb: "" } },
       { path: 'view', component: ConstbanhosformComponent, canActivate: [LoginService], data: { breadcrumb: "Construção Banho" } },
       { path: 'editar', component: ConstbanhosformComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } },
-      { path: 'novo', component: ConstbanhosformComponent, canActivate: [LoginService], data: { breadcrumb: "Novo" } }]
+      { path: 'novo', component: ConstbanhosformComponent, canActivate: [LoginService], data: { breadcrumb: "Novo" } },
+      { path: 'historico', component: HistoricoManutencoesComponent, canActivate: [LoginService], data: { breadcrumb: "Histórico" } }]
   }, {
     path: 'manutencaoreposicao', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Manutenções de Reposição" },
     children: [
-      { path: '', component: ManutecaoReposicaoformComponent, canActivate: [LoginService], data: { breadcrumb: "" } },
+      { path: '', component: ManutencaoReposicaoComponent, canActivate: [LoginService], data: { breadcrumb: "" } },
       { path: 'view', component: ManutecaoReposicaoformComponent, canActivate: [LoginService], data: { breadcrumb: "Manutenção de Reposição" } },
       { path: 'editar', component: ManutecaoReposicaoformComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } },
       { path: 'novo', component: ManutecaoReposicaoformComponent, canActivate: [LoginService], data: { breadcrumb: "Novo" } },
-    /*{ path: 'historico', component: HistoricoManutencoesComponent, canActivate: [LoginService], data: { breadcrumb: "Histórico" } }*/]
+      { path: 'historico', component: HistoricoManutencoesComponent, canActivate: [LoginService], data: { breadcrumb: "Histórico" } }]
   }, {
     path: 'manutencaonaoprogramada', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Manutenções não Programadas" },
     children: [
@@ -185,7 +186,7 @@ const routes: Routes = [
       { path: 'view', component: MantencaoNaoProgramadafromComponent, canActivate: [LoginService], data: { breadcrumb: "Manutenção não Programada" } },
       { path: 'editar', component: MantencaoNaoProgramadafromComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } },
       { path: 'novo', component: MantencaoNaoProgramadafromComponent, canActivate: [LoginService], data: { breadcrumb: "Novo" } },
-     /* { path: 'historico', component: HistoricoManutencoesComponent, canActivate: [LoginService], data: { breadcrumb: "Histórico" } }*/]
+      { path: 'historico', component: HistoricoManutencoesComponent, canActivate: [LoginService], data: { breadcrumb: "Histórico" } }]
   },
   {
     path: 'registopara', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Reg. Parâm. de Operações" },
@@ -226,6 +227,8 @@ const routes: Routes = [
   },
   { path: 'grid', component: ListaComponent, canActivate: [LoginService], data: { breadcrumb: "Grid" } },
   { path: 'analisesjasper', component: ViewerComponent, canActivate: [LoginService], data: { breadcrumb: "Análises Jasper" } },
+  { path: 'gestaobanhos_relatorios', component: ViewerComponent, canActivate: [LoginService], data: { breadcrumb: "Relatórios Gestão" } },
+  { path: 'lmep_relatorios', component: ViewerComponent, canActivate: [LoginService], data: { breadcrumb: "Relatórios Gestão" } },
   { path: 'configjasper', component: ConfComponent, canActivate: [LoginService], data: { breadcrumb: "Configurações Jasper" } },
 
   { path: 'login', component: LoginComponent },

@@ -79,7 +79,7 @@ export class TipomanutenacaoComponent implements OnInit {
   //listar os dados das unidades de manutencoes na tabela
   listar_manutencoes() {
     this.manutencoes = [];
-    this.ABDICTIPOMANUTENCAOService.getAll(["M", "B", "R", "N"]).subscribe(
+    this.ABDICTIPOMANUTENCAOService.getAll(["M","B", "R", "N"]).subscribe(
       response => {
         for (var x in response) {
           var classif_nome = "Manutenção Banho";

@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit {
         if (count == 1) {
           if (atob(response[0].password) == this.password) {
             localStorage.setItem('userapp', JSON.stringify({
-              user:response[0].login,
+              user: response[0].login,
               nome: response[0].nome_UTILIZADOR, id: response[0].id_UTILIZADOR, pass: response[0].password,
               admin: response[0].admin, user_jasper: response[0].user_JASPER, pass_jasper: response[0].pass_JASPER
             }));
@@ -105,7 +105,12 @@ export class LoginComponent implements OnInit {
           this.login_status = false;
         }
       },
-      error => console.log(error));
+      error => {
+        this.erro = false;
+        this.login_status = false;
+        alert("Não possível fazer o Login! Erro de ligação.");
+        console.log(error);
+      });
   }
 
   //abrir popup key pad
@@ -143,7 +148,7 @@ export class LoginComponent implements OnInit {
           var count = Object.keys(response).length;
           if (count == 1) {
             localStorage.setItem('userapp', JSON.stringify({
-              nome: response[0].nome_UTILIZADOR, id: response[0].id_UTILIZADOR, user:response[0].login,
+              nome: response[0].nome_UTILIZADOR, id: response[0].id_UTILIZADOR, user: response[0].login,
               admin: response[0].admin, user_jasper: response[0].user_JASPER, pass_jasper: response[0].pass_JASPER
             }));
             localStorage.setItem('time_sgiid', JSON.stringify({ data: new Date() }));
@@ -185,7 +190,11 @@ export class LoginComponent implements OnInit {
             this.login_statuspopup = false;
           }
         },
-        error => console.log(error));
+        error => {
+          alert("Não possível fazer o Login! Erro de ligação.");
+          console.log(error);
+        }
+      );
     }
   }
 

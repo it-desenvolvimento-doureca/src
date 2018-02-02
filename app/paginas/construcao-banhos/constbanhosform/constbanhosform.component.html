@@ -40,13 +40,13 @@
                     <br>
                     <p-calendar [style]="{'height':'31px','width':'111px'}" dateFormat="yy-mm-dd" placeholder="yy-mm-dd" [monthNavigator]="true"
                       [yearNavigator]="true" yearRange="2000:2050" [(ngModel)]="data_planeamento" [ngModelOptions]="{standalone: true}"
-                      [showIcon]="true" [hidden]="!modoedicao || (modoedicao && !admin)" [required]="true"></p-calendar>
-                    <label style="width:115px; height: 31px; " class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao && admin">{{data_planeamento | date: 'yyyy-MM-dd'}}</label>
-                    <input [hidden]="!modoedicao || (modoedicao && !admin)" style="width:75px; margin-left:22px; padding: 5px 4px;height: 31px;"
+                      [showIcon]="true" [hidden]="true" [required]="true"></p-calendar>
+                    <label style="width:115px; height: 31px; " class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" >{{data_planeamento | date: 'yyyy-MM-dd'}}</label>
+                    <input [hidden]="true" style="width:75px; margin-left:22px; padding: 5px 4px;height: 31px;"
                       [(ngModel)]="hora_planeamento" [ngModelOptions]="{standalone: true}" type="time" class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all"
                       ng-reflect-ng-class="ui-inputtext ui-widget ui-stat" required="true" placeholder="hh:mm">
                     <label style="width:70px; height: 31px; margin-left:4px;" class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all"
-                      [hidden]="modoedicao && admin">{{hora_planeamento}}</label>
+                      >{{hora_planeamento}}</label>
 
                     <!--<input disabled type="text" style="background: white;" [disabled]="true" class="form-control" style=" margin-top: -13px; padding-bottom: 0px;"
                       [(ngModel)]="data_planeamento" [ngModelOptions]="{standalone: true}">-->
@@ -94,7 +94,7 @@
                       <div class="form-group form-black label-floating">
                         <label style="font-size: 14px;">Banho</label>
                         <p-dropdown [filter]="true" [options]="banhos" [style]="{'width':'250px'}" [(ngModel)]="item.id_banho" [ngModelOptions]="{standalone: true}"
-                          (onChange)="nome_tinas($event,item.pos)" [required]="true" [disabled]="!modoedicao"></p-dropdown>
+                          (onChange)="nome_tinas($event,item.pos)" [required]="true" [disabled]="!modoedicao || item.fixo"></p-dropdown>
                       </div>
                       <div class="col-md-12  form-group form-black label-floating" style="padding: 0px;">
                         <div class=" col-md-6 form-group form-black label-floating" style="padding: 0px;">
@@ -113,15 +113,15 @@
                         <input type="text" style="background: white;" [disabled]="true" class="form-control" style="width: 50%; float: left; margin-top: -13px; margin-left: 8px; padding-bottom: 0px; padding-top: 13px;"
                           [(ngModel)]="item.nome_analise" [ngModelOptions]="{standalone: true}">
                         <button id="close" (click)="limpar(item.pos)" class="btn btn-white btn-round btn-just-icon" style="padding: 3px 3px; margin: auto;"
-                          type="button" [hidden]=" item.cod_analise == null" [disabled]="!modoedicao || item.id_banho == null">
+                          type="button" [hidden]=" item.cod_analise == null" [disabled]="true">
                           <i class="material-icons">close</i>
                           <div class="ripple-container"></div>
                         </button>
-                        <button id="pesquisa" (click)="showDialog($event,item.pos,item.id_banho.id)" class="btn btn-white btn-round btn-just-icon"
-                          style="padding: 3px 3px; margin: auto;" type="button" [disabled]="!modoedicao || item.id_banho == null">
+                       <!--1 <button id="pesquisa" (click)="showDialog($event,item.pos,item.id_banho.id)" class="btn btn-white btn-round btn-just-icon"
+                          style="padding: 3px 3px; margin: auto;" type="button" [disabled]="true">
                           <i class="material-icons">search</i>
                           <div class="ripple-container"></div>
-                        </button>
+                        </button>-->
                       </div>
                       <div class="col-md-12 form-group form-black label-floating calendarmanu" style="padding: 0px; margin-bottom: 6px;">
                         <label style="font-size: 14px; float: left; margin-top: 3%;">Data/Hora Prev</label>
@@ -195,8 +195,8 @@
                           style="padding: 0px;">
                           <label style="font-size: 14px; float: left;">Resp. Exec</label>
                           <p-dropdown [filter]="true" [options]="utilizadores" [style]="{'width':'250px'}" [(ngModel)]="item.resp_exe_id" [ngModelOptions]="{standalone: true}"
-                            [hidden]="!modoedicao || (modoedicao && !admin)" [disabled]="!modoedicao"></p-dropdown>
-                          <input [hidden]="modoedicao && admin" type="text" style="background: white;" [disabled]="true" class="form-control" style="width: 55%; float: left; margin-top: -13px; margin-left: 8px; padding-bottom: 0px; padding-top: 13px;"
+                            [hidden]="true" [disabled]="!modoedicao"></p-dropdown> <!--!modoedicao || (modoedicao && !admin)-->
+                          <input [hidden]="false" type="text" style="background: white;" [disabled]="true" class="form-control" style="width: 56%; float: left; margin-top: -13px; margin-left: 8px; padding-bottom: 0px; padding-top: 13px;"
                             [(ngModel)]="item.resp_exe" [ngModelOptions]="{standalone: true}">
                         </div>
                         <div [ngClass]="{ 'col-md-12': modoedicao && admin,'col-md-12': !modoedicao || !admin }" class="calendarmanu  form-group form-black label-floating"
@@ -204,13 +204,13 @@
                           <label style="font-size: 14px; float: left;">Data/Hora Exec</label>
                           <p-calendar [style]="{'width':'120px','height':'31px','padding':'0px 5px'}" dateFormat="yy-mm-dd" placeholder="yy-mm-dd"
                             [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [(ngModel)]="item.data_exc"
-                            [ngModelOptions]="{standalone: true}" [showIcon]="true" [hidden]="!modoedicao || (modoedicao && !admin)"></p-calendar>
-                            <p-calendar [style]="{'margin-left':'29px'}" placeholder="hh:mm" [hidden]="!modoedicao || (modoedicao && !admin)" class="timeinput" [(ngModel)]="item.hora_exc" [ngModelOptions]="{standalone: true}" timeOnly="true" showTime="true" hourFormat="24"></p-calendar>
+                            [ngModelOptions]="{standalone: true}" [showIcon]="true" [hidden]="true"></p-calendar>
+                            <p-calendar [style]="{'margin-left':'29px'}" placeholder="hh:mm" [hidden]="true" class="timeinput" [(ngModel)]="item.hora_exc" [ngModelOptions]="{standalone: true}" timeOnly="true" showTime="true" hourFormat="24"></p-calendar>
                           <!--<input [hidden]="!modoedicao || (modoedicao && !admin)" style="width: 72px; padding: 5px 4px; margin-left: 29px;" [(ngModel)]="item.hora_exc"
                             [ngModelOptions]="{standalone: true}" type="time" class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all"
                             ng-reflect-ng-class="ui-inputtext ui-widget ui-stat" placeholder="hh:mm">-->
 
-                          <input [hidden]="modoedicao && admin" type="text" style="background: white;" [disabled]="true" class="form-control" style="width: 56%; float: left; margin-top: -13px; margin-left: 8px; padding-bottom: 0px; padding-top: 13px;"
+                          <input [hidden]="false" type="text" style="background: white;" [disabled]="true" class="form-control" style="width: 56%; float: left; margin-top: -13px; margin-left: 8px; padding-bottom: 0px; padding-top: 13px;"
                             [(ngModel)]="item.data_exc" [ngModelOptions]="{standalone: true}">
                         </div>
                       </div>

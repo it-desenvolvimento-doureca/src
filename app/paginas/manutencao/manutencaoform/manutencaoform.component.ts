@@ -1527,6 +1527,6 @@ export class ManutencaoformComponent implements OnInit {
   }
 
   historico(id) {
-    this.router.navigate(['manutencao/historico'], { queryParams: { id: id } });
+    this.router.navigate(['manutencao/historico'], { queryParams: { id: id,classif: 'M' } });
   }
 }

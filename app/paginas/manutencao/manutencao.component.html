@@ -59,7 +59,7 @@
                     <i class="fa fa-eraser" aria-hidden="true"> Limpar</i>
                     <div class="ripple-container"></div>
                   </a>
-                  <p-dropdown [options]="banhos" scrollHeight="150px" [(ngModel)]="banho" [style]="{'width':'70%'}" (onChange)="filtrar($event.value,'banho',true)"
+                  <p-dropdown [options]="banhos" scrollHeight="150px" [(ngModel)]="banho" [style]="{'width':'70%'}" (onChange)="pesquisarbanhos($event.value)"
                     styleClass="ui-column-filter" filter="true"></p-dropdown>
                 </ng-template>
                 <ng-template let-car="rowData" pTemplate="body">

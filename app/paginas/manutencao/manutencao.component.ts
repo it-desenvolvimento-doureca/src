@@ -113,34 +113,43 @@ export class ManutencaoComponent implements OnInit {
 
   }
   carregarlista() {
-    this.cols = [];
-    this.ABMOVMANUTENCAOService.getAll(this.query,"M").subscribe(
-      response => {
+    var count = 0;
 
-        for (var x in response) {
-          this.cols.push({ id: response[x][0].id_MANUTENCAO, tipo_manu: response[x][2].nome_TIPO_MANUTENCAO, data: this.formatDate(response[x][0].data_PLANEAMENTO) + " - " + response[x][0].hora_PLANEAMENTO.slice(0, 5), cor: response[x][1].cor, linha: response[x][1].nome_LINHA, turno: response[x][3].nome_TURNO, estado: response[x][0].estado });
-        }
-        this.cols = this.cols.slice();
-        if (this.linha == null || this.linha == "") this.linha = this.globalVar.getlinha();
-        this.filtrar(this.linha, "linha", true);
+    if (this.globalVar.getfiltros("manutencaoidbanho")) count = this.globalVar.getfiltros("manutencaoidbanho").length;
 
-        if (this.filtroval) this.filtrar(this.filtro, "estado", true, "in");
-      },
-      error => console.log(error));
+    if (count == 0) {
 
-    //preenche combobox linhas
-    this.ABDICLINHAService.getAll().subscribe(
-      response => {
-        this.linhas = [];
-        this.linhas.push({ label: "Sel. Linha", value: 0 });
-        for (var x in response) {
-          this.linhas.push({ label: response[x].nome_LINHA, value: response[x].id_LINHA });
-        }
-        if (this.linha == null || this.linha == "") this.linha = this.globalVar.getlinha();
-        this.linhas = this.linhas.slice();
-      },
-      error => console.log(error));
+      this.cols = [];
+      this.ABMOVMANUTENCAOService.getAll(this.query, "M").subscribe(
+        response => {
 
+          for (var x in response) {
+            this.cols.push({ id: response[x][0].id_MANUTENCAO, tipo_manu: response[x][2].nome_TIPO_MANUTENCAO, data: this.formatDate(response[x][0].data_PLANEAMENTO) + " - " + response[x][0].hora_PLANEAMENTO.slice(0, 5), cor: response[x][1].cor, linha: response[x][1].nome_LINHA, turno: response[x][3].nome_TURNO, estado: response[x][0].estado });
+          }
+          this.cols = this.cols.slice();
+          if (this.linha == null || this.linha == "") this.linha = this.globalVar.getlinha();
+          this.filtrar(this.linha, "linha", true);
+
+          if (this.filtroval) this.filtrar(this.filtro, "estado", true, "in");
+        },
+        error => console.log(error));
+
+      //preenche combobox linhas
+      this.ABDICLINHAService.getAll().subscribe(
+        response => {
+          this.linhas = [];
+          this.linhas.push({ label: "Sel. Linha", value: 0 });
+          for (var x in response) {
+            this.linhas.push({ label: response[x].nome_LINHA, value: response[x].id_LINHA });
+          }
+          if (this.linha == null || this.linha == "") this.linha = this.globalVar.getlinha();
+          this.linhas = this.linhas.slice();
+        },
+        error => console.log(error));
+
+    } else {
+      this.pesquisarbanhos(this.globalVar.getfiltros("manutencaoidbanho"));
+    }
   }
 
   //limpar filtro
@@ -154,9 +163,17 @@ export class ManutencaoComponent implements OnInit {
     this.tipo_manu = "";
     this.data = "";
     this.turno = "";
-    this.banho = null;
 
     this.dataTableComponent.filter("", "", "");
+
+    var count = 0;
+    if (this.globalVar.getfiltros("manutencaoidbanho")) count = 1;
+    if (count > 0) {
+      this.globalVar.setfiltros("manutencaoidbanho", null);
+      this.carregarlista();
+    }
+
+    this.banho = null;
   }
 
   //filtro coluna linha
@@ -197,28 +214,31 @@ export class ManutencaoComponent implements OnInit {
   }
 
   pesquisarbanhos(id) {
-    if(id){
-    var ids = [];
-    this.ABMOVMANUTENCAOCABService.getbyID_banhoall(id).subscribe(
-      response => {
-        var count = Object.keys(response).length;
-        if (count > 0) {
+    if (id.id) {
+      var ids = [];
+      this.cols = [];
+      this.ABMOVMANUTENCAOService.getAllid_banho(this.query, "M", id.id).subscribe(
+        response => {
+          var ids = [];
           for (var x in response) {
-            ids.push(response[x].id_MANUTENCAO);
+            this.cols.push({ id: response[x][0].id_MANUTENCAO, tipo_manu: response[x][2].nome_TIPO_MANUTENCAO, data: this.formatDate(response[x][0].data_PLANEAMENTO) + " - " + response[x][0].hora_PLANEAMENTO.slice(0, 5), cor: response[x][1].cor, linha: response[x][1].nome_LINHA, turno: response[x][3].nome_TURNO, estado: response[x][0].estado });
+            ids.push(response[x][0].id_MANUTENCAO);
           }
-          this.id_manu = ids.toString();
-          this.filtrar(ids, "id", false, "in")
-        }
-        else {
-          this.filtrar('null', "id", false, "in")
-        }
+          this.cols = this.cols.slice();
+          if (this.linha == null || this.linha == "") this.linha = this.globalVar.getlinha();
+          this.filtrar(this.linha, "linha", true);
 
-      }, error => {
-        console.log(error);
-      });
-    }else{
-      this.id_manu = "";
-      this.filtrar('', "id", false, "in")
+          if (this.filtroval) this.filtrar(this.filtro, "estado", true, "in");
+          this.globalVar.setfiltros("manutencao_id", ids);
+          this.globalVar.setfiltros("manutencaoidbanho", id);
+        },
+        error => console.log(error));
+
+    } else {
+      this.globalVar.setfiltros("manutencaoidbanho", null);
+      this.carregarlista();
+      /*this.id_manu = "";
+      this.filtrar('', "id", false, "in");*/
     }
   }
 
@@ -402,6 +422,9 @@ export class ManutencaoComponent implements OnInit {
           this.banhos.push({ label: response[x][0].id_BANHO + " / " + response[x][0].nome_BANHO + " - Tina: " + response[x][2].cod_TINA, value: { id: response[x][0].id_BANHO, id_tina: response[x][2].id_TINA, nome_tina: response[x][2].cod_TINA, capacidade: response[x][2].capacidade } });
         }
         this.banhos = this.banhos.slice();
+        var count = 0;
+        if (this.globalVar.getfiltros("manutencaoidbanho")) count = 1;
+        if (count > 0) this.banho = this.globalVar.getfiltros("manutencaoidbanho");
       },
       error => console.log(error));
   }

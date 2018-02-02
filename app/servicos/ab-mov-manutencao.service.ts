@@ -30,6 +30,16 @@ export class ABMOVMANUTENCAOService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
+  getAllid_banho(query,classif,idbanho): Observable<AB_MOV_MANUTENCAO[]> {
+    if(query.length <= 0) query = null;
+    const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAOidbanho/0/'+classif+'/'+idbanho;
+    return this.http
+      .post(url, JSON.stringify(query), { headers: this.headers })
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+  
+
   getAllsrotid(query,classif): Observable<AB_MOV_MANUTENCAO[]> {
     if(query.length <= 0) query = null;
     const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAOsorid/0/'+classif;

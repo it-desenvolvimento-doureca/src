@@ -15,4 +15,6 @@ export class AB_DIC_BANHO {
     inativo: boolean;
     celulahull: boolean;
     email_PARA: string;
+    manutencaoreposicao: boolean;
+    manutencaonaoprogramada: boolean;
 }

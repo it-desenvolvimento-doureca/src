@@ -44,8 +44,8 @@ export class ABMOVMANUTENCAOCABService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
-  getbyID_banho(id_banho, inicio, fim, id): Observable<AB_MOV_MANUTENCAO_CAB[]> {
-    const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAO_CABbyid_banho/' + id_banho + '/' + inicio + '/' + fim + '/' + id;
+  getbyID_banho(id_banho, inicio, fim, id, classif): Observable<AB_MOV_MANUTENCAO_CAB[]> {
+    const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAO_CABbyid_banho/' + id_banho + '/' + inicio + '/' + fim + '/' + id + '/' + classif;
     return this.http
       .get(url)
       .map(this.extractData)

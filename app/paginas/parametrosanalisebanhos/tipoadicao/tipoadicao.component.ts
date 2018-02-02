@@ -27,7 +27,7 @@ export class TipoadicaoComponent implements OnInit {
   @ViewChild('closedialog') closedialog: ElementRef;
   constructor(private globalVar: AppGlobals, private ABDICTIPOOPERACAOService: ABDICTIPOOPERACAOService, private ABDICTIPOADICAOService: ABDICTIPOADICAOService, private renderer: Renderer) { }
   ngOnInit() {
-    this.classificacao = [{ label: "Seleccionar Clasif.", value: "" }, { label: "Manutenção Banho", value: "M" }, { label: "Construção Banho", value: "B" }];
+    this.classificacao = [{ label: "Seleccionar Clasif.", value: "" }, { label: "Manutenção Banho", value: "M" }, { label: "Construção Banho", value: "B" }, { label: "Reposições", value: "R" }, { label: "Não Programadas", value: "N" }];
     this.globalVar.setapagar(false);
     this.globalVar.seteditar(false);
     this.globalVar.setvoltar(false);
@@ -40,12 +40,14 @@ export class TipoadicaoComponent implements OnInit {
     this.globalVar.setdisCriarmanutencao(true);
     this.globalVar.setcriar(false);
     //preenche combobox Intervalo Oper.
-    this.ABDICTIPOOPERACAOService.getAll(["M","B"]).subscribe(
+    this.ABDICTIPOOPERACAOService.getAll(["M", "B", "N", "R"]).subscribe(
       response => {
         this.intervalo_op = [];
         this.intervalo_op.push({ label: "Sel. Intervalo Oper.", value: "" });
         for (var x in response) {
-          this.intervalo_op.push({ label: response[x].nome_TIPO_OPERACAO, value: response[x].id_TIPO_OPERACAO });
+          var classif_nome = "";
+          classif_nome = this.classificacao.find(item => item.value == response[x].classif).label;
+          this.intervalo_op.push({ label: response[x].nome_TIPO_OPERACAO + ' - ' + classif_nome, value: response[x].id_TIPO_OPERACAO });
         }
         this.intervalo_op = this.intervalo_op.slice();
         this.listar_TipoAdicaos();
@@ -92,15 +94,16 @@ export class TipoadicaoComponent implements OnInit {
   //listar os dados das unidades de TipoAdicaos na tabela
   listar_TipoAdicaos() {
     this.TipoAdicaos = [];
-    this.ABDICTIPOADICAOService.getAll(["M","B"]).subscribe(
+    this.ABDICTIPOADICAOService.getAll(["M", "B", "N", "R"]).subscribe(
       response => {
         for (var x in response) {
           var nome_op = "";
-          var classif_nome = "Manutenção Banho";
-          if (response[x].classif == "B") classif_nome = "Construção Banho";
+          var classif_nome = "";
+          //if (response[x].classif == "B") classif_nome = "Construção Banho";
+          classif_nome = this.classificacao.find(item => item.value == response[x].classif).label;
           if (response[x].id_TIPO_OPERACAO != null) nome_op = this.intervalo_op.find(item => item.value == response[x].id_TIPO_OPERACAO).label;
 
-          this.TipoAdicaos.push({ id: response[x].id_TIPO_ADICAO, nome: response[x].nome_TIPO_ADICAO, nome_op: nome_op, operacao: response[x].id_TIPO_OPERACAO,classif: response[x].classif, classif_nome: classif_nome });
+          this.TipoAdicaos.push({ id: response[x].id_TIPO_ADICAO, nome: response[x].nome_TIPO_ADICAO, nome_op: nome_op, operacao: response[x].id_TIPO_OPERACAO, classif: response[x].classif, classif_nome: classif_nome });
         }
         this.TipoAdicaos = this.TipoAdicaos.slice();
       },

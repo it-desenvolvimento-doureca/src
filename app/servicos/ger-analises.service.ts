@@ -54,6 +54,13 @@ export class GERANALISESService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
+  getbyidmoduloativas(id): Observable<GER_ANALISES[]> {
+    const url = webUrl.host + '/rest/sirb/getGER_ANALISESbyidmoduloativas/' + id;
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
 
   delete(id) {
     return this.http
