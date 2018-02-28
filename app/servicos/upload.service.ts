@@ -24,6 +24,13 @@ export class UploadService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
+  importarFicheiroRAK(file) {
+  
+    let options = new RequestOptions({ headers: this.headers });
+    return this.http.post(webUrl.host + '/rest/sirb/uploadRAKS/', file, options)
+      .map(this.extractData1)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
 
 
   getImpressora() {

@@ -138,7 +138,7 @@ export class GestaoeventosComponent implements OnInit {
       var class_find = ((sel.baseNode.parentNode != null) ? sel.baseNode.parentNode.offsetParent.className.search("editor_texto") : -1);
 
       if (class_find > 0 && sel.getRangeAt && sel.rangeCount) {
-        console.log("a")
+        //console.log("a")
         range = sel.getRangeAt(0);
         //range.deleteContents();
         var frag = document.createDocumentFragment();

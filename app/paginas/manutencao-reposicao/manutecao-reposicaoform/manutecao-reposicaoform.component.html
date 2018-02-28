@@ -90,11 +90,16 @@
                 <form (ngSubmit)="gravarlinha(item.pos)" ngNativeValidate>
                   <div class="col-md-12 well">
                     <div class="col-md-4 " style="width: 32%; padding:0px;">
-                      <div class="form-group form-black label-floating">
+                      <div class="form-group form-black label-floating" style="width: 70%; float: left;">
                         <label style="font-size: 14px;">Banho</label>
-                        <p-dropdown [filter]="true" [options]="banhos" [style]="{'width':'250px'}" [(ngModel)]="item.id_banho" [ngModelOptions]="{standalone: true}"
+                        <p-dropdown [filter]="true" [options]="banhos" [style]="{'width':'80%'}" [(ngModel)]="item.id_banho" [ngModelOptions]="{standalone: true}"
                           (onChange)="nome_tinas($event,item.pos)" [required]="true" [disabled]="!modoedicao"></p-dropdown>
                       </div>
+                      <div class="form-group form-black label-floating"  style="width: 25%; float: left;">
+                          <label style="font-size: 14px;">Dose</label>
+                          <p-dropdown [options]="item.doseadores" [style]="{'width':'60%'}" [(ngModel)]="item.doseador" [ngModelOptions]="{standalone: true}"
+                            (onChange)="carregaaditivos($event,item.id_banho,item.pos)" [required]="true" [disabled]="!modoedicao || item.id_banho == null || item.doseadores.length == 0"></p-dropdown>
+                        </div>
                       <div class="col-md-12  form-group form-black label-floating" style="padding: 0px;">
                         <div class=" col-md-6 form-group form-black label-floating" style="padding: 0px;">
                           <label style="font-size: 14px; float: left;">Tina</label>
@@ -172,7 +177,7 @@
                       <div class="col-md-12  form-group form-black label-floating" style="padding: 0px;">
                         <label style="font-size: 14px; float: left; margin-top: 11px; margin-right: 4px;">Obs. Prepara.</label>
                         <input type="text" style="background: white; width: 77%;" class="form-control" [(ngModel)]="item.obs_prep" [ngModelOptions]="{standalone: true}"
-                          [disabled]="true">
+                        [disabled]="!modoedicao && item.preparado || planeamento"> 
                       </div>
                       <div class="col-md-12 form-group form-black label-floating" style="padding: 0px;">
                         <div class=" col-md-12 form-group form-black label-floating" style="padding: 0px;">
@@ -246,22 +251,22 @@
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
                                 <input (ngModelChange)="atualizarvaloragua(valoruni.value,aditem.factor,aditem.pos,item.pos)" #valoruni type="text" style="background: white; text-align: center; height: 31px;"
-                                  class="form-control" [(ngModel)]="aditem.valor1" [ngModelOptions]="{standalone: true}" [disabled]="(!modoedicao && !item.preparado) || aditem.disabled || item.executado">
+                                  class="form-control" [(ngModel)]="aditem.valor1" [ngModelOptions]="{standalone: true}" [disabled]="true">
                               </td>
                               <td style="padding: 11px 0px 0px 0px; text-align: center;">
                                 <span style="display: block;"> {{aditem.valor_agua}}</span>
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
                                 <p-dropdown [filter]="true" [options]="medidas" [style]="{'width':'100%'}" [(ngModel)]="aditem.unidade1" [ngModelOptions]="{standalone: true}"
-                                  [disabled]="(!modoedicao && !item.preparado) || aditem.disabled || item.executado" [required]="true"> </p-dropdown>
+                                  [disabled]="true" [required]="true"> </p-dropdown>
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
                                 <input type="text" style="background: white;  text-align: center; height: 31px;" class="form-control" [(ngModel)]="aditem.valor2"
-                                  [ngModelOptions]="{standalone: true}" [disabled]="(!modoedicao && !item.preparado) || aditem.disabled || item.executado">
+                                  [ngModelOptions]="{standalone: true}" [disabled]="true">
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
                                 <p-dropdown [filter]="true" [options]="medidas" [style]="{'width':'100%'}" [(ngModel)]="aditem.unidade2" [ngModelOptions]="{standalone: true}"
-                                  [disabled]="(!modoedicao && !item.preparado) || aditem.disabled || item.executado" [required]="true"> </p-dropdown>
+                                  [disabled]="true" [required]="true"> </p-dropdown>
                               </td>
                               <td style="padding: 11px 0px 0px 0px; text-align: center;">
                                 <span style="display: block;"> {{aditem.stock}}</span>
@@ -271,7 +276,7 @@
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
                                 <input type="text" style="background: white; height: 31px;" class="form-control" [(ngModel)]="aditem.obs" [ngModelOptions]="{standalone: true}"
-                                  [disabled]="(!modoedicao && !item.preparado) || aditem.disabled || item.executado">
+                                  [disabled]="(!modoedicao && !item.preparado) || item.executado || (aditem.valor1 == null || aditem.valor1 == '')">
                               </td>
                             </tr>
 
@@ -403,7 +408,7 @@
               </div>
               <button type="reset" (click)="backview()" class="btn btn-danger pull-right" [hidden]="!modoedicao">Cancelar</button>
               <button type="submit" class="btn btn-success pull-right" [hidden]="!(novo || admin) || !modoedicao">Gravar</button>
-              <button type="button" (click)="concluir()" class="btn btn-success pull-right" [hidden]="!modoedicao || !planeamento || ( executado && preparado)">Concluir Planeamento</button>
+              <!--<button type="button" (click)="concluir()" class="btn btn-success pull-right" [hidden]="!modoedicao || !planeamento || ( executado && preparado)">Concluir Planeamento</button>-->
 
               <div class="clearfix"></div>
             </form>

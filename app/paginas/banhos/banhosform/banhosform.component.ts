@@ -23,6 +23,11 @@ import { GERUTILIZADORESService } from 'app/servicos/ger-utilizadores.service';
   styleUrls: ['./banhosform.component.css']
 })
 export class BanhosformComponent implements OnInit {
+  DOSE1: any;
+  DOSE2: any;
+  DOSE3: any;
+  DOSE4: any;
+  DOSE5: any;
   manutencoesnaoprogramadas: boolean = false;
   manutencaoreposicao: boolean = false;
   useremail: any;
@@ -318,8 +323,22 @@ export class BanhosformComponent implements OnInit {
         if (count > 0) {
           this.banhos_aditivos = [];
           for (var x in response) {
+
+            var valor_DOSE1 = null;
+            var valor_DOSE2 = null;
+            var valor_DOSE3 = null;
+            var valor_DOSE4 = null;
+            var valor_DOSE5 = null;
+            var quantidade_DEFEITO = null;
+            if (response[x][0].valor_DOSE1 != null) valor_DOSE1 = response[x][0].valor_DOSE1.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
+            if (response[x][0].valor_DOSE2 != null) valor_DOSE2 = response[x][0].valor_DOSE2.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
+            if (response[x][0].valor_DOSE3 != null) valor_DOSE3 = response[x][0].valor_DOSE3.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
+            if (response[x][0].valor_DOSE4 != null) valor_DOSE4 = response[x][0].valor_DOSE4.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
+            if (response[x][0].valor_DOSE5 != null) valor_DOSE5 = response[x][0].valor_DOSE5.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
+            if (response[x][0].quantidade_DEFEITO != null) quantidade_DEFEITO = response[x][0].quantidade_DEFEITO.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
+
             this.banhos_aditivos.push({
-              manutencaoreposicao: response[x][0].manutencaoreposicao,
+              valor_DOSE1: valor_DOSE1, valor_DOSE2: valor_DOSE2, valor_DOSE3: valor_DOSE3, valor_DOSE4: valor_DOSE4, valor_DOSE5: valor_DOSE5,quantidade_DEFEITO:quantidade_DEFEITO,
               manutencoesnaoprogramadas: response[x][0].manutencaonaoprogramada, id_banho: response[x][0].id_BANHO, pos: this.pos2, ID_BANHO_ADITIVO: response[x][0].id_BANHO_ADITIVO, nome_aditivo: response[x][1].nome_COMPONENTE, ID_ADITIVO: response[x][0].id_ADITIVO, medida1: response[x][2], medida2: response[x][3], ID_UNIDADE1: response[x][0].id_UNIDADE1, ID_UNIDADE2: response[x][0].id_UNIDADE2
             }); this.pos2++;
           }
@@ -353,6 +372,11 @@ export class BanhosformComponent implements OnInit {
               this.celula = response[x][0].celulahull;
               this.obs = response[x][0].obs;
               this.email_para = (response[x][0].email_PARA != null && response[x][0].email_PARA != "") ? response[x][0].email_PARA.split(",") : [];
+              this.DOSE1 = response[x][0].dose1;
+              this.DOSE2 = response[x][0].dose2;
+              this.DOSE3 = response[x][0].dose3;
+              this.DOSE4 = response[x][0].dose4;
+              this.DOSE5 = response[x][0].dose5;
 
               this.manutencaoreposicao = response[x][0].manutencaoreposicao;
               this.manutencoesnaoprogramadas = response[x][0].manutencaonaoprogramada;
@@ -394,6 +418,11 @@ export class BanhosformComponent implements OnInit {
       banho.manutencaoreposicao = this.manutencaoreposicao;
       banho.manutencaonaoprogramada = this.manutencoesnaoprogramadas;
       banho.email_PARA = this.email_para.toString();
+      banho.dose1 = this.DOSE1;
+      banho.dose2 = this.DOSE2;
+      banho.dose3 = this.DOSE3;
+      banho.dose4 = this.DOSE4;
+      banho.dose5 = this.DOSE5;
 
       this.ABDICBANHOService.create(banho).subscribe(
         res => {
@@ -424,6 +453,11 @@ export class BanhosformComponent implements OnInit {
       banho.email_PARA = this.email_para.toString();
       banho.manutencaoreposicao = this.manutencaoreposicao;
       banho.manutencaonaoprogramada = this.manutencoesnaoprogramadas;
+      banho.dose1 = this.DOSE1;
+      banho.dose2 = this.DOSE2;
+      banho.dose3 = this.DOSE3;
+      banho.dose4 = this.DOSE4;
+      banho.dose5 = this.DOSE5;
 
       this.ABDICBANHOService.update(banho).then(() => {
         this.inserir_linhas(id);
@@ -458,7 +492,7 @@ export class BanhosformComponent implements OnInit {
   //adicionar nova linha aditivos do Banho
   novalinha_aditivo() {
     this.banhos_aditivos.push({
-      manutencaoreposicao: false,
+      valor_DOSE1: null, valor_DOSE2: null, valor_DOSE3: null, valor_DOSE4: null, valor_DOSE5: null,
       manutencoesnaoprogramadas: false, pos: this.pos2, ID_BANHO_ADITIVO: "", nome_aditivo: "", ID_ADITIVO: "", medida1: "", medida2: "", ID_UNIDADE1: null, ID_UNIDADE2: null
     });
     this.banhos_aditivos = this.banhos_aditivos.slice();
@@ -479,11 +513,31 @@ export class BanhosformComponent implements OnInit {
             banhos_aditivos.id_ADITIVO = this.banhos_aditivos[x].ID_ADITIVO;
             banhos_aditivos.id_UNIDADE1 = this.banhos_aditivos[x].ID_UNIDADE1;
             banhos_aditivos.id_UNIDADE2 = this.banhos_aditivos[x].ID_UNIDADE2;
-            banhos_aditivos.manutencaoreposicao = this.banhos_aditivos[x].manutencaoreposicao;
             banhos_aditivos.manutencaonaoprogramada = this.banhos_aditivos[x].manutencoesnaoprogramadas;
             banhos_aditivos.utz_CRIA = this.user;
             banhos_aditivos.data_CRIA = new Date();
             banhos_aditivos.data_ULT_MODIF = new Date();
+
+
+            var valor_DOSE1 = null;
+            var valor_DOSE2 = null;
+            var valor_DOSE3 = null;
+            var valor_DOSE4 = null;
+            var valor_DOSE5 = null;
+            var quantidade_DEFEITO = null;
+            if (this.banhos_aditivos[x].valor_DOSE1 != null) valor_DOSE1 = parseFloat(this.banhos_aditivos[x].valor_DOSE1.replace(",", "."));
+            if (this.banhos_aditivos[x].valor_DOSE2 != null) valor_DOSE2 = parseFloat(this.banhos_aditivos[x].valor_DOSE2.replace(",", "."));
+            if (this.banhos_aditivos[x].valor_DOSE3 != null) valor_DOSE3 = parseFloat(this.banhos_aditivos[x].valor_DOSE3.replace(",", "."));
+            if (this.banhos_aditivos[x].valor_DOSE4 != null) valor_DOSE4 = parseFloat(this.banhos_aditivos[x].valor_DOSE4.replace(",", "."));
+            if (this.banhos_aditivos[x].valor_DOSE5 != null) valor_DOSE5 = parseFloat(this.banhos_aditivos[x].valor_DOSE5.replace(",", "."));
+            if (this.banhos_aditivos[x].quantidade_DEFEITO != null) quantidade_DEFEITO = parseFloat(this.banhos_aditivos[x].quantidade_DEFEITO.replace(",", "."));
+            banhos_aditivos.valor_DOSE1 = valor_DOSE1;
+            banhos_aditivos.valor_DOSE2 = valor_DOSE2;
+            banhos_aditivos.valor_DOSE3 = valor_DOSE3;
+            banhos_aditivos.valor_DOSE4 = valor_DOSE4;
+            banhos_aditivos.valor_DOSE5 = valor_DOSE5;
+            banhos_aditivos.quantidade_DEFEITO = quantidade_DEFEITO;
+
             this.ABDICBANHOADITIVOService.create(banhos_aditivos).subscribe(
               res => {
                 this.banhosaditivos(id);
@@ -596,8 +650,26 @@ export class BanhosformComponent implements OnInit {
         banhos_aditivos.id_UNIDADE2 = this.banhos_aditivos[x].ID_UNIDADE2;
         banhos_aditivos.utz_ULT_MODIF = this.user;
         banhos_aditivos.data_ULT_MODIF = new Date();
-        banhos_aditivos.manutencaoreposicao = this.banhos_aditivos[x].manutencaoreposicao;
         banhos_aditivos.manutencaonaoprogramada = this.banhos_aditivos[x].manutencoesnaoprogramadas;
+        var valor_DOSE1 = null;
+        var valor_DOSE2 = null;
+        var valor_DOSE3 = null;
+        var valor_DOSE4 = null;
+        var valor_DOSE5 = null;
+        var quantidade_DEFEITO = null;
+        if (this.banhos_aditivos[x].valor_DOSE1 != null) valor_DOSE1 = parseFloat(this.banhos_aditivos[x].valor_DOSE1.replace(",", "."));
+        if (this.banhos_aditivos[x].valor_DOSE2 != null) valor_DOSE2 = parseFloat(this.banhos_aditivos[x].valor_DOSE2.replace(",", "."));
+        if (this.banhos_aditivos[x].valor_DOSE3 != null) valor_DOSE3 = parseFloat(this.banhos_aditivos[x].valor_DOSE3.replace(",", "."));
+        if (this.banhos_aditivos[x].valor_DOSE4 != null) valor_DOSE4 = parseFloat(this.banhos_aditivos[x].valor_DOSE4.replace(",", "."));
+        if (this.banhos_aditivos[x].valor_DOSE5 != null) valor_DOSE5 = parseFloat(this.banhos_aditivos[x].valor_DOSE5.replace(",", "."));
+        if (this.banhos_aditivos[x].quantidade_DEFEITO != null) quantidade_DEFEITO = parseFloat(this.banhos_aditivos[x].quantidade_DEFEITO.replace(",", "."));
+        banhos_aditivos.valor_DOSE1 = valor_DOSE1;
+        banhos_aditivos.valor_DOSE2 = valor_DOSE2;
+        banhos_aditivos.valor_DOSE3 = valor_DOSE3;
+        banhos_aditivos.valor_DOSE4 = valor_DOSE4;
+        banhos_aditivos.valor_DOSE5 = valor_DOSE5;
+        banhos_aditivos.quantidade_DEFEITO= quantidade_DEFEITO;
+
         this.ABDICBANHOADITIVOService.update(banhos_aditivos).then(() => {
           this.banhosaditivos(id);
         });

@@ -86,26 +86,26 @@ export class ManutencaoReposicaoComponent implements OnInit {
     this.globalVar.sethistorico(false);
     this.globalVar.setcriarmanutencao(false);
     this.globalVar.setdisCriarmanutencao(true);
-    this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004editar"));
-    this.globalVar.setdisCriar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004criar"));
-    this.globalVar.setdisApagar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004apagar"));
-    this.disduplicar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004duplicar");
+    this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005editar"));
+    this.globalVar.setdisCriar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005criar"));
+    this.globalVar.setdisApagar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005apagar"));
+    this.disduplicar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005duplicar");
 
-    if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004planeamento")) {
+    if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005planeamento")) {
       this.query.push("Em Planeamento");
     }
-    if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004preparacao") && !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004execucao")) {
+    if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005preparacao") && !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005execucao")) {
       this.query.push("Planeado", "Em Preparação", "Preparado", "Em Execução", "Executado");
     }
 
 
     if (this.filtroval) {
       this.filtro = [];
-      /* if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004preparacao") && JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004execucao")) {
+      /* if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005preparacao") && JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005execucao")) {
          this.filtro = [];
-       } else if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004execucao")) {
+       } else if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005execucao")) {
          this.filtro.push("Preparado");
-       } else if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004preparacao")) {
+       } else if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005preparacao")) {
          this.filtro.push("Planeado", "Em Preparação");
        }*/
     }

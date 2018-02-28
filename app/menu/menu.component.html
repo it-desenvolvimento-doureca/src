@@ -11,7 +11,7 @@
             <div class="panel-group" id="accordion">
                 <div class="panel panel-default">
                     <div  [routerLink]="['/homegestaobanhos']" class="panel-heading" [ngClass]="{ 'active':router.isActive('/manutencao',true) || router.isActive('/registo',true) ||router.isActive('/fornecedor',true) || router.isActive('/tinas',true)|| router.isActive('/componentes',true)|| router.isActive('/banhos',true)
-                    || router.isActive('/gestaobanhos_relatorios',true) || router.isActive('/operacoes',true)|| router.isActive('/homegestaobanhos',true) || router.isActive('/linhas',true) || router.isActive('/unidades',true)|| router.isActive('/zonas',true)|| router.isActive('/turnos',true) || router.isActive('/adicoes',true) || router.isActive('/manutencoes',true) || router.isActive('/registopara',true)  || router.isActive('/manutencaonaoprogramada',true) || router.isActive('/construcaobanhos',true) }">
+                    || router.isActive('/gestaobanhos_relatorios',true) || router.isActive('/operacoes',true)|| router.isActive('/homegestaobanhos',true) || router.isActive('/linhas',true) || router.isActive('/unidades',true)|| router.isActive('/zonas',true)|| router.isActive('/turnos',true) || router.isActive('/adicoes',true) || router.isActive('/manutencoes',true) || router.isActive('/registopara',true)  || router.isActive('/manutencaonaoprogramada',true) || router.isActive('/manutencaoreposicao',true) || router.isActive('/construcaobanhos',true) }">
                         <h4 class="panel-title">
                             <a id="node0" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
                                 <span class="glyphicon glyphicon-list-alt ">
@@ -23,7 +23,7 @@
                             <table class="table">
                                 <tr>
                                     <td>
-                                        <li id="node00" (click)="linha()" data-toggle="collapse" data-target="#movi" class="collapsed" [ngClass]="{'active':router.isActive('/manutencao',true) || router.isActive('/registopara',true)  || router.isActive('/construcaobanhos',true) ||  router.isActive('/manutencaonaoprogramada',true) || router.isActive('/registo',true)}">
+                                        <li id="node00" (click)="linha()" data-toggle="collapse" data-target="#movi" class="collapsed" [ngClass]="{'active':router.isActive('/manutencao',true) || router.isActive('/registopara',true)  || router.isActive('/construcaobanhos',true) ||  router.isActive('/manutencaonaoprogramada',true) || router.isActive('/manutencaoreposicao',true) || router.isActive('/registo',true)}">
                                             <a>Movimentos
                                                 <span class="arrow"></span>
                                             </a>
@@ -35,18 +35,18 @@
                                             <li id="node001" [routerLinkActive]="['active']" [routerLink]="['/manutencao']">
                                                 <a>Manutenções Planeadas</a>
                                             </li>
-                                            <li id="node002" [routerLinkActive]="['active']" [routerLink]="['/registopara']">
-                                                <a>Reg. Parâm. de Operação</a>
+                                            <li id="node004" [routerLinkActive]="['active']" [routerLink]="['/manutencaonaoprogramada']">
+                                                <a>Manut. não Programadas</a>
+                                            </li>
+                                            <li id="node005" [routerLinkActive]="['active']" [routerLink]="['/manutencaoreposicao']">
+                                                <a>Manut. de Reposição</a>
                                             </li>
                                             <li id="node003" [routerLinkActive]="['active']" [routerLink]="['/construcaobanhos']">
                                                 <a>Construção Banho</a>
                                             </li>
-                                            <li id="node004" [routerLinkActive]="['active']" [routerLink]="['/manutencaonaoprogramada']">
-                                                <a>Manut. não Programadas</a>
+                                            <li id="node002" [routerLinkActive]="['active']" [routerLink]="['/registopara']">
+                                                <a>Reg. Parâm. de Operação</a>
                                             </li>
-                                            <!--<li id="node004" [routerLinkActive]="['active']" [routerLink]="['/construcaobanhos']">
-                                                <a>Manutenções de Reposição</a>
-                                            </li>-->
                                         </ul>
                                     </td>
                                 </tr>
@@ -212,6 +212,13 @@
                                     <td>
                                         <li id="node14" [routerLinkActive]="['active']">
                                             <a [routerLink]="['/configjasper']">Análises Gestão (Jasper)</a>
+                                        </li>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <li id="node15" [routerLinkActive]="['active']">
+                                            <a [routerLink]="['/parametrosraks']">Cartelas</a>
                                         </li>
                                     </td>
                                 </tr>

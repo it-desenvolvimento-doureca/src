@@ -123,13 +123,13 @@ export class ManutecaoReposicaoformComponent implements OnInit {
     this.globalVar.setdisCriarmanutencao(true);
 
     this.admin = JSON.parse(localStorage.getItem('userapp'))["admin"];
-    this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004editar"));
-    this.globalVar.setdisCriar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004criar"));
-    this.globalVar.setdisApagar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004apagar"));
-    this.globalVar.setdisDuplicar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004duplicar"));
+    this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005editar"));
+    this.globalVar.setdisCriar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005criar"));
+    this.globalVar.setdisApagar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005apagar"));
+    this.globalVar.setdisDuplicar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005duplicar"));
 
-    this.disimprimir = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004imprimir");
-    this.dishistorico = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004historico");
+    this.disimprimir = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005imprimir");
+    this.dishistorico = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005historico");
     // this.pos=3;
     /* this.arrayForm = [{pos: 1, id: null, id_banho: 1, tina: 2, capacidade: "11 L", aditivos: [{ id: 1, valor: 10, unidade: "aa", obs: "" }] },
      {pos: 2, id: null, id_banho: 1, tina: 2, capacidade: "11 L", aditivos: [{ id: 1, valor: 10, unidade: "aa", obs: "" }] }];*/
@@ -159,17 +159,17 @@ export class ManutecaoReposicaoformComponent implements OnInit {
         this.preenchedados(true, this.manutencao[this.i]);
       }
       else {
-        if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004planeamento")) {
+        if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005planeamento")) {
           this.query.push("Em Planeamento");
         }
-        if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004preparacao") && !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004execucao")) {
+        if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005preparacao") && !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005execucao")) {
           this.query.push("Planeado", "Em Preparação", "Preparado", "Em Execução", "Executado");
         }
 
-        if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004execucao")) {
+        if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005execucao")) {
           this.acessoexec = true;
         }
-        if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004preparacao")) {
+        if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005preparacao")) {
           this.acessoprep = true;
         }
 
@@ -307,8 +307,8 @@ export class ManutecaoReposicaoformComponent implements OnInit {
             var int_op = this.intervalo_op.find(item => item.value.id == response[x][0].id_TIPO_OPERACAO).value;
             var id_banho = this.banhos.find(item => item.value.id == response[x][0].id_BANHO).value;
             var nome_analise = "";
-            this.executado = false
-            var preparado = true
+            this.executado = false;
+            var preparado = false;
             var disable = false;
             var data_prep = null;
             if (response[x][0].data_PREVISTA != null) {
@@ -332,8 +332,10 @@ export class ManutecaoReposicaoformComponent implements OnInit {
             }
 
             this.pos++;
+
+            var doseadores = this.banhos.find(item => item.value.id == response[x][0].id_BANHO).value.doseadores;
             this.arrayForm.push({
-              executado: this.executado, preparado: preparado, obs_prep: response[x][0].obs_PREPARACAO,
+              doseador: response[x][0].doseador, doseadores: doseadores, executado: this.executado, preparado: preparado, obs_prep: response[x][0].obs_PREPARACAO,
               id_manu: response[x][0].id_MANUTENCAO, data: data_prev, cod_analise: response[x][0].id_ANALISE, nome_analise: nome_analise, disable_op: disable,
               pos: this.pos, id: response[x][0].id_MANUTENCAO_CAB, id_banho: id_banho, hora_pre: hora_prev, data_pre: data_prev, tipo_adicao: id_adicao,
               interva_ope: int_op, id_195: response[x][3], obs_pla: response[x][0].obs_PLANEAMENTO, obs_exec: response[x][0].obs_EXECUCAO, resp_exe_id: response[x][0].utz_EXECUCAO,
@@ -361,16 +363,21 @@ export class ManutecaoReposicaoformComponent implements OnInit {
             var stock = null;
             var value = 0;
             var disabled = true;
+            var valor1 = null;
+
             if (response[x][3] == true) disabled = false;
-            if (response[x][0].stock != null) { stock = response[x][0].stock.toFixed(2); stock = stock.replace(".", ",") }
+            if (response[x][0].stock != null) { stock = response[x][0].stock.toFixed(2); stock = stock.replace(".", ","); }
 
             if (response[x][0].valor_AGUA != null) value = response[x][0].valor_AGUA.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
+
+
+            if (response[x][0].valor1 != null) { valor1 = response[x][0].valor1.replace(".", ","); }
 
             this.arrayForm.find(item => item.pos == pos).aditivos.push(
               {
                 disabled: disabled,
                 pos: pos2,
-                id_LIN: response[x][0].id_MANUTENCAO_LIN, id: response[x][0].id_ADITIVO, nome: response[x][1].nome_COMPONENTE, valor1: response[x][0].valor1, valor2: response[x][0].valor2,
+                id_LIN: response[x][0].id_MANUTENCAO_LIN, id: response[x][0].id_ADITIVO, nome: response[x][1].nome_COMPONENTE, valor1: valor1, valor2: response[x][0].valor2,
                 unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: response[x][0].obs_PLANEAMENTO,
                 stock: stock, cod_REF: response[x][0].cod_REF, unidstock: response[x][0].stkunit, valor_agua: value, factor: response[x][1].factor_MULTIPLICACAO_AGUA
               }
@@ -400,7 +407,7 @@ export class ManutecaoReposicaoformComponent implements OnInit {
       var data = this.formatDate(new Date().toDateString());
       var hora = new Date().toLocaleTimeString().slice(0, 5);
       this.arrayForm.push({
-        executado: false, preparado: false, obs_prep: null,
+        executado: false, preparado: false, obs_prep: null, doseador: null, doseadores: [],
         id_manu: id, data: new Date(), cod_analise: null, nome_analise: null, disable_op: false,
         pos: this.pos, id: null, id_banho: null, hora_pre: hora, data_pre: data, tipo_adicao: this.tipo_adicao[0].value, data_valida: null,
         interva_ope: this.intervalo_op[0].value, id_195: null, obs_pla: null, obs_exec: null, resp_exe: null, resp_exe_id: null, hora_exc: null, data_exc: null, resp_prep: null, data_prep: null, tina: null, id_tina: null, capacidade: null, aditivos: []
@@ -413,10 +420,15 @@ export class ManutecaoReposicaoformComponent implements OnInit {
     this.arrayForm.find(item => item.pos == pos).tina = event.value.nome_tina;
     this.arrayForm.find(item => item.pos == pos).id_tina = event.value.id_tina;
     this.arrayForm.find(item => item.pos == pos).capacidade = event.value.capacidade;
+    this.arrayForm.find(item => item.pos == pos).doseadores = event.value.doseadores;
     this.arrayForm.find(item => item.pos == pos).aditivos = [];
+  }
+
+  carregaaditivos(event, id, pos) {
     var array = [];
-    if (event.value.id != "" && event.value.id != null) {
-      this.ABDICBANHOADITIVOService.getbyID_banho(event.value.id).subscribe(
+    this.arrayForm.find(item => item.pos == pos).aditivos = [];
+    if (id.id != "" && id.id != null && event.value != "") {
+      this.ABDICBANHOADITIVOService.getbyID_banho(id.id).subscribe(
         response => {
           var count = Object.keys(response).length;
           //se existir componente Componente
@@ -427,9 +439,9 @@ export class ManutecaoReposicaoformComponent implements OnInit {
               var disabled = true;
               if (response[x][0].manutencaoreposicao == true) disabled = false;
               if (response[x][1].cod_REF != null) {
-                this.carregaaditivosstock(response, x, pos, pos2, count, array, disabled);
+                this.carregaaditivosstock(response, x, pos, pos2, count, array, disabled, event.value);
               } else {
-                array.push({ disabled: disabled, pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, cod_REF: response[x][1].cod_REF });
+                array.push({ disabled: disabled, pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: this.getValor(event.value, response, x), valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, cod_REF: response[x][1].cod_REF });
                 this.ordernar(array);
                 if (pos2 == count) {
                   this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -443,7 +455,18 @@ export class ManutecaoReposicaoformComponent implements OnInit {
     }
   }
 
-  carregaaditivosstock(response, x, pos, pos2, total2, array, disabled) {
+  //devolve valor 1 dependente da dose
+  getValor(dose, response, x) {
+    if (dose != null && dose != "") {
+      var valor = null;
+      if (response[x][0]['valor_DOSE' + dose] != null) valor = response[x][0]['valor_DOSE' + dose].toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
+      return valor;
+    } else {
+      return null;
+    }
+  }
+
+  carregaaditivosstock(response, x, pos, pos2, total2, array, disabled, dose) {
     var query = [];
     var total = null;
     this.GERARMAZEMService.getAll().subscribe(
@@ -461,7 +484,7 @@ export class ManutecaoReposicaoformComponent implements OnInit {
                 total = parseFloat(res1[0].STOQTE).toFixed(2);
                 total = total.replace(".", ",");
               }
-              array.push({ disabled: disabled, pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: res1[0].UNIUTI, cod_REF: response[x][1].cod_REF });
+              array.push({ disabled: disabled, pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: this.getValor(dose, response, x), valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: res1[0].UNIUTI, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
               if (pos2 == total2) {
                 this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -470,7 +493,7 @@ export class ManutecaoReposicaoformComponent implements OnInit {
 
             },
             error => {
-              array.push({ disabled: disabled, pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, cod_REF: response[x][1].cod_REF });
+              array.push({ disabled: disabled, pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: this.getValor(dose, response, x), valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
               if (pos2 == total2) {
                 this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -479,7 +502,7 @@ export class ManutecaoReposicaoformComponent implements OnInit {
               console.log(error);
             });
         } else {
-          array.find(item => item.pos == pos).aditivos.push({ disabled: disabled, pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, cod_REF: response[x][1].cod_REF });
+          array.find(item => item.pos == pos).aditivos.push({ disabled: disabled, pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: this.getValor(dose, response, x), valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, cod_REF: response[x][1].cod_REF });
           this.ordernar(array);
           if (pos2 == total2) {
             this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -514,7 +537,14 @@ export class ManutecaoReposicaoformComponent implements OnInit {
         response => {
           this.banhos.push({ label: 'Seleccione Banho', value: "" });
           for (var x in response) {
-            this.banhos.push({ label: response[x][0].id_BANHO + " / " + response[x][0].nome_BANHO + " - Tina: " + response[x][2].cod_TINA, value: { id: response[x][0].id_BANHO, id_tina: response[x][2].id_TINA, nome_tina: response[x][2].cod_TINA, capacidade: response[x][2].capacidade } });
+            var doseadores = [{ label: "--", value: "" }]
+            if (response[x][0].dose1 != null && response[x][0].dose1 != "") doseadores.push({ label: response[x][0].dose1, value: 1 + '' })
+            if (response[x][0].dose2 != null && response[x][0].dose2 != "") doseadores.push({ label: response[x][0].dose2, value: 2 + '' })
+            if (response[x][0].dose3 != null && response[x][0].dose3 != "") doseadores.push({ label: response[x][0].dose3, value: 3 + '' })
+            if (response[x][0].dose4 != null && response[x][0].dose4 != "") doseadores.push({ label: response[x][0].dose4, value: 4 + '' })
+            if (response[x][0].dose5 != null && response[x][0].dose5 != "") doseadores.push({ label: response[x][0].dose5, value: 5 + '' })
+
+            this.banhos.push({ label: response[x][0].id_BANHO + " / " + response[x][0].nome_BANHO + " - Tina: " + response[x][2].cod_TINA, value: { id: response[x][0].id_BANHO, id_tina: response[x][2].id_TINA, nome_tina: response[x][2].cod_TINA, capacidade: response[x][2].capacidade, doseadores: doseadores } });
           }
           this.banhos = this.banhos.slice();
           this.carregarlinhas(id);
@@ -660,6 +690,7 @@ export class ManutecaoReposicaoformComponent implements OnInit {
               MOV_MANUTENCAO_CAB.id_TINA = this.arrayForm.find(item => item.pos == pos).id_tina;
               MOV_MANUTENCAO_CAB.data_PREVISTA = this.arrayForm.find(item => item.pos == pos).data_pre;
               MOV_MANUTENCAO_CAB.hora_PREVISTA = this.arrayForm.find(item => item.pos == pos).hora_pre;
+              MOV_MANUTENCAO_CAB.doseador = this.arrayForm.find(item => item.pos == pos).doseador;
               MOV_MANUTENCAO_CAB.utz_ULT_MODIF = this.user;
 
               if (this.admin) {
@@ -713,6 +744,7 @@ export class ManutecaoReposicaoformComponent implements OnInit {
         MOV_MANUTENCAO_CAB.utz_CRIA = this.user;
         MOV_MANUTENCAO_CAB.obs_EXECUCAO = this.arrayForm.find(item => item.pos == pos).obs_exec;
         MOV_MANUTENCAO_CAB.obs_PLANEAMENTO = this.arrayForm.find(item => item.pos == pos).obs_pla;
+        MOV_MANUTENCAO_CAB.doseador = this.arrayForm.find(item => item.pos == pos).doseador;
         MOV_MANUTENCAO_CAB.inativo = false;
 
         if (this.admin) {
@@ -1543,6 +1575,6 @@ export class ManutecaoReposicaoformComponent implements OnInit {
   }
 
   historico(id) {
-    this.router.navigate(['manutencaoreposicao/historico'], { queryParams: { id: id, classif: 'N' } });
+    this.router.navigate(['manutencaoreposicao/historico'], { queryParams: { id: id, classif: 'R' } });
   }
 }

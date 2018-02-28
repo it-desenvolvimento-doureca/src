@@ -59,7 +59,8 @@
                   <div class=" form-black label-floating" style="padding-top: 11px; float: right;">
                     <label class="pull-left" style="font-size: 14px; color:black;">Manutenções de Reposição</label>
                     <div class="material-switch pull-left">
-                      <input id="someSwitchOptionSuccess3" type="checkbox" [(ngModel)]="manutencaoreposicao" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
+                      <input id="someSwitchOptionSuccess3" type="checkbox" [(ngModel)]="manutencaoreposicao" [ngModelOptions]="{standalone: true}"
+                        [disabled]="!modoedicao">
                       <label for="someSwitchOptionSuccess3" class="label-success" style="margin-left: 24px;"></label>
                     </div>
                   </div>
@@ -97,7 +98,8 @@
                   <div class=" form-black label-floating" style="padding-top: 11px; float: right;">
                     <label class="pull-left" style="font-size: 14px; color:black;">Manutenções não Programadas</label>
                     <div class="material-switch pull-left">
-                      <input id="someSwitchOptionSuccess4" type="checkbox" [(ngModel)]="manutencoesnaoprogramadas" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
+                      <input id="someSwitchOptionSuccess4" type="checkbox" [(ngModel)]="manutencoesnaoprogramadas" [ngModelOptions]="{standalone: true}"
+                        [disabled]="!modoedicao">
                       <label for="someSwitchOptionSuccess4" class="label-success" style="margin-left: 24px;"></label>
                     </div>
                   </div>
@@ -228,42 +230,121 @@
               </div>
               <div class="row">
                 <div class="col-md-12">
-                  <div class="col-md-12" style="text-align: center;">
-                    <h3> Aditivos do Banho </h3>
+                  <div class="col-md-12" style="text-align: center; padding: 0;">
+                    <h3 style="background: white;"> Aditivos do Banho </h3>
                   </div>
-                  <p-dataTable [value]="banhos_aditivos">
-                    <p-column field="ID_ADITIVO" header="ADITIVOS">
+                  <p-dataTable class="tabelabanhosaditivos" [value]="banhos_aditivos">
+                    <p-header>
+                      <!-- Qantidades Reposição -->
+                      <div style="display: inline-flex;">
+                        <div style="width: 48.6%;float: left;text-align: -webkit-right; padding: 20px 17px 0 0px;">
+                          <b>Quantidade Reposição (Unidade 1):</b>
+                        </div>
+                        <div style="width: 33%; float: left;">
+                          <table class="table table-bordered tabeladoses">
+                            <thead>
+                              <tr>
+                                <th colspan="5">
+                                  <b>Doses de Reposição</b>
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>
+                                  <input type="text" style="height: 31px; text-align: center; background: white;" class="form-control" [(ngModel)]="DOSE1"
+                                    [ngModelOptions]="{standalone: true}" placeholder="Dose 1" [disabled]="!modoedicao">
+                                </td>
+                                <td>
+                                  <input type="text" style="height: 31px; text-align: center; background: white;" class="form-control" [(ngModel)]="DOSE2"
+                                    [ngModelOptions]="{standalone: true}" placeholder="Dose 2"  [disabled]="!modoedicao">
+                                </td>
+                                <td>
+                                  <input type="text" style="height: 31px; text-align: center; background: white;" class="form-control" [(ngModel)]="DOSE3"
+                                    [ngModelOptions]="{standalone: true}" placeholder="Dose 3"  [disabled]="!modoedicao">
+                                </td>
+                                <td>
+                                  <input type="text" style="height: 31px; text-align: center; background: white;" class="form-control" [(ngModel)]="DOSE4"
+                                    [ngModelOptions]="{standalone: true}" placeholder="Dose 4"  [disabled]="!modoedicao">
+                                </td>
+                                <td>
+                                  <input type="text" style="height: 31.2px; text-align: center; background: white;" class="form-control" [(ngModel)]="DOSE5"
+                                    [ngModelOptions]="{standalone: true}" placeholder="Dose 5"  [disabled]="!modoedicao">
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <!-- -->
+                    </p-header>
+                    <p-column field="ID_ADITIVO" header="ADITIVOS" [style]="{'width':'17%','font-size': '12px'}">
                       <ng-template pTemplate="body" let-col let-row="rowData ">
                         <p-dropdown (onChange)="preenche_unidades(row['pos'],row['ID_ADITIVO'])" [filter]="true" [(ngModel)]="row[col.field]" [ngModelOptions]="{standalone: true}"
                           [options]="aditivos" [autoWidth]="false" [style]="{'width':'100%'}" [hidden]="!modoedicao"></p-dropdown>
                         <label class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{row['nome_aditivo']}}</label>
                       </ng-template>
                     </p-column>
-                    <p-column field="ID_UNIDADE1" header="UNIDADE 1">
+                    <p-column field="ID_UNIDADE1" [style]="{'width':'12%','font-size': '12px'}" header="UNIDADE 1">
                       <ng-template pTemplate="body" let-col let-row="rowData ">
                         <p-dropdown [filter]="true" [(ngModel)]="row[col.field]" [ngModelOptions]="{standalone: true}" [options]="medidas" [autoWidth]="false"
                           [style]="{'width':'100%'}" [hidden]="!modoedicao"></p-dropdown>
                         <label class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{row['medida1']}}</label>
                       </ng-template>
                     </p-column>
-                    <p-column field="ID_UNIDADE2" header="UNIDADE 2">
+                    <p-column field="ID_UNIDADE2" [style]="{'width':'12%','font-size': '12px'}" header="UNIDADE 2">
                       <ng-template pTemplate="body" let-col let-row="rowData ">
                         <p-dropdown [filter]="true" [(ngModel)]="row[col.field]" [ngModelOptions]="{standalone: true}" [options]="medidas" [autoWidth]="false"
                           [style]="{'width':'100%'}" [hidden]="!modoedicao"></p-dropdown>
                         <label class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{row['medida2']}}</label>
                       </ng-template>
                     </p-column>
-                    <p-column field="manutencaoreposicao" header="UTILIZA NAS MANUTENÇÕES DE REPOSIÇÃO">
+                    <p-column field="qtd" header="VALOR" [style]="{'width':'6%','font-size': '12px'}">
                       <ng-template pTemplate="body" let-col let-row="rowData ">
-                          <p-checkbox [disabled]="!modoedicao" [(ngModel)]="row[col.field]" binary="true" [ngModelOptions]="{standalone: true}" ></p-checkbox>
+                        <input type="text" style="height: 31px; text-align: center; background: white;" class="form-control" [(ngModel)]="row['quantidade_DEFEITO']"
+                          [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
                       </ng-template>
                     </p-column>
-                    <p-column field="manutencoesnaoprogramadas" header="UTILIZA NAS MANUTENÇÕES NÃO PROGRAMADAS">
+
+                    <!-- DOSES -->
+                    <p-column field="qtd" header="DOSE 1" [style]="{'width':'6%','font-size': '12px'}">
                       <ng-template pTemplate="body" let-col let-row="rowData ">
-                          <p-checkbox [disabled]="!modoedicao" [(ngModel)]="row[col.field]" binary="true" [ngModelOptions]="{standalone: true}" ></p-checkbox>
+                        <input type="text" style="height: 31px; text-align: center; background: white;" class="form-control" [(ngModel)]="row['valor_DOSE1']"
+                          [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
                       </ng-template>
                     </p-column>
-                    <p-column styleClass="col-button">
+                    <p-column field="qtd" header="DOSE 2" [style]="{'width':'6%','font-size': '12px'}">
+                      <ng-template pTemplate="body" let-col let-row="rowData ">
+                        <input type="text" style="height: 31px; text-align: center; background: white;" class="form-control" [(ngModel)]="row['valor_DOSE2']"
+                          [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
+                      </ng-template>
+                    </p-column>
+                    <p-column field="qtd" header="DOSE 3" [style]="{'width':'6%','font-size': '12px'}">
+                      <ng-template pTemplate="body" let-col let-row="rowData ">
+                        <input type="text" style="height: 31px; text-align: center; background: white;" class="form-control" [(ngModel)]="row['valor_DOSE3']"
+                          [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
+                      </ng-template>
+                    </p-column>
+                    <p-column field="qtd" header="DOSE 4" [style]="{'width':'6%','font-size': '12px'}">
+                      <ng-template pTemplate="body" let-col let-row="rowData ">
+                        <input type="text" style="height: 31px; text-align: center; background: white;" class="form-control" [(ngModel)]="row['valor_DOSE4']"
+                          [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
+                      </ng-template>
+                    </p-column>
+                    <p-column field="qtd" header="DOSE 5" [style]="{'width':'6%','font-size': '12px'}">
+                      <ng-template pTemplate="body" let-col let-row="rowData ">
+                        <input type="text" style="height: 31px; text-align: center; background: white;" class="form-control" [(ngModel)]="row['valor_DOSE5']"
+                          [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
+                      </ng-template>
+                    </p-column>
+
+                    <!-- DOSES FIM -->
+                    <p-column [style]="{'width':'16%','font-size': '12px'}" field="manutencoesnaoprogramadas" header="UTILIZA NAS MANUTENÇÕES NÃO PROGRAMADAS">
+                      <ng-template pTemplate="body" let-col let-row="rowData ">
+                        <p-checkbox [disabled]="!modoedicao" [(ngModel)]="row[col.field]" binary="true" [ngModelOptions]="{standalone: true}"></p-checkbox>
+                      </ng-template>
+                    </p-column>
+                    <p-column styleClass="col-button" [style]="{'width':'4%'}">
                       <ng-template pTemplate="header">
                       </ng-template>
                       <ng-template let-car="rowData" pTemplate="body">

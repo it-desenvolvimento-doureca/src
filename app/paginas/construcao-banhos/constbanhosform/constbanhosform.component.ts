@@ -101,7 +101,7 @@ export class ConstbanhosformComponent implements OnInit {
   @ViewChild('alteraeditartrue') alteraeditartrue: ElementRef;
   @ViewChild('imprime') imprime: ElementRef;
 
-  constructor(private ABDICBANHOCOMPONENTEService: ABDICBANHOCOMPONENTEService, private sanitizer: DomSanitizer, private RelatoriosService: RelatoriosService, private GERUTILIZADORESService: GERUTILIZADORESService, private elementRef: ElementRef, private GERARMAZEMService: GERARMAZEMService, private ADMOVREGPARAMOPERACAOService: ADMOVREGPARAMOPERACAOService, private ABMOVMANUTENCAOLINHAService: ABMOVMANUTENCAOLINHAService, private ABMOVMANUTENCAOCABService: ABMOVMANUTENCAOCABService, private ABMOVANALISEService: ABMOVANALISEService, private ABDICTIPOOPERACAOService: ABDICTIPOOPERACAOService, private ABDICTIPOADICAOService: ABDICTIPOADICAOService, private ABDICBANHOADITIVOService: ABDICBANHOADITIVOService, private ABMOVMANUTENCAOService: ABMOVMANUTENCAOService, private ABDICTURNOService: ABDICTURNOService, private ABDICTIPOMANUTENCAOService: ABDICTIPOMANUTENCAOService, private confirmationService: ConfirmationService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private ABDICBANHOService: ABDICBANHOService, private ABDICLINHAService: ABDICLINHAService, private globalVar: AppGlobals, private ABUNIDADADEMEDIDAService: ABUNIDADADEMEDIDAService, private location: Location, private router: Router, private renderer: Renderer, private route: ActivatedRoute) { }
+  constructor(private sanitizer: DomSanitizer, private RelatoriosService: RelatoriosService, private GERUTILIZADORESService: GERUTILIZADORESService, private elementRef: ElementRef, private GERARMAZEMService: GERARMAZEMService, private ADMOVREGPARAMOPERACAOService: ADMOVREGPARAMOPERACAOService, private ABMOVMANUTENCAOLINHAService: ABMOVMANUTENCAOLINHAService, private ABMOVMANUTENCAOCABService: ABMOVMANUTENCAOCABService, private ABMOVANALISEService: ABMOVANALISEService, private ABDICTIPOOPERACAOService: ABDICTIPOOPERACAOService, private ABDICTIPOADICAOService: ABDICTIPOADICAOService, private ABDICBANHOADITIVOService: ABDICBANHOADITIVOService, private ABMOVMANUTENCAOService: ABMOVMANUTENCAOService, private ABDICTURNOService: ABDICTURNOService, private ABDICTIPOMANUTENCAOService: ABDICTIPOMANUTENCAOService, private confirmationService: ConfirmationService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private ABDICBANHOService: ABDICBANHOService, private ABDICLINHAService: ABDICLINHAService, private globalVar: AppGlobals, private ABUNIDADADEMEDIDAService: ABUNIDADADEMEDIDAService, private location: Location, private router: Router, private renderer: Renderer, private route: ActivatedRoute) { }
 
   ngOnInit() {
     //console.log(document.cookie)
@@ -453,7 +453,7 @@ export class ConstbanhosformComponent implements OnInit {
     this.arrayForm.find(item => item.pos == pos).aditivos = [];
     var array = [];
     if (event.value.id != "" && event.value.id != null) {
-      this.ABDICBANHOCOMPONENTEService.getbyid_banho(event.value.id).subscribe(
+      this.ABDICBANHOADITIVOService.getbyID_banho(event.value.id).subscribe(
         response => {
           var count = Object.keys(response).length;
           //se existir componente Componente
@@ -461,10 +461,12 @@ export class ConstbanhosformComponent implements OnInit {
             this.textotabela = "A PESQUISAR...";
             var pos2 = 1;
             for (var x in response) {
+              var valor = null;
+              if (response[x][0].quantidade_DEFEITO != null) valor = response[x][0].quantidade_DEFEITO.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
               if (response[x][1].cod_REF != null) {
-                this.carregaaditivosstock(response, x, pos, pos2, count, array);
+                this.carregaaditivosstock(response, x, pos, pos2, count, array,valor);
               } else {
-                array.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: response[x][0].quantidade, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, cod_REF: response[x][1].cod_REF });
+                array.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, cod_REF: response[x][1].cod_REF });
                 this.ordernar(array);
                 if (pos2 == count) {
                   this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -479,7 +481,7 @@ export class ConstbanhosformComponent implements OnInit {
     }
   }
 
-  carregaaditivosstock(response, x, pos, pos2, total2, array) {
+  carregaaditivosstock(response, x, pos, pos2, total2, array,valor) {
     var query = [];
     var total = null;
     this.GERARMAZEMService.getAll().subscribe(
@@ -497,7 +499,7 @@ export class ConstbanhosformComponent implements OnInit {
                 total = parseFloat(res1[0].STOQTE).toFixed(2);
                 total = total.replace(".", ",");
               }
-              array.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: response[x][0].quantidade, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: res1[0].UNIUTI, cod_REF: response[x][1].cod_REF });
+              array.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: res1[0].UNIUTI, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
               if (pos2 == total2) {
                 this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -507,7 +509,7 @@ export class ConstbanhosformComponent implements OnInit {
 
             },
             error => {
-              array.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: response[x][0].quantidade, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, cod_REF: response[x][1].cod_REF });
+              array.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
               this.carrega_script();
               if (pos2 == total2) {
@@ -517,7 +519,7 @@ export class ConstbanhosformComponent implements OnInit {
               console.log(error);
             });
         } else {
-          array.find(item => item.pos == pos).aditivos.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: response[x][0].quantidade, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, cod_REF: response[x][1].cod_REF });
+          array.find(item => item.pos == pos).aditivos.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, cod_REF: response[x][1].cod_REF });
           this.ordernar(array);
           if (pos2 == total2) {
             this.arrayForm.find(item => item.pos == pos).aditivos = array;
