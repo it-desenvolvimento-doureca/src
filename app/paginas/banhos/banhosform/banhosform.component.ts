@@ -31,7 +31,7 @@ export class BanhosformComponent implements OnInit {
   manutencoesnaoprogramadas: boolean = false;
   manutencaoreposicao: boolean = false;
   useremail: any;
-  email_para: any;
+  email_para: any ="";
   celula: any;
   estados;
   results;

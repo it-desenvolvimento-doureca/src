@@ -140,12 +140,12 @@
                         <label class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{row['nome_comp']}}</label>
                       </ng-template>
                     </p-column>
-                    <p-column field="qtd" header="QTD." [style]="{'width':'4%','font-size': '12px'}">
+                  <!--  <p-column field="qtd" header="QTD." [style]="{'width':'4%','font-size': '12px'}">
                       <ng-template pTemplate="body" let-col let-row="rowData ">
                         <input type="text" style="height: 31.2px; text-align: center; background: white;" class="form-control" [(ngModel)]="row['qtd']"
                           [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
                       </ng-template>
-                    </p-column>
+                    </p-column>-->
                     <p-column field="id_unidade" header="UNID." [style]="{'width':'5%','font-size': '12px'}">
                       <ng-template pTemplate="body" let-col let-row="rowData ">
                         <p-dropdown [filter]="true" [(ngModel)]="row['id_unidade']" [ngModelOptions]="{standalone: true}" [options]="medidas" [autoWidth]="false"
@@ -240,7 +240,7 @@
                         <div style="width: 48.6%;float: left;text-align: -webkit-right; padding: 20px 17px 0 0px;">
                           <b>Quantidade Reposição (Unidade 1):</b>
                         </div>
-                        <div style="width: 33%; float: left;">
+                        <div style="width: 31%; float: left;">
                           <table class="table table-bordered tabeladoses">
                             <thead>
                               <tr>
@@ -285,27 +285,26 @@
                         <label class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{row['nome_aditivo']}}</label>
                       </ng-template>
                     </p-column>
-                    <p-column field="ID_UNIDADE1" [style]="{'width':'12%','font-size': '12px'}" header="UNIDADE 1">
+                    <p-column field="qtd" header="QTD. CONSTRUÇÃO" [style]="{'width':'10%','font-size': '12px'}">
+                      <ng-template pTemplate="body" let-col let-row="rowData ">
+                        <input type="text" style="height: 31px; text-align: center; background: white;" class="form-control" [(ngModel)]="row['quantidade_DEFEITO']"
+                          [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
+                      </ng-template>
+                    </p-column>
+                    <p-column field="ID_UNIDADE1" [style]="{'width':'10%','font-size': '12px'}" header="UNIDADE 1">
                       <ng-template pTemplate="body" let-col let-row="rowData ">
                         <p-dropdown [filter]="true" [(ngModel)]="row[col.field]" [ngModelOptions]="{standalone: true}" [options]="medidas" [autoWidth]="false"
                           [style]="{'width':'100%'}" [hidden]="!modoedicao"></p-dropdown>
                         <label class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{row['medida1']}}</label>
                       </ng-template>
                     </p-column>
-                    <p-column field="ID_UNIDADE2" [style]="{'width':'12%','font-size': '12px'}" header="UNIDADE 2">
+                    <p-column field="ID_UNIDADE2" [style]="{'width':'10%','font-size': '12px'}" header="UNIDADE 2">
                       <ng-template pTemplate="body" let-col let-row="rowData ">
                         <p-dropdown [filter]="true" [(ngModel)]="row[col.field]" [ngModelOptions]="{standalone: true}" [options]="medidas" [autoWidth]="false"
                           [style]="{'width':'100%'}" [hidden]="!modoedicao"></p-dropdown>
                         <label class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{row['medida2']}}</label>
                       </ng-template>
                     </p-column>
-                    <p-column field="qtd" header="VALOR" [style]="{'width':'6%','font-size': '12px'}">
-                      <ng-template pTemplate="body" let-col let-row="rowData ">
-                        <input type="text" style="height: 31px; text-align: center; background: white;" class="form-control" [(ngModel)]="row['quantidade_DEFEITO']"
-                          [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
-                      </ng-template>
-                    </p-column>
-
                     <!-- DOSES -->
                     <p-column field="qtd" header="DOSE 1" [style]="{'width':'6%','font-size': '12px'}">
                       <ng-template pTemplate="body" let-col let-row="rowData ">
