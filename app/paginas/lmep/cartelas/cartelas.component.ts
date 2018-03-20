@@ -11,13 +11,14 @@ import { RegistoProducao } from 'app/servicos/registoproducao.service';
 import { GERVISTASService } from 'app/servicos/ger-vistas.service';
 import { GER_VISTAS } from 'app/entidades/GER_VISTAS';
 
-
 @Component({
-  selector: 'app-lista',
-  templateUrl: './lista.component.html',
-  styleUrls: ['./lista.component.css']
+  selector: 'app-cartelas',
+  templateUrl: './cartelas.component.html',
+  styleUrls: ['./cartelas.component.css']
 })
-export class ListaComponent {
+export class CartelasComponent {
+
+  utilizadores = [];
   op_temp: any;
   user_temp: any;
   ref_temp: any;
@@ -28,14 +29,10 @@ export class ListaComponent {
   disCriar: boolean;
   disGravar: boolean;
   disEditar = true;
-  operacao: any;
   utilizador: any;
   referencia: any;
-  operacoes: any = [];
-  utilizadores: any = [];
-  op_cod: any;
-  data_ini: Date;
-  data_fim: Date;
+  lote: any;
+  tina: any;
   filterstate;
   sortstate;
   groupstate;
@@ -52,7 +49,6 @@ export class ListaComponent {
   user: number;
   array = [];
   columdefeito: any[];
-  familias: any[] = [];
   public gridOptions: GridOptions;
   public showGrid: boolean;
   public rowData: any[];
@@ -62,7 +58,6 @@ export class ListaComponent {
   private overlayNoRowsTemplate;
   public rowCount: string;
   public ultimodisable = false;
-  famSeleccionadas;
   paginasize = [{ label: '10', value: '10' }, { label: '100', value: '100' }, { label: '500', value: '500' }, { label: 'Todos', value: 'todos' }]
   config = [];
 
@@ -71,56 +66,23 @@ export class ListaComponent {
 
 
   constructor(private renderer: Renderer, private confirmationService: ConfirmationService, private GERVISTASService: GERVISTASService, private RegistoProducao: RegistoProducao, private ABMOVANALISEService: ABMOVANALISEService, private ABMOVANALISELINHAService: ABMOVANALISELINHAService) {
-    this.page_size = 'todos';
-    this.data_fim = new Date();
-    this.data_ini = new Date(new Date().getFullYear(), 0, 1);
+    this.page_size = '100';
     this.overlayLoadingTemplate = '<span class="ag-overlay-loading-center">A pesquisar..</span>';
-    this.disEditar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node31editar");
-    this.disGravar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node31gravar");
-    this.disCriar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node31criar");
+    this.disEditar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node33editar");
+    this.disGravar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node33gravar");
+    this.disCriar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node33criar");
     this.user = JSON.parse(localStorage.getItem('userapp'))["id"];
-    this.famSeleccionadas = [];
-    this.RegistoProducao.getAllfam().subscribe(
-      response => {
-        //console.log(response)
-        for (var x in response) {
-          this.familias.push({ label: response[x], value: response[x] })
-          this.famSeleccionadas.push(response[x]);
-          this.selectedall.push(response[x]);
-        }
 
-      },
-      error => console.log(error));
 
-    //carrega operações
-    this.RegistoProducao.getOP().subscribe(
-      response => {
-        this.operacoes.push({ label: "Seleccione Operação", value: null })
-        for (var x in response) {
-          this.operacoes.push({ label: response[x].OPECOD + "-" + response[x].OPEDES, value: response[x].OPECOD });
-        }
-        this.operacoes = this.operacoes.slice();
-      },
-      error => console.log(error));
 
-    //carrega utilizadores
-    this.RegistoProducao.getUser().subscribe(
-      response => {
-        this.utilizadores.push({ label: "Seleccione Utilizador", value: null })
-        for (var x in response) {
-          this.utilizadores.push({ label: response[x].RESCOD + " - " + response[x].RESDES, value: response[x].RESDES });
-        }
-        this.utilizadores = this.utilizadores.slice();
-      },
-      error => console.log(error));
 
     //carregas vistas
-    this.GERVISTASService.getbyid_pagina(1).subscribe(
+    this.GERVISTASService.getbyid_pagina(2).subscribe(
       response => {
         //console.log(response)
         //this.config.push({ label: 'Sel. Vista', value: 0 });
-        //this.num_vista = 0;
-        var primeiro = true;
+        this.num_vista = 0;
+        var primeiro = false;
         for (var x in response) {
           this.config.push({ label: response[x].descricao, value: response[x].id })
           this.array.push({
@@ -129,11 +91,22 @@ export class ListaComponent {
             colState: JSON.parse(response[x].colstate), sortState: JSON.parse(response[x].sortstate),
             groupState: JSON.parse(response[x].groupstate), filterState: JSON.parse(response[x].filterstate), familias: JSON.parse(response[x].familias)
           });
-          if (primeiro && response[x].familias != null && response[x].familias != "") this.famSeleccionadas = JSON.parse(response[x].familias);
-          primeiro = false;         
+          //if (primeiro && response[x].familias != null && response[x].familias != "") this.famSeleccionadas = JSON.parse(response[x].familias);
+          primeiro = false;
           this.num_vista = this.config[0].value;
         }
         this.createRowData(true);
+      },
+      error => console.log(error));
+
+      //carrega utilizadores
+    this.RegistoProducao.getUser().subscribe(
+      response => {
+        this.utilizadores.push({ label: "Seleccione Utilizador", value: null })
+        for (var x in response) {
+          this.utilizadores.push({ label: response[x].RESCOD + " - " + response[x].RESDES, value: response[x].RESCOD });
+        }
+        this.utilizadores = this.utilizadores.slice();
       },
       error => console.log(error));
 
@@ -261,16 +234,17 @@ export class ListaComponent {
     this.extractData(this.gridOptions.api.getDataAsCsv())
   }
   getfiltroshtml() {
-    var filtros = "<p><strong>Filtros:&nbsp;</strong>";
-    filtros += "Famílias: [" + this.fam_temp + "] ";
-    filtros += (this.date_temp != null) ? "<strong>&nbsp;|&nbsp;</strong> Data Ínicio:" + this.date_temp : "";
-    filtros += (this.date2_temp != null) ? "<strong>&nbsp;|&nbsp;</strong> Data Fim:" + this.date2_temp : "";
-    filtros += (this.user_temp != null) ? "<strong>&nbsp;|&nbsp;</strong>Utilizador:" + this.user_temp : "";
-    filtros += (this.op_temp != null) ? "<strong>&nbsp;|&nbsp;</strong>Operação:" + this.op_temp : "";
-    filtros += (this.ref_temp != null) ? "<strong>&nbsp;|&nbsp;</strong>Referência:" + this.ref_temp : ""
-    filtros += "</p>";
-    return filtros;
+    /*  var filtros = "<p><strong>Filtros:&nbsp;</strong>";
+      filtros += "Famílias: [" + this.fam_temp + "] ";
+      filtros += (this.date_temp != null) ? "<strong>&nbsp;|&nbsp;</strong> Data Ínicio:" + this.date_temp : "";
+      filtros += (this.date2_temp != null) ? "<strong>&nbsp;|&nbsp;</strong> Data Fim:" + this.date2_temp : "";
+      filtros += (this.user_temp != null) ? "<strong>&nbsp;|&nbsp;</strong>Utilizador:" + this.user_temp : "";
+      filtros += (this.op_temp != null) ? "<strong>&nbsp;|&nbsp;</strong>Operação:" + this.op_temp : "";
+      filtros += (this.ref_temp != null) ? "<strong>&nbsp;|&nbsp;</strong>Referência:" + this.ref_temp : ""
+      filtros += "</p>";
+      return filtros;*/
   }
+
   extractData(res) {
     let csvData = res;
     let allTextLines = csvData.split(/\r\n|\n/);
@@ -307,21 +281,23 @@ export class ListaComponent {
 
   analises(inicio) {
     this.gridOptions.api.showLoadingOverlay();
-    this.columnDefs.push({ headerName: "ID_OF", field: "id_of", hide: true, width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "TITLE", filter: 'text', field: "TITLE", width: 107, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "CARREGAR_ID", filter: 'text', field: "CARREGAR_ID", width: 166, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "SUPPORT_PROGRAM", filter: 'text', field: "SUPPORT_PROGRAM", width: 212, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "RECEITA", filter: 'text', field: "RECEITA", width: 127, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "DESCRICAO", filter: 'text', field: "DESCRICAO", width: 148, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "SUPORTE", filter: 'text', field: "SUPORTE", width: 135, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "N_MANUTEN", filter: 'text', field: "N_MANUTEN", width: 153, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "PRETRATTAMENTO", filter: 'text', field: "PRETRATTAMENTO", width: 196, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "COBRE", filter: 'text', field: "COBRE", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "NICHEL", filter: 'text', field: "NICHEL", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "NIQUEL_FINITURA", filter: 'text', field: "NIQUEL_FINITURA", width: 190, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "CROMAGEM", filter: 'text', field: "CROMAGEM", width: 149, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "DESMETALLIZACAO", filter: 'text', field: "DESMETALLIZACAO", width: 201, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "PECAS", filter: 'text', field: "PECAS", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "SUPERFICIE", filter: 'text', field: "SUPERFICIE", width: 154, enableValue: true, enableRowGroup: true, enablePivot: true });
     this.columnDefs.push({
-      headerName: "Tipo", field: "tipo", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true, cellStyle: function (params) {
-        if (params.value == 'COMP') {
-          //return { backgroundColor: 'red' };
-        } else if (params.value == 'PF') {
-          // return { backgroundColor: 'green' };
-        }
-      }
-    });
-    this.columnDefs.push({ headerName: "OF", field: "num_of", width: 120, enableValue: true, filter: 'text', enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "Referência", field: "componente", width: 135, enableValue: true, filter: 'text', enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "Descrição", field: "descricao", width: 125, enableValue: true, filter: 'text', enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({
-      headerName: "Data", field: "data", width: 135, enableValue: true, enableRowGroup: true, enablePivot: true, comparator: dateComparator, filter: 'date', filterParams: {
+      headerName: "DATA_INICIO", field: "DATA_INICIO", width: 157, enableValue: true, enableRowGroup: true, enablePivot: true, comparator: dateComparator, filter: 'date', filterParams: {
         comparator: function (filterLocalDateAtMidnight, cellValue) {
           var dateAsString = cellValue;
           var dateParts = dateAsString.split("/");
@@ -341,24 +317,56 @@ export class ListaComponent {
         }
       }
     });
-    this.columnDefs.push({ headerName: "Hora", filter: 'text', field: "hora", hide: true, width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "Mês", filter: 'text', field: "mes", hide: true, width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "Dia", filter: 'text', field: "dia", hide: true, width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "Ano", filter: 'text', field: "ano", hide: true, width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "Utilizadores", filter: 'text', field: "utilizador", width: 140, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "Etiqueta", filter: 'text', field: "etiqueta", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "Operação", filter: 'text', field: "operacao", width: 125, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "HORA_INICIO", filter: 'text', field: "HORA_INICIO", width: 158, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({
+      headerName: "DATA_FIM", field: "DATA_FIM", width: 135, enableValue: true, enableRowGroup: true, enablePivot: true, comparator: dateComparator, filter: 'date', filterParams: {
+        comparator: function (filterLocalDateAtMidnight, cellValue) {
+          var dateAsString = cellValue;
+          var dateParts = dateAsString.split("/");
+          var cellDate = new Date(Number(dateParts[2]), Number(dateParts[1]) - 1, Number(dateParts[0]));
+
+          if (filterLocalDateAtMidnight.getTime() == cellDate.getTime()) {
+            return 0
+          }
+
+          if (cellDate < filterLocalDateAtMidnight) {
+            return -1;
+          }
+
+          if (cellDate > filterLocalDateAtMidnight) {
+            return 1;
+          }
+        }
+      }
+    });
+    this.columnDefs.push({ headerName: "HORA_FIM", filter: 'text', field: "HORA_FIM", width: 140, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "AREATOTAL", filter: 'text', field: "AREATOTAL", width: 152, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "LOAD_PIECES", filter: 'text', field: "LOAD_PIECES", width: 164, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "DESCRICAO HIST.", filter: 'text', field: "DESCRICAO_HIST", width: 180, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "SEQUENCIA", filter: 'text', field: "SEQUENCIA", width: 147, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "TINA", filter: 'text', field: "TINA", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "TEMPO_INICIO", filter: 'text', field: "TEMPO_INICIO", width: 167, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "TEMPO_FIM", filter: 'text', field: "TEMPO_FIM", width: 152, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "DURACAO", filter: 'text', field: "DURACAO", width: 136, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "LIMITE_INCIO", filter: 'text', field: "LIMITE_INCIO", width: 163, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "LIMITE_FIM", filter: 'text', field: "LIMITE_FIM", width: 142, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "TEMPERATURA_BANHO", filter: 'text', field: "TEMPERATURA_BANHO", width: 230, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "RACK_CODE", filter: 'text', field: "RACK_CODE", width: 153, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "RACK_TYPE", filter: 'text', field: "RACK_TYPE", width: 148, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "LOAD_RAW", filter: 'text', field: "LOAD_RAW", width: 141, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "LOAD_USER", filter: 'text', field: "LOAD_USER", width: 143, enableValue: true, enableRowGroup: true, enablePivot: true });
+
+
+
     this.columdefeito = []
     var count = 0;
-    for (var n in this.famSeleccionadas) {
-      count++;
-      this.columnfam(count, this.famSeleccionadas[n], inicio);
-    }
+
+    this.columnfam(count, inicio);
     //if (this.famSeleccionadas.length == 0) if (inicio) this.configuracoes(null);
   }
 
-  columnfam(count, fam, inicio) {
-    this.RegistoProducao.getFam([fam]).subscribe(
+  columnfam(count, inicio) {
+    /*this.RegistoProducao.getFam([fam]).subscribe(
       res => {
         var column = { headerName: "FAM " + fam, suppressMenu: true, field: "defeito", children: [] };
         for (var x in res) {
@@ -382,29 +390,30 @@ export class ListaComponent {
           this.user_temp = this.utilizador;
           this.op_temp = this.operacao;
 
-          this.componentes(this.famSeleccionadas, inicio, date, date2, this.referencia, this.utilizador, this.operacao);
+         this.famSeleccionadas, inicio, date, date2, this.referencia, this.utilizador, this.operacao);
         }
       },
-      error => console.log(error));
+      error => console.log(error));*/
+    this.componentes();
   }
 
 
 
-  componentes(fam, inicio, date, date2, ref, user, op_cod) {
+  componentes() {
     var days = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado-Feira'];
     var month = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 
-    if(this.gridOptions.api != null) this.gridOptions.api.showLoadingOverlay();
-    var data = [{ user: user, ref: ref, fam: (fam != null) ? fam.toString() : "", op_cod: op_cod, date1: (date) ? date : null, date2: (date2) ? date2 : null }]
-    this.RegistoProducao.getAll(data).subscribe(
+    if (this.gridOptions.api != null) this.gridOptions.api.showLoadingOverlay();
+    var data = [{ utilizador: this.utilizador, ref: this.referencia, lote: this.lote, tina: this.tina }];
+    this.RegistoProducao.getCartelas(data).subscribe(
       response => {
         var total = Object.keys(response).length;
         if (total > 0) {
-          //console.log(response)
+          // console.log(response)
           for (var y in response) {
 
             var rowData = [];
-            rowData['id'] = response[y][1];
+            /*rowData['id'] = response[y][1];
             rowData['id_of'] = (response[y][2] == null) ? response[y][1] : response[y][2];
             rowData['tipo'] = (response[y][2] == null) ? "PF" : "COMP";
             rowData['componente'] = response[y][8];
@@ -416,11 +425,46 @@ export class ListaComponent {
             rowData['mes'] = month[new Date(response[y][10]).getMonth()];
             rowData['dia'] = days[new Date(response[y][10]).getDay()];
             rowData['ano'] = new Date(response[y][10]).getFullYear();
-            rowData['etiqueta'] = response[y][6];
-            rowData['operacao'] = (response[y][11] == null) ? "" : response[y][11] + (response[y][12] != null ? '-' + response[y][12] : '');
+            */
+
+            rowData['TITLE'] = response[y].TITLE;
+            rowData['CARREGAR_ID'] = response[y].CARREGAR_ID;
+            rowData['SUPPORT_PROGRAM'] = response[y].SUPPORT_PROGRAM;
+            rowData['RECEITA'] = response[y].RECEITA;
+            rowData['DESCRICAO'] = response[y].DESCRICAO;
+            rowData['SUPORTE'] = response[y].SUPORTE;
+            rowData['N_MANUTEN'] = response[y].N_MANUTEN;
+            rowData['PRETRATTAMENTO'] = response[y].PRETRATTAMENTO;
+            rowData['COBRE'] = response[y].COBRE;
+            rowData['NICHEL'] = response[y].NICHEL;
+            rowData['NIQUEL_FINITURA'] = response[y].NIQUEL_FINITURA;
+            rowData['CROMAGEM'] = response[y].CROMAGEM;
+            rowData['DESMETALLIZACAO'] = response[y].DESMETALLIZACAO;
+            rowData['PECAS'] = response[y].PECAS;
+            rowData['SUPERFICIE'] = response[y].SUPERFICIE;
+            rowData['DATA_INICIO'] = (response[y].DATA_INICIO == null) ? response[y].DATA_INICIO : new Date(response[y].DATA_INICIO).toLocaleDateString();
+            rowData['HORA_INICIO'] = (response[y].HORA_INICIO == null) ? response[y].HORA_INICIO : response[y].HORA_INICIO.slice(0, 8);
+            rowData['DATA_FIM'] = (response[y].DATA_FIM == null) ? response[y].DATA_FIM : new Date(response[y].DATA_FIM).toLocaleDateString();;
+            rowData['HORA_FIM'] = (response[y].HORA_FIM == null) ? response[y].HORA_FIM : response[y].HORA_FIM.slice(0, 8);
+            rowData['AREATOTAL'] = response[y].AREATOTAL;
+            rowData['LOAD_PIECES'] = response[y].LOAD_PIECES;
+            rowData['DESCRICAO_HIST'] = response[y].DESCRICAO_HIST;
+            rowData['SEQUENCIA'] = response[y].SEQUENCIA;
+            rowData['TINA'] = response[y].TINA;
+            rowData['TEMPO_INICIO'] = (response[y].TEMPO_INICIO == null) ? response[y].TEMPO_INICIO : response[y].TEMPO_INICIO.slice(0, 8);
+            rowData['TEMPO_FIM'] = (response[y].TEMPO_FIM == null) ? response[y].TEMPO_FIM : response[y].TEMPO_FIM.slice(0, 8);
+            rowData['DURACAO'] =(response[y].DURACAO == null) ? response[y].DURACAO : response[y].DURACAO.slice(0, 8);
+            rowData['LIMITE_INCIO'] = (response[y].LIMITE_INCIO == null) ? response[y].LIMITE_INCIO : response[y].LIMITE_INCIO.slice(0, 8);
+            rowData['LIMITE_FIM'] = (response[y].LIMITE_FIM == null) ? response[y].LIMITE_FIM : response[y].LIMITE_FIM.slice(0, 8);
+            rowData['TEMPERATURA_BANHO'] = response[y].TEMPERATURA_BANHO;
+            rowData['RACK_CODE'] = response[y].RACK_CODE;
+            rowData['RACK_TYPE'] = response[y].RACK_TYPE;
+            rowData['LOAD_RAW'] = response[y].LOAD_RAW;
+            rowData['LOAD_USER'] = response[y].LOAD_USER;
+
             var count = 15;
             for (var x in this.columdefeito) {
-              rowData[this.columdefeito[x]] = (response[y][count] == null) ? 0 : response[y][count];
+              // rowData[this.columdefeito[x]] = (response[y][count] == null) ? 0 : response[y][count];
               count++;
             }
             this.rowData1.push(rowData);
@@ -430,16 +474,16 @@ export class ListaComponent {
           this.rowData = this.rowData1.slice();
           var valor = this.page_size;
           if (valor == 'todos') valor = this.rowData.length;
-          if(this.gridOptions.api != null)  this.gridOptions.api.paginationSetPageSize(Number(valor));
-
-          if (inicio) {
-            this.configuracoes(null);
-          } else {
-            this.gridOptions.columnApi.setColumnState(this.colstate);
-            this.gridOptions.columnApi.setColumnGroupState(this.groupstate);
-            this.gridOptions.api.setSortModel(this.sortstate);
-            this.gridOptions.api.setFilterModel(this.filterstate);
-          }
+          if (this.gridOptions.api != null) this.gridOptions.api.paginationSetPageSize(Number(valor));
+this.configuracoes(null);
+          /* if (inicio) {
+             this.configuracoes(null);
+           } else {*/
+            /* this.gridOptions.columnApi.setColumnState(this.colstate);
+             this.gridOptions.columnApi.setColumnGroupState(this.groupstate);
+             this.gridOptions.api.setSortModel(this.sortstate);
+             this.gridOptions.api.setFilterModel(this.filterstate);*/
+          /* }*/
         } else {
           this.rowData = [];
         }
@@ -508,8 +552,7 @@ export class ListaComponent {
           vistas.sortstate = JSON.stringify(this.gridOptions.api.getSortModel());
           vistas.filterstate = JSON.stringify(this.gridOptions.api.getFilterModel());
           vistas.descricao = this.texto_vista;
-          vistas.familias = JSON.stringify(this.famSeleccionadas);
-          vistas.pagina = 1;
+          vistas.pagina = 2;
           this.GERVISTASService.update(vistas).then(result => {
             var array = this.array.find(item => item.id == this.num_vista);
             this.config.find(item => item.value == this.num_vista).label = this.texto_vista;
@@ -552,8 +595,7 @@ export class ListaComponent {
     vistas.sortstate = JSON.stringify(this.gridOptions.api.getSortModel());
     vistas.filterstate = JSON.stringify(this.gridOptions.api.getFilterModel());
     vistas.descricao = this.texto_vista;
-    vistas.pagina = 1;
-    vistas.familias = JSON.stringify(this.famSeleccionadas);
+    vistas.pagina = 2;
     this.GERVISTASService.create(vistas).subscribe(result => {
 
       this.array.push({
@@ -606,10 +648,10 @@ export class ListaComponent {
     if (this.num_vista != 0) {
       var array = this.array.find(item => item.id == this.num_vista);
       if (array && !update) {
-        if(this.gridOptions.api != null) this.gridOptions.columnApi.setColumnState(array.colState);
-        if(this.gridOptions.api != null) this.gridOptions.columnApi.setColumnGroupState(array.groupState);
-        if(this.gridOptions.api != null) this.gridOptions.api.setSortModel(array.sortState);
-        if(this.gridOptions.api != null) this.gridOptions.api.setFilterModel(array.filterState);
+        if (this.gridOptions.api != null) this.gridOptions.columnApi.setColumnState(array.colState);
+        if (this.gridOptions.api != null) this.gridOptions.columnApi.setColumnGroupState(array.groupState);
+        if (this.gridOptions.api != null) this.gridOptions.api.setSortModel(array.sortState);
+        if (this.gridOptions.api != null) this.gridOptions.api.setFilterModel(array.filterState);
         if (array.adminedit) {
           if (JSON.parse(localStorage.getItem('userapp'))["admin"]) {
             this.disEditar = false;
@@ -621,14 +663,9 @@ export class ListaComponent {
             this.disGravar = true;
           }
         } else {
-          this.disEditar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node31editar");
-          this.disGravar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node31gravar");
-          this.disCriar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node31criar");
-        }
-        if (array.familias != null) {
-          this.famSeleccionadas = array.familias;
-        } else if (this.famSeleccionadas.length == 0) {
-          this.famSeleccionadas = this.selectedall;
+          this.disEditar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node33editar");
+          this.disGravar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node33gravar");
+          this.disCriar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node33criar");
         }
       }
     } else {
@@ -671,7 +708,7 @@ export class ListaComponent {
   }
 
   createRowData(inicio, update = false) {
-    this.colstate = this.gridOptions.columnApi.getColumnState();
+   this.colstate = this.gridOptions.columnApi.getColumnState();
     this.groupstate = this.gridOptions.columnApi.getColumnGroupState();
     this.sortstate = this.gridOptions.api.getSortModel();
     this.filterstate = this.gridOptions.api.getFilterModel();
@@ -679,16 +716,12 @@ export class ListaComponent {
     if (update) {
       this.rowData1 = [];
       this.gridOptions.api.showLoadingOverlay();
-      this.componentes(this.fam_temp, inicio, this.date_temp, this.date2_temp, this.ref_temp, this.user_temp, this.op_temp);
+      this.componentes();
     } else {
-      if (this.famSeleccionadas.length > 0) {
-        this.rowData1 = [];
-        this.gridOptions.api.showLoadingOverlay();
-        this.columnDefs = [];
-        this.analises(inicio);
-      } else {
-        alert("Campo Famílias encontra-se vazio!")
-      }
+      this.rowData1 = [];
+      this.gridOptions.api.showLoadingOverlay();
+      this.columnDefs = [];
+      this.analises(inicio);
     }
 
   }
@@ -883,7 +916,6 @@ function setText(selector, text) {
   }
 
 }
-
 
 
 

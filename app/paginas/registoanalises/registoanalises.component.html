@@ -22,13 +22,13 @@
                   </div>
                 </ng-template>
               </p-column>
-              <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="id" header="Código da Análise">
+              <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="id" header="Código. da Análise">
                 <ng-template pTemplate="filter" let-col>
                   <input class="ui-column-filter ui-inputtext ui-widget ui-state-default ui-corner-all" [(ngModel)]="codigo_analise" #v (ngModelChange)="filtrar(v.value,col.field)"
                     type="text">
                 </ng-template>
               </p-column>
-              <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="nome" header="Banho">
+              <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="nome" header="Banho" [style]="{'width':'18%'}">
                 <ng-template pTemplate="filter" let-col>
                   <input class="ui-column-filter ui-inputtext ui-widget ui-state-default ui-corner-all" [(ngModel)]="banho" #v2 (ngModelChange)="filtrar(v2.value,col.field)"
                     type="text">
@@ -39,7 +39,7 @@
                   </div>
                 </ng-template>
               </p-column>
-              <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="tina" header="Tina">
+              <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="tina" header="Tina" [style]="{'width':'8%'}">
                 <ng-template pTemplate="filter" let-col>
                   <input class="ui-column-filter ui-inputtext ui-widget ui-state-default ui-corner-all" [(ngModel)]="tina" #v3 (ngModelChange)="filtrar(v3.value,col.field)"
                     type="text">

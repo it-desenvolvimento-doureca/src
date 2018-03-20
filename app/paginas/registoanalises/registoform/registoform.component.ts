@@ -628,9 +628,9 @@ export class RegistoformComponent implements OnInit {
 
   //verificar eventos
   verifica(observacao, numero_analise, data_analise, nome_banho, tina, utilizador, estado, linha, email_mensagem) {
-    var dados = "{observacao:" + observacao + ",numero_analise:" + numero_analise + ",mensagem:" + email_mensagem
-      + ",data_analise:" + new Date(data_analise).toLocaleDateString() + ",nome_banho:" + nome_banho
-      + ",tina:" + tina + ",utilizador:" + utilizador + ",estado:" + estado + ",linha:" + linha + "}";
+    var dados = "{observacao::" + observacao + "\n/numero_analise::" + numero_analise + "\n/mensagem::" + email_mensagem
+      + "\n/data_analise::" + new Date(data_analise).toLocaleDateString() + "\n/nome_banho::" + nome_banho
+      + "\n/tina::" + tina + "\n/utilizador::" + utilizador + "\n/estado::" + estado + "\n/linha::" + linha + "}";
     var data = [{ MODULO: 1, MOMENTO: "Ao Concluir", PAGINA: "Ánalises", ESTADO: true, DADOS: dados, EMAIL_PARA: this.email_para }];
     this.UploadService.verficaEventos(data).subscribe(result => {
       this.simular(this.dialogemailclose)

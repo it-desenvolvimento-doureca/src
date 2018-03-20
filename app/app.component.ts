@@ -4,6 +4,8 @@ import { Router } from "@angular/router";
 import { ABDICLINHAService } from "app/servicos/ab-dic-linha.service";
 import { AppGlobals } from "app/menu/sidebar.metadata";
 import { GERPERFILLINService } from "app/servicos/ger-perfil-lin.service";
+import { UploadService } from 'app/servicos/upload.service';
+import { FileUpload } from 'primeng/primeng';
 
 @Component({
     selector: 'app-root',
@@ -11,6 +13,11 @@ import { GERPERFILLINService } from "app/servicos/ger-perfil-lin.service";
     styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+    btdisabled: boolean;
+    listfile;
+    uploadedFiles = [];;
+    email_assunto: string;
+    email_mensagem: string;
     nome: any;
     linha = 0;
     linhas: any[];
@@ -18,9 +25,10 @@ export class AppComponent {
     versao = "versão 1.0.1";
     modulo = "Gestão de Banhos Químicos";
     mensagem = "";
-
+    @ViewChild('fileInput') fileInput: FileUpload;
     @ViewChild('closedialog') closedialog: ElementRef;
-    constructor(private GERPERFILLINService: GERPERFILLINService, private globalVar: AppGlobals, private ABDICLINHAService: ABDICLINHAService, private renderer: Renderer, location: Location, private router: Router) {
+    @ViewChild('closedialog2') closedialog2: ElementRef;
+    constructor(private UploadService: UploadService, private GERPERFILLINService: GERPERFILLINService, private globalVar: AppGlobals, private ABDICLINHAService: ABDICLINHAService, private renderer: Renderer, location: Location, private router: Router) {
         this.location = location;
         //preenche combobox linhas
         this.ABDICLINHAService.getAll().subscribe(
@@ -79,7 +87,7 @@ export class AppComponent {
         var titlee = this.router.routerState.snapshot.url;
         titlee = titlee.slice(1);
         var urlarray = titlee.split("/");
-        
+
         titlee = urlarray[0];
         if (titlee.match('login')) {
             this.linha = 0;
@@ -108,4 +116,56 @@ export class AppComponent {
         this.renderer.invokeElementMethod(
             element.nativeElement, 'dispatchEvent', [event]);
     }
+
+    //verificar eventos
+    enviar() {
+        this.btdisabled = true;
+        let files = this.fileInput.files;
+        //let files = [];
+        this.listfile = null;
+        var total = files.length;
+        var count = 0;
+        if (total > 0) {
+            this.listfile = "";
+            for (var x in files) {
+                count++;
+                // console.log
+                // this.getBase64(files[x], count);
+                this.readThis(files[x], count, total);
+            }
+        } else {
+            this.sendemail();
+        }
+
+    }
+
+    sendemail() {
+        var mensagem = (this.email_mensagem != null) ? this.email_mensagem : "";
+        var dados = "{mensagem::" + mensagem + "\n/utilizador::" + this.isnome() + "\n/assunto::" + this.email_assunto + "}";
+
+        var data = [{ MODULO: 1, MOMENTO: "Enviar Pedido Ajuda", PAGINA: "Interno", FICHEIROS: this.listfile, ESTADO: true, DADOS: dados }];
+        this.UploadService.verficaEventos(data).subscribe(result => {
+          this.simular(this.closedialog2);
+            this.email_assunto = "";
+            this.email_mensagem = "";
+            this.fileInput.files = [];
+            this.btdisabled = false;
+        }, error => {
+            console.log(error);
+            this.btdisabled = false;
+        });
+    }
+
+    readThis(inputValue: any, count, total): void {
+        var file: File = inputValue;
+        var myReader: FileReader = new FileReader();
+
+        myReader.onloadend = (e) => {
+            this.listfile += file.name + "<//>" + myReader.result + "<:>";
+            if (count == total) this.sendemail();
+        }
+        myReader.readAsDataURL(file);
+    }
+
+
 }

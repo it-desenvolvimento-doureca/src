@@ -1044,14 +1044,14 @@ export class ManutencaoformComponent implements OnInit {
 
           }
           this.simular(this.inputgduplica);
-          this.inicia(this.id);
+          this.inicia(id);
           this.simular(this.waitingDialogclose);
-          this.router.navigate(['manutencao/editar'], { queryParams: { id: this.id } });
+          this.router.navigate(['manutencao/editar'], { queryParams: { id: id } });
         } else {
           this.simular(this.inputgduplica);
-          this.inicia(this.id);
+          this.inicia(id);
           this.simular(this.waitingDialogclose);
-          this.router.navigate(['manutencao/editar'], { queryParams: { id: this.id } });
+          this.router.navigate(['manutencao/editar'], { queryParams: { id: id } });
         }
       });
   }

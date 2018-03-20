@@ -12,6 +12,7 @@ import { AppGlobals } from 'app/menu/sidebar.metadata';
 export class MenuComponent implements OnInit {
   public menuItems: any[];
   @ViewChild('dialog') dialog: ElementRef;
+  @ViewChild('dialog2') dialog2: ElementRef;
 
   constructor(private globalVar: AppGlobals, private GERPERFILLINService: GERPERFILLINService, public router: Router, private renderer: Renderer) {
 
@@ -29,6 +30,10 @@ export class MenuComponent implements OnInit {
   }
   linha() {
     this.simular(this.dialog);
+  }
+
+  abreAjuda(){
+    this.simular(this.dialog2);
   }
 
   //simular click para mostrar mensagem

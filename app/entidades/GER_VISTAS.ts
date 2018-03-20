@@ -7,4 +7,5 @@ export class GER_VISTAS {
     sortstate: string;
     descricao: string;
     familias: string;
+    pagina: number;
 }

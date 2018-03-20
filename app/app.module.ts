@@ -102,6 +102,7 @@ import { ManutecaoReposicaoformComponent } from './paginas/manutencao-reposicao/
 import { ManutencaoNaoProgramadaComponent } from './paginas/manutencao-nao-programada/manutencao-nao-programada.component';
 import { MantencaoNaoProgramadafromComponent } from './paginas/manutencao-nao-programada/mantencao-nao-programadafrom/mantencao-nao-programadafrom.component';
 import { ParametrosRaksComponent } from './paginas/parametros-raks/parametros-raks.component';
+import { CartelasComponent } from './paginas/lmep/cartelas/cartelas.component';
 
 const routes: Routes = [
   { path: 'dashboard', component: HomeComponent, canActivate: [LoginService] },
@@ -227,6 +228,7 @@ const routes: Routes = [
       { path: 'editar', component: GestaoeventosComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } }]
   },
   { path: 'grid', component: ListaComponent, canActivate: [LoginService], data: { breadcrumb: "Grid" } },
+  { path: 'cartelas', component: CartelasComponent, canActivate: [LoginService], data: { breadcrumb: "Cartleas" } },
   { path: 'analisesjasper', component: ViewerComponent, canActivate: [LoginService], data: { breadcrumb: "Análises Jasper" } },
   { path: 'gestaobanhos_relatorios', component: ViewerComponent, canActivate: [LoginService], data: { breadcrumb: "Relatórios Gestão" } },
   { path: 'lmep_relatorios', component: ViewerComponent, canActivate: [LoginService], data: { breadcrumb: "Relatórios Gestão" } },
@@ -304,7 +306,8 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     ManutecaoReposicaoformComponent,
     ManutencaoNaoProgramadaComponent,
     MantencaoNaoProgramadafromComponent,
-    ParametrosRaksComponent
+    ParametrosRaksComponent,
+    CartelasComponent
   ],
   imports: [
     BrowserModule,

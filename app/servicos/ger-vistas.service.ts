@@ -33,6 +33,14 @@ export class GERVISTASService {
       .map(this.extractData)
       .catch((error: any) => Observable.throw('Server error'));
   }
+  
+  getbyid_pagina(id): Observable<GER_VISTAS[]> {
+    const url = webUrl.host + '/rest/sirb/getbyid_pagina/' + id + '';
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }  
 
   delete(id) {
     return this.http
