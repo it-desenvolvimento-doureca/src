@@ -14,12 +14,14 @@ import { GERFORNECEDORService } from "app/servicos/ger-fornecedor.service";
   styleUrls: ['./compform.component.css']
 })
 export class CompformComponent implements OnInit {
+  medidas_consumo: any;
+  fator_conversao;
   fator_multiplicacao;
   aditivo_check: boolean;
   componente_check: boolean;
   fornecedores: any[];
   id_fornecedor;
-  cod_ref: string;
+  cod_ref;
   componentes_silver: any;
   medidas_valor = "";
   medidas_valor_adicao;
@@ -94,7 +96,20 @@ export class CompformComponent implements OnInit {
           }
 
           this.i = this.componente.indexOf(+id);
-          this.inicia(this.componente[this.i]);
+          //preenche combobox componentes_silver
+
+          this.ABDICCOMPONENTEService.getComponentes().subscribe(
+            response => {
+              this.componentes_silver = [];
+              this.componentes_silver.push({ label: 'Sel. Ref. Comp.', value: "" });
+              for (var x in response) {
+                this.componentes_silver.push({ label: response[x].PROREF + ' - ' + response[x].PRODES1 + ' ' + response[x].PRODES2, value: { valor: response[x].PROREF, UNISTO: response[x].UNISTO } });
+              }
+              this.componentes_silver = this.componentes_silver.slice();
+              this.inicia(this.componente[this.i]);
+            },
+            error => console.log(error));
+
 
         }, error => { console.log(error); });
     }
@@ -118,7 +133,7 @@ export class CompformComponent implements OnInit {
 
         this.medidas = [];
 
-        this.medidas.push({ label: 'Sel. Unidade de Medida', value: "" });
+        this.medidas.push({ label: 'Sel. Uni. de Medida', value: "" });
         for (var x in response) {
           this.medidas.push({ label: response[x].medida, value: response[x].id_MEDIDA });
         }
@@ -126,18 +141,7 @@ export class CompformComponent implements OnInit {
       },
       error => console.log(error));
 
-    //preenche combobox componentes_silver
 
-    this.ABDICCOMPONENTEService.getComponentes().subscribe(
-      response => {
-        this.componentes_silver = [];
-        this.componentes_silver.push({ label: 'Sel. Ref. Comp.', value: "" });
-        for (var x in response) {
-          this.componentes_silver.push({ label: response[x].PROREF + ' - ' + response[x].PRODES1 + ' ' + response[x].PRODES2, value: response[x].PROREF });
-        }
-        this.componentes_silver = this.componentes_silver.slice();
-      },
-      error => console.log(error));
 
     if (urlarray[1] != null) {
       if (urlarray[1].match("editar")) {
@@ -169,11 +173,14 @@ export class CompformComponent implements OnInit {
   cod_refe(event) {
     this.nome_ref = "";
     this.nome_ref = this.componentes_silver.find(item => item.value == event.value).label.split(" - ")[1];
+    this.medidas_consumo = this.componentes_silver.find(item => item.value == event.value).value.UNISTO;
   }
 
 
   //preenche dados com o id
   inicia(id) {
+    var fator_multiplicacao = 0;
+    var fator_conversao = 0;
     if (id != 0 && id != "undefined") {
       this.ABDICCOMPONENTEService.getbyID(id).subscribe(
         response => {
@@ -187,11 +194,17 @@ export class CompformComponent implements OnInit {
               this.nome = response[x].nome_COMPONENTE;
               this.medidas_valor = response[x].id_UNIDADE_COMPONENTE;
               this.obs = response[x].obs;
-              this.cod_ref = response[x].cod_REF;
+              this.cod_ref = this.componentes_silver.find(item => item.value.valor == response[x].cod_REF).value;
               this.nome_ref = response[x].nome_REF;
+              this.medidas_consumo = response[x].unisto;
               this.id_fornecedor = response[x].id_FORNECEDOR;
               this.medidas_valor_adicao = response[x].id_UNIDADE_ADITIVO;
-              if (response[x].factor_MULTIPLICACAO_AGUA != null) this.fator_multiplicacao = response[x].factor_MULTIPLICACAO_AGUA.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
+
+              if (response[x].factor_MULTIPLICACAO_AGUA != null) fator_multiplicacao = response[x].factor_MULTIPLICACAO_AGUA;
+              this.fator_multiplicacao = fator_multiplicacao.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
+              
+              if (response[x].factor_CONVERSAO != null) fator_conversao = response[x].factor_CONVERSAO;
+              this.fator_conversao = fator_conversao.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
 
               if (response[x].tipo == "T") {
                 this.componente_check = true;
@@ -248,13 +261,17 @@ export class CompformComponent implements OnInit {
       componente.id_UNIDADE_COMPONENTE = this.medidas_valor;
       componente.data_CRIA = new Date();
       componente.inativo = false;
-      componente.cod_REF = this.cod_ref;
+      componente.cod_REF = this.cod_ref.valor;
       componente.nome_REF = this.nome_ref;
+      componente.unisto = this.medidas_consumo;
       componente.id_FORNECEDOR = this.id_fornecedor;
       componente.id_UNIDADE_ADITIVO = this.medidas_valor_adicao;
       var fator = 0;
+      var fatorconvers = 0;
       if (this.fator_multiplicacao != null) fator = parseFloat(String(this.fator_multiplicacao).replace(",", "."));
+      if (this.fator_conversao != null) fatorconvers = parseFloat(String(this.fator_conversao).replace(",", "."));
       componente.factor_MULTIPLICACAO_AGUA = fator;
+      componente.factor_CONVERSAO = fatorconvers;
       if (this.componente_check && this.aditivo_check) {
         componente.tipo = "T";
       } else if (this.componente_check && !this.aditivo_check) {
@@ -288,12 +305,16 @@ export class CompformComponent implements OnInit {
       componente.nome_COMPONENTE = this.nome;
       componente.data_ULT_MODIF = new Date();
       componente.utz_ULT_MODIF = this.user;
-      componente.cod_REF = this.cod_ref;
+      componente.cod_REF = this.cod_ref.valor;
       componente.nome_REF = this.nome_ref;
+      componente.unisto = this.medidas_consumo;
       componente.id_FORNECEDOR = this.id_fornecedor;
       componente.id_UNIDADE_ADITIVO = this.medidas_valor_adicao;
       var fator = 0;
+      var fatorconvers = 0;
       if (this.fator_multiplicacao != null) fator = parseFloat(String(this.fator_multiplicacao).replace(",", "."));
+      if (this.fator_conversao != null) fatorconvers = parseFloat(String(this.fator_conversao).replace(",", "."));
+      componente.factor_CONVERSAO = fatorconvers;
       componente.factor_MULTIPLICACAO_AGUA = fator;
       if (this.componente_check && this.aditivo_check) {
         componente.tipo = "T";

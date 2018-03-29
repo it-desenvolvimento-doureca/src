@@ -16,5 +16,7 @@ export class AB_DIC_COMPONENTE {
     id_FORNECEDOR: number
     tipo: string;
     obrigatorio: string;
+    unisto: string;
     factor_MULTIPLICACAO_AGUA: number;
+    factor_CONVERSAO: number;
 }

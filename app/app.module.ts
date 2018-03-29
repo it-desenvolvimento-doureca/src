@@ -103,6 +103,8 @@ import { ManutencaoNaoProgramadaComponent } from './paginas/manutencao-nao-progr
 import { MantencaoNaoProgramadafromComponent } from './paginas/manutencao-nao-programada/mantencao-nao-programadafrom/mantencao-nao-programadafrom.component';
 import { ParametrosRaksComponent } from './paginas/parametros-raks/parametros-raks.component';
 import { CartelasComponent } from './paginas/lmep/cartelas/cartelas.component';
+import { ABDICLINHAOFService } from './servicos/ab-dic-linha-of.service';
+import { ABMOVMANUTENCAOETIQService } from 'app/servicos/ab-mov-manutencao-etiq.service';
 
 const routes: Routes = [
   { path: 'dashboard', component: HomeComponent, canActivate: [LoginService] },
@@ -383,6 +385,8 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     RegistoProducao,
     GERCAMPOSDISPService,
     GERPOSTOSService,
+    ABDICLINHAOFService,
+    ABMOVMANUTENCAOETIQService,
     GERFORNECEDORService],
   bootstrap: [AppComponent]
 })

@@ -69,6 +69,14 @@ export class ABMOVMANUTENCAOLINHAService {
 
 
 
+  getDadosEtiqueta(etiq) {
+    const url = webUrl.host + '/rest/sirb/getDadosEtiqueta/' + etiq;
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
   private extractData(res: Response) {
     let body = res.json();
     return body;

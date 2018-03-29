@@ -91,12 +91,12 @@
                   <div class="col-md-12 well">
                     <div class="col-md-4 " style="width: 32%; padding:0px;">
                       <div class="form-group form-black label-floating" style="width: 70%; float: left;">
-                        <label style="font-size: 14px;">Banho</label>
+                        <label style="font-size: 14px; width: auto;">Banho</label>
                         <p-dropdown [filter]="true" [options]="banhos" [style]="{'width':'80%'}" [(ngModel)]="item.id_banho" [ngModelOptions]="{standalone: true}"
                           (onChange)="nome_tinas($event,item.pos)" [required]="true" [disabled]="!modoedicao"></p-dropdown>
                       </div>
                       <div class="form-group form-black label-floating"  style="width: 25%; float: left;">
-                          <label style="font-size: 14px;">Dose</label>
+                          <label style="font-size: 14px ; width: auto;">Dose</label>
                           <p-dropdown [options]="item.doseadores" [style]="{'width':'60%'}" [(ngModel)]="item.doseador" [ngModelOptions]="{standalone: true}"
                             (onChange)="carregaaditivos($event,item.id_banho,item.pos)" [required]="true" [disabled]="!modoedicao || item.id_banho == null || item.doseadores.length == 0"></p-dropdown>
                         </div>

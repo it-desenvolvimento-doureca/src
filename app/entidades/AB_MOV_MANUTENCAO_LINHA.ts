@@ -10,6 +10,7 @@ export class AB_MOV_MANUTENCAO_LINHA {
     obs_PLANEAMENTO: string;
     stock: number;
     cod_REF: string;
+    nome_REF: string;
     stkunit: string;
     valor_AGUA: number;
 }

@@ -50,8 +50,22 @@ export class ABDICLINHAService {
       .then(res => res.json().data)
       .catch(this.handleError);
   }
+  
+  verificaOF(of) {
+    const url = webUrl.host + '/rest/sirb/verificaOF/' + of;
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
 
-
+  verificaREF(ref) {
+    const url = webUrl.host + '/rest/sirb/verificaREF/' +ref;
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
 
   private extractData(res: Response) {
     let body = res.json();

@@ -28,6 +28,8 @@ import { RelatoriosService } from 'app/servicos/relatorios.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { setTimeout } from 'core-js/library/web/timers';
 import { ABDICBANHOCOMPONENTEService } from 'app/servicos/ab-dic-banho-componente.service';
+import { AB_MOV_MANUTENCAO_ETIQ } from '../../../entidades/AB_MOV_MANUTENCAO_ETIQ';
+import { ABMOVMANUTENCAOETIQService } from 'app/servicos/ab-mov-manutencao-etiq.service';
 
 @Component({
   selector: 'app-constbanhosform',
@@ -100,8 +102,32 @@ export class ConstbanhosformComponent implements OnInit {
   @ViewChild('alteraeditar') alteraeditar: ElementRef;
   @ViewChild('alteraeditartrue') alteraeditartrue: ElementRef;
   @ViewChild('imprime') imprime: ElementRef;
+  /** novo */
+  tempQTD: any[];
+  tempeti: any[];
+  cod_ref: string;
+  adit_design: string;
+  etiquetas = [];
+  etiquetasaditivo = [];
+  idtempetiquetas = 0;
+  idtempetiquetasaditivo = 0;
+  unidade1temp: any;
+  valor1temp: any;
+  idmovacab: any;
+  posmovacab: any;
+  mensagem_aviso = "";
+  tempconsumiraditivo;
+  factor_conversao: any;
+  tempidlin: any;
+  @ViewChild('dialogetiq') dialogetiq: ElementRef;
+  @ViewChild('closedialogetiq') closedialogetiq: ElementRef;
+  @ViewChild('dialogetiq2') dialogetiq2: ElementRef;
+  @ViewChild('closedialogetiq2') closedialogetiq2: ElementRef;
+  @ViewChild('dialogAviso') dialogAviso: ElementRef;
+  @ViewChild('closedialoAviso') closedialoAviso: ElementRef;
 
-  constructor(private sanitizer: DomSanitizer, private RelatoriosService: RelatoriosService, private GERUTILIZADORESService: GERUTILIZADORESService, private elementRef: ElementRef, private GERARMAZEMService: GERARMAZEMService, private ADMOVREGPARAMOPERACAOService: ADMOVREGPARAMOPERACAOService, private ABMOVMANUTENCAOLINHAService: ABMOVMANUTENCAOLINHAService, private ABMOVMANUTENCAOCABService: ABMOVMANUTENCAOCABService, private ABMOVANALISEService: ABMOVANALISEService, private ABDICTIPOOPERACAOService: ABDICTIPOOPERACAOService, private ABDICTIPOADICAOService: ABDICTIPOADICAOService, private ABDICBANHOADITIVOService: ABDICBANHOADITIVOService, private ABMOVMANUTENCAOService: ABMOVMANUTENCAOService, private ABDICTURNOService: ABDICTURNOService, private ABDICTIPOMANUTENCAOService: ABDICTIPOMANUTENCAOService, private confirmationService: ConfirmationService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private ABDICBANHOService: ABDICBANHOService, private ABDICLINHAService: ABDICLINHAService, private globalVar: AppGlobals, private ABUNIDADADEMEDIDAService: ABUNIDADADEMEDIDAService, private location: Location, private router: Router, private renderer: Renderer, private route: ActivatedRoute) { }
+
+  constructor(private ABMOVMANUTENCAOETIQService: ABMOVMANUTENCAOETIQService, private sanitizer: DomSanitizer, private RelatoriosService: RelatoriosService, private GERUTILIZADORESService: GERUTILIZADORESService, private elementRef: ElementRef, private GERARMAZEMService: GERARMAZEMService, private ADMOVREGPARAMOPERACAOService: ADMOVREGPARAMOPERACAOService, private ABMOVMANUTENCAOLINHAService: ABMOVMANUTENCAOLINHAService, private ABMOVMANUTENCAOCABService: ABMOVMANUTENCAOCABService, private ABMOVANALISEService: ABMOVANALISEService, private ABDICTIPOOPERACAOService: ABDICTIPOOPERACAOService, private ABDICTIPOADICAOService: ABDICTIPOADICAOService, private ABDICBANHOADITIVOService: ABDICBANHOADITIVOService, private ABMOVMANUTENCAOService: ABMOVMANUTENCAOService, private ABDICTURNOService: ABDICTURNOService, private ABDICTIPOMANUTENCAOService: ABDICTIPOMANUTENCAOService, private confirmationService: ConfirmationService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private ABDICBANHOService: ABDICBANHOService, private ABDICLINHAService: ABDICLINHAService, private globalVar: AppGlobals, private ABUNIDADADEMEDIDAService: ABUNIDADADEMEDIDAService, private location: Location, private router: Router, private renderer: Renderer, private route: ActivatedRoute) { }
 
   ngOnInit() {
     //console.log(document.cookie)
@@ -373,20 +399,33 @@ export class ConstbanhosformComponent implements OnInit {
           for (var x in response) {
             var stock = null;
             var value = 0;
+            var valor1 = 0;
             if (response[x][0].stock != null) { stock = response[x][0].stock.toFixed(2); stock = stock.replace(".", ",") }
 
             if (response[x][0].valor_AGUA != null) value = response[x][0].valor_AGUA.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
+            if (response[x][0].valor1 != null) valor1 = response[x][0].valor1.replace(",", ".");
+            var cor = "";
+            if (response[x][5] > 0) {
+              cor = "yellow";
+            } else if (response[x][4] == valor1) {
+              cor = "green";
+            } else if (response[x][4] == null) {
+              cor = "";
+            } else if (response[x][4] != valor1) {
+              cor = "red";
+            }
 
             this.arrayForm.find(item => item.pos == pos).aditivos.push(
               {
-                pos: pos2,
+                pos: pos2, cor: cor, factor_CONVERSAO: response[x][1].factor_CONVERSAO,
                 id_LIN: response[x][0].id_MANUTENCAO_LIN, id: response[x][0].id_ADITIVO, nome: response[x][1].nome_COMPONENTE, valor1: response[x][0].valor1, valor2: response[x][0].valor2,
                 unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: response[x][0].obs_PLANEAMENTO,
-                stock: stock, cod_REF: response[x][0].cod_REF, unidstock: response[x][0].stkunit, valor_agua: value, factor: response[x][1].factor_MULTIPLICACAO_AGUA
+                stock: stock, cod_REF: response[x][0].cod_REF, nome_REF: response[x][0].nome_REF, unidstock: response[x][0].stkunit, valor_agua: value, factor: response[x][1].factor_MULTIPLICACAO_AGUA
               }
             );
             pos2++;
           }
+
           this.carrega_script();
           this.arrayForm.find(item => item.pos == pos).aditivos = this.arrayForm.find(item => item.pos == pos).aditivos.slice();
           this.textotabela = null;
@@ -464,9 +503,9 @@ export class ConstbanhosformComponent implements OnInit {
               var valor = null;
               if (response[x][0].quantidade_DEFEITO != null) valor = response[x][0].quantidade_DEFEITO.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
               if (response[x][1].cod_REF != null) {
-                this.carregaaditivosstock(response, x, pos, pos2, count, array,valor);
+                this.carregaaditivosstock(response, x, pos, pos2, count, array, valor);
               } else {
-                array.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, cod_REF: response[x][1].cod_REF });
+                array.push({ pos: pos2, cor: "", factor_CONVERSAO: response[x][1].factor_CONVERSAO, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
                 this.ordernar(array);
                 if (pos2 == count) {
                   this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -481,7 +520,7 @@ export class ConstbanhosformComponent implements OnInit {
     }
   }
 
-  carregaaditivosstock(response, x, pos, pos2, total2, array,valor) {
+  carregaaditivosstock(response, x, pos, pos2, total2, array, valor) {
     var query = [];
     var total = null;
     this.GERARMAZEMService.getAll().subscribe(
@@ -499,7 +538,7 @@ export class ConstbanhosformComponent implements OnInit {
                 total = parseFloat(res1[0].STOQTE).toFixed(2);
                 total = total.replace(".", ",");
               }
-              array.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: res1[0].UNIUTI, cod_REF: response[x][1].cod_REF });
+              array.push({ pos: pos2, cor: '', factor_CONVERSAO: null, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: res1[0].UNIUTI, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
               if (pos2 == total2) {
                 this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -509,7 +548,7 @@ export class ConstbanhosformComponent implements OnInit {
 
             },
             error => {
-              array.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, cod_REF: response[x][1].cod_REF });
+              array.push({ pos: pos2, cor: '', factor_CONVERSAO: null, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
               this.carrega_script();
               if (pos2 == total2) {
@@ -519,7 +558,7 @@ export class ConstbanhosformComponent implements OnInit {
               console.log(error);
             });
         } else {
-          array.find(item => item.pos == pos).aditivos.push({ pos: pos2, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, cod_REF: response[x][1].cod_REF });
+          array.find(item => item.pos == pos).aditivos.push({ pos: pos2, cor: '', factor_CONVERSAO: null, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
           this.ordernar(array);
           if (pos2 == total2) {
             this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -800,6 +839,7 @@ export class ConstbanhosformComponent implements OnInit {
           MOV_MANUTENCAO_LINHA.hora_PREVISTA = this.arrayForm.find(item => item.pos == pos).hora_pre;
           MOV_MANUTENCAO_LINHA.stock = parseFloat(this.arrayForm.find(item => item.pos == pos).aditivos[x].stock);
           MOV_MANUTENCAO_LINHA.cod_REF = this.arrayForm.find(item => item.pos == pos).aditivos[x].cod_REF;
+          MOV_MANUTENCAO_LINHA.nome_REF = this.arrayForm.find(item => item.pos == pos).aditivos[x].nome_REF;
           MOV_MANUTENCAO_LINHA.stkunit = this.arrayForm.find(item => item.pos == pos).aditivos[x].unidstock;
 
           this.criar(MOV_MANUTENCAO_LINHA, pos, x);
@@ -1270,6 +1310,7 @@ export class ConstbanhosformComponent implements OnInit {
             MOV_MANUTENCAO.utz_ULT_MODIF = this.user;
             this.ABMOVMANUTENCAOService.update(MOV_MANUTENCAO).then(() => {
               this.inicia(id_manu);
+              //this.criarficheiro(id);
             }, error => {
               console.log(error); this.simular(this.inputerro);
             });
@@ -1581,4 +1622,500 @@ export class ConstbanhosformComponent implements OnInit {
   historico(id) {
     this.router.navigate(['construcaobanhos/historico'], { queryParams: { id: id, classif: 'B' } });
   }
+
+  /* novo */
+  adicionarEtiquetas(pos, id) {
+    this.idmovacab = id;
+    this.posmovacab = pos;
+    this.idtempetiquetas = 1;
+    this.etiquetas = [];
+    this.etiquetas.push({
+      id: "id" + this.idtempetiquetas, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
+      LOTNUMENR: "", PROREF: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: null, ETQNUMENR: "", INDREF: ""
+    });
+    this.simular(this.dialogetiq);
+    setTimeout(() => {
+      this.inputfocus("id" + this.idtempetiquetas);
+    }, 300);
+  }
+
+  addlinhaetiq(id, etiqueta) {
+    if (this.etiquetas[this.etiquetas.length - 1].numero != "") {
+      this.idtempetiquetas++;
+      this.etiquetas.push({
+        id: "id" + this.idtempetiquetas, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
+        LOTNUMENR: "", PROREF: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: null, ETQNUMENR: "", INDREF: ""
+      });
+      setTimeout(() => {
+        this.inputfocus("id" + this.idtempetiquetas);
+      }, 30);
+    }
+    if (etiqueta != "") {
+      this.adicionadados(id, etiqueta);
+    }
+
+  }
+
+  adicionadados(id, campo) {
+    var etiquetan = "0000000000" + campo;
+
+    this.ABMOVMANUTENCAOLINHAService.getDadosEtiqueta(etiquetan.substring(etiquetan.length - 10)).subscribe(
+      response => {
+        var count = Object.keys(response).length;
+        if (count > 0) {
+          var etiqueta = this.etiquetas.find(item => item.id == id);
+          etiqueta.numero = etiquetan.substring(etiquetan.length - 10);
+          etiqueta.produto = response[0].PRODES1;
+          var value = "0";
+          if (response[0].ETQEMBQTE != null) value = parseFloat(response[0].ETQEMBQTE).toFixed(3);
+          etiqueta.qtd = value.replace(".", ",");
+          etiqueta.EMPCOD = response[0].EMPCOD;
+          etiqueta.ETQORILOT1 = response[0].ETQORILOT1;
+          etiqueta.LIECOD = response[0].LIECOD;
+          etiqueta.LOTNUMENR = response[0].LOTNUMENR;
+          etiqueta.PROREF = response[0].PROREF;
+          etiqueta.UNICOD = response[0].UNICOD;
+          etiqueta.UNISTO = response[0].UNISTO;
+          etiqueta.VA1REF = response[0].VA1REF;
+          etiqueta.VA2REF = response[0].VA2REF;
+          etiqueta.indnumenr = response[0].INDNUMENR;
+          etiqueta.INDREF = response[0].INDREF;
+          etiqueta.ETQNUMENR = response[0].ETQNUMENR;
+        }
+      }, error => { console.log(error); });
+  }
+
+  inputfocus(id) {
+    let inputField: HTMLElement = <HTMLElement>document.querySelectorAll('#tabelaetiquetas>tbody>tr>td #' + id + '')[0];
+    inputField && inputField.focus();
+  }
+
+  apagaretiqueta(id) {
+    var index1 = this.etiquetas.findIndex(item => item.id === id);
+    this.etiquetas.splice(index1, 1);
+    if (this.etiquetas.length == 0) {
+      this.idtempetiquetas++;
+      this.etiquetas.push({
+        id: "id" + this.idtempetiquetas, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
+        LOTNUMENR: "", PROREF: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: null, ETQNUMENR: "", INDREF: ""
+      });
+      setTimeout(() => {
+        this.inputfocus("id" + this.idtempetiquetas);
+      }, 30);
+    }
+  }
+
+  guardaretiquetas() {
+    this.tempeti = [];
+    this.tempQTD = [];
+    var enc = true;
+    for (var x in this.etiquetas) {
+      //VERIFICA SE ADITIVO JÁ TEM A ETIQUETA
+      if (this.etiquetas[x].numero != "" && this.etiquetas[x].numero != null) {
+        if (this.etiquetas[x].PROREF != null && this.etiquetas[x].PROREF != "") {
+          enc = false;
+          this.verificaetiqueta(this.idmovacab, this.etiquetas[x].PROREF, this.etiquetas[x].numero, x, new Date());
+        }
+      }
+    }
+    if (enc) {
+      this.simular(this.closedialogetiq);
+    }
+  }
+
+  verificaetiqueta(id_manu, ref, etique, x, data) {
+
+    this.ABMOVMANUTENCAOETIQService.getbyRef(id_manu, ref).subscribe(response => {
+      var count = Object.keys(response).length;
+      var encontrou = false;
+      var total = 0;
+
+      if (count > 0) {
+        for (var z in response) {
+          if (response[z][0].etqnum == etique) {
+            encontrou = true;
+          }
+          if (!this.tempQTD.find(item => item.ref == response[z][0].proref)) {
+            total = response[z][1];
+            this.tempQTD.push({ ref: response[z][0].proref, qtdetiq: 0, qtd_falta: response[z][1] });
+          }
+        }
+      }
+
+      //VERIFICA SE JÁ EXITE ETIQUETAS INSERIDAS IGUAIS
+      if (this.tempeti.indexOf(this.etiquetas[x].numero) == -1 && !encontrou) {
+        this.tempeti.push(this.etiquetas[x].numero);
+        //VERIFICA SE EXISTE ADITIVOS PARA AS ETIQUETAS INSERIDAS 
+        if (this.arrayForm.find(item => item.pos == this.posmovacab).aditivos.find(item => item.cod_REF == this.etiquetas[x].PROREF)) {
+          //VERIFICA SE EXISTEM ETIQUETAS PARA O ADITIVO
+          var adi = this.arrayForm.find(item => item.pos == this.posmovacab).aditivos.find(item => item.cod_REF == this.etiquetas[x].PROREF);
+          var conver = adi.factor_CONVERSAO;
+          if (adi.factor_CONVERSAO == null) conver = 1;
+          this.etiquetas[x].qtdconvers = parseFloat(this.etiquetas[x].qtd.replace(",", ".")) * conver;
+          if (this.tempQTD.find(item => item.ref == this.etiquetas[x].PROREF)) {
+            var elem = this.tempQTD.find(item => item.ref == this.etiquetas[x].PROREF);
+            if (total != 0) {
+              elem.qtd_falta = (adi.valor1.replace(",", ".") - total);
+            }
+
+            // if (elem.qtd_falta > 0) {
+            var valor = elem.qtd_falta;
+
+            var valor1 = this.etiquetas[x].qtdconvers - valor;
+            var valor2 = valor - this.etiquetas[x].qtdconvers;
+            var consumir = this.etiquetas[x].qtdconvers - valor;
+            consumir = Math.max(0, consumir);
+            if (consumir == 0) {
+              consumir = this.etiquetas[x].qtdconvers;
+            } else {
+              consumir = valor;
+            }
+
+            var qtd = Math.max(0, valor1);
+            valor2 = Math.max(0, valor2);
+            elem.qtdetiq = qtd;
+            elem.qtd_falta = valor2;
+            if (consumir == 0) { adi.cor = "yellow" } else if (valor2 > 0) { adi.cor = "red" } else if (valor == 0) { adi.cor = "green" }
+            this.etiquetas[x].consumir = consumir;
+            this.etiquetas[x].quant_FINAL = qtd / conver;
+            this.etiquetas[x].id_lin = adi.id_LIN;
+
+            //}
+          } else {
+            var valor = adi.valor1;
+            if (total != 0) {
+              valor = (total - adi.valor1.replace(",", "."))
+            }
+            ///if (valor.replace(",", ".") > 0) {
+
+            var valor1 = this.etiquetas[x].qtdconvers - valor.replace(",", ".");
+            var valor2 = valor.replace(",", ".") - this.etiquetas[x].qtdconvers;
+            var consumir = this.etiquetas[x].qtdconvers - valor.replace(",", ".");
+            consumir = Math.max(0, consumir);
+            if (consumir == 0) {
+              consumir = this.etiquetas[x].qtdconvers;
+            } else {
+              consumir = valor.replace(",", ".");
+            }
+            var qtd = Math.max(0, valor1);
+            valor2 = Math.max(0, valor2);
+            this.tempQTD.push({ ref: this.etiquetas[x].PROREF, qtdetiq: qtd, qtd_falta: valor2 });
+            if (consumir == 0) { adi.cor = "yellow" } else if (valor2 > 0) { adi.cor = "red" } else if (valor == 0) { adi.cor = "green" }
+            this.etiquetas[x].consumir = consumir;
+            this.etiquetas[x].quant_FINAL = qtd / conver;
+            this.etiquetas[x].id_lin = adi.id_LIN;
+            // }
+          }
+        }
+      }
+
+
+      if (this.etiquetas[x].id_lin != null) {
+        this.inseriretiquetas(this.etiquetas[x], data);
+      }
+
+      this.simular(this.closedialogetiq);
+      //console.log(tempQTD);
+      //console.log(this.etiquetas);
+    }, error => { console.log(error); });
+
+  }
+
+  inseriretiquetas(etiqueta, data) {
+    var ETI = new AB_MOV_MANUTENCAO_ETIQ;
+    ETI.id_MANUTENCAO_LIN = etiqueta.id_lin;
+    ETI.consumir = etiqueta.consumir;
+    ETI.empcod = etiqueta.EMPCOD;
+    ETI.etqnum = etiqueta.numero;
+    ETI.etqnumenr = etiqueta.etqnumenr;
+    ETI.etqorilot1 = etiqueta.ETQORILOT1;
+    ETI.indref = etiqueta.INDREF;
+    ETI.liecod = etiqueta.LIECOD;
+    ETI.lotnumenr = etiqueta.LOTNUMENR;
+    ETI.proref = etiqueta.PROREF;
+    ETI.quant_FINAL = etiqueta.quant_FINAL;
+    ETI.quant = etiqueta.qtd.replace(",", ".");
+    ETI.unicod = etiqueta.UNICOD;
+    ETI.va1REF = etiqueta.VA1REF;
+    ETI.va2REF = etiqueta.VA2REF;
+    ETI.indnumenr = etiqueta.indnumenr;
+    ETI.unisto = etiqueta.UNISTO;
+    ETI.utz_CRIA = this.user;
+    ETI.data_CRIA = data;
+    ETI.etqnumenr = etiqueta.ETQNUMENR;
+
+    this.ABMOVMANUTENCAOETIQService.create(ETI).subscribe(
+      res => {
+      }, error => {
+        console.log(error); this.simular(this.inputerro);
+      });
+  }
+
+  /********************ETIQUETAS INDIVIDUAL POR ADITIVO******************* */
+  verEtiquetas(id, ref, nome, unidade, valor, factor_CONVERSAO, pos) {
+    this.factor_conversao = factor_CONVERSAO;
+    this.cod_ref = ref;
+    this.adit_design = nome;
+    this.valor1temp = valor.replace(",", ".");
+    this.unidade1temp = "--";
+    this.tempconsumiraditivo = valor;
+    this.posmovacab = pos;
+    this.tempidlin = id;
+    if (unidade != null) this.unidade1temp = this.medidas.find(item => item.value == unidade).label;
+    this.etiquetasaditivo = [];
+    this.ABMOVMANUTENCAOETIQService.getby(id).subscribe(
+      response => {
+        var count = Object.keys(response).length;
+        if (count > 0) {
+          var numm = valor.replace(",", ".");
+
+          for (var x in response) {
+            var conver = factor_CONVERSAO;
+            if (factor_CONVERSAO == null) conver = 1;
+
+
+            numm = numm - response[x].consumir;
+
+            var consumir = (response[x].consumir != null) ? response[x].consumir.toFixed(3).replace(".", ",") : "0,000";
+            var quant_FINAL = (response[x].quant_FINAL != null) ? response[x].quant_FINAL.toFixed(3).replace(".", ",") : "0,000";
+            var quant = (response[x].quant != null) ? response[x].quant.toFixed(3).replace(".", ",") : "0,000";
+
+            var qtdconvers = parseFloat(quant.replace(",", ".")) * conver;
+
+            this.etiquetasaditivo.push({
+              id: response[x].id_MOV_MANU_ETIQUETA, numero: response[x].etqnum, produto: "", qtd: quant, consumir: consumir, quant_FINAL: quant_FINAL,
+              EMPCOD: response[x].empcod, ETQORILOT1: response[x].etqorilot1, LIECOD: response[x].liecod, LOTNUMENR: response[x].lotnumenr, PROREF: response[x].proref,
+              UNICOD: response[x].unicod, UNISTO: response[x].unisto, VA1REF: response[x].va1REF, VA2REF: response[x].va2REF, indnumenr: response[x].indnumenr, id_lin: response[x].id_MANUTENCAO_LIN, ETQNUMENR: response[x].etqnumenr, INDREF: response[x].indref,
+              qtdconvers: qtdconvers.toFixed(3).replace(".", ",")
+            });
+          }
+          this.tempconsumiraditivo = numm.toFixed(3).replace(".", ",")
+
+        }
+
+        this.etiquetasaditivo.push({
+          id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
+          LOTNUMENR: "", PROREF: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: this.tempidlin, ETQNUMENR: "", INDREF: "", qtdconvers: ""
+        });
+
+        this.simular(this.dialogetiq2);
+        setTimeout(() => {
+          this.inputfocus2("id" + this.idtempetiquetasaditivo);
+        }, 300);
+      }, error => { console.log(error); });
+  }
+
+  addlinhaetiqiadiv(id, campo) {
+    if (campo != "") {
+      this.adicionadadosaditiovs(id, campo);
+    } else {
+      if (this.etiquetasaditivo[this.etiquetasaditivo.length - 1].numero != "") {
+        this.idtempetiquetasaditivo++;
+        this.etiquetasaditivo.push({
+          id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
+          LOTNUMENR: "", PROREF: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: this.tempidlin, ETQNUMENR: "", INDREF: "", qtdconvers: ""
+        });
+        setTimeout(() => {
+          this.inputfocus2("id" + this.idtempetiquetasaditivo);
+        }, 30);
+      }
+    }
+  }
+
+  inputfocus2(id) {
+    let inputField: HTMLElement = <HTMLElement>document.querySelectorAll('#tabelaetiquetas2>tbody>tr>td #' + id + '')[0];
+    inputField && inputField.focus();
+  }
+
+  apagaretiquetaaditivo(id) {
+    var index1 = this.etiquetasaditivo.findIndex(item => item.id === id);
+    if (id.toString().substring(0, 2) != "id") {
+      this.ABMOVMANUTENCAOETIQService.delete(id).then(() => {
+        this.etiquetasaditivo.splice(index1, 1);
+        this.calculaFalta();
+        this.verificaetiquetaaditivo();
+      },
+        error => { console.log(error); /*this.simular(this.inputerro);*/ });
+    } else {
+      this.etiquetasaditivo.splice(index1, 1);
+      this.calculaFalta();
+      this.verificaetiquetaaditivo();
+    }
+
+    if (this.etiquetasaditivo.length == 0) {
+      this.idtempetiquetasaditivo++;
+      this.etiquetasaditivo.push({
+        id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
+        LOTNUMENR: "", PROREF: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: this.tempidlin, ETQNUMENR: "", INDREF: "", qtdconvers: ""
+      });
+      setTimeout(() => {
+        this.inputfocus2("id" + this.idtempetiquetasaditivo);
+      }, 30);
+    }
+    this.calculaFalta();
+  }
+
+  adicionadadosaditiovs(id, campo) {
+    var etiquetan = "0000000000" + campo;
+    var count = 0;
+    for (var y in this.etiquetasaditivo) {
+      if (this.etiquetasaditivo[y].numero == etiquetan.substring(etiquetan.length - 10) && this.etiquetasaditivo[y].ETQNUMENR != "") {
+        count++;
+      }
+    }
+
+    if (count < 1) {
+      if (this.etiquetasaditivo[this.etiquetasaditivo.length - 1].numero != "") {
+        this.idtempetiquetasaditivo++;
+        this.etiquetasaditivo.push({
+          id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
+          LOTNUMENR: "", PROREF: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: this.tempidlin, ETQNUMENR: "", INDREF: "", qtdconvers: ""
+        });
+        setTimeout(() => {
+          this.inputfocus2("id" + this.idtempetiquetasaditivo);
+        }, 30);
+      }
+      this.ABMOVMANUTENCAOLINHAService.getDadosEtiqueta(etiquetan.substring(etiquetan.length - 10)).subscribe(
+        response => {
+          var count = Object.keys(response).length;
+          if (count > 0) {
+
+            if (this.cod_ref == response[0].PROREF) {
+
+              var etiqueta = this.etiquetasaditivo.find(item => item.id == id);
+              etiqueta.numero = etiquetan.substring(etiquetan.length - 10);
+              etiqueta.produto = response[0].PRODES1;
+              var value = "0";
+              if (response[0].ETQEMBQTE != null) value = parseFloat(response[0].ETQEMBQTE).toFixed(3);
+              var qtd = parseFloat(value) * this.factor_conversao;
+              etiqueta.qtdconvers = qtd.toFixed(3).replace(".", ",");
+              etiqueta.qtd = value.replace(".", ",");
+              etiqueta.EMPCOD = response[0].EMPCOD;
+              etiqueta.ETQORILOT1 = response[0].ETQORILOT1;
+              etiqueta.LIECOD = response[0].LIECOD;
+              etiqueta.LOTNUMENR = response[0].LOTNUMENR;
+              etiqueta.PROREF = response[0].PROREF;
+              etiqueta.UNICOD = response[0].UNICOD;
+              etiqueta.UNISTO = response[0].UNISTO;
+              etiqueta.VA1REF = response[0].VA1REF;
+              etiqueta.VA2REF = response[0].VA2REF;
+              etiqueta.indnumenr = response[0].INDNUMENR;
+              etiqueta.INDREF = response[0].INDREF;
+              etiqueta.ETQNUMENR = response[0].ETQNUMENR;
+
+              var numm = this.tempconsumiraditivo.replace(",", ".")
+
+              var consumir = qtd - numm;
+              var falta = numm - qtd;
+              consumir = Math.max(0, consumir);
+              falta = Math.max(0, falta);
+              if (consumir == 0) {
+                consumir = qtd;
+              } else {
+                consumir = numm;
+              }
+              var cons = consumir.toLocaleString();
+              etiqueta.consumir = parseFloat(cons).toFixed(3).replace(".", ",");
+              var qtd_f = Math.max(0, qtd - numm);
+              etiqueta.quant_FINAL = (qtd_f / this.factor_conversao).toFixed(3).replace(".", ",");
+              //etiqueta.qtdconvers = 0;
+              this.tempconsumiraditivo = falta.toFixed(3).replace(".", ",");
+            } else {
+              this.mensagem_aviso = "Etiqueta não pertence a este aditivo!";
+              this.simular(this.dialogAviso);
+            }
+
+          }
+        }, error => { console.log(error); });
+    } else {
+      this.mensagem_aviso = "Etiqueta já foi adicionada!";
+      this.simular(this.dialogAviso);
+    }
+  }
+
+  guardaretiquetasaditivos() {
+    for (var y in this.etiquetasaditivo) {
+      if (this.etiquetasaditivo[y].numero != null && this.etiquetasaditivo[y].numero != "") {
+        this.etiquetasaditivo[y].quant_FINAL = this.etiquetasaditivo[y].quant_FINAL.replace(",", ".");
+        this.etiquetasaditivo[y].consumir = this.etiquetasaditivo[y].consumir.replace(",", ".");
+        if (this.etiquetasaditivo[y].id.toString().substring(0, 2) == "id") {
+          this.inseriretiquetas(this.etiquetasaditivo[y], new Date());
+        } else {
+          this.atualizaetiquetas(this.etiquetasaditivo[y]);
+        }
+      }
+    }
+    this.verificaetiquetaaditivo();
+    this.simular(this.closedialogetiq2);
+  }
+
+  atualizaetiquetas(etiqueta) {
+
+    this.ABMOVMANUTENCAOETIQService.getbyid(etiqueta.id).subscribe(
+      response => {
+        var ETI = new AB_MOV_MANUTENCAO_ETIQ;
+        ETI = response[0];
+        ETI.consumir = etiqueta.consumir;
+        ETI.quant_FINAL = etiqueta.quant_FINAL;
+        ETI.quant = etiqueta.qtd.replace(",", ".");
+
+        this.ABMOVMANUTENCAOETIQService.update(ETI).then(() => {
+        }, error => {
+          console.log(error);
+        });
+      }, error => {
+        console.log(error);
+      });
+  }
+  verificaetiquetaaditivo() {
+    var adi = this.arrayForm.find(item => item.pos == this.posmovacab).aditivos.find(item => item.cod_REF == this.cod_ref);
+    var encontrou = false;
+    var count = 0;
+    for (var y in this.etiquetasaditivo) {
+      if (this.etiquetasaditivo[y].numero != null && this.etiquetasaditivo[y].numero != "") {
+        if (this.etiquetasaditivo[y].consumir.replace(",", ".") == 0) {
+          encontrou = true;
+        }
+        count++;
+      }
+    }
+
+    if (count > 0) {
+      if (this.tempconsumiraditivo.replace(",", ".") > 0) {
+        adi.cor = "red";
+      } else if (encontrou) {
+        adi.cor = "yellow";
+      } else if (this.tempconsumiraditivo.replace(",", ".") == 0) {
+        adi.cor = "green";
+      } else {
+        adi.cor = "";
+      }
+    } else {
+      adi.cor = "";
+    }
+  }
+
+  calculaFalta(atualiza = false, id = null) {
+    var total = this.valor1temp * 1;
+    var encontrou = false;
+    for (var y in this.etiquetasaditivo) {
+      if (this.etiquetasaditivo[y].numero != null && this.etiquetasaditivo[y].numero != "") {
+        total = total - this.etiquetasaditivo[y].consumir.replace(",", ".");
+        if (atualiza && this.etiquetasaditivo[y].id == id) {
+          var to_final = (this.etiquetasaditivo[y].qtdconvers.replace(",", ".") - this.etiquetasaditivo[y].consumir.replace(",", ".")) / this.factor_conversao;
+          this.etiquetasaditivo[y].quant_FINAL = to_final.toFixed(3).replace(".", ",");
+        }
+      }
+    }
+
+    this.tempconsumiraditivo = total.toFixed(3).replace(".", ",");
+  }
+
+
+  criarficheiro(id) {
+    this.ABMOVMANUTENCAOETIQService.criaficheiro(id).subscribe(
+      response => {
+      }, error => { console.log(error); });
+  }
+
 }

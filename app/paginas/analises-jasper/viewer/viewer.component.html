@@ -33,10 +33,12 @@
                 <i *ngIf="aumentado" class="material-icons">fullscreen_exit</i>
               </button>
             </div>
+            <div *ngIf="fileURL!=null" class="divtop" style="background: #ebebeb;     background: #ebebeb; top: 64.5px; width: 74px; height: 27px; left: 4px;">
+            </div>
             <h5 align="center" *ngIf="fileURL == null" style="display: inline; margin-left: 10px; color: black; vertical-align: bottom;">Selecione uma Análise...</h5>
             <iframe [src]="fileURL" *ngIf="fileURL!=null" width="100%" height="100%">
             </iframe>
-            <div class="divbottom" *ngIf="fileURL!=null" >
+            <div class="divbottom" *ngIf="fileURL!=null">
             </div>
           </div>
         </div>
