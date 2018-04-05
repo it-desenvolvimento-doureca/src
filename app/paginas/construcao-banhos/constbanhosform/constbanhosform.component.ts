@@ -103,6 +103,7 @@ export class ConstbanhosformComponent implements OnInit {
   @ViewChild('alteraeditartrue') alteraeditartrue: ElementRef;
   @ViewChild('imprime') imprime: ElementRef;
   /** novo */
+  tempQTD2: any;
   tempQTD: any[];
   tempeti: any[];
   cod_ref: string;
@@ -400,25 +401,31 @@ export class ConstbanhosformComponent implements OnInit {
             var stock = null;
             var value = 0;
             var valor1 = 0;
+            var valor2 = 0;
             if (response[x][0].stock != null) { stock = response[x][0].stock.toFixed(2); stock = stock.replace(".", ",") }
 
             if (response[x][0].valor_AGUA != null) value = response[x][0].valor_AGUA.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
             if (response[x][0].valor1 != null) valor1 = response[x][0].valor1.replace(",", ".");
+            if (response[x][0].valor2 != null) valor2 = response[x][0].valor2.replace(".", ",");
             var cor = "";
-            if (response[x][5] > 0) {
+            var total = 0;
+
+            if (response[x][4] != null) total = response[x][4];
+
+            if (total != valor1 && response[x][4] != null) {
+              cor = "red";
+            } else if (response[x][5] > 0) {
               cor = "yellow";
-            } else if (response[x][4] == valor1) {
+            } else if (total == valor1 && response[x][4] != null) {
               cor = "green";
             } else if (response[x][4] == null) {
               cor = "";
-            } else if (response[x][4] != valor1) {
-              cor = "red";
             }
 
             this.arrayForm.find(item => item.pos == pos).aditivos.push(
               {
-                pos: pos2, cor: cor, factor_CONVERSAO: response[x][1].factor_CONVERSAO,
-                id_LIN: response[x][0].id_MANUTENCAO_LIN, id: response[x][0].id_ADITIVO, nome: response[x][1].nome_COMPONENTE, valor1: response[x][0].valor1, valor2: response[x][0].valor2,
+                pos: pos2, cor: cor, factor_CONVERSAO: response[x][1].factor_CONVERSAO, cisterna: response[x][1].cisterna,
+                id_LIN: response[x][0].id_MANUTENCAO_LIN, id: response[x][0].id_ADITIVO, nome: response[x][1].nome_COMPONENTE, valor1: valor1.toString().replace(".", ","), valor2: valor2,
                 unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: response[x][0].obs_PLANEAMENTO,
                 stock: stock, cod_REF: response[x][0].cod_REF, nome_REF: response[x][0].nome_REF, unidstock: response[x][0].stkunit, valor_agua: value, factor: response[x][1].factor_MULTIPLICACAO_AGUA
               }
@@ -505,7 +512,7 @@ export class ConstbanhosformComponent implements OnInit {
               if (response[x][1].cod_REF != null) {
                 this.carregaaditivosstock(response, x, pos, pos2, count, array, valor);
               } else {
-                array.push({ pos: pos2, cor: "", factor_CONVERSAO: response[x][1].factor_CONVERSAO, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
+                array.push({ pos: pos2, cor: "", factor_CONVERSAO: response[x][1].factor_CONVERSAO, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
                 this.ordernar(array);
                 if (pos2 == count) {
                   this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -538,7 +545,7 @@ export class ConstbanhosformComponent implements OnInit {
                 total = parseFloat(res1[0].STOQTE).toFixed(2);
                 total = total.replace(".", ",");
               }
-              array.push({ pos: pos2, cor: '', factor_CONVERSAO: null, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: res1[0].UNIUTI, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
+              array.push({ pos: pos2, cor: '', factor_CONVERSAO: null, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: res1[0].UNIUTI, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
               if (pos2 == total2) {
                 this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -548,7 +555,7 @@ export class ConstbanhosformComponent implements OnInit {
 
             },
             error => {
-              array.push({ pos: pos2, cor: '', factor_CONVERSAO: null, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
+              array.push({ pos: pos2, cor: '', factor_CONVERSAO: null, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
               this.carrega_script();
               if (pos2 == total2) {
@@ -558,7 +565,7 @@ export class ConstbanhosformComponent implements OnInit {
               console.log(error);
             });
         } else {
-          array.find(item => item.pos == pos).aditivos.push({ pos: pos2, cor: '', factor_CONVERSAO: null, id_LIN: null, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
+          array.find(item => item.pos == pos).aditivos.push({ pos: pos2, cor: '', factor_CONVERSAO: null, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
           this.ordernar(array);
           if (pos2 == total2) {
             this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -1623,8 +1630,9 @@ export class ConstbanhosformComponent implements OnInit {
     this.router.navigate(['construcaobanhos/historico'], { queryParams: { id: id, classif: 'B' } });
   }
 
-  /* novo */
-  adicionarEtiquetas(pos, id) {
+  /* novo - ver cisterna */
+  adicionarEtiquetas(pos, id, event) {
+    this.verificacisterna(pos);
     this.idmovacab = id;
     this.posmovacab = pos;
     this.idtempetiquetas = 1;
@@ -1633,6 +1641,12 @@ export class ConstbanhosformComponent implements OnInit {
       id: "id" + this.idtempetiquetas, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
       LOTNUMENR: "", PROREF: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: null, ETQNUMENR: "", INDREF: ""
     });
+    this.pos_sele = pos;
+    let elem = document.getElementById("idbt" + id);
+    let elm2 = document.getElementById("myModaletiquetascontent");
+    let coords = elem.getBoundingClientRect();
+    elm2.style.top = Math.abs(coords.bottom - event.screenY + 20) + 'px';
+    elm2.style.bottom = 'none';
     this.simular(this.dialogetiq);
     setTimeout(() => {
       this.inputfocus("id" + this.idtempetiquetas);
@@ -1750,7 +1764,7 @@ export class ConstbanhosformComponent implements OnInit {
           //VERIFICA SE EXISTEM ETIQUETAS PARA O ADITIVO
           var adi = this.arrayForm.find(item => item.pos == this.posmovacab).aditivos.find(item => item.cod_REF == this.etiquetas[x].PROREF);
           var conver = adi.factor_CONVERSAO;
-          if (adi.factor_CONVERSAO == null) conver = 1;
+          if (adi.factor_CONVERSAO == null || adi.factor_CONVERSAO == 0) conver = 1;
           this.etiquetas[x].qtdconvers = parseFloat(this.etiquetas[x].qtd.replace(",", ".")) * conver;
           if (this.tempQTD.find(item => item.ref == this.etiquetas[x].PROREF)) {
             var elem = this.tempQTD.find(item => item.ref == this.etiquetas[x].PROREF);
@@ -1821,7 +1835,7 @@ export class ConstbanhosformComponent implements OnInit {
 
   }
 
-  inseriretiquetas(etiqueta, data) {
+  inseriretiquetas(etiqueta, data, carrega = false, falta = 1, valor1 = 0, factor_conversao = 0, event = null) {
     var ETI = new AB_MOV_MANUTENCAO_ETIQ;
     ETI.id_MANUTENCAO_LIN = etiqueta.id_lin;
     ETI.consumir = etiqueta.consumir;
@@ -1846,23 +1860,179 @@ export class ConstbanhosformComponent implements OnInit {
 
     this.ABMOVMANUTENCAOETIQService.create(ETI).subscribe(
       res => {
+        if (falta == 0) this.carregaetiquetas(etiqueta.id_lin, valor1, factor_conversao, event);
       }, error => {
         console.log(error); this.simular(this.inputerro);
       });
   }
 
+  //verifica se existem aditivos cisterna
+  verificacisterna(pos) {
+    this.tempQTD2 = [];
+    for (var x in this.arrayForm.find(item => item.pos == pos).aditivos) {
+      if (this.arrayForm.find(item => item.pos == pos).aditivos[x].cisterna) {
+        var id_manu = this.arrayForm.find(item => item.pos == pos).id;
+        var ref = this.arrayForm.find(item => item.pos == pos).aditivos[x].cod_REF;
+        var valor1 = this.arrayForm.find(item => item.pos == pos).aditivos[x].valor1.replace(",", ".");
+        var etiq = [];
+        var factor_conversao = this.arrayForm.find(item => item.pos == pos).aditivos[x].factor_CONVERSAO;
+        var id_lin = this.arrayForm.find(item => item.pos == pos).aditivos[x].id_LIN;
+        var adi = this.arrayForm.find(item => item.pos == pos).aditivos[x];
+        if (factor_conversao == null || factor_conversao == 0) { factor_conversao = 1; }
+
+        this.ABMOVMANUTENCAOETIQService.getbyRef(id_manu, ref).subscribe(response => {
+          var count = Object.keys(response).length;
+          var encontrou = false;
+          var total = 0;
+          if (count > 0) {
+            for (var z in response) {
+              /*if (response[z][0].etqnum == etique) {
+                encontrou = true;
+              }*/
+              etiq.push(response[z][0].etqnum);
+              if (!this.tempQTD2.find(item => item.ref == response[z][0].proref)) {
+                total = response[z][1];
+                this.tempQTD2.push({ ref: response[z][0].proref, qtdetiq: 0, qtd_falta: response[z][1] });
+              }
+            }
+            if (true) {
+              this.adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi);
+            }
+          } else {
+            this.adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi);
+          }
+        }, error => {
+          console.log(error);
+        });
+      }
+    }
+  }
+
+  adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, carrega = false, event = null) {
+    // console.log(ref);
+    if (total < valor1) {
+      this.ABMOVMANUTENCAOLINHAService.getDadosEtiquetabyREF(ref).subscribe(
+        response => {
+          var count = Object.keys(response).length;
+          if (count > 0) {
+            var consumir;
+            var value = "0";
+            var quant_FINAL;
+            var falta = valor1 - total;
+            for (var x in response) {
+              if (falta > 0) {
+                if (etiq.indexOf(response[x].ETQNUM) == -1) {
+                  etiq.push(response[x].ETQNUM);
+                  //console.log(response[x]);
+                  if (response[x].ETQEMBQTE != null) value = parseFloat(response[x].ETQEMBQTE).toFixed(3);
+                  var qtd = parseFloat(value) * factor_conversao;
+                  var numm = falta;
+                  consumir = qtd - numm;
+                  falta = numm - qtd;
+                  consumir = Math.max(0, consumir);
+                  falta = Math.max(0, falta);
+                  if (consumir == 0) {
+                    consumir = qtd;
+                  } else {
+                    consumir = numm;
+                  }
+
+                  var qtd_f = Math.max(0, qtd - numm);
+                  quant_FINAL = (qtd_f / factor_conversao).toFixed(3);
+
+                  /*console.log(qtd);
+                  console.log(value);
+                  console.log(quant_FINAL);
+                  console.log(consumir.toFixed(3));
+                  console.log(falta);*/
+                  var etiqueta = [{
+                    id_lin: id_lin,
+                    consumir: consumir.toFixed(3),
+                    EMPCOD: response[x].EMPCOD,
+                    numero: response[x].ETQNUM,
+                    etqnumenr: response[x].ETQNUMENR,
+                    ETQORILOT1: response[x].ETQORILOT1,
+                    INDREF: response[x].INDREF,
+                    LIECOD: response[x].LIECOD,
+                    LOTNUMENR: response[x].LOTNUMENR,
+                    PROREF: response[x].PROREF,
+                    quant_FINAL: quant_FINAL,
+                    qtd: value.replace(".", ","),
+                    UNICOD: response[x].UNICOD,
+                    VA1REF: response[x].VA1REF,
+                    VA2REF: response[x].VA2REF,
+                    indnumenr: response[x].INDNUMENR,
+                    UNISTO: response[x].UNISTO,
+                    ETQNUMENR: response[x].ETQNUMENR,
+                  }];
+
+                  this.inseriretiquetas(etiqueta[0], new Date(), true, falta, valor1, factor_conversao, event);
+                  if (adi.cor == "yellow") { } else if (falta > 0) { adi.cor = "red" } else if (falta == 0) { adi.cor = "green" }
+                }
+              } else {
+                //if(carrega && count == (parseInt(x)+1)) this.carregaetiquetas(id_lin, valor1, factor_conversao, event);
+              }
+            }
+
+          } else {
+            if (carrega) this.carregaetiquetas(id_lin, valor1, factor_conversao, event);
+          }
+        }, error => {
+          console.log(error);
+        })
+    } else {
+      if (carrega) this.carregaetiquetas(id_lin, valor1, factor_conversao, event);
+    }
+  }
+
   /********************ETIQUETAS INDIVIDUAL POR ADITIVO******************* */
-  verEtiquetas(id, ref, nome, unidade, valor, factor_CONVERSAO, pos) {
-    this.factor_conversao = factor_CONVERSAO;
+  verEtiquetas(id, ref, nome, unidade, valor, factor_CONVERSAO, pos, event, cisterna) {
+    var factor_conversao = factor_CONVERSAO;
+    if (factor_conversao == null || factor_conversao == 0) { factor_conversao = 1; }
+    this.factor_conversao = factor_conversao;
     this.cod_ref = ref;
     this.adit_design = nome;
-    this.valor1temp = valor.replace(",", ".");
+    this.valor1temp = (valor != null) ? valor.replace(",", ".") : "";
     this.unidade1temp = "--";
     this.tempconsumiraditivo = valor;
     this.posmovacab = pos;
     this.tempidlin = id;
     if (unidade != null) this.unidade1temp = this.medidas.find(item => item.value == unidade).label;
     this.etiquetasaditivo = [];
+
+    if (cisterna) {
+      this.tempQTD2 = [];
+      var id_manu = this.arrayForm.find(item => item.pos == pos).id;
+      var adi = this.arrayForm.find(item => item.pos == pos).aditivos.find(item => item.id_LIN == id);
+      this.ABMOVMANUTENCAOETIQService.getbyRef(id_manu, ref).subscribe(response => {
+        var count = Object.keys(response).length;
+        var encontrou = false;
+        var total = 0;
+
+        var etiq = [];
+        if (count > 0) {
+          for (var z in response) {
+            etiq.push(response[z][0].etqnum);
+            if (!this.tempQTD2.find(item => item.ref == response[z][0].proref)) {
+              total = response[z][1];
+              this.tempQTD2.push({ ref: response[z][0].proref, qtdetiq: 0, qtd_falta: response[z][1] });
+            }
+          }
+          if (true) {
+            this.adicionaetiqueta(id_manu, ref, etiq, this.valor1temp.replace(",", "."), total, factor_conversao, id, adi, true, event);
+          }
+        } else {
+          this.adicionaetiqueta(id_manu, ref, etiq, this.valor1temp.replace(",", "."), total, factor_conversao, id, adi, true, event);
+        }
+      }, error => {
+        console.log(error);
+      });
+    } else {
+      this.carregaetiquetas(id, valor, factor_CONVERSAO, event);
+    }
+
+  }
+  carregaetiquetas(id, valor, factor_CONVERSAO, event) {
     this.ABMOVMANUTENCAOETIQService.getby(id).subscribe(
       response => {
         var count = Object.keys(response).length;
@@ -1871,10 +2041,10 @@ export class ConstbanhosformComponent implements OnInit {
 
           for (var x in response) {
             var conver = factor_CONVERSAO;
-            if (factor_CONVERSAO == null) conver = 1;
+            if (factor_CONVERSAO == null || factor_CONVERSAO == 0) conver = 1;
 
 
-            numm = numm - response[x].consumir;
+            numm = (numm - response[x].consumir).toFixed(3);
 
             var consumir = (response[x].consumir != null) ? response[x].consumir.toFixed(3).replace(".", ",") : "0,000";
             var quant_FINAL = (response[x].quant_FINAL != null) ? response[x].quant_FINAL.toFixed(3).replace(".", ",") : "0,000";
@@ -1889,7 +2059,7 @@ export class ConstbanhosformComponent implements OnInit {
               qtdconvers: qtdconvers.toFixed(3).replace(".", ",")
             });
           }
-          this.tempconsumiraditivo = numm.toFixed(3).replace(".", ",")
+          this.tempconsumiraditivo = numm.replace(".", ",")
 
         }
 
@@ -1897,6 +2067,12 @@ export class ConstbanhosformComponent implements OnInit {
           id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
           LOTNUMENR: "", PROREF: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: this.tempidlin, ETQNUMENR: "", INDREF: "", qtdconvers: ""
         });
+
+        let elem = document.getElementById("idbt2" + id);
+        let elm2 = document.getElementById("myModaletiquetascontent2");
+        let coords = elem.getBoundingClientRect();
+        elm2.style.top = Math.abs(coords.bottom - event.screenY + 20) + 'px';
+        elm2.style.bottom = 'none';
 
         this.simular(this.dialogetiq2);
         setTimeout(() => {

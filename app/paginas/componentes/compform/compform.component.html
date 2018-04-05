@@ -37,17 +37,17 @@
                   </div>
                 </div>
                 <div class="col-md-7" style="padding: 0px;">
-                  <div class="col-md-4" style="padding: 0px; width: 27%;">
+                  <div class="col-md-4" style="padding: 0px; width: 32%;">
                     <div class="form-group form-black label-floating">
                       <label style="font-size: 14px; ">Unidade Medição</label>
                       <p-dropdown [filter]="true" [options]="medidas" [style]="{'width':'100px'}" [(ngModel)]="medidas_valor" [ngModelOptions]="{standalone: true}"
                         [disabled]="!modoedicao" [required]="true"></p-dropdown>
                     </div>
                   </div>
-                  <div class="col-md-4" style="padding: 0px; width: 27%;">
+                  <div class="col-md-4" style="padding: 0px; width: 31%;">
                     <div class="form-group form-black label-floating">
                       <label style="font-size: 14px;">Unidade Adição</label>
-                      <p-dropdown [filter]="true" [options]="medidas" [style]="{'width':'100px'}" [(ngModel)]="medidas_valor_adicao" [ngModelOptions]="{standalone: true}"
+                      <p-dropdown [filter]="true" #medida_uni [options]="medidas" [style]="{'width':'100px'}" [(ngModel)]="medidas_valor_adicao" [ngModelOptions]="{standalone: true}"
                         [disabled]="!modoedicao" [required]="true"></p-dropdown>
                     </div>
                   </div>
@@ -56,6 +56,12 @@
                       <label style="font-size: 14px;">Unidade de Consumo de Stock</label>
                         <input type="text" style="width: 20%" [(ngModel)]="medidas_consumo" [ngModelOptions]="{standalone: true}" [disabled]="true">
                     </div>
+                  </div>
+                  <div class="checkbox col-md-1" style="float: none; margin-left: 14px;">
+                    <input [disabled]="!modoedicao" type="checkbox" name="cisterna" id="radio7" [(ngModel)]="cisterna_check">
+                    <label for="radio7" style="color:black">
+                      Cisterna
+                    </label>
                   </div>
                 </div>
               </div>
@@ -103,7 +109,7 @@
                 </div>
                 <div class="col-md-3">
                   <div [ngClass]="fator_conversao == null ? 'is-empty' : null" class="form-group form-black label-floating">
-                    <label class="control-label" style="font-weight: 600;">Factor de Conversão/Densidade</label>
+                    <label class="control-label" style="font-weight: 600;">Factor de Conversão/Densidade({{medidas_consumo}} -> {{medida_uni.label}})</label>
                     <input type="text" class="form-control" [(ngModel)]="fator_conversao" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
                   </div>
                 </div>

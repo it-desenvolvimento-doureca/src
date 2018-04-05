@@ -18,6 +18,7 @@ export class CompformComponent implements OnInit {
   fator_conversao;
   fator_multiplicacao;
   aditivo_check: boolean;
+  cisterna_check: boolean;
   componente_check: boolean;
   fornecedores: any[];
   id_fornecedor;
@@ -199,10 +200,11 @@ export class CompformComponent implements OnInit {
               this.medidas_consumo = response[x].unisto;
               this.id_fornecedor = response[x].id_FORNECEDOR;
               this.medidas_valor_adicao = response[x].id_UNIDADE_ADITIVO;
+              this.cisterna_check = response[x].cisterna;
 
               if (response[x].factor_MULTIPLICACAO_AGUA != null) fator_multiplicacao = response[x].factor_MULTIPLICACAO_AGUA;
               this.fator_multiplicacao = fator_multiplicacao.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
-              
+
               if (response[x].factor_CONVERSAO != null) fator_conversao = response[x].factor_CONVERSAO;
               this.fator_conversao = fator_conversao.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
 
@@ -266,6 +268,7 @@ export class CompformComponent implements OnInit {
       componente.unisto = this.medidas_consumo;
       componente.id_FORNECEDOR = this.id_fornecedor;
       componente.id_UNIDADE_ADITIVO = this.medidas_valor_adicao;
+      componente.cisterna = this.cisterna_check;
       var fator = 0;
       var fatorconvers = 0;
       if (this.fator_multiplicacao != null) fator = parseFloat(String(this.fator_multiplicacao).replace(",", "."));
@@ -310,6 +313,7 @@ export class CompformComponent implements OnInit {
       componente.unisto = this.medidas_consumo;
       componente.id_FORNECEDOR = this.id_fornecedor;
       componente.id_UNIDADE_ADITIVO = this.medidas_valor_adicao;
+      componente.cisterna = this.cisterna_check;
       var fator = 0;
       var fatorconvers = 0;
       if (this.fator_multiplicacao != null) fator = parseFloat(String(this.fator_multiplicacao).replace(",", "."));

@@ -19,4 +19,5 @@ export class AB_DIC_COMPONENTE {
     unisto: string;
     factor_MULTIPLICACAO_AGUA: number;
     factor_CONVERSAO: number;
+    cisterna: boolean;
 }
