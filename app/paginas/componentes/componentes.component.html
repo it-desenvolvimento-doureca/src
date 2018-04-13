@@ -14,6 +14,12 @@
               <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="id" header="ID"></p-column>
               <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="nome" header="Nome"></p-column>
               <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="tipo" header="Tipo"></p-column>
+              <p-column [sortable]="true"  styleclass="text-danger" field="cisterna" header="Cisterna">
+                <ng-template let-car="rowData" pTemplate="body">
+                  <i *ngIf="car.cisterna == false" class="material-icons" style="color: red;">close</i>
+                  <i *ngIf="car.cisterna == true" class="material-icons" style="color: green;">check</i>
+                </ng-template>
+              </p-column>
                <p-column styleClass="col-button">
                 <ng-template pTemplate="header">
                   <a (click)="reset()" style="color: black; float: left; cursor: pointer;">

@@ -1,5 +1,5 @@
 <app-controlos (anteriorbt)="anterior()" (duplicarbt)="duplicar()" (seguintebt)="seguinte()" (apagarbt)="apagar()"></app-controlos>
-<div class="main-content">
+<div class="main-content" id="mainpagecontent">
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-12">
@@ -19,7 +19,7 @@
           </div>
           <div class="card-content">
             <form id="formArranque" (ngSubmit)="gravar()" ngNativeValidate>
-              <div class="row" style="border-bottom: 3px solid #ddd; margin-bottom: 10px;">
+              <div class="row cabecalho_manu" style="border-bottom: 3px solid #ddd; margin-bottom: 10px;">
                 <div class="col-md-2" style="width: 11%;">
                   <div [ngClass]="num_manutencao == '' ? 'is-empty' : null" class="form-group form-black label-floating ">
                     <label style="font-size: 14px;">Nº Construção</label>
@@ -90,8 +90,8 @@
                 <form (ngSubmit)="gravarlinha(item.pos)" ngNativeValidate>
                   <div class="col-md-12" style="padding: 3px 7px 3px 10px; display: inline-grid; width: 100%; background: #f5f5f5; border: 1px solid #e3e3e3;">
                     <div style=" margin: auto 0;">
-                      <button id="idbt{{item.id}}" (click)="adicionarEtiquetas(item.pos,item.id,$event)" title="Adicionar Etiquetas" [disabled]="!planeado || !acessoprep"
-                        type="button" style="color: black; padding: 5px; margin: 0; left: 54.7%;     font-size: 18px;" class="btn btn-white btn-round btn-just-icon">
+                      <button id="idbt{{item.id}}" (click)="adicionarEtiquetas(item.pos,item.id,$event)" title="Adicionar Etiquetas" [disabled]="!planeado || !acessoprep || disaddetiquetas"
+                        type="button" style="color: black; padding: 5px; margin: 0; left: 55.3%; position: absolute; margin-top: 4px; font-size: 18px;" class="btn btn-white btn-round btn-just-icon">
                         <i class="fa fa-object-group" aria-hidden="true"></i>
                         <div class="ripple-container"></div>
                       </button>
@@ -105,12 +105,12 @@
                         <i class="material-icons">print</i>
                         <div class="ripple-container"></div>
                       </button>
-                      <button title="Ver Etiquetas" [disabled]="item.id == null || disimprimir" type="button" style="left: 59%; color: black; padding: 5px; margin: 0;"
+                      <button title="Ver Etiquetas" [disabled]="item.id == null || disprevetiquetas" type="button" style="left: 59%; color: black; padding: 5px; margin: 0;"
                         class="btn btn-white btn-round btn-just-icon" (click)="imprimir('manutencao_etiquetas',item.id)">
                         <i class="fa fa-tags" aria-hidden="true"></i>
                         <div class="ripple-container"></div>
                       </button>
-                      <button title="Imprimir Etiquetas" [disabled]="item.id == null || disimprimir" type="button" style="left: 59%; color: black; height: 30px; width: 43px; margin: 0;"
+                      <button title="Imprimir Etiquetas" [disabled]="item.id == null || disimprimiretiquetas" type="button" style="left: 59%; color: black; height: 30px; width: 43px; margin: 0;"
                         class="btn btn-white btn-round btn-just-icon" (click)="imprimiretiquetas('manutencao_etiquetas',item.id)">
                         <i class="fa fa-print" style="font-size: 14px; position: absolute; left: 22px; top:9px;" aria-hidden="true"></i>
                         <i class="fa fa-tags" style="font-size: 14px; position: absolute; left: 3px; bottom: 7px;" aria-hidden="true"></i>
@@ -126,9 +126,9 @@
                         <i class="material-icons">delete</i>
                         <div class="ripple-container"></div>
                       </button>
-                      <div class="[ form-group ]" [hidden]="!planeado || !acessoprep || modoedicao" style="float: left;">
+                      <div class="[ form-group ]" [hidden]="(!planeado || !acessoprep )|| modoedicao" style="float: left;">
                         <input (change)="preparar_linha(item.pos,item.id,item.id_manu)" type="checkbox" name="fancy-checkbox-success{{item.pos}}"
-                          id="fancy-checkbox-success{{item.pos}}" [(ngModel)]="item.preparado" [disabled]="item.preparado"
+                          id="fancy-checkbox-success{{item.pos}}" [(ngModel)]="item.preparado1" [disabled]="item.preparado"
                           [ngModelOptions]="{standalone: true}" autocomplete="off" />
                         <div class="[ btn-group ]" style="margin: 4px 0px 0px 0px;">
                           <label style=" padding: 1px 18px 3px 8px; font-size: 21px;" [ngClass]="{ 'cor_amarelo': !item.preparado,'disabled': item.preparado }"
@@ -138,7 +138,7 @@
                           </label>
                         </div>
                       </div>
-                      <div class="[ form-group ]" [hidden]="!preparado || !acessoexec || modoedicao" style="float: left; ">
+                      <div class="[ form-group ]" [hidden]="(!preparado || !acessoexec) || modoedicao" style="float: left; ">
                         <input (change)="confirmar_linha(item.pos,item.id,item.id_manu)" type="checkbox" name="fancy-checkbox-succ{{item.pos}}" id="fancy-checkbox-succ{{item.pos}}"
                           [(ngModel)]="item.executado" [disabled]="item.executado" [ngModelOptions]="{standalone: true}" autocomplete="off"
                         />
@@ -188,14 +188,14 @@
                       </div>
                       <div class="col-md-12 form-group form-black label-floating calendarmanu" style="padding: 0px; /*margin-bottom: 6px;*/">
                         <label style="font-size: 14px; float: left;/* margin-top: 11px;*/">Data/Hora Prev</label>
-                        <p-calendar [style]="{'width':'150px','height':'30px','padding':'3px 4px'}" dateFormat="yy-mm-dd" placeholder="yy-mm-dd"
+                        <p-calendar  [style]="{'width':'150px','height':'30px','padding':'3px 4px'}" dateFormat="yy-mm-dd" placeholder="yy-mm-dd"
                           [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [(ngModel)]="item.data_pre"
                           [ngModelOptions]="{standalone: true}" [showIcon]="true" [hidden]="!modoedicao" [required]="true"></p-calendar>
-                        <label style="width:100px; margin: 0px 0 0 4px; padding: 0px 0px 3px 4px; height: auto;" class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{item.data_pre | date: 'yyyy-MM-dd'}}</label>
+                        <label style="width:100px; margin: 0px 0 0 4px; padding: 0px 0px 3px 4px; height: 25.8px;" class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{item.data_pre | date: 'yyyy-MM-dd'}}</label>
                         <input [hidden]="!modoedicao" style="width:80px; padding: 5px 4px;" [(ngModel)]="item.hora_pre" [ngModelOptions]="{standalone: true}"
                           type="time" class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all" ng-reflect-ng-class="ui-inputtext ui-widget ui-stat"
                           required="true" placeholder="hh:mm">
-                        <label style="width:70px; margin: 0px 0 0 4px; padding: 0px 0px 3px 4px; height: auto;" class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{item.hora_pre}}</label>
+                        <label style="width:70px; margin: 0px 0 0 4px; padding: 0px 0px 3px 4px; height: 25.8px;" class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{item.hora_pre}}</label>
 
                       </div>
                       <div class="col-md-12  form-group form-black label-floating" style="padding: 0px;">
@@ -312,13 +312,13 @@
                                   [disabled]="true">
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
-                                <input (ngModelChange)="atualizarvaloragua(valoruni.value,aditem.factor,aditem.pos,item.pos)" #valoruni type="tel" style="background: white; text-align: center; height: 31px;"
+                                <input autocomplete="off" (ngModelChange)="atualizarvaloragua(valoruni.value,aditem.factor,aditem.pos,item.pos)" #valoruni type="tel" style="background: white; text-align: center; height: 31px;"
                                   id="number1" class="keyboard form-control keyboard-numpad" [(ngModel)]="aditem.valor1" [ngModelOptions]="{standalone: true}"
                                   [disabled]="!modoedicao">
                               </td>
                               <td style="padding: 5px 4px 0px 0px; text-align: -webkit-center;">
-                                <button id="idbt2{{aditem.id_LIN}}"(click)="verEtiquetas(aditem.id_LIN,aditem.cod_REF,aditem.nome_REF,aditem.unidade1,aditem.valor1,aditem.factor_CONVERSAO,item.pos,$event,aditem.cisterna)"
-                                  class="btetiqueta btn btn-white btn-round btn-just-icon" style="padding: 3px 3px; margin: auto;"
+                                <button id="idbt2{{aditem.id_LIN}}"(click)="verEtiquetas(aditem.id_LIN,aditem.cod_REF,aditem.nome_REF,aditem.unidade1,aditem.valor1,aditem.factor_CONVERSAO,item.pos,$event,aditem.cisterna,item.preparado)"
+                                  class="btetiqueta btn btn-white btn-round btn-just-icon" style="padding: 3px 3px; margin: auto;" [disabled]="(!planeado || !acessoprep ) && !item.preparado"
                                   type="button" title="Ver Etiquetas">
                                   <i class="fa fa-tags {{aditem.cor}}" aria-hidden="true"></i>
                                 </button>
@@ -352,7 +352,7 @@
 
                           </tbody>
                         </table>
-                       <!--  <button (click)="criarficheiro(item.id)" type="button" class="btn btn-success">Teste Ficheiro</button> -->
+                       <button (click)="criarficheiro(item.id)" type="button" class="btn btn-success">Teste Ficheiro</button>
                       </div>
                       <!-- <p-dataTable [value]="item.aditivos" dataKey="id">
                         <p-column styleclass="text-danger" field="nome" header="Aditivo">
@@ -439,6 +439,8 @@
 <button #aviso_concluir_planeamento3 data-toggle="modal" [hidden]="true" data-target="#aviso_concluir_planeamento3"></button>
 <button #aviso_concluir_planeamento4 data-toggle="modal" [hidden]="true" data-target="#aviso_concluir_planeamento4"></button>
 <button #aviso_concluir_planeamento5 data-toggle="modal" [hidden]="true" data-target="#aviso_concluir_planeamento5"></button>
+<button class="btn btn-danger btn-block" #enviadoparaimpressora [hidden]="true" onclick="demo.showNotification('top','right','Enviado para Impressora',2)"></button>
+<button class="btn btn-danger btn-block" #erroimprimir [hidden]="true" onclick="demo.showNotification('top','right','ERRO!! Impressora não existe ou não está disponível!',4)"></button>
 <button #alteraeditar id="editarclick2" data-toggle="modal" [hidden]="true"></button>
 <button #alteraeditartrue id="editarclick3" data-toggle="modal" [hidden]="true"></button>
 
@@ -525,7 +527,7 @@
             <tr *ngFor="let etiq of etiquetas" style="padding: 5px 4px 0px 0px">
               <td style="padding: 5px 4px 0px 0px">
                 <div class="form-group">
-                  <input id="{{etiq.id}}" #numero (keyup.enter)="addlinhaetiq(etiq.id,numero.value)" type="number" style="background: white;  text-align: center; height: 31px; width: 100%;"
+                  <input [disabled]="etiq.disabled" id="{{etiq.id}}" #numero (keyup.enter)="addlinhaetiq(etiq.id,numero.value)" type="number" style="  text-align: center; height: 31px; width: 100%;"
                     [(ngModel)]="etiq.numero" [ngModelOptions]="{standalone: true}">
                 </div>
               </td>
@@ -537,7 +539,7 @@
               </td>
               <td style="padding: 5px 4px 0px 0px">
                 <div class="form-group">
-                  <input [disabled]="true" type="text" style=" text-align: center; height: 31px; width: 70%;" [(ngModel)]="etiq.qtd" [ngModelOptions]="{standalone: true}">
+                  <input  [ngClass]="etiq.qtd.replace(',','.') < 0 ? 'manu_cor_vermelho' : ''" [disabled]="true" type="text" style=" text-align: center; height: 31px; width: 70%;" [(ngModel)]="etiq.qtd" [ngModelOptions]="{standalone: true}">
                   <input [disabled]="true" type="text" style=" text-align: center; height: 31px; width: 25%;" [(ngModel)]="etiq.UNISTO" [ngModelOptions]="{standalone: true}">
                 </div>
               </td>
@@ -591,7 +593,7 @@
               <td style="padding: 0px 4px 0px 0px">
                 <div class="form-group">
                   <input id="{{etiq.id}}" (keyup.enter)="addlinhaetiqiadiv(etiq.id,numero2.value)" #numero2 type="number" style="text-align: center; height: 31px; width: 100%;"
-                    [(ngModel)]="etiq.numero" [ngModelOptions]="{standalone: true}" [disabled]="!(modoedicao || planeado)">
+                    [(ngModel)]="etiq.numero" [ngModelOptions]="{standalone: true}" [disabled]="!(modoedicao || planeado ) || disaddetiquetas">
                 </div>
               </td>
               <td style="padding: 0px 4px 0px 0px">
@@ -602,23 +604,23 @@
               <td style="padding: 0px 4px 0px 0px">
                 <div class="form-group">
                   <input (input)="calculaFalta(true,etiq.id)" type="text" style=" text-align: center; height: 31px; width: 80%;" [(ngModel)]="etiq.consumir"
-                    [ngModelOptions]="{standalone: true}" [disabled]="!(modoedicao || planeado)">
+                    [ngModelOptions]="{standalone: true}" [disabled]="!(modoedicao || planeado) || disaddetiquetas">
                   <input [disabled]="true" type="text" style=" text-align: center; height: 31px; width: 15%;" [(ngModel)]="unidade1temp" [ngModelOptions]="{standalone: true}">
                 </div>
               </td>
               <td style="padding: 0px 4px 0px 0px">
                 <div class="form-group">
                   <input type="text" style=" text-align: center; height: 31px; width: 80%;" [(ngModel)]="etiq.quant_FINAL" [ngModelOptions]="{standalone: true}"
-                    [disabled]="!(modoedicao || planeado)">
+                    [disabled]="!(modoedicao || planeado) || disaddetiquetas">
                   <input [disabled]="true" type="text" style=" text-align: center; height: 31px; width: 15%;" [(ngModel)]="etiq.UNISTO" [ngModelOptions]="{standalone: true}">
                 </div>
               </td>
               <td style="padding: 0px 4px 0px 0px; width: 69px; height: 22px;">
-                <button (click)="addlinhaetiqiadiv(etiq.id)" type="button" class="ibtnDel btn btn-md btn-default " [disabled]="!(modoedicao || planeado)"
+                <button (click)="addlinhaetiqiadiv(etiq.id,numero2.value)" type="button" class="ibtnDel btn btn-md btn-default " [disabled]="!(modoedicao || planeado) || disaddetiquetas"
                   style="height: 27px;width: 2px;padding: 13px 21px 6px 7px;">
                   <i style="font-size: 15px; top: -7px" class="material-icons">add</i>
                 </button>
-                <button (click)="apagaretiquetaaditivo(etiq.id)" type="button" class="ibtnDel btn btn-md btn-danger " [disabled]="!(modoedicao || planeado)"
+                <button (click)="apagaretiquetaaditivo(etiq.id)" type="button" class="ibtnDel btn btn-md btn-danger " [disabled]="!(modoedicao || planeado) || disaddetiquetas"
                   style="height: 27px;width: 2px;padding: 13px 21px 6px 7px;">
                   <i style="font-size: 15px; top: -7px" class="material-icons">delete</i>
                 </button>
@@ -630,7 +632,7 @@
       <div class="modal-footer">
         <div style="text-align: center;">
           <button type="button" class="btn btn-danger" #closedialogetiq2 data-dismiss="modal">CANCELAR</button>
-          <button type="button" class="btn btn-success" (click)="guardaretiquetasaditivos()" [disabled]="!(modoedicao || planeado)">GUARDAR</button>
+          <button type="button" class="btn btn-success" (click)="guardaretiquetasaditivos()" [disabled]="!(modoedicao || planeado) || disaddetiquetas">GUARDAR</button>
         </div>
       </div>
     </div>
@@ -643,7 +645,7 @@
 <div style="background: #05020263;" class="modal fade" id="dialogAviso" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
   aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content" id="dialogAvisoContent">
       <!-- Modal Header -->
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">

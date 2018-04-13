@@ -30,6 +30,8 @@ import { setTimeout } from 'core-js/library/web/timers';
 import { ABDICBANHOCOMPONENTEService } from 'app/servicos/ab-dic-banho-componente.service';
 import { AB_MOV_MANUTENCAO_ETIQ } from '../../../entidades/AB_MOV_MANUTENCAO_ETIQ';
 import { ABMOVMANUTENCAOETIQService } from 'app/servicos/ab-mov-manutencao-etiq.service';
+import { GERPOSTOSService } from '../../../servicos/ger-postos.service';
+import { UploadService } from '../../../servicos/upload.service';
 
 @Component({
   selector: 'app-constbanhosform',
@@ -37,6 +39,10 @@ import { ABMOVMANUTENCAOETIQService } from 'app/servicos/ab-mov-manutencao-etiq.
   styleUrls: ['./constbanhosform.component.css']
 })
 export class ConstbanhosformComponent implements OnInit {
+  tempcisterna: any;
+  disimprimiretiquetas: boolean;
+  disprevetiquetas: boolean;
+  disaddetiquetas: boolean;
   id_banho = null;
   fileURL;
   filename: string;
@@ -102,6 +108,9 @@ export class ConstbanhosformComponent implements OnInit {
   @ViewChild('alteraeditar') alteraeditar: ElementRef;
   @ViewChild('alteraeditartrue') alteraeditartrue: ElementRef;
   @ViewChild('imprime') imprime: ElementRef;
+  @ViewChild('enviadoparaimpressora') enviadoparaimpressora: ElementRef;
+  @ViewChild('erroimprimir') erroimprimir: ElementRef;
+
   /** novo */
   tempQTD2: any;
   tempQTD: any[];
@@ -128,7 +137,8 @@ export class ConstbanhosformComponent implements OnInit {
   @ViewChild('closedialoAviso') closedialoAviso: ElementRef;
 
 
-  constructor(private ABMOVMANUTENCAOETIQService: ABMOVMANUTENCAOETIQService, private sanitizer: DomSanitizer, private RelatoriosService: RelatoriosService, private GERUTILIZADORESService: GERUTILIZADORESService, private elementRef: ElementRef, private GERARMAZEMService: GERARMAZEMService, private ADMOVREGPARAMOPERACAOService: ADMOVREGPARAMOPERACAOService, private ABMOVMANUTENCAOLINHAService: ABMOVMANUTENCAOLINHAService, private ABMOVMANUTENCAOCABService: ABMOVMANUTENCAOCABService, private ABMOVANALISEService: ABMOVANALISEService, private ABDICTIPOOPERACAOService: ABDICTIPOOPERACAOService, private ABDICTIPOADICAOService: ABDICTIPOADICAOService, private ABDICBANHOADITIVOService: ABDICBANHOADITIVOService, private ABMOVMANUTENCAOService: ABMOVMANUTENCAOService, private ABDICTURNOService: ABDICTURNOService, private ABDICTIPOMANUTENCAOService: ABDICTIPOMANUTENCAOService, private confirmationService: ConfirmationService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private ABDICBANHOService: ABDICBANHOService, private ABDICLINHAService: ABDICLINHAService, private globalVar: AppGlobals, private ABUNIDADADEMEDIDAService: ABUNIDADADEMEDIDAService, private location: Location, private router: Router, private renderer: Renderer, private route: ActivatedRoute) { }
+
+  constructor(private UploadService: UploadService, private GERPOSTOSService: GERPOSTOSService, private ABMOVMANUTENCAOETIQService: ABMOVMANUTENCAOETIQService, private sanitizer: DomSanitizer, private RelatoriosService: RelatoriosService, private GERUTILIZADORESService: GERUTILIZADORESService, private elementRef: ElementRef, private GERARMAZEMService: GERARMAZEMService, private ADMOVREGPARAMOPERACAOService: ADMOVREGPARAMOPERACAOService, private ABMOVMANUTENCAOLINHAService: ABMOVMANUTENCAOLINHAService, private ABMOVMANUTENCAOCABService: ABMOVMANUTENCAOCABService, private ABMOVANALISEService: ABMOVANALISEService, private ABDICTIPOOPERACAOService: ABDICTIPOOPERACAOService, private ABDICTIPOADICAOService: ABDICTIPOADICAOService, private ABDICBANHOADITIVOService: ABDICBANHOADITIVOService, private ABMOVMANUTENCAOService: ABMOVMANUTENCAOService, private ABDICTURNOService: ABDICTURNOService, private ABDICTIPOMANUTENCAOService: ABDICTIPOMANUTENCAOService, private confirmationService: ConfirmationService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private ABDICBANHOService: ABDICBANHOService, private ABDICLINHAService: ABDICLINHAService, private globalVar: AppGlobals, private ABUNIDADADEMEDIDAService: ABUNIDADADEMEDIDAService, private location: Location, private router: Router, private renderer: Renderer, private route: ActivatedRoute) { }
 
   ngOnInit() {
     //console.log(document.cookie)
@@ -155,6 +165,9 @@ export class ConstbanhosformComponent implements OnInit {
     this.globalVar.setdisDuplicar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003duplicar"));
 
     this.disimprimir = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003imprimir");
+    this.disimprimiretiquetas = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003imprimiretiquetas");
+    this.disprevetiquetas = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003prevetiquetas");
+    this.disaddetiquetas = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003addetiquetas");
     this.dishistorico = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003historico");
     // this.pos=3;
     /* this.arrayForm = [{pos: 1, id: null, id_banho: 1, tina: 2, capacidade: "11 L", aditivos: [{ id: 1, valor: 10, unidade: "aa", obs: "" }] },
@@ -177,6 +190,12 @@ export class ConstbanhosformComponent implements OnInit {
         });
 
 
+      if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003execucao")) {
+        this.acessoexec = true;
+      }
+      if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003preparacao")) {
+        this.acessoprep = true;
+      }
 
       //preenche array para navegar nas manutenções 
       if (this.globalVar.getfiltros("construcaobanhos_id") && this.globalVar.getfiltros("construcaobanhos_id").length > 0) {
@@ -192,12 +211,7 @@ export class ConstbanhosformComponent implements OnInit {
           this.query.push("Planeado", "Em Preparação", "Preparado", "Em Execução", "Executado");
         }
 
-        if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003execucao")) {
-          this.acessoexec = true;
-        }
-        if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003preparacao")) {
-          this.acessoprep = true;
-        }
+
 
         //preenche array das manutenções por ordem do id.
         this.ABMOVMANUTENCAOService.getAllsrotid(this.query, "B").subscribe(
@@ -613,7 +627,7 @@ export class ConstbanhosformComponent implements OnInit {
   //atulizar valor agua ao alterar Valor 1
   atualizarvaloragua(val, fator, pos_adi, pos_item) {
 
-    var num = val * fator;
+    var num = (val.replace(",", ".")) * fator;
     var num2 = num.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
     this.arrayForm.find(item => item.pos == pos_item).aditivos.find(item => item.pos == pos_adi).valor_agua = num2;
   }
@@ -844,7 +858,7 @@ export class ConstbanhosformComponent implements OnInit {
           MOV_MANUTENCAO_LINHA.valor_AGUA = value;
           MOV_MANUTENCAO_LINHA.obs_PLANEAMENTO = this.arrayForm.find(item => item.pos == pos).aditivos[x].obs;
           MOV_MANUTENCAO_LINHA.hora_PREVISTA = this.arrayForm.find(item => item.pos == pos).hora_pre;
-          MOV_MANUTENCAO_LINHA.stock = parseFloat(this.arrayForm.find(item => item.pos == pos).aditivos[x].stock);
+          MOV_MANUTENCAO_LINHA.stock = this.arrayForm.find(item => item.pos == pos).aditivos[x].stock.replace(",", ".");
           MOV_MANUTENCAO_LINHA.cod_REF = this.arrayForm.find(item => item.pos == pos).aditivos[x].cod_REF;
           MOV_MANUTENCAO_LINHA.nome_REF = this.arrayForm.find(item => item.pos == pos).aditivos[x].nome_REF;
           MOV_MANUTENCAO_LINHA.stkunit = this.arrayForm.find(item => item.pos == pos).aditivos[x].unidstock;
@@ -1287,6 +1301,32 @@ export class ConstbanhosformComponent implements OnInit {
   }
 
   preparar_linha(pos, id, id_manu) {
+    this.arrayForm.find(item => item.pos == pos).preparado = false;
+    var encontrou = false;
+    for (var x in this.arrayForm.find(item => item.pos == pos).aditivos) {
+      var adi = this.arrayForm.find(item => item.pos == pos).aditivos[x];
+      if (adi.cor == "red" || adi.cor == "yellow") {
+        encontrou = true;
+      }
+    }
+    var continuar = true;
+    if (encontrou) {
+      continuar = false;
+      this.confirmationService.confirm({
+        message: 'Existem Linhas que não estão Validadas, deseja Continuar?',
+        header: 'Aviso',
+        icon: 'fa fa-exclamation-triangle',
+        accept: () => {
+          this.preparar(pos, id, id_manu);
+        }
+      });
+    } else {
+      this.preparar(pos, id, id_manu);
+    }
+
+  }
+
+  preparar(pos, id, id_manu) {
     this.ABMOVMANUTENCAOCABService.getbyID_cab(id).subscribe(
       response => {
         for (var x in response) {
@@ -1316,8 +1356,8 @@ export class ConstbanhosformComponent implements OnInit {
             MOV_MANUTENCAO.data_ULT_MODIF = new Date();
             MOV_MANUTENCAO.utz_ULT_MODIF = this.user;
             this.ABMOVMANUTENCAOService.update(MOV_MANUTENCAO).then(() => {
+              this.criarficheiro(id);
               this.inicia(id_manu);
-              //this.criarficheiro(id);
             }, error => {
               console.log(error); this.simular(this.inputerro);
             });
@@ -1438,35 +1478,48 @@ export class ConstbanhosformComponent implements OnInit {
       (res) => {
         this.fileURL = URL.createObjectURL(res);
         //this.fileURL = this.sanitizer.bypassSecurityTrustResourceUrl(this.fileURL);
-        // console.log(this.fileURL)
-        // var a = window.open(this.fileURL);
 
-        /* this.RelatoriosService.teste().subscribe(
-           response2 => { console.log(response2) });*/
-        //  var a = window.open("http://teste.com:5050/teste/index.php?file=" + this.filename + "");
-        //a.close();
+        this.GERPOSTOSService.getByIp(this.getCookie("IP_CLIENT")).subscribe(
+          (res) => {
+            var count = Object.keys(res).length;
+            if (count > 0 && res[0].impressora != "" && res[0].impressora != null) {
+              this.UploadService.imprimir(this.filename, res[0].impressora).subscribe(
+                response => {
+                  //console.log(response)
+                  //console.log(response._body)
+                  this.simular(this.enviadoparaimpressora);
+                }, error => {
+                  //console.log(error.status);
+                  this.simular(this.erroimprimir);
+                  console.log(error._body);
+                });
 
-        /*
-                a.print();
-                a.close();*/
+            } else {
+              var iframe;
+              if (!iframe) {
+                iframe = document.createElement('iframe');
+                document.body.appendChild(iframe);
 
-
-        var iframe;
-        if (!iframe) {
-          iframe = document.createElement('iframe');
-          document.body.appendChild(iframe);
-
-          iframe.style.display = 'none';
-          iframe.onload = function () {
-            setTimeout(function () {
-              iframe.focus();
-              iframe.contentWindow.print();
-            }, 1);
-          };
-        }
-        iframe.src = this.fileURL;
+                iframe.style.display = 'none';
+                iframe.onload = function () {
+                  setTimeout(function () {
+                    iframe.focus();
+                    iframe.contentWindow.print();
+                  }, 1);
+                };
+              }
+              iframe.src = this.fileURL;
+            }
+          }, error => console.log(error));
       }
     );
+  }
+
+  //ver cookies
+  getCookie(name) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2) return parts.pop().split(";").shift();
   }
 
   //preenche tabela das análises
@@ -1630,7 +1683,7 @@ export class ConstbanhosformComponent implements OnInit {
     this.router.navigate(['construcaobanhos/historico'], { queryParams: { id: id, classif: 'B' } });
   }
 
-  /* novo - ver cisterna */
+  /**novo - ver cisterna */
   adicionarEtiquetas(pos, id, event) {
     this.verificacisterna(pos);
     this.idmovacab = id;
@@ -1638,15 +1691,22 @@ export class ConstbanhosformComponent implements OnInit {
     this.idtempetiquetas = 1;
     this.etiquetas = [];
     this.etiquetas.push({
+      disabled: false,
       id: "id" + this.idtempetiquetas, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
-      LOTNUMENR: "", PROREF: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: null, ETQNUMENR: "", INDREF: ""
+      LOTNUMENR: "", PROREF: "", PRODES: "", DATCRE: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: null, ETQNUMENR: "", INDREF: ""
     });
     this.pos_sele = pos;
-    let elem = document.getElementById("idbt" + id);
+
     let elm2 = document.getElementById("myModaletiquetascontent");
-    let coords = elem.getBoundingClientRect();
-    elm2.style.top = Math.abs(coords.bottom - event.screenY + 20) + 'px';
+    let elem3 = document.getElementById("mainpagecontent");
+    let h = elem3.getBoundingClientRect().height;
+
+    document.getElementById("myModaletiquetas2").style.height = Math.abs(h + 300) + 'px';
+    let coords = document.getElementById("toptexttop").offsetTop;
+    elm2.style.top = Math.abs(coords - 10) + 'px';
+
     elm2.style.bottom = 'none';
+
     this.simular(this.dialogetiq);
     setTimeout(() => {
       this.inputfocus("id" + this.idtempetiquetas);
@@ -1657,8 +1717,9 @@ export class ConstbanhosformComponent implements OnInit {
     if (this.etiquetas[this.etiquetas.length - 1].numero != "") {
       this.idtempetiquetas++;
       this.etiquetas.push({
+        disabled: false,
         id: "id" + this.idtempetiquetas, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
-        LOTNUMENR: "", PROREF: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: null, ETQNUMENR: "", INDREF: ""
+        LOTNUMENR: "", PROREF: "", PRODES: "", DATCRE: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: null, ETQNUMENR: "", INDREF: ""
       });
       setTimeout(() => {
         this.inputfocus("id" + this.idtempetiquetas);
@@ -1688,6 +1749,8 @@ export class ConstbanhosformComponent implements OnInit {
           etiqueta.LIECOD = response[0].LIECOD;
           etiqueta.LOTNUMENR = response[0].LOTNUMENR;
           etiqueta.PROREF = response[0].PROREF;
+          etiqueta.PRODES = response[0].PRODES1;
+          etiqueta.DATCRE = response[0].DATCRE;
           etiqueta.UNICOD = response[0].UNICOD;
           etiqueta.UNISTO = response[0].UNISTO;
           etiqueta.VA1REF = response[0].VA1REF;
@@ -1695,6 +1758,7 @@ export class ConstbanhosformComponent implements OnInit {
           etiqueta.indnumenr = response[0].INDNUMENR;
           etiqueta.INDREF = response[0].INDREF;
           etiqueta.ETQNUMENR = response[0].ETQNUMENR;
+          etiqueta.disabled = true;
         }
       }, error => { console.log(error); });
   }
@@ -1710,8 +1774,9 @@ export class ConstbanhosformComponent implements OnInit {
     if (this.etiquetas.length == 0) {
       this.idtempetiquetas++;
       this.etiquetas.push({
+        disabled: false,
         id: "id" + this.idtempetiquetas, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
-        LOTNUMENR: "", PROREF: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: null, ETQNUMENR: "", INDREF: ""
+        LOTNUMENR: "", PROREF: "", PRODES: "", DATCRE: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: null, ETQNUMENR: "", INDREF: ""
       });
       setTimeout(() => {
         this.inputfocus("id" + this.idtempetiquetas);
@@ -1725,10 +1790,11 @@ export class ConstbanhosformComponent implements OnInit {
     var enc = true;
     for (var x in this.etiquetas) {
       //VERIFICA SE ADITIVO JÁ TEM A ETIQUETA
-      if (this.etiquetas[x].numero != "" && this.etiquetas[x].numero != null) {
+      if (this.etiquetas[x].numero != "" && this.etiquetas[x].numero != null && this.etiquetas[x].qtd.replace(",", ".") > 0) {
         if (this.etiquetas[x].PROREF != null && this.etiquetas[x].PROREF != "") {
           enc = false;
           this.verificaetiqueta(this.idmovacab, this.etiquetas[x].PROREF, this.etiquetas[x].numero, x, new Date());
+
         }
       }
     }
@@ -1764,61 +1830,65 @@ export class ConstbanhosformComponent implements OnInit {
           //VERIFICA SE EXISTEM ETIQUETAS PARA O ADITIVO
           var adi = this.arrayForm.find(item => item.pos == this.posmovacab).aditivos.find(item => item.cod_REF == this.etiquetas[x].PROREF);
           var conver = adi.factor_CONVERSAO;
-          if (adi.factor_CONVERSAO == null || adi.factor_CONVERSAO == 0) conver = 1;
-          this.etiquetas[x].qtdconvers = parseFloat(this.etiquetas[x].qtd.replace(",", ".")) * conver;
-          if (this.tempQTD.find(item => item.ref == this.etiquetas[x].PROREF)) {
-            var elem = this.tempQTD.find(item => item.ref == this.etiquetas[x].PROREF);
-            if (total != 0) {
-              elem.qtd_falta = (adi.valor1.replace(",", ".") - total);
-            }
+          if (!adi.cisterna) {
+            if (adi.factor_CONVERSAO == null || adi.factor_CONVERSAO == 0) conver = 1;
+            this.etiquetas[x].qtdconvers = parseFloat(this.etiquetas[x].qtd.replace(",", ".")) * conver;
+            if (this.tempQTD.find(item => item.ref == this.etiquetas[x].PROREF)) {
+              var elem = this.tempQTD.find(item => item.ref == this.etiquetas[x].PROREF);
+              if (total != 0) {
+                elem.qtd_falta = (adi.valor1.replace(",", ".") - total);
+              }
 
-            // if (elem.qtd_falta > 0) {
-            var valor = elem.qtd_falta;
+              if (elem.qtd_falta >= 0) {
+                var valor = elem.qtd_falta;
 
-            var valor1 = this.etiquetas[x].qtdconvers - valor;
-            var valor2 = valor - this.etiquetas[x].qtdconvers;
-            var consumir = this.etiquetas[x].qtdconvers - valor;
-            consumir = Math.max(0, consumir);
-            if (consumir == 0) {
-              consumir = this.etiquetas[x].qtdconvers;
+                var valor1 = this.etiquetas[x].qtdconvers - valor;
+                var valor2 = valor - this.etiquetas[x].qtdconvers;
+                var consumir = this.etiquetas[x].qtdconvers - valor;
+                consumir = Math.max(0, consumir);
+                if (consumir == 0) {
+                  consumir = this.etiquetas[x].qtdconvers;
+                } else {
+                  consumir = valor;
+                }
+
+                var qtd = Math.max(0, valor1);
+                valor2 = Math.max(0, valor2);
+                elem.qtdetiq = qtd;
+                elem.qtd_falta = valor2;
+                if (consumir == 0) { adi.cor = "yellow" } else if (valor2 > 0) { adi.cor = "red" } else { adi.cor = "green" }
+                this.etiquetas[x].consumir = consumir;
+                this.etiquetas[x].quant_FINAL = qtd / conver;
+                this.etiquetas[x].id_lin = adi.id_LIN;
+
+              }
             } else {
-              consumir = valor;
-            }
+              var valor = adi.valor1;
+              if (total != 0) {
+                valor = (total - adi.valor1.replace(",", "."))
+              }
+              if (valor.replace(",", ".") >= 0) {
 
-            var qtd = Math.max(0, valor1);
-            valor2 = Math.max(0, valor2);
-            elem.qtdetiq = qtd;
-            elem.qtd_falta = valor2;
-            if (consumir == 0) { adi.cor = "yellow" } else if (valor2 > 0) { adi.cor = "red" } else if (valor == 0) { adi.cor = "green" }
-            this.etiquetas[x].consumir = consumir;
-            this.etiquetas[x].quant_FINAL = qtd / conver;
-            this.etiquetas[x].id_lin = adi.id_LIN;
+                var valor1 = this.etiquetas[x].qtdconvers - valor.replace(",", ".");
+                var valor2 = valor.replace(",", ".") - this.etiquetas[x].qtdconvers;
+                var consumir = this.etiquetas[x].qtdconvers - valor.replace(",", ".");
+                consumir = Math.max(0, consumir);
+                if (consumir == 0) {
+                  consumir = this.etiquetas[x].qtdconvers;
+                } else {
+                  consumir = valor.replace(",", ".");
+                }
+                var qtd = Math.max(0, valor1);
+                valor2 = Math.max(0, valor2);
+                this.tempQTD.push({ ref: this.etiquetas[x].PROREF, qtdetiq: qtd, qtd_falta: valor2 });
 
-            //}
-          } else {
-            var valor = adi.valor1;
-            if (total != 0) {
-              valor = (total - adi.valor1.replace(",", "."))
-            }
-            ///if (valor.replace(",", ".") > 0) {
 
-            var valor1 = this.etiquetas[x].qtdconvers - valor.replace(",", ".");
-            var valor2 = valor.replace(",", ".") - this.etiquetas[x].qtdconvers;
-            var consumir = this.etiquetas[x].qtdconvers - valor.replace(",", ".");
-            consumir = Math.max(0, consumir);
-            if (consumir == 0) {
-              consumir = this.etiquetas[x].qtdconvers;
-            } else {
-              consumir = valor.replace(",", ".");
+                if (consumir == 0) { adi.cor = "yellow" } else if (valor2 > 0) { adi.cor = "red" } else { adi.cor = "green" }
+                this.etiquetas[x].consumir = consumir;
+                this.etiquetas[x].quant_FINAL = qtd / conver;
+                this.etiquetas[x].id_lin = adi.id_LIN;
+              }
             }
-            var qtd = Math.max(0, valor1);
-            valor2 = Math.max(0, valor2);
-            this.tempQTD.push({ ref: this.etiquetas[x].PROREF, qtdetiq: qtd, qtd_falta: valor2 });
-            if (consumir == 0) { adi.cor = "yellow" } else if (valor2 > 0) { adi.cor = "red" } else if (valor == 0) { adi.cor = "green" }
-            this.etiquetas[x].consumir = consumir;
-            this.etiquetas[x].quant_FINAL = qtd / conver;
-            this.etiquetas[x].id_lin = adi.id_LIN;
-            // }
           }
         }
       }
@@ -1847,6 +1917,8 @@ export class ConstbanhosformComponent implements OnInit {
     ETI.liecod = etiqueta.LIECOD;
     ETI.lotnumenr = etiqueta.LOTNUMENR;
     ETI.proref = etiqueta.PROREF;
+    ETI.prodes = etiqueta.PRODES;
+    ETI.datcre = etiqueta.DATCRE;
     ETI.quant_FINAL = etiqueta.quant_FINAL;
     ETI.quant = etiqueta.qtd.replace(",", ".");
     ETI.unicod = etiqueta.UNICOD;
@@ -1860,7 +1932,7 @@ export class ConstbanhosformComponent implements OnInit {
 
     this.ABMOVMANUTENCAOETIQService.create(ETI).subscribe(
       res => {
-        if (falta == 0) this.carregaetiquetas(etiqueta.id_lin, valor1, factor_conversao, event);
+        if (falta == 0 && carrega) this.carregaetiquetas(etiqueta.id_lin, valor1, factor_conversao, event);
       }, error => {
         console.log(error); this.simular(this.inputerro);
       });
@@ -1873,7 +1945,8 @@ export class ConstbanhosformComponent implements OnInit {
       if (this.arrayForm.find(item => item.pos == pos).aditivos[x].cisterna) {
         var id_manu = this.arrayForm.find(item => item.pos == pos).id;
         var ref = this.arrayForm.find(item => item.pos == pos).aditivos[x].cod_REF;
-        var valor1 = this.arrayForm.find(item => item.pos == pos).aditivos[x].valor1.replace(",", ".");
+        var v1 = this.arrayForm.find(item => item.pos == pos).aditivos[x].valor1
+        var valor1 = (v1 != null) ? v1.replace(",", ".") : 0;
         var etiq = [];
         var factor_conversao = this.arrayForm.find(item => item.pos == pos).aditivos[x].factor_CONVERSAO;
         var id_lin = this.arrayForm.find(item => item.pos == pos).aditivos[x].id_LIN;
@@ -1896,10 +1969,10 @@ export class ConstbanhosformComponent implements OnInit {
               }
             }
             if (true) {
-              this.adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi);
+              this.adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, true);
             }
           } else {
-            this.adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi);
+            this.adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, true);
           }
         }, error => {
           console.log(error);
@@ -1908,10 +1981,10 @@ export class ConstbanhosformComponent implements OnInit {
     }
   }
 
-  adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, carrega = false, event = null) {
+  adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, cisterna, carrega = false, event = null) {
     // console.log(ref);
     if (total < valor1) {
-      this.ABMOVMANUTENCAOLINHAService.getDadosEtiquetabyREF(ref).subscribe(
+      this.ABMOVMANUTENCAOLINHAService.getDadosEtiquetabyREF(ref, cisterna).subscribe(
         response => {
           var count = Object.keys(response).length;
           if (count > 0) {
@@ -1956,6 +2029,8 @@ export class ConstbanhosformComponent implements OnInit {
                     LIECOD: response[x].LIECOD,
                     LOTNUMENR: response[x].LOTNUMENR,
                     PROREF: response[x].PROREF,
+                    PRODES: response[x].PRODES1,
+                    DATCRE: response[x].DATCRE,
                     quant_FINAL: quant_FINAL,
                     qtd: value.replace(".", ","),
                     UNICOD: response[x].UNICOD,
@@ -1966,7 +2041,7 @@ export class ConstbanhosformComponent implements OnInit {
                     ETQNUMENR: response[x].ETQNUMENR,
                   }];
 
-                  this.inseriretiquetas(etiqueta[0], new Date(), true, falta, valor1, factor_conversao, event);
+                  this.inseriretiquetas(etiqueta[0], new Date(), carrega, falta, valor1, factor_conversao, event);
                   if (adi.cor == "yellow") { } else if (falta > 0) { adi.cor = "red" } else if (falta == 0) { adi.cor = "green" }
                 }
               } else {
@@ -1986,8 +2061,9 @@ export class ConstbanhosformComponent implements OnInit {
   }
 
   /********************ETIQUETAS INDIVIDUAL POR ADITIVO******************* */
-  verEtiquetas(id, ref, nome, unidade, valor, factor_CONVERSAO, pos, event, cisterna) {
+  verEtiquetas(id, ref, nome, unidade, valor, factor_CONVERSAO, pos, event, cisterna, preparado) {
     var factor_conversao = factor_CONVERSAO;
+    this.tempcisterna = cisterna;
     if (factor_conversao == null || factor_conversao == 0) { factor_conversao = 1; }
     this.factor_conversao = factor_conversao;
     this.cod_ref = ref;
@@ -2000,7 +2076,7 @@ export class ConstbanhosformComponent implements OnInit {
     if (unidade != null) this.unidade1temp = this.medidas.find(item => item.value == unidade).label;
     this.etiquetasaditivo = [];
 
-    if (cisterna) {
+    if (cisterna && !preparado && !this.disaddetiquetas) {
       this.tempQTD2 = [];
       var id_manu = this.arrayForm.find(item => item.pos == pos).id;
       var adi = this.arrayForm.find(item => item.pos == pos).aditivos.find(item => item.id_LIN == id);
@@ -2019,10 +2095,10 @@ export class ConstbanhosformComponent implements OnInit {
             }
           }
           if (true) {
-            this.adicionaetiqueta(id_manu, ref, etiq, this.valor1temp.replace(",", "."), total, factor_conversao, id, adi, true, event);
+            this.adicionaetiqueta(id_manu, ref, etiq, this.valor1temp.replace(",", "."), total, factor_conversao, id, adi, true, true, event);
           }
         } else {
-          this.adicionaetiqueta(id_manu, ref, etiq, this.valor1temp.replace(",", "."), total, factor_conversao, id, adi, true, event);
+          this.adicionaetiqueta(id_manu, ref, etiq, this.valor1temp.replace(",", "."), total, factor_conversao, id, adi, true, true, event);
         }
       }, error => {
         console.log(error);
@@ -2054,7 +2130,7 @@ export class ConstbanhosformComponent implements OnInit {
 
             this.etiquetasaditivo.push({
               id: response[x].id_MOV_MANU_ETIQUETA, numero: response[x].etqnum, produto: "", qtd: quant, consumir: consumir, quant_FINAL: quant_FINAL,
-              EMPCOD: response[x].empcod, ETQORILOT1: response[x].etqorilot1, LIECOD: response[x].liecod, LOTNUMENR: response[x].lotnumenr, PROREF: response[x].proref,
+              EMPCOD: response[x].empcod, ETQORILOT1: response[x].etqorilot1, LIECOD: response[x].liecod, LOTNUMENR: response[x].lotnumenr, PROREF: response[x].proref, PRODES: response[x].prodes, DATCRE: response[x].datcre,
               UNICOD: response[x].unicod, UNISTO: response[x].unisto, VA1REF: response[x].va1REF, VA2REF: response[x].va2REF, indnumenr: response[x].indnumenr, id_lin: response[x].id_MANUTENCAO_LIN, ETQNUMENR: response[x].etqnumenr, INDREF: response[x].indref,
               qtdconvers: qtdconvers.toFixed(3).replace(".", ",")
             });
@@ -2065,13 +2141,18 @@ export class ConstbanhosformComponent implements OnInit {
 
         this.etiquetasaditivo.push({
           id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
-          LOTNUMENR: "", PROREF: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: this.tempidlin, ETQNUMENR: "", INDREF: "", qtdconvers: ""
+          LOTNUMENR: "", PROREF: "", PRODES: "", DATCRE: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: this.tempidlin, ETQNUMENR: "", INDREF: "", qtdconvers: ""
         });
 
-        let elem = document.getElementById("idbt2" + id);
+        let elem3 = document.getElementById("mainpagecontent");
+        let h = elem3.getBoundingClientRect().height;
+
+        document.getElementById("myModaletiquetas2").style.height = Math.abs(h + 300) + 'px';
+
         let elm2 = document.getElementById("myModaletiquetascontent2");
-        let coords = elem.getBoundingClientRect();
-        elm2.style.top = Math.abs(coords.bottom - event.screenY + 20) + 'px';
+        let coords = document.getElementById("toptexttop").offsetTop;
+        elm2.style.top = Math.abs(coords - 10) + 'px';
+
         elm2.style.bottom = 'none';
 
         this.simular(this.dialogetiq2);
@@ -2083,13 +2164,29 @@ export class ConstbanhosformComponent implements OnInit {
 
   addlinhaetiqiadiv(id, campo) {
     if (campo != "") {
-      this.adicionadadosaditiovs(id, campo);
+      if (!this.tempcisterna) {
+        this.adicionadadosaditiovs(id, campo);
+      } else {
+        this.mensagem_aviso = "Não é possível adicionar Etiqueta ao um aditivo Cisterna!";
+
+        let elm2 = document.getElementById("dialogAvisoContent");
+        let elem3 = document.getElementById("mainpagecontent");
+        let h = elem3.getBoundingClientRect().height;
+
+        document.getElementById("dialogAviso").style.height = Math.abs(h + 300) + 'px';
+        let coords = document.getElementById("toptexttop").offsetTop;
+        elm2.style.top = Math.abs(coords - 10) + 'px';
+
+        elm2.style.bottom = 'none';
+
+        this.simular(this.dialogAviso);
+      }
     } else {
       if (this.etiquetasaditivo[this.etiquetasaditivo.length - 1].numero != "") {
         this.idtempetiquetasaditivo++;
         this.etiquetasaditivo.push({
           id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
-          LOTNUMENR: "", PROREF: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: this.tempidlin, ETQNUMENR: "", INDREF: "", qtdconvers: ""
+          LOTNUMENR: "", PROREF: "", PRODES: "", DATCRE: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: this.tempidlin, ETQNUMENR: "", INDREF: "", qtdconvers: ""
         });
         setTimeout(() => {
           this.inputfocus2("id" + this.idtempetiquetasaditivo);
@@ -2122,7 +2219,7 @@ export class ConstbanhosformComponent implements OnInit {
       this.idtempetiquetasaditivo++;
       this.etiquetasaditivo.push({
         id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
-        LOTNUMENR: "", PROREF: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: this.tempidlin, ETQNUMENR: "", INDREF: "", qtdconvers: ""
+        LOTNUMENR: "", PROREF: "", PRODES: "", DATCRE: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: this.tempidlin, ETQNUMENR: "", INDREF: "", qtdconvers: ""
       });
       setTimeout(() => {
         this.inputfocus2("id" + this.idtempetiquetasaditivo);
@@ -2145,7 +2242,7 @@ export class ConstbanhosformComponent implements OnInit {
         this.idtempetiquetasaditivo++;
         this.etiquetasaditivo.push({
           id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
-          LOTNUMENR: "", PROREF: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: this.tempidlin, ETQNUMENR: "", INDREF: "", qtdconvers: ""
+          LOTNUMENR: "", PROREF: "", PRODES: "", DATCRE: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: this.tempidlin, ETQNUMENR: "", INDREF: "", qtdconvers: ""
         });
         setTimeout(() => {
           this.inputfocus2("id" + this.idtempetiquetasaditivo);
@@ -2171,6 +2268,8 @@ export class ConstbanhosformComponent implements OnInit {
               etiqueta.LIECOD = response[0].LIECOD;
               etiqueta.LOTNUMENR = response[0].LOTNUMENR;
               etiqueta.PROREF = response[0].PROREF;
+              etiqueta.PRODES = response[0].PRODES1;
+              etiqueta.DATCRE = response[0].DATCRE;
               etiqueta.UNICOD = response[0].UNICOD;
               etiqueta.UNISTO = response[0].UNISTO;
               etiqueta.VA1REF = response[0].VA1REF;
@@ -2197,7 +2296,18 @@ export class ConstbanhosformComponent implements OnInit {
               //etiqueta.qtdconvers = 0;
               this.tempconsumiraditivo = falta.toFixed(3).replace(".", ",");
             } else {
-              this.mensagem_aviso = "Etiqueta não pertence a este aditivo!";
+              this.mensagem_aviso = "Etiqueta não pertence a este aditivo ou é negativa!";
+
+              let elm2 = document.getElementById("dialogAvisoContent");
+              let elem3 = document.getElementById("mainpagecontent");
+              let h = elem3.getBoundingClientRect().height;
+
+              document.getElementById("dialogAviso").style.height = Math.abs(h + 300) + 'px';
+              let coords = document.getElementById("toptexttop").offsetTop;
+              elm2.style.top = Math.abs(coords - 10) + 'px';
+
+              elm2.style.bottom = 'none';
+
               this.simular(this.dialogAviso);
             }
 
@@ -2205,6 +2315,16 @@ export class ConstbanhosformComponent implements OnInit {
         }, error => { console.log(error); });
     } else {
       this.mensagem_aviso = "Etiqueta já foi adicionada!";
+
+      let elm2 = document.getElementById("dialogAvisoContent");
+      let elem3 = document.getElementById("mainpagecontent");
+      let h = elem3.getBoundingClientRect().height;
+
+      document.getElementById("dialogAviso").style.height = Math.abs(h + 300) + 'px';
+      let coords = document.getElementById("toptexttop").offsetTop;
+      elm2.style.top = Math.abs(coords - 10) + 'px';
+
+      elm2.style.bottom = 'none';
       this.simular(this.dialogAviso);
     }
   }
@@ -2257,7 +2377,7 @@ export class ConstbanhosformComponent implements OnInit {
     }
 
     if (count > 0) {
-      if (this.tempconsumiraditivo.replace(",", ".") > 0) {
+      if (this.tempconsumiraditivo.replace(",", ".") > 0 || this.tempconsumiraditivo.replace(",", ".") < 0) {
         adi.cor = "red";
       } else if (encontrou) {
         adi.cor = "yellow";

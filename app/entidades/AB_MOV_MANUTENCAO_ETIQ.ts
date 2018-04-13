@@ -19,4 +19,6 @@ export class AB_MOV_MANUTENCAO_ETIQ {
     utz_CRIA: number;
     data_CRIA: Date;
     indnumenr: number;
+    prodes: number;
+    datcre: number;
 }

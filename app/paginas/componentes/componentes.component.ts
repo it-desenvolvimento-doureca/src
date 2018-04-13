@@ -52,7 +52,7 @@ export class ComponentesComponent implements OnInit {
             tipo = "Componente";
           }
           this.cols.push({
-            id: response[x].id_COMPONENTE, nome: response[x].nome_COMPONENTE, tipo: tipo
+            id: response[x].id_COMPONENTE, nome: response[x].nome_COMPONENTE, tipo: tipo,cisterna:response[x].cisterna
           });
         }
         this.cols = this.cols.slice();

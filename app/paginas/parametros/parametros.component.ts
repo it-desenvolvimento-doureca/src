@@ -15,6 +15,9 @@ import { ConfirmationService } from 'primeng/primeng';
   styleUrls: ['./parametros.component.css']
 })
 export class ParametrosComponent implements OnInit {
+  pasta_JASPERREPORT: string;
+  modelo_REPORT: string;
+  pasta_ETIQUETAS: any;
   temp_ip: any = "192.168.01.01";
   pos: any = 0;
   impressoras = [];
@@ -85,7 +88,10 @@ export class ParametrosComponent implements OnInit {
         this.parametros = response[0];
         for (var x in response) {
           this.pasta_ficheiro = response[x].pasta_FICHEIRO;
+          this.pasta_ETIQUETAS = response[x].pasta_ETIQUETAS;
+          this.modelo_REPORT = response[x].modelo_REPORT;
           this.url_SILVER = response[x].url_SILVER;
+          this.pasta_JASPERREPORT = response[x].pasta_JASPERREPORT;
         }
       },
       error => console.log(error));
@@ -98,7 +104,8 @@ export class ParametrosComponent implements OnInit {
       response => {
         this.postos = [];
         for (var x in response) {
-          this.postos.push({ id_POSTO: response[x].id_POSTO, descricao: response[x].descricao, ip_POSTO: response[x].ip_POSTO, impressora: response[x].impressora });
+          this.postos.push({ id_POSTO: response[x].id_POSTO, descricao: response[x].descricao, ip_POSTO: response[x].ip_POSTO, impressora: response[x].impressora,
+            ip_IMPRESSORA:response[x].ip_IMPRESSORA,nome_IMPRESSORA:response[x].nome_IMPRESSORA });
         }
         this.postos = this.postos.slice();
       },
@@ -111,6 +118,10 @@ export class ParametrosComponent implements OnInit {
     parametros = this.parametros;
     parametros.pasta_FICHEIRO = this.pasta_ficheiro.trim();
     parametros.url_SILVER = this.url_SILVER.trim();
+    parametros.pasta_JASPERREPORT = this.pasta_JASPERREPORT.trim();   
+     parametros.pasta_ETIQUETAS = this.pasta_ETIQUETAS.trim();
+    parametros.modelo_REPORT = this.modelo_REPORT.trim();
+        
     this.GERPARAMETROSService.update(parametros).then(() => {
       for (var x in this.postos) {
         if (this.postos[x].id_POSTO.toString().substring(0, 1) == "P") {
@@ -120,7 +131,8 @@ export class ParametrosComponent implements OnInit {
         }
       }
       this.simular(this.inputgravou);
-      this.location.back();
+      //this.location.back();
+      this.router.navigate(['parametros']);
     },
       error => { console.log(error); this.simular(this.inputerro); });
   }
@@ -148,7 +160,8 @@ export class ParametrosComponent implements OnInit {
 
   //bt cancelar
   backview() {
-    this.location.back();
+    //this.location.back();
+    this.router.navigate(['parametros']);
   }
 
   //simular click para mostrar mensagem

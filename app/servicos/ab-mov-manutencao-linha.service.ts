@@ -35,7 +35,7 @@ export class ABMOVMANUTENCAOLINHAService {
       .map(this.extractData)
       .catch((error: any) => Observable.throw('Server error'));
   }
-  
+
   getbyID_lin(id): Observable<AB_MOV_MANUTENCAO_LINHA[]> {
     const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAO_LINHAbyid/' + id + '';
     return this.http
@@ -45,7 +45,7 @@ export class ABMOVMANUTENCAOLINHAService {
   }
 
   getbyID_comp(id, data): Observable<AB_MOV_MANUTENCAO_LINHA[]> {
-    const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAO_LINHAbyid_analise_comp/' + id ;
+    const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAO_LINHAbyid_analise_comp/' + id;
     return this.http
       .post(url, JSON.stringify(data), { headers: this.headers })
       .map(this.extractData)
@@ -67,8 +67,13 @@ export class ABMOVMANUTENCAOLINHAService {
       .catch(this.handleError);
   }
 
-  getDadosEtiquetabyREF(ref) {
-    const url = webUrl.host + '/rest/sirb/getDadosEtiquetabyREF/' + ref;
+  getDadosEtiquetabyREF(ref, cisterna) {
+    var url = "";
+    if (cisterna) {
+      url = webUrl.host + '/rest/sirb/getDadosEtiquetabyREFcisterna/' + ref;
+    } else {
+      url = webUrl.host + '/rest/sirb/getDadosEtiquetabyREF/' + ref;
+    }
     return this.http
       .get(url)
       .map(this.extractData)
