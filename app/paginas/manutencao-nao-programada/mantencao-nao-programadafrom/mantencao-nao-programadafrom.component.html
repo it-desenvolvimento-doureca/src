@@ -38,7 +38,7 @@
                   <div [ngClass]="data_planeamento == '' ? 'is-empty' : null" class="form-group form-black label-floating">
                     <label style="font-size: 14px;">Data Planeamento</label>
                     <br>
-                    <p-calendar [style]="{'height':'31px','width':'111px'}" dateFormat="yy-mm-dd" placeholder="yy-mm-dd" [monthNavigator]="true"
+                    <p-calendar [style]="{'height':'31px','width':'111px'}" dateFormat="yy-mm-dd" placeholder="yyyy-mm-dd" [monthNavigator]="true"
                       [yearNavigator]="true" yearRange="2000:2050" [(ngModel)]="data_planeamento" [ngModelOptions]="{standalone: true}"
                       [showIcon]="true" [hidden]="true" [required]="true"></p-calendar>
                     <label style="width:115px; height: 31px; " class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all">{{data_planeamento | date: 'yyyy-MM-dd'}}</label>
@@ -91,7 +91,8 @@
                   <div class="col-md-12" style="padding: 3px 7px 3px 10px; display: inline-grid; width: 100%; background: #f5f5f5; border: 1px solid #e3e3e3;">
                     <div style=" margin: auto 0;">
                       <button id="idbt{{item.id}}" (click)="adicionarEtiquetas(item.pos,item.id,$event)" title="Adicionar Etiquetas" [disabled]="(executado && item.id!=null) || disaddetiquetas"
-                        type="button" style="color: black; padding: 5px; margin: 0;  left: 55.3%;  position: absolute; margin-top: 4px; font-size: 18px;" class="btn btn-white btn-round btn-just-icon">
+                        type="button" style="color: black; padding: 5px; margin: 0;  left: 55.3%;  position: absolute; margin-top: 4px; font-size: 18px;"
+                        class="btn btn-white btn-round btn-just-icon">
                         <i class="fa fa-object-group" aria-hidden="true"></i>
                         <div class="ripple-container"></div>
                       </button>
@@ -105,9 +106,10 @@
                         <i class="material-icons">print</i>
                         <div class="ripple-container"></div>
                       </button>
-                      <button title="Ver Etiquetas" [disabled]="item.id == null || disprevetiquetas" type="button" style="left: 59%; color: black; padding: 5px; margin: 0;"
+                      <button title="Ver Etiquetas" [disabled]="item.id == null || disprevetiquetas" type="button" style="left: 59%; color: black; height: 30px; width: 43px; margin: 0px 13px 0px 0px;"
                         class="btn btn-white btn-round btn-just-icon" (click)="imprimir('manutencao_etiquetas',item.id)">
-                        <i class="fa fa-tags" aria-hidden="true"></i>
+                        <i class="fa fa-search" style="font-size: 14px; position: absolute; left: 22px; top: 8px;" aria-hidden="true"></i>
+                        <i class="fa fa-tags" style="font-size: 14px; position: absolute; left: 3px; bottom: 7px;" aria-hidden="true"></i>
                         <div class="ripple-container"></div>
                       </button>
                       <button title="Imprimir Etiquetas" [disabled]="item.id == null || disimprimiretiquetas" type="button" style="left: 59%; color: black; height: 30px; width: 43px; margin: 0;"
@@ -188,7 +190,7 @@
                       </div>
                       <div class="col-md-12 form-group form-black label-floating calendarmanu" style="padding: 0px; /*margin-bottom: 6px;*/">
                         <label style="font-size: 14px; float: left; /*margin-top: 3%;*/">Data/Hora Prev</label>
-                        <p-calendar [style]="{'width':'150px','height':'30px','padding':'3px 4px'}" dateFormat="yy-mm-dd" placeholder="yy-mm-dd"
+                        <p-calendar [style]="{'width':'150px','height':'30px','padding':'3px 4px'}" dateFormat="yy-mm-dd" placeholder="yyyy-mm-dd"
                           [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [(ngModel)]="item.data_pre"
                           [ngModelOptions]="{standalone: true}" [showIcon]="true" [hidden]="!modoedicao" [required]="true"></p-calendar>
                         <label style="width:100px; margin: 0px 0 0 4px; padding: 0px 0px 3px 4px; height: 25.8px;" class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all"
@@ -264,7 +266,7 @@
                         </div>
                         <div class="col-md-6 form-group form-black label-floating" style="padding: 0px;  width: 44%;">
                           <label style="font-size: 14px; float: left; width: 34%;">Data/Hora </label>
-                          <p-calendar [style]="{'width':'120px','height':'31px','padding':'0px 5px'}" dateFormat="yy-mm-dd" placeholder="yy-mm-dd"
+                          <p-calendar [style]="{'width':'120px','height':'31px','padding':'0px 5px'}" dateFormat="yy-mm-dd" placeholder="yyyy-mm-dd"
                             [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [(ngModel)]="item.data_exc"
                             [ngModelOptions]="{standalone: true}" [showIcon]="true" [hidden]="true"></p-calendar>
 
@@ -307,8 +309,9 @@
                                   [disabled]="true">
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
-                                <input autocomplete="off" (ngModelChange)="atualizarvaloragua(valoruni.value,aditem.factor,aditem.pos,item.pos)" #valoruni type="text" style="background: white; text-align: center; height: 31px;"
-                                  class="form-control" [(ngModel)]="aditem.valor1" [ngModelOptions]="{standalone: true}" [disabled]="(!modoedicao && !item.preparado) || aditem.disabled || item.executado">
+                                <input autocomplete="off" (ngModelChange)="atualizarvaloragua(valoruni.value,aditem.factor,aditem.pos,item.pos)" #valoruni
+                                  type="text" style="background: white; text-align: center; height: 31px;" class="form-control"
+                                  [(ngModel)]="aditem.valor1" [ngModelOptions]="{standalone: true}" [disabled]="(!modoedicao && !item.preparado) || aditem.disabled || item.executado">
                               </td>
                               <td style="padding: 5px 4px 0px 0px; text-align: -webkit-center;">
                                 <button id="idbt2{{aditem.id_LIN}}" (click)="verEtiquetas(aditem.id_LIN,aditem.cod_REF,aditem.nome_REF,aditem.unidade1,aditem.valor1,aditem.factor_CONVERSAO,item.pos,$event,aditem.cisterna,item.executado)"
@@ -527,8 +530,8 @@
             <tr *ngFor="let etiq of etiquetas" style="padding: 5px 4px 0px 0px">
               <td style="padding: 5px 4px 0px 0px">
                 <div class="form-group">
-                  <input [disabled]="etiq.disabled" id="{{etiq.id}}" #numero (keyup.enter)="addlinhaetiq(etiq.id,numero.value)" type="number" style="background: white;  text-align: center; height: 31px; width: 100%;"
-                    [(ngModel)]="etiq.numero" [ngModelOptions]="{standalone: true}">
+                  <input [disabled]="etiq.disabled" id="{{etiq.id}}" #numero (keyup.enter)="addlinhaetiq(etiq.id,numero.value)" type="number"
+                    style="background: white;  text-align: center; height: 31px; width: 100%;" [(ngModel)]="etiq.numero" [ngModelOptions]="{standalone: true}">
                 </div>
               </td>
               <td style="padding: 5px 4px 0px 0px">
@@ -539,7 +542,8 @@
               </td>
               <td style="padding: 5px 4px 0px 0px">
                 <div class="form-group">
-                  <input [ngClass]="etiq.qtd.replace(',','.') < 0 ? 'manu_cor_vermelho' : ''" [disabled]="true" type="text" style=" text-align: center; height: 31px; width: 70%;" [(ngModel)]="etiq.qtd" [ngModelOptions]="{standalone: true}">
+                  <input [ngClass]="etiq.qtd.replace(',','.') < 0 ? 'manu_cor_vermelho' : ''" [disabled]="true" type="text" style=" text-align: center; height: 31px; width: 70%;"
+                    [(ngModel)]="etiq.qtd" [ngModelOptions]="{standalone: true}">
                   <input [disabled]="true" type="text" style=" text-align: center; height: 31px; width: 25%;" [(ngModel)]="etiq.UNISTO" [ngModelOptions]="{standalone: true}">
                 </div>
               </td>

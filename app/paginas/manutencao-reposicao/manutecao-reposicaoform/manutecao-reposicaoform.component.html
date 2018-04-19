@@ -38,7 +38,7 @@
                   <div [ngClass]="data_planeamento == '' ? 'is-empty' : null" class="form-group form-black label-floating">
                     <label style="font-size: 14px;">Data Planeamento</label>
                     <br>
-                    <p-calendar [style]="{'height':'31px','width':'111px'}" dateFormat="yy-mm-dd" placeholder="yy-mm-dd" [monthNavigator]="true"
+                    <p-calendar [style]="{'height':'31px','width':'111px'}" dateFormat="yy-mm-dd" placeholder="yyyy-mm-dd" [monthNavigator]="true"
                       [yearNavigator]="true" yearRange="2000:2050" [(ngModel)]="data_planeamento" [ngModelOptions]="{standalone: true}"
                       [showIcon]="true" [hidden]="true" [required]="true"></p-calendar>
                     <label style="width:115px; height: 31px; " class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all">{{data_planeamento | date: 'yyyy-MM-dd'}}</label>
@@ -106,9 +106,10 @@
                         <i class="material-icons">print</i>
                         <div class="ripple-container"></div>
                       </button>
-                      <button title="Ver Etiquetas" [disabled]="item.id == null || disprevetiquetas" type="button" style="left: 59%; color: black; padding: 5px; margin: 0;"
+                      <button title="Ver Etiquetas" [disabled]="item.id == null || disprevetiquetas" type="button" style="left: 59%; color: black; height: 30px; width: 43px; margin: 0px 13px 0px 0px;"
                         class="btn btn-white btn-round btn-just-icon" (click)="imprimir('manutencao_etiquetas',item.id)">
-                        <i class="fa fa-tags" aria-hidden="true"></i>
+                        <i class="fa fa-search" style="font-size: 14px; position: absolute; left: 22px; top: 8px;" aria-hidden="true"></i>
+                        <i class="fa fa-tags" style="font-size: 14px; position: absolute; left: 3px; bottom: 7px;" aria-hidden="true"></i>
                         <div class="ripple-container"></div>
                       </button>
                       <button title="Imprimir Etiquetas" [disabled]="item.id == null || disimprimiretiquetas" type="button" style="left: 59%; color: black; height: 30px; width: 43px; margin: 0;"
@@ -194,7 +195,7 @@
                       </div>
                       <div class="col-md-12 form-group form-black label-floating calendarmanu" style="padding: 0px;">
                         <label style="font-size: 14px; float: left; /*margin-top: 3%;*/">Data/Hora Prev</label>
-                        <p-calendar [style]="{'width':'150px','height':'30px','padding':'3px 4px'}" dateFormat="yy-mm-dd" placeholder="yy-mm-dd"
+                        <p-calendar [style]="{'width':'150px','height':'30px','padding':'3px 4px'}" dateFormat="yy-mm-dd" placeholder="yyyy-mm-dd"
                           [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [(ngModel)]="item.data_pre"
                           [ngModelOptions]="{standalone: true}" [showIcon]="true" [hidden]="!modoedicao" [required]="true"></p-calendar>
                         <label style="width:100px; margin: 0px 0 0 4px; padding: 0px 0px 3px 4px; height: 25.8px;" class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all"
@@ -270,7 +271,7 @@
                         </div>
                         <div class="col-md-6 form-group form-black label-floating" style="padding: 0px;  width: 44%;">
                           <label style="font-size: 14px; float: left; width: 34%">Data/Hora </label>
-                          <p-calendar [style]="{'width':'120px','height':'31px','padding':'0px 5px'}" dateFormat="yy-mm-dd" placeholder="yy-mm-dd"
+                          <p-calendar [style]="{'width':'120px','height':'31px','padding':'0px 5px'}" dateFormat="yy-mm-dd" placeholder="yyyy-mm-dd"
                             [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [(ngModel)]="item.data_exc"
                             [ngModelOptions]="{standalone: true}" [showIcon]="true" [hidden]="true"></p-calendar>
 

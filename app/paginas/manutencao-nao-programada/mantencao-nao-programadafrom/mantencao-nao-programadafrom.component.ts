@@ -39,6 +39,7 @@ import { AB_MOV_MANUTENCAO_ETIQ } from '../../../entidades/AB_MOV_MANUTENCAO_ETI
 })
 export class MantencaoNaoProgramadafromComponent implements OnInit {
 
+  cisternadisabled: boolean;
   tempcisterna: any;
   disimprimiretiquetas: boolean;
   disprevetiquetas: boolean;
@@ -210,7 +211,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
         this.ABMOVMANUTENCAOService.getAllsrotid(this.query, "N").subscribe(
           response => {
             for (var x in response) {
-              this.manutencao.push(response[x][0].id_MANUTENCAO);
+              this.manutencao.push(response[x][0]);
             }
             this.i = this.manutencao.indexOf(+id);
             if (this.manutencao[this.i] == null) {
@@ -337,7 +338,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
             var data_exec = null;
             var hora_exc = null;
             var id_adicao = null;
-            var int_op = this.intervalo_op.find(item => item.value.id == response[x][0].id_TIPO_OPERACAO).value;
+            var int_op = (this.intervalo_op.find(item => item.value.id == response[x][0].id_TIPO_OPERACAO))? this.intervalo_op.find(item => item.value.id == response[x][0].id_TIPO_OPERACAO).value : "";
             var id_banho = this.banhos.find(item => item.value.id == response[x][0].id_BANHO).value;
             var nome_analise = "";
             this.executado = false
@@ -1561,6 +1562,9 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
         for (var x in response) {
           this.tipo_manu.push({ label: response[x].nome_TIPO_MANUTENCAO, value: response[x].id_TIPO_MANUTENCAO });
         }
+        if (this.novo && this.tipo_manu.length == 2) {
+          this.tipo_manu_id = this.tipo_manu[1].value;
+        }
         this.tipo_manu = this.tipo_manu.slice();
         this.preencheTurno(val, id);
       },
@@ -1993,13 +1997,19 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
             }
 
           } else {
-            if (carrega) this.carregaetiquetas(id_lin, valor1, factor_conversao, event);
+            if (carrega) {
+              this.carregaetiquetas(id_lin, valor1, factor_conversao, event);
+              this.cisternadisabled = false;
+            }
           }
         }, error => {
           console.log(error);
         })
     } else {
-      if (carrega) this.carregaetiquetas(id_lin, valor1, factor_conversao, event);
+      if (carrega) {
+        this.carregaetiquetas(id_lin, valor1, factor_conversao, event);
+        this.cisternadisabled = false;
+      }
     }
   }
 
@@ -2019,7 +2029,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
     if (unidade != null) this.unidade1temp = this.medidas.find(item => item.value == unidade).label;
     this.etiquetasaditivo = [];
 
-    if (cisterna && !this.executado && !this.disaddetiquetas) {
+    if (cisterna && !this.executado && !this.disaddetiquetas && !this.cisternadisabled) {
       this.tempQTD2 = [];
       var id_manu = this.arrayForm.find(item => item.pos == pos).id;
       var adi = this.arrayForm.find(item => item.pos == pos).aditivos.find(item => item.id_LIN == id);
@@ -2047,6 +2057,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
         console.log(error);
       });
     } else {
+      this.cisternadisabled = false;
       this.carregaetiquetas(id, valor, factor_CONVERSAO, event);
     }
 

@@ -10,7 +10,7 @@
           </div>
           <div class="card-content table-responsive">
 
-            <p-dataTable [value]="cols" dataKey="id" [rows]="25" [paginator]="true" [pageLinks]="3" (onRowDblclick)="abrir($event)" [rowsPerPageOptions]="[25,50,100,'todos']">
+            <p-dataTable [emptyMessage]="mensagemtabela"  [value]="cols" dataKey="id" [rows]="25" [paginator]="true" [pageLinks]="3" (onRowDblclick)="abrir($event)" [rowsPerPageOptions]="[25,50,100,'todos']">
               <p-column [filter]="true" [sortable]="true" styleclass="text-danger" field="linha" header="Linha">
                 <ng-template pTemplate="filter" let-col>
                   <p-dropdown [options]="linhas" [(ngModel)]="linha" [style]="{'width':'100%'}" (onChange)="filtrar($event.value,col.field)"

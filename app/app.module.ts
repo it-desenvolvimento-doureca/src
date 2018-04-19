@@ -105,6 +105,7 @@ import { ParametrosRaksComponent } from './paginas/parametros-raks/parametros-ra
 import { CartelasComponent } from './paginas/lmep/cartelas/cartelas.component';
 import { ABDICLINHAOFService } from './servicos/ab-dic-linha-of.service';
 import { ABMOVMANUTENCAOETIQService } from 'app/servicos/ab-mov-manutencao-etiq.service';
+import { CalendarioComponent } from './paginas/gestao-tarefas/calendario/calendario.component';
 
 const routes: Routes = [
   { path: 'dashboard', component: HomeComponent, canActivate: [LoginService] },
@@ -309,7 +310,8 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     ManutencaoNaoProgramadaComponent,
     MantencaoNaoProgramadafromComponent,
     ParametrosRaksComponent,
-    CartelasComponent
+    CartelasComponent,
+    CalendarioComponent
   ],
   imports: [
     BrowserModule,

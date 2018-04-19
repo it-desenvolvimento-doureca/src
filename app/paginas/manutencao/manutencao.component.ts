@@ -17,6 +17,8 @@ import { ABDICBANHOService } from 'app/servicos/ab-dic-banho.service';
   styleUrls: ['./manutencao.component.css']
 })
 export class ManutencaoComponent implements OnInit {
+  mensagemtabela: string;
+  acessoplaneamento = true;
   banho: any;
   banhos: any[];
   filtro2: any;
@@ -93,6 +95,7 @@ export class ManutencaoComponent implements OnInit {
 
     if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001planeamento")) {
       this.query.push("Em Planeamento");
+      this.acessoplaneamento = false;
     }
     if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001preparacao") && !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001execucao")) {
       this.query.push("Planeado", "Em Preparação", "Preparado", "Em Execução", "Executado");
@@ -107,6 +110,7 @@ export class ManutencaoComponent implements OnInit {
         this.filtro.push("Planeado", "Em Preparação");
       }
     }
+    this.mensagemtabela = "A Carregar...";
     this.preenche_banhos();
     this.carregarlista();
 
@@ -122,9 +126,29 @@ export class ManutencaoComponent implements OnInit {
       this.cols = [];
       this.ABMOVMANUTENCAOService.getAll(this.query, "M").subscribe(
         response => {
-
+          var count = Object.keys(response).length;
+          if (count == 0) {
+            this.mensagemtabela = "Nenhum Registo foi encontrado...";
+          }
           for (var x in response) {
-            this.cols.push({ id: response[x][0].id_MANUTENCAO, tipo_manu: response[x][2].nome_TIPO_MANUTENCAO, data: this.formatDate(response[x][0].data_PLANEAMENTO) + " - " + response[x][0].hora_PLANEAMENTO.slice(0, 5), cor: response[x][1].cor, linha: response[x][1].nome_LINHA, turno: response[x][3].nome_TURNO, estado: response[x][0].estado });
+            if (!this.acessoplaneamento) {
+              var min = 30;
+              if (response[x][9] != null) {
+                var data = new Date(response[x][9] + " " + response[x][10].slice(0, 5));
+                var dataatual = new Date();
+                var total = data.getTime() - dataatual.getTime();
+                var minutos = Math.round(total / 60000);
+                if (minutos <= min) {
+                  this.cols.push({
+                    id: response[x][0], tipo_manu: response[x][1], data: this.formatDate(response[x][2]) + " - " + response[x][3].slice(0, 5), cor: response[x][4], linha: response[x][5], turno: response[x][6], estado: response[x][7]
+                  });
+                }
+              }
+            } else {
+              this.cols.push({
+                id: response[x][0], tipo_manu: response[x][1], data: this.formatDate(response[x][2]) + " - " + response[x][3].slice(0, 5), cor: response[x][4], linha: response[x][5], turno: response[x][6], estado: response[x][7]
+              });
+            }
           }
           this.cols = this.cols.slice();
           if (this.linha == null || this.linha == "") this.linha = this.globalVar.getlinha();
@@ -221,8 +245,26 @@ export class ManutencaoComponent implements OnInit {
         response => {
           var ids = [];
           for (var x in response) {
-            this.cols.push({ id: response[x][0].id_MANUTENCAO, tipo_manu: response[x][2].nome_TIPO_MANUTENCAO, data: this.formatDate(response[x][0].data_PLANEAMENTO) + " - " + response[x][0].hora_PLANEAMENTO.slice(0, 5), cor: response[x][1].cor, linha: response[x][1].nome_LINHA, turno: response[x][3].nome_TURNO, estado: response[x][0].estado });
-            ids.push(response[x][0].id_MANUTENCAO);
+            if (!this.acessoplaneamento) {
+              var min = 30;
+              if (response[x][9] != null) {
+                var data = new Date(response[x][9] + " " + response[x][10].slice(0, 5));
+                var dataatual = new Date();
+                var total = data.getTime() - dataatual.getTime();
+                var minutos = Math.round(total / 60000);
+                if (minutos <= min) {
+                  this.cols.push({
+                    id: response[x][0], tipo_manu: response[x][1], data: this.formatDate(response[x][2]) + " - " + response[x][3].slice(0, 5), cor: response[x][4], linha: response[x][5], turno: response[x][6], estado: response[x][7]
+                  });
+                  ids.push(response[x][0]);
+                }
+              }
+            } else {
+              this.cols.push({
+                id: response[x][0], tipo_manu: response[x][1], data: this.formatDate(response[x][2]) + " - " + response[x][3].slice(0, 5), cor: response[x][4], linha: response[x][5], turno: response[x][6], estado: response[x][7]
+              });
+              ids.push(response[x][0]);
+            }
           }
           this.cols = this.cols.slice();
           if (this.linha == null || this.linha == "") this.linha = this.globalVar.getlinha();

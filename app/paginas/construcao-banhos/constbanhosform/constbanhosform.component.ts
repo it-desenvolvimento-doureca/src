@@ -39,6 +39,8 @@ import { UploadService } from '../../../servicos/upload.service';
   styleUrls: ['./constbanhosform.component.css']
 })
 export class ConstbanhosformComponent implements OnInit {
+  acessoplaneamento: boolean;
+  cisternadisabled: any;
   tempcisterna: any;
   disimprimiretiquetas: boolean;
   disprevetiquetas: boolean;
@@ -206,6 +208,7 @@ export class ConstbanhosformComponent implements OnInit {
       else {
         if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003planeamento")) {
           this.query.push("Em Planeamento");
+          this.acessoplaneamento = false;
         }
         if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003preparacao") && !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003execucao")) {
           this.query.push("Planeado", "Em Preparação", "Preparado", "Em Execução", "Executado");
@@ -217,7 +220,21 @@ export class ConstbanhosformComponent implements OnInit {
         this.ABMOVMANUTENCAOService.getAllsrotid(this.query, "B").subscribe(
           response => {
             for (var x in response) {
-              this.manutencao.push(response[x][0].id_MANUTENCAO);
+              if (!this.acessoplaneamento) {
+                var min = 30;
+                if (response[x][12] != null) {
+                  var data = new Date(response[x][12] + " " + response[x][13].slice(0, 5));
+                  var dataatual = new Date();
+                  var total = data.getTime() - dataatual.getTime();
+                  var minutos = Math.round(total / 60000);
+                  if (minutos <= min) {
+                    this.manutencao.push(response[x][0]);
+                  }
+                }
+
+              } else {
+                this.manutencao.push(response[x][0]);
+              }
             }
             this.i = this.manutencao.indexOf(+id);
             if (this.manutencao[this.i] == null) {
@@ -1610,6 +1627,9 @@ export class ConstbanhosformComponent implements OnInit {
         for (var x in response) {
           this.tipo_manu.push({ label: response[x].nome_TIPO_MANUTENCAO, value: response[x].id_TIPO_MANUTENCAO });
         }
+        if (this.novo && this.tipo_manu.length == 2) {
+          this.tipo_manu_id = this.tipo_manu[1].value;
+        }
         this.tipo_manu = this.tipo_manu.slice();
         this.preencheTurno(val, id);
       },
@@ -2050,13 +2070,19 @@ export class ConstbanhosformComponent implements OnInit {
             }
 
           } else {
-            if (carrega) this.carregaetiquetas(id_lin, valor1, factor_conversao, event);
+            if (carrega) {
+              this.carregaetiquetas(id_lin, valor1, factor_conversao, event);
+              this.cisternadisabled = false;
+            }
           }
         }, error => {
           console.log(error);
         })
     } else {
-      if (carrega) this.carregaetiquetas(id_lin, valor1, factor_conversao, event);
+      if (carrega) {
+        this.carregaetiquetas(id_lin, valor1, factor_conversao, event);
+        this.cisternadisabled = false;
+      }
     }
   }
 
@@ -2076,7 +2102,8 @@ export class ConstbanhosformComponent implements OnInit {
     if (unidade != null) this.unidade1temp = this.medidas.find(item => item.value == unidade).label;
     this.etiquetasaditivo = [];
 
-    if (cisterna && !preparado && !this.disaddetiquetas) {
+    if (cisterna && !preparado && !this.disaddetiquetas && !this.cisternadisabled) {
+      this.cisternadisabled = true;
       this.tempQTD2 = [];
       var id_manu = this.arrayForm.find(item => item.pos == pos).id;
       var adi = this.arrayForm.find(item => item.pos == pos).aditivos.find(item => item.id_LIN == id);
@@ -2104,6 +2131,7 @@ export class ConstbanhosformComponent implements OnInit {
         console.log(error);
       });
     } else {
+      this.cisternadisabled = false;
       this.carregaetiquetas(id, valor, factor_CONVERSAO, event);
     }
 

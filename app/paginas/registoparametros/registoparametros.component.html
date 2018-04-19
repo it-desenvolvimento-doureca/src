@@ -10,7 +10,7 @@
           </div>
           <div class="card-content table-responsive">
 
-            <p-dataTable [value]="cols" dataKey="id" [rows]="25" [paginator]="true" [pageLinks]="3" (onRowDblclick)="abrir($event)" [rowsPerPageOptions]="[25,50,100,'todos']" #dt>
+            <p-dataTable [emptyMessage]="mensagemtabela"  [value]="cols" dataKey="id" [rows]="25" [paginator]="true" [pageLinks]="3" (onRowDblclick)="abrir($event)" [rowsPerPageOptions]="[25,50,100,'todos']" #dt>
               <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="id" header="ID"></p-column>
               <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="data" header="Data"></p-column>
               <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="decisao" header="Decisão">

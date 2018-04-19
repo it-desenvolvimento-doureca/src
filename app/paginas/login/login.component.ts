@@ -77,7 +77,7 @@ export class LoginComponent implements OnInit {
                     }
                     localStorage.setItem('acessos', JSON.stringify(array));
                     location.reload(true);
-                    if (this.url != "") {
+                    if (this.url != "" && this.url != null) {
                       this.router.navigateByUrl(this.url);
                     } else {
                       this.router.navigate(['home']);
@@ -85,7 +85,7 @@ export class LoginComponent implements OnInit {
                   } else {
                     localStorage.setItem('acessos', JSON.stringify(array));
                     location.reload(true);
-                    if (this.url != "") {
+                    if (this.url != "" && this.url != null) {
                       this.router.navigateByUrl(this.url);
                     } else {
                       this.router.navigate(['home']);
@@ -168,14 +168,14 @@ export class LoginComponent implements OnInit {
                     }
                     localStorage.setItem('acessos', JSON.stringify(array));
 
-                    if (this.url != "") {
+                    if (this.url != "" && this.url != null) {
                       this.router.navigate([this.url]);
                     } else {
                       this.router.navigate(['home']);
                     }
                   } else {
                     localStorage.setItem('acessos', JSON.stringify(array));
-                    if (this.url != "") {
+                    if (this.url != "" && this.url != null) {
                       this.router.navigate([this.url]);
                     } else {
                       this.router.navigate(['home']);

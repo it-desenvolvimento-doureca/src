@@ -10,6 +10,7 @@ import { DataTable } from "primeng/primeng";
   styleUrls: ['./registoparametros.component.css']
 })
 export class RegistoparametrosComponent implements OnInit {
+  mensagemtabela: string;
   estado: string;
   cols: any[];
   estados = [{ label: "--", value: "" }, { label: "Registado", value: "Registado" }, { label: "Validado", value: "Validado" }];
@@ -33,6 +34,7 @@ export class RegistoparametrosComponent implements OnInit {
     this.globalVar.setdisApagar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node002apagar"));
     this.globalVar.setdisDuplicar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node002duplicar"));
 
+    this.mensagemtabela = "A Carregar...";
     this.carrega_tabela();
   }
 
@@ -40,6 +42,10 @@ export class RegistoparametrosComponent implements OnInit {
     this.cols = [];
     this.ADMOVREGPARAMOPERACAOService.getAll().subscribe(
       response => {
+        var count = Object.keys(response).length;
+        if (count == 0) {
+          this.mensagemtabela = "Nenhum Registo foi encontrado...";
+        }
         for (var x in response) {
           var estado = "Registado";
           if (response[x][0].data_VALIDA != null) {
