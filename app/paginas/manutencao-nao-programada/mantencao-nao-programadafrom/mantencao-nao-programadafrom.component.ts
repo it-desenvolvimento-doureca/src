@@ -39,6 +39,7 @@ import { AB_MOV_MANUTENCAO_ETIQ } from '../../../entidades/AB_MOV_MANUTENCAO_ETI
 })
 export class MantencaoNaoProgramadafromComponent implements OnInit {
 
+  acessoexecucao: boolean;
   cisternadisabled: boolean;
   tempcisterna: any;
   disimprimiretiquetas: boolean;
@@ -143,7 +144,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
     s.src = "assets/js/jqbtk.js";
     this.elementRef.nativeElement.appendChild(s);
     this.globalVar.setapagar(true);
-    this.globalVar.seteditar(true);
+    this.globalVar.seteditar(false);
     this.globalVar.setvoltar(true);
     this.globalVar.setseguinte(true);
     this.globalVar.setanterior(true);
@@ -164,6 +165,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
     this.disprevetiquetas = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004prevetiquetas");
     this.disaddetiquetas = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004addetiquetas");
     this.dishistorico = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004historico");
+    this.acessoexecucao = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004execucao");
     // this.pos=3;
     /* this.arrayForm = [{pos: 1, id: null, id_banho: 1, tina: 2, capacidade: "11 L", aditivos: [{ id: 1, valor: 10, unidade: "aa", obs: "" }] },
      {pos: 2, id: null, id_banho: 1, tina: 2, capacidade: "11 L", aditivos: [{ id: 1, valor: 10, unidade: "aa", obs: "" }] }];*/
@@ -290,28 +292,28 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
             this.cor_linha = response[x][1].cor;
             if (this.estado == "Planeado") {
               this.planeado = true;
-              this.globalVar.seteditar(false);
+              // this.globalVar.seteditar(false);
               this.simular(this.alteraeditar);
             } else if (this.estado == "Preparado") {
               this.preparado = true;
-              this.globalVar.seteditar(false);
+              // this.globalVar.seteditar(false);
               this.simular(this.alteraeditar);
             } else if (this.estado == "Em Planeamento") {
               this.planeamento = true;
-              this.globalVar.seteditar(true);
+              // this.globalVar.seteditar(true);
               this.simular(this.alteraeditartrue);
             } else if (this.estado == "Em Preparação") {
               this.planeado = true;
-              this.globalVar.seteditar(false);
+              //this.globalVar.seteditar(false);
               this.simular(this.alteraeditar);
             } else if (this.estado == "Em Execução") {
               this.preparado = true;
-              this.globalVar.seteditar(false);
+              //this.globalVar.seteditar(false);
               this.simular(this.alteraeditar);
             }
             else if (this.estado == "Executado") {
               this.preparado = true;
-              this.globalVar.seteditar(false);
+              //this.globalVar.seteditar(false);
               this.simular(this.alteraeditar);
             }
             if (this.admin) {
@@ -338,7 +340,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
             var data_exec = null;
             var hora_exc = null;
             var id_adicao = null;
-            var int_op = (this.intervalo_op.find(item => item.value.id == response[x][0].id_TIPO_OPERACAO))? this.intervalo_op.find(item => item.value.id == response[x][0].id_TIPO_OPERACAO).value : "";
+            var int_op = (this.intervalo_op.find(item => item.value.id == response[x][0].id_TIPO_OPERACAO)) ? this.intervalo_op.find(item => item.value.id == response[x][0].id_TIPO_OPERACAO).value : "";
             var id_banho = this.banhos.find(item => item.value.id == response[x][0].id_BANHO).value;
             var nome_analise = "";
             this.executado = false
@@ -417,13 +419,15 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
               cor = "yellow";
             } else if (total == valor1 && response[x][4] != null) {
               cor = "green";
-            } else if (response[x][4] == null) {
+            } else if (valor1 == 0 || valor1 == null) {
               cor = "";
+            } else if (response[x][4] == null) {
+              cor = "red";
             }
 
             this.arrayForm.find(item => item.pos == pos).aditivos.push(
               {
-                disabled: disabled,
+                disabled: disabled, liecod: response[x][0].liecod,
                 pos: pos2, cisterna: response[x][1].cisterna, cor: cor,
                 id_LIN: response[x][0].id_MANUTENCAO_LIN, id: response[x][0].id_ADITIVO, nome: response[x][1].nome_COMPONENTE, valor1: response[x][0].valor1, valor2: response[x][0].valor2,
                 unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: response[x][0].obs_PLANEAMENTO,
@@ -453,7 +457,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
     if (this.arrayForm.length < 1) {
 
       var data = this.formatDate(new Date().toDateString());
-      var hora = new Date().toLocaleTimeString().slice(0, 5);
+      var hora = new Date(new Date().getTime() + 600000).toLocaleTimeString().slice(0, 5);
       this.arrayForm.push({
         executado: false, preparado: false, obs_prep: null,
         id_manu: id, data: new Date(), cod_analise: null, nome_analise: null, disable_op: false,
@@ -484,7 +488,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
               if (response[x][1].cod_REF != null) {
                 this.carregaaditivosstock(response, x, pos, pos2, count, array, disabled);
               } else {
-                array.push({ disabled: disabled, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, nome_REF: response[x][0].nome_REF, cod_REF: response[x][1].cod_REF });
+                array.push({ liecod: null, disabled: disabled, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, nome_REF: response[x][0].nome_REF, cod_REF: response[x][1].cod_REF });
                 this.ordernar(array);
                 if (pos2 == count) {
                   this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -509,14 +513,18 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
           for (var y in res) {
             query.push("'" + res[y].cod_ARMAZEM + "'");
           }
-          this.GERARMAZEMService.getStock(response[x][1].cod_REF, query).subscribe(
+
+          var data = [{ proref: response[x][1].cod_REF, liecod: query.toString() }];
+          this.GERARMAZEMService.getStock(data).subscribe(
             res1 => {
               var count = Object.keys(res1).length;
+              var liecod = null;
               if (count > 0) {
                 total = parseFloat(res1[0].STOQTE).toFixed(2);
                 total = total.replace(".", ",");
+                liecod = res1[0].LIECOD;
               }
-              array.push({ disabled: disabled, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: res1[0].UNIUTI, cod_REF: response[x][1].cod_REF });
+              array.push({ liecod: liecod, disabled: disabled, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: res1[0].UNIUTI, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
               if (pos2 == total2) {
                 this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -525,7 +533,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
 
             },
             error => {
-              array.push({ disabled: disabled, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][0].nome_REF, cod_REF: response[x][1].cod_REF });
+              array.push({ liecod: null, disabled: disabled, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][0].nome_REF, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
               if (pos2 == total2) {
                 this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -534,7 +542,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
               console.log(error);
             });
         } else {
-          array.find(item => item.pos == pos).aditivos.push({ disabled: disabled, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][0].nome_REF, cod_REF: response[x][1].cod_REF });
+          array.find(item => item.pos == pos).aditivos.push({ liecod: response[x][0].liecod, disabled: disabled, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][0].nome_REF, cod_REF: response[x][1].cod_REF });
           this.ordernar(array);
           if (pos2 == total2) {
             this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -634,6 +642,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
               this.arrayForm.splice(index1, 1);
               this.arrayForm = this.arrayForm.slice();
               this.simular(this.inputapagar);
+              this.novalinha();
             },
             error => console.log(error));
         } else {
@@ -641,7 +650,9 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
           this.arrayForm.splice(index, 1);
           this.arrayForm = this.arrayForm.slice();
           this.simular(this.inputapagar);
+          this.novalinha();
         }
+
 
       }
     });
@@ -788,7 +799,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
     }
   }
 
-  gravarlinhasaditivos(id, pos) {
+  gravarlinhasaditivos(id, pos, id_manu = null) {
     if (this.arrayForm.find(item => item.pos == pos).aditivos.length > 0) {
       for (var x in this.arrayForm.find(item => item.pos == pos).aditivos) {
         if (this.arrayForm.find(item => item.pos == pos).aditivos[x].id_LIN == null) {
@@ -807,12 +818,25 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
           MOV_MANUTENCAO_LINHA.stock = this.arrayForm.find(item => item.pos == pos).aditivos[x].stock.replace(",", ".");
           MOV_MANUTENCAO_LINHA.cod_REF = this.arrayForm.find(item => item.pos == pos).aditivos[x].cod_REF;
           MOV_MANUTENCAO_LINHA.stkunit = this.arrayForm.find(item => item.pos == pos).aditivos[x].unidstock;
+          MOV_MANUTENCAO_LINHA.liecod = this.arrayForm.find(item => item.pos == pos).aditivos[x].liecod;
 
           this.criar(MOV_MANUTENCAO_LINHA, pos, x);
         } else {
           this.atualizalinhasaditivos(this.arrayForm.find(item => item.pos == pos).aditivos[x].id_LIN, pos, x)
         }
+
+
+        var valor1 = 0;
+        if (this.arrayForm.find(item => item.pos == pos).aditivos[x].valor1 != null && this.arrayForm.find(item => item.pos == pos).aditivos[x].valor1 != "") {
+          valor1 = this.arrayForm.find(item => item.pos == pos).aditivos[x].valor1;
+        }
+        if (valor1 == 0) {
+          this.arrayForm.find(item => item.pos == pos).aditivos[x].cor = "";
+        } else {
+          this.arrayForm.find(item => item.pos == pos).aditivos[x].cor = "red";
+        }
       }
+      if (id_manu != null) this.router.navigate(['manutencaonaoprogramada/view'], { queryParams: { id: id_manu } });
 
     }
     if (this.gravarlinhas) {
@@ -1361,7 +1385,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
             this.ABMOVMANUTENCAOService.update(MOV_MANUTENCAO).then(() => {
               //this.inicia(id_manu);
               this.criarficheiro(id);
-              this.gravarlinhasaditivos(response[x][0].id_MANUTENCAO_CAB, pos)
+              this.gravarlinhasaditivos(response[x][0].id_MANUTENCAO_CAB, pos, id_manu)
             }, error => {
               console.log(error); this.simular(this.inputerro);
             });
@@ -1649,7 +1673,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
     let elem3 = document.getElementById("mainpagecontent");
     let h = elem3.getBoundingClientRect().height;
 
-    document.getElementById("myModaletiquetas2").style.height = Math.abs(h + 300) + 'px';
+    document.getElementById("myModaletiquetas").style.height = Math.abs(h + 300) + 'px';
     let coords = document.getElementById("toptexttop").offsetTop;
     elm2.style.top = Math.abs(coords - 10) + 'px';
 
@@ -1812,6 +1836,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
               }
             } else {
               var valor = adi.valor1;
+              if (valor == null) valor = "0";
               if (total != 0) {
                 valor = (total - adi.valor1.replace(",", "."))
               }
@@ -2016,6 +2041,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
   /********************ETIQUETAS INDIVIDUAL POR ADITIVO******************* */
   verEtiquetas(id, ref, nome, unidade, valor, factor_CONVERSAO, pos, event, cisterna, preparado) {
     this.tempcisterna = cisterna;
+    this.disaddetiquetas = preparado;
     var factor_conversao = factor_CONVERSAO;
     if (factor_conversao == null || factor_conversao == 0) { factor_conversao = 1; }
     this.factor_conversao = factor_conversao;
@@ -2067,6 +2093,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
       response => {
         var count = Object.keys(response).length;
         if (count > 0) {
+          if (valor == null) valor = "0";
           var numm = valor.replace(",", ".");
 
           for (var x in response) {
@@ -2335,10 +2362,10 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
       } else if (this.tempconsumiraditivo.replace(",", ".") == 0) {
         adi.cor = "green";
       } else {
-        adi.cor = "";
+        adi.cor = "red";
       }
     } else {
-      adi.cor = "";
+      adi.cor = "red";
     }
   }
 

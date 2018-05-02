@@ -39,7 +39,8 @@ import { ABMOVMANUTENCAOETIQService } from '../../../servicos/ab-mov-manutencao-
   styleUrls: ['./manutencaoform.component.css']
 })
 export class ManutencaoformComponent implements OnInit {
-  acessoplaneamento= true;
+  tempplaneado: any;
+  acessoplaneamento = true;
   cisternadisabled: boolean;
   tempcisterna: any;
   disimprimiretiquetas: boolean;
@@ -201,12 +202,28 @@ export class ManutencaoformComponent implements OnInit {
         this.preenchedados(true, this.manutencao[this.i]);
       }
       else {
-        if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001planeamento")) {
+        /*  if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001planeamento")) {
+            this.query.push("Em Planeamento");
+            this.acessoplaneamento = false;
+          }
+          if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001preparacao") && !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001execucao")) {
+            this.query.push("Planeado", "Em Preparação", "Preparado", "Em Execução", "Executado");
+          }*/
+        var acessopla = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001planeamento");
+        var acessoprep = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001preparacao");
+        var acessoexec = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "acessoexec");
+
+        if (!acessopla) {
           this.query.push("Em Planeamento");
           this.acessoplaneamento = false;
         }
-        if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001preparacao") && !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001execucao")) {
-          this.query.push("Planeado", "Em Preparação", "Preparado", "Em Execução", "Executado");
+        if (!acessoprep && !acessopla) {
+          this.query.push("Em Planeamento");
+          this.acessoplaneamento = false;
+        }
+        if (!acessoexec && !acessoprep && !acessopla) {
+          this.query.push("Em Planeamento", "Planeado", "Em Preparação");
+          this.acessoplaneamento = false;
         }
 
 
@@ -215,7 +232,7 @@ export class ManutencaoformComponent implements OnInit {
           response => {
             for (var x in response) {
               if (!this.acessoplaneamento) {
-                var min = 30;
+                var min = (response[x][11] != null) ? response[x][11] : 0;
                 if (response[x][9] != null) {
                   var data = new Date(response[x][9] + " " + response[x][10].slice(0, 5));
                   var dataatual = new Date();
@@ -429,13 +446,15 @@ export class ManutencaoformComponent implements OnInit {
               cor = "yellow";
             } else if (total == valor1 && response[x][4] != null) {
               cor = "green";
-            } else if (response[x][4] == null) {
+            } else if (valor1 == 0 || valor1 == null) {
               cor = "";
+            } else if (response[x][4] == null) {
+              cor = "red";
             }
 
             this.arrayForm.find(item => item.pos == pos).aditivos.push(
               {
-                pos: pos2, cisterna: response[x][1].cisterna, cor: cor,
+                pos: pos2, cisterna: response[x][1].cisterna, cor: cor, liecod: response[x][0].liecod,
                 id_LIN: response[x][0].id_MANUTENCAO_LIN, id: response[x][0].id_ADITIVO, nome: response[x][1].nome_COMPONENTE, valor1: response[x][0].valor1, valor2: response[x][0].valor2,
                 unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: response[x][0].obs_PLANEAMENTO,
                 stock: stock, cod_REF: response[x][0].cod_REF, nome_REF: response[x][0].nome_REF, unidstock: response[x][0].stkunit, valor_agua: value, factor: response[x][1].factor_MULTIPLICACAO_AGUA
@@ -488,7 +507,7 @@ export class ManutencaoformComponent implements OnInit {
               if (response[x][1].cod_REF != null) {
                 this.carregaaditivosstock(response, x, pos, pos2, count, array);
               } else {
-                array.push({ pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, nome_REF: response[x][0].nome_REF, cod_REF: response[x][1].cod_REF });
+                array.push({ liecod: null, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, nome_REF: response[x][0].nome_REF, cod_REF: response[x][1].cod_REF });
                 this.ordernar(array);
                 if (pos2 == count) {
                   this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -513,14 +532,18 @@ export class ManutencaoformComponent implements OnInit {
           for (var y in res) {
             query.push("'" + res[y].cod_ARMAZEM + "'");
           }
-          this.GERARMAZEMService.getStock(response[x][1].cod_REF, query).subscribe(
+
+          var data = [{ proref: response[x][1].cod_REF, liecod: query.toString() }];
+          this.GERARMAZEMService.getStock(data).subscribe(
             res1 => {
               var count = Object.keys(res1).length;
+              var liecod = null
               if (count > 0) {
                 total = parseFloat(res1[0].STOQTE).toFixed(2);
                 total = total.replace(".", ",");
+                liecod = res1[0].LIECOD;
               }
-              array.push({ pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: res1[0].UNIUTI, nome_REF: response[x][0].nome_REF, cod_REF: response[x][1].cod_REF });
+              array.push({ liecod: liecod, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: res1[0].UNIUTI, nome_REF: response[x][0].nome_REF, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
               if (pos2 == total2) {
                 this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -529,7 +552,7 @@ export class ManutencaoformComponent implements OnInit {
 
             },
             error => {
-              array.push({ pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][0].nome_REF, cod_REF: response[x][1].cod_REF });
+              array.push({ liecod: null, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][0].nome_REF, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
               if (pos2 == total2) {
                 this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -538,7 +561,7 @@ export class ManutencaoformComponent implements OnInit {
               console.log(error);
             });
         } else {
-          array.find(item => item.pos == pos).aditivos.push({ pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][0].nome_REF, cod_REF: response[x][1].cod_REF });
+          array.find(item => item.pos == pos).aditivos.push({ liecod: response[x][0].liecod, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][0].nome_REF, cod_REF: response[x][1].cod_REF });
           this.ordernar(array);
           if (pos2 == total2) {
             this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -811,10 +834,21 @@ export class ManutencaoformComponent implements OnInit {
           MOV_MANUTENCAO_LINHA.stock = this.arrayForm.find(item => item.pos == pos).aditivos[x].stock.replace(",", ".");
           MOV_MANUTENCAO_LINHA.cod_REF = this.arrayForm.find(item => item.pos == pos).aditivos[x].cod_REF;
           MOV_MANUTENCAO_LINHA.stkunit = this.arrayForm.find(item => item.pos == pos).aditivos[x].unidstock;
+          MOV_MANUTENCAO_LINHA.liecod = this.arrayForm.find(item => item.pos == pos).aditivos[x].liecod;
 
           this.criar(MOV_MANUTENCAO_LINHA, pos, x);
         } else {
           this.atualizalinhasaditivos(this.arrayForm.find(item => item.pos == pos).aditivos[x].id_LIN, pos, x)
+        }
+
+        var valor1 = 0;
+        if (this.arrayForm.find(item => item.pos == pos).aditivos[x].valor1 != null && this.arrayForm.find(item => item.pos == pos).aditivos[x].valor1 != "") {
+          valor1 = this.arrayForm.find(item => item.pos == pos).aditivos[x].valor1;
+        }
+        if (valor1 == 0) {
+          this.arrayForm.find(item => item.pos == pos).aditivos[x].cor = "";
+        } else {
+          this.arrayForm.find(item => item.pos == pos).aditivos[x].cor = "red";
         }
       }
 
@@ -1643,7 +1677,7 @@ export class ManutencaoformComponent implements OnInit {
     let elem3 = document.getElementById("mainpagecontent");
     let h = elem3.getBoundingClientRect().height;
 
-    document.getElementById("myModaletiquetas2").style.height = Math.abs(h + 300) + 'px';
+    document.getElementById("myModaletiquetas").style.height = Math.abs(h + 300) + 'px';
     let coords = document.getElementById("toptexttop").offsetTop;
     elm2.style.top = Math.abs(coords - 10) + 'px';
 
@@ -1806,6 +1840,7 @@ export class ManutencaoformComponent implements OnInit {
               }
             } else {
               var valor = adi.valor1;
+              if (valor == null) valor = "0";
               if (total != 0) {
                 valor = (total - adi.valor1.replace(",", "."))
               }
@@ -2019,6 +2054,7 @@ export class ManutencaoformComponent implements OnInit {
     this.tempconsumiraditivo = valor;
     this.posmovacab = pos;
     this.tempidlin = id;
+    this.tempplaneado = !preparado;
     if (unidade != null) this.unidade1temp = this.medidas.find(item => item.value == unidade).label;
     this.etiquetasaditivo = [];
 
@@ -2060,6 +2096,7 @@ export class ManutencaoformComponent implements OnInit {
       response => {
         var count = Object.keys(response).length;
         if (count > 0) {
+          if (valor == null) valor = "0";
           var numm = valor.replace(",", ".");
 
           for (var x in response) {
@@ -2330,10 +2367,10 @@ export class ManutencaoformComponent implements OnInit {
       } else if (this.tempconsumiraditivo.replace(",", ".") == 0) {
         adi.cor = "green";
       } else {
-        adi.cor = "";
+        adi.cor = "red";
       }
     } else {
-      adi.cor = "";
+      adi.cor = "red";
     }
   }
 

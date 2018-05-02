@@ -90,29 +90,29 @@
                 <form (ngSubmit)="gravarlinha(item.pos)" ngNativeValidate>
                   <div class="col-md-12" style="padding: 3px 7px 3px 10px; display: inline-grid; width: 100%; background: #f5f5f5; border: 1px solid #e3e3e3;">
                     <div style=" margin: auto 0;">
-                      <button id="idbt{{item.id}}" (click)="adicionarEtiquetas(item.pos,item.id,$event)" title="Adicionar Etiquetas" [disabled]="(executado && item.id!=null) || disaddetiquetas"
+                      <button id="idbt{{item.id}}" (click)="adicionarEtiquetas(item.pos,item.id,$event)" title="Adicionar Etiquetas" [hidden]="(executado || (item.id==null || item.id=='')) || disaddetiquetas"
                         type="button" style="color: black; padding: 5px; margin: 0;  left: 55.3%;  position: absolute; margin-top: 4px; font-size: 18px;"
                         class="btn btn-white btn-round btn-just-icon">
                         <i class="fa fa-object-group" aria-hidden="true"></i>
                         <div class="ripple-container"></div>
                       </button>
-                      <button title="Histórico" [disabled]="item.id == null || dishistorico" type="button" style="color: black; padding: 5px; margin: 0; left: 13%;"
+                      <button title="Histórico" [hidden]="item.id == null || dishistorico" type="button" style="color: black; padding: 5px; margin: 0; left: 13%;"
                         class="btn btn-white btn-round btn-just-icon" (click)="historico(item.id)">
                         <i class="material-icons">show_chart</i>
                         <div class="ripple-container"></div>
                       </button>
-                      <button title="Imprimir Ficha" [disabled]="item.id == null || disimprimir" type="button" style="color: black;  padding: 5px; margin: 0; left: 20%;"
+                      <button title="Imprimir Ficha" [hidden]="item.id == null || disimprimir" type="button" style="color: black;  padding: 5px; margin: 0; left: 20%;"
                         class="btn btn-white btn-round btn-just-icon" (click)="imprimir('manutencao_individual',item.id)">
                         <i class="material-icons">print</i>
                         <div class="ripple-container"></div>
                       </button>
-                      <button title="Ver Etiquetas" [disabled]="item.id == null || disprevetiquetas" type="button" style="left: 59%; color: black; height: 30px; width: 43px; margin: 0px 13px 0px 0px;"
+                      <button title="Ver Etiquetas" [hidden]="item.id == null || disprevetiquetas" type="button" style="left: 59%; color: black; height: 30px; width: 43px; margin: 0px 13px 0px 0px;"
                         class="btn btn-white btn-round btn-just-icon" (click)="imprimir('manutencao_etiquetas',item.id)">
                         <i class="fa fa-search" style="font-size: 14px; position: absolute; left: 22px; top: 8px;" aria-hidden="true"></i>
                         <i class="fa fa-tags" style="font-size: 14px; position: absolute; left: 3px; bottom: 7px;" aria-hidden="true"></i>
                         <div class="ripple-container"></div>
                       </button>
-                      <button title="Imprimir Etiquetas" [disabled]="item.id == null || disimprimiretiquetas" type="button" style="left: 59%; color: black; height: 30px; width: 43px; margin: 0;"
+                      <button title="Imprimir Etiquetas" [hidden]="item.id == null || disimprimiretiquetas" type="button" style="left: 59%; color: black; height: 30px; width: 43px; margin: 0;"
                         class="btn btn-white btn-round btn-just-icon" (click)="imprimiretiquetas('manutencao_etiquetas',item.id)">
                         <i class="fa fa-print" style="font-size: 14px; position: absolute; left: 22px; top:9px;" aria-hidden="true"></i>
                         <i class="fa fa-tags" style="font-size: 14px; position: absolute; left: 3px; bottom: 7px;" aria-hidden="true"></i>
@@ -140,9 +140,9 @@
                           </label>
                         </div>
                       </div>
-                      <div class="[ form-group ]" [hidden]="modoedicao" style="float: left;">
+                      <div class="[ form-group ]" [hidden]="(item.id == '' || item.id == null)|| acessoexecucao" style="float: left; margin-left:10px;">
                         <input (change)="confirmar_linha(item.pos,item.id,item.id_manu)" type="checkbox" name="fancy-checkbox-succ{{item.pos}}" id="fancy-checkbox-succ{{item.pos}}"
-                          [(ngModel)]="item.executado1" [disabled]="item.executado" [ngModelOptions]="{standalone: true}" autocomplete="off"
+                          [(ngModel)]="item.executado1" [disabled]="item.executado " [ngModelOptions]="{standalone: true}" autocomplete="off"
                         />
                         <div class="[ btn-group ]" style="margin: 4px 0px 0px 0px;">
                           <label style=" padding: 1px 18px 3px 8px; font-size: 21px;" [ngClass]="{ 'cor_amarelo': !item.executado,'disabled': item.executado }"
@@ -284,24 +284,25 @@
                         <table class="table table-striped adititable">
                           <thead class="ui-datatable-thead">
                             <tr>
-                              <th style="width: 24%; font-weight: 700;">Aditivo</th>
+                              <th style="width: 24%; font-weight: 700;">Aditivos</th>
                               <th style="width: 8%; font-weight: 700;">Valor 1</th>
                               <th style="width: 5%; font-weight: 700;">Etiq.</th>
                               <th style="width: 9%;  padding: .75em 0 .75em 0; font-weight: 700;">Valor Água</th>
-                              <th style="width: 9%; font-weight: 700;">Unid. 1</th>
+                              <th style="width: 8%; font-weight: 700;">Unid. 1</th>
                               <th style="width: 8%; font-weight: 700;">Valor 2</th>
-                              <th style="width: 9%; font-weight: 700;">Unid. 2</th>
-                              <th style="width: 7%; font-weight: 700;">Stock</th>
+                              <th style="width: 8%; font-weight: 700;">Unid. 2</th>
+                              <th style="width: 6%; font-weight: 700;">Stock</th>
                               <th style="width: 5%; font-weight: 700;">Unid.</th>
+                              <th style="width: 5%; font-weight: 700;">Arm.</th>
                               <th style="width: 18%; font-weight: 700;">Observações</th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr *ngIf="item.aditivos.length == 0 && textotabela == null">
-                              <td style="text-align: center;" colspan="9"> O BANHO NÃO CONTÉM ADITIVOS... </td>
+                              <td style="text-align: center;" colspan="11"> O BANHO NÃO CONTÉM ADITIVOS... </td>
                             </tr>
                             <tr *ngIf="textotabela != null">
-                              <td style="text-align: center;" colspan="9"> {{textotabela}} </td>
+                              <td style="text-align: center;" colspan="11"> {{textotabela}} </td>
                             </tr>
                             <tr *ngFor="let aditem of item.aditivos">
                               <td style="padding: 5px 4px 0px 0px">
@@ -325,16 +326,16 @@
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
                                 <p-dropdown [filter]="true" [options]="medidas" [style]="{'width':'100%'}" [(ngModel)]="aditem.unidade1" [ngModelOptions]="{standalone: true}"
-                                  [disabled]="(!modoedicao && !item.preparado) || aditem.disabled || item.executado" [required]="true">
+                                  [disabled]="true" [required]="true">
                                 </p-dropdown>
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
                                 <input type="text" style="background: white;  text-align: center; height: 31px;" class="form-control" [(ngModel)]="aditem.valor2"
-                                  [ngModelOptions]="{standalone: true}" [disabled]="(!modoedicao && !item.preparado) || aditem.disabled || item.executado">
+                                  [ngModelOptions]="{standalone: true}" [disabled]="true">
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
                                 <p-dropdown [filter]="true" [options]="medidas" [style]="{'width':'100%'}" [(ngModel)]="aditem.unidade2" [ngModelOptions]="{standalone: true}"
-                                  [disabled]="(!modoedicao && !item.preparado) || aditem.disabled || item.executado" [required]="true">
+                                  [disabled]="true" [required]="true">
                                 </p-dropdown>
                               </td>
                               <td style="padding: 11px 0px 0px 0px; text-align: center;">
@@ -342,6 +343,9 @@
                               </td>
                               <td style="padding: 11px 0px 0px 0px; text-align: center;">
                                 <span style=" display: block;"> {{aditem.unidstock}}</span>
+                              </td>
+                              <td style="padding: 11px 0px 0px 0px; text-align: center;">
+                                <span style=" display: block;"> {{aditem.liecod}}</span>
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
                                 <input type="text" style="background: white; height: 31px;" class="form-control" [(ngModel)]="aditem.obs" [ngModelOptions]="{standalone: true}"

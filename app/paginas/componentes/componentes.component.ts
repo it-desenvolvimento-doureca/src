@@ -11,6 +11,9 @@ import { DataTable } from "primeng/primeng";
 })
 export class ComponentesComponent implements OnInit {
 
+  tipo: string;
+  id: string;
+  nome: string;
   cols: any;
   @ViewChild(DataTable) dataTableComponent: DataTable;
 
@@ -52,7 +55,7 @@ export class ComponentesComponent implements OnInit {
             tipo = "Componente";
           }
           this.cols.push({
-            id: response[x].id_COMPONENTE, nome: response[x].nome_COMPONENTE, tipo: tipo,cisterna:response[x].cisterna
+            id: response[x].id_COMPONENTE, nome: response[x].nome_COMPONENTE, tipo: tipo, cisterna: response[x].cisterna
           });
         }
         this.cols = this.cols.slice();
@@ -70,6 +73,9 @@ export class ComponentesComponent implements OnInit {
 
   //limpar filtro
   reset() {
+    this.nome = "";
+    this.id = "";
+    this.tipo = "";
     for (var x in this.dataTableComponent.filters) {
       this.dataTableComponent.filters[x].value = "";
     }
@@ -78,5 +84,14 @@ export class ComponentesComponent implements OnInit {
 
   atualizar() {
     this.preenche_tabela();
+  }
+
+  //filtro coluna linha
+  filtrar(value, coluna, filtro = "contains") {
+    if (value == 0) {
+      value = "";
+    }
+    this.dataTableComponent.filter(value.toString(), coluna, filtro);
+
   }
 }

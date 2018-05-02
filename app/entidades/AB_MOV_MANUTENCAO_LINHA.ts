@@ -13,4 +13,5 @@ export class AB_MOV_MANUTENCAO_LINHA {
     nome_REF: string;
     stkunit: string;
     valor_AGUA: number;
+    liecod: string;
 }

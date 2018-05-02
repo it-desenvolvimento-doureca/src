@@ -93,26 +93,46 @@ export class ManutencaoReposicaoComponent implements OnInit {
     this.globalVar.setdisApagar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005apagar"));
     this.disduplicar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005duplicar");
 
-    if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005planeamento")) {
+    /*  if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005planeamento")) {
+        this.query.push("Em Planeamento");
+        this.acessoplaneamento = false;
+      }
+      if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005preparacao") && !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005execucao")) {
+        this.query.push("Planeado", "Em Preparação", "Preparado", "Em Execução", "Executado");
+      }*/
+    var acessopla = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005planeamento");
+    var acessoprep = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005preparacao");
+    var acessoexec = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "acessoexec");
+
+    if (!acessopla) {
       this.query.push("Em Planeamento");
       this.acessoplaneamento = false;
     }
-    if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005preparacao") && !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005execucao")) {
-      this.query.push("Planeado", "Em Preparação", "Preparado", "Em Execução", "Executado");
+    if (!acessoprep && !acessopla) {
+      this.query.push("Em Planeamento");
+      this.acessoplaneamento = false;
+    }
+    if (!acessoexec && !acessoprep && !acessopla) {
+      this.query.push("Em Planeamento", "Planeado", "Em Preparação");
+      this.acessoplaneamento = false;
     }
 
 
     if (this.filtroval) {
       this.filtro = [];
-      /* if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005preparacao") && JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005execucao")) {
-         this.filtro = [];
-       } else if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005execucao")) {
-         this.filtro.push("Preparado");
-       } else if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005preparacao")) {
-         this.filtro.push("Planeado", "Em Preparação");
-       }*/
+      if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005preparacao") && JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005execucao")) {
+        this.filtro = [];
+      } else {
+        if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005execucao")) {
+          this.filtro.push("Preparado", "Em Execução");
+        } if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005preparacao")) {
+          this.filtro.push("Em Preparação");
+        } if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node005planeamento")) {
+          this.filtro.push("Em Planeamento");
+        }
+      }
     }
-    this.mensagemtabela = "A Carregar...";
+
     this.preenche_banhos();
     this.carregarlista();
 
@@ -120,7 +140,7 @@ export class ManutencaoReposicaoComponent implements OnInit {
   }
   carregarlista() {
     var count = 0;
-
+    this.mensagemtabela = "A Carregar...";
     if (this.globalVar.getfiltros("manutencaoreposicaoidbanho")) count = this.globalVar.getfiltros("manutencaoreposicaoidbanho").length;
 
     if (count == 0) {
@@ -133,7 +153,7 @@ export class ManutencaoReposicaoComponent implements OnInit {
           }
           for (var x in response) {
             if (!this.acessoplaneamento) {
-              var min = 30;
+              var min = (response[x][11] != null) ? response[x][11] : 0;
               if (response[x][9] != null) {
                 var data = new Date(response[x][9] + " " + response[x][10].slice(0, 5));
                 var dataatual = new Date();
@@ -214,6 +234,9 @@ export class ManutencaoReposicaoComponent implements OnInit {
     var ids = [];
     for (var x in this.dataTableComponent.dataToRender) {
       ids.push(this.dataTableComponent.dataToRender[x].id);
+    }
+    if (this.dataTableComponent.dataToRender.length == 0) {
+      this.mensagemtabela = "Nenhum Registo foi encontrado...";
     }
     this.globalVar.setfiltros("manutencaoreposicao_id", ids);
   }

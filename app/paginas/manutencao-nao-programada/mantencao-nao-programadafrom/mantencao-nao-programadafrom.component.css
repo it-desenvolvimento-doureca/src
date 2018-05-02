@@ -34,3 +34,6 @@
 .ui-dropdown-label {
     padding-top: 4px !important;
 }
+.adititable input:disabled{
+    background: #ebebe4 !important;
+}

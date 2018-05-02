@@ -206,12 +206,28 @@ export class ConstbanhosformComponent implements OnInit {
         this.preenchedados(true, this.manutencao[this.i]);
       }
       else {
-        if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003planeamento")) {
+        /* if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003planeamento")) {
+           this.query.push("Em Planeamento");
+           this.acessoplaneamento = false;
+         }
+         if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003preparacao") && !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003execucao")) {
+           this.query.push("Planeado", "Em Preparação", "Preparado", "Em Execução", "Executado");
+         }*/
+        var acessopla = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001planeamento");
+        var acessoprep = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node001preparacao");
+        var acessoexec = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "acessoexec");
+
+        if (!acessopla) {
           this.query.push("Em Planeamento");
           this.acessoplaneamento = false;
         }
-        if (!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003preparacao") && !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003execucao")) {
-          this.query.push("Planeado", "Em Preparação", "Preparado", "Em Execução", "Executado");
+        if (!acessoprep && !acessopla) {
+          this.query.push("Em Planeamento");
+          this.acessoplaneamento = false;
+        }
+        if (!acessoexec && !acessoprep && !acessopla) {
+          this.query.push("Em Planeamento", "Planeado", "Em Preparação");
+          this.acessoplaneamento = false;
         }
 
 
@@ -221,7 +237,7 @@ export class ConstbanhosformComponent implements OnInit {
           response => {
             for (var x in response) {
               if (!this.acessoplaneamento) {
-                var min = 30;
+                var min = (response[x][14] != null) ? response[x][14] : 0;
                 if (response[x][12] != null) {
                   var data = new Date(response[x][12] + " " + response[x][13].slice(0, 5));
                   var dataatual = new Date();
@@ -449,12 +465,15 @@ export class ConstbanhosformComponent implements OnInit {
               cor = "yellow";
             } else if (total == valor1 && response[x][4] != null) {
               cor = "green";
-            } else if (response[x][4] == null) {
+            } else if (valor1 == 0 || valor1 == null) {
               cor = "";
+            } else if (response[x][4] == null) {
+              cor = "red";
             }
 
             this.arrayForm.find(item => item.pos == pos).aditivos.push(
               {
+                liecod: response[x][0].liecod,
                 pos: pos2, cor: cor, factor_CONVERSAO: response[x][1].factor_CONVERSAO, cisterna: response[x][1].cisterna,
                 id_LIN: response[x][0].id_MANUTENCAO_LIN, id: response[x][0].id_ADITIVO, nome: response[x][1].nome_COMPONENTE, valor1: valor1.toString().replace(".", ","), valor2: valor2,
                 unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: response[x][0].obs_PLANEAMENTO,
@@ -543,7 +562,7 @@ export class ConstbanhosformComponent implements OnInit {
               if (response[x][1].cod_REF != null) {
                 this.carregaaditivosstock(response, x, pos, pos2, count, array, valor);
               } else {
-                array.push({ pos: pos2, cor: "", factor_CONVERSAO: response[x][1].factor_CONVERSAO, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
+                array.push({ liecod: null, pos: pos2, cor: "", factor_CONVERSAO: response[x][1].factor_CONVERSAO, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
                 this.ordernar(array);
                 if (pos2 == count) {
                   this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -569,14 +588,17 @@ export class ConstbanhosformComponent implements OnInit {
           for (var y in res) {
             query.push("'" + res[y].cod_ARMAZEM + "'");
           }
-          this.GERARMAZEMService.getStock(response[x][1].cod_REF, query).subscribe(
+          var data = [{ proref: response[x][1].cod_REF, liecod: query.toString() }];
+          this.GERARMAZEMService.getStock(data).subscribe(
             res1 => {
               var count = Object.keys(res1).length;
+              var liecod = null;
               if (count > 0) {
                 total = parseFloat(res1[0].STOQTE).toFixed(2);
                 total = total.replace(".", ",");
+                liecod = res1[0].LIECOD;
               }
-              array.push({ pos: pos2, cor: '', factor_CONVERSAO: null, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: res1[0].UNIUTI, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
+              array.push({ liecod: liecod, pos: pos2, cor: '', factor_CONVERSAO: null, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: res1[0].UNIUTI, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
               if (pos2 == total2) {
                 this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -586,7 +608,7 @@ export class ConstbanhosformComponent implements OnInit {
 
             },
             error => {
-              array.push({ pos: pos2, cor: '', factor_CONVERSAO: null, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
+              array.push({ liecod: null, pos: pos2, cor: '', factor_CONVERSAO: null, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
               this.carrega_script();
               if (pos2 == total2) {
@@ -596,7 +618,7 @@ export class ConstbanhosformComponent implements OnInit {
               console.log(error);
             });
         } else {
-          array.find(item => item.pos == pos).aditivos.push({ pos: pos2, cor: '', factor_CONVERSAO: null, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
+          array.find(item => item.pos == pos).aditivos.push({ liecod: response[x][0].liecod, pos: pos2, cor: '', factor_CONVERSAO: null, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
           this.ordernar(array);
           if (pos2 == total2) {
             this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -879,10 +901,22 @@ export class ConstbanhosformComponent implements OnInit {
           MOV_MANUTENCAO_LINHA.cod_REF = this.arrayForm.find(item => item.pos == pos).aditivos[x].cod_REF;
           MOV_MANUTENCAO_LINHA.nome_REF = this.arrayForm.find(item => item.pos == pos).aditivos[x].nome_REF;
           MOV_MANUTENCAO_LINHA.stkunit = this.arrayForm.find(item => item.pos == pos).aditivos[x].unidstock;
+          MOV_MANUTENCAO_LINHA.liecod = this.arrayForm.find(item => item.pos == pos).aditivos[x].liecod;
 
           this.criar(MOV_MANUTENCAO_LINHA, pos, x);
         } else {
           this.atualizalinhasaditivos(this.arrayForm.find(item => item.pos == pos).aditivos[x].id_LIN, pos, x)
+        }
+
+
+        var valor1 = 0;
+        if (this.arrayForm.find(item => item.pos == pos).aditivos[x].valor1 != null && this.arrayForm.find(item => item.pos == pos).aditivos[x].valor1 != "") {
+          valor1 = this.arrayForm.find(item => item.pos == pos).aditivos[x].valor1;
+        }
+        if (valor1 == 0) {
+          this.arrayForm.find(item => item.pos == pos).aditivos[x].cor = "";
+        } else {
+          this.arrayForm.find(item => item.pos == pos).aditivos[x].cor = "red";
         }
       }
 
@@ -1721,7 +1755,7 @@ export class ConstbanhosformComponent implements OnInit {
     let elem3 = document.getElementById("mainpagecontent");
     let h = elem3.getBoundingClientRect().height;
 
-    document.getElementById("myModaletiquetas2").style.height = Math.abs(h + 300) + 'px';
+    document.getElementById("myModaletiquetas").style.height = Math.abs(h + 300) + 'px';
     let coords = document.getElementById("toptexttop").offsetTop;
     elm2.style.top = Math.abs(coords - 10) + 'px';
 
@@ -1884,6 +1918,7 @@ export class ConstbanhosformComponent implements OnInit {
               }
             } else {
               var valor = adi.valor1;
+              if (valor == null) valor = "0";
               if (total != 0) {
                 valor = (total - adi.valor1.replace(",", "."))
               }
@@ -2141,6 +2176,7 @@ export class ConstbanhosformComponent implements OnInit {
       response => {
         var count = Object.keys(response).length;
         if (count > 0) {
+          if (valor == null) valor = "0";
           var numm = valor.replace(",", ".");
 
           for (var x in response) {
@@ -2412,10 +2448,10 @@ export class ConstbanhosformComponent implements OnInit {
       } else if (this.tempconsumiraditivo.replace(",", ".") == 0) {
         adi.cor = "green";
       } else {
-        adi.cor = "";
+        adi.cor = "red";
       }
     } else {
-      adi.cor = "";
+      adi.cor = "red";
     }
   }
 

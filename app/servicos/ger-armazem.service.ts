@@ -9,6 +9,7 @@ export class GERARMAZEMService {
   handleError: any;
   
     private headers = new Headers({ 'Content-Type': 'application/json' });
+    private headers2 = new Headers({ 'Content-Type': 'application/json' });
     constructor(private http: Http) { }
   
     create(data: GER_ARMAZEM) {
@@ -34,10 +35,9 @@ export class GERARMAZEMService {
         .catch((error: any) => Observable.throw('Server error'));
     }
     
-    getStock(proref,liecod) {
-      const url = webUrl.host + '/rest/sirb/getStock/'+proref+'/'+liecod;
+    getStock(data) {
       return this.http
-        .get(url)
+      .post(webUrl.host + '/rest/sirb/getStock', JSON.stringify(data), { headers: this.headers2 })
         .map(this.extractData)
         .catch((error: any) => Observable.throw('Server error'));
     }

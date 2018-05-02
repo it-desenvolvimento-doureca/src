@@ -5,5 +5,8 @@ export class GER_PARAMETROS {
     url_JASPER: string;
     pasta_ETIQUETAS: string;
     modelo_REPORT: string
-    pasta_JASPERREPORT : string;
+    pasta_JASPERREPORT: string;
+    tempo_PLANEADAS: number;
+    cartelas_ATIVO: boolean;
+    tempo_SINCRO_CARTELAS: number;
 }

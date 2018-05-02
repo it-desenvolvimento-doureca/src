@@ -97,23 +97,24 @@ export class CompformComponent implements OnInit {
           }
 
           this.i = this.componente.indexOf(+id);
-          //preenche combobox componentes_silver
-
-          this.ABDICCOMPONENTEService.getComponentes().subscribe(
-            response => {
-              this.componentes_silver = [];
-              this.componentes_silver.push({ label: 'Sel. Ref. Comp.', value: "" });
-              for (var x in response) {
-                this.componentes_silver.push({ label: response[x].PROREF + ' - ' + response[x].PRODES1 + ' ' + response[x].PRODES2, value: { valor: response[x].PROREF, UNISTO: response[x].UNISTO } });
-              }
-              this.componentes_silver = this.componentes_silver.slice();
-              this.inicia(this.componente[this.i]);
-            },
-            error => console.log(error));
-
+          this.inicia(this.componente[this.i]);
 
         }, error => { console.log(error); });
     }
+
+    //preenche combobox componentes_silver
+
+    this.ABDICCOMPONENTEService.getComponentes().subscribe(
+      response => {
+        this.componentes_silver = [];
+        this.componentes_silver.push({ label: 'Sel. Ref. Comp.', value: "" });
+        for (var x in response) {
+          this.componentes_silver.push({ label: response[x].PROREF + ' - ' + response[x].PRODES1 + ' ' + response[x].PRODES2, value: { valor: response[x].PROREF, UNISTO: response[x].UNISTO } });
+        }
+        this.componentes_silver = this.componentes_silver.slice();
+
+      },
+      error => console.log(error));
 
     //preenche combobox fornecedores
 
@@ -195,7 +196,7 @@ export class CompformComponent implements OnInit {
               this.nome = response[x].nome_COMPONENTE;
               this.medidas_valor = response[x].id_UNIDADE_COMPONENTE;
               this.obs = response[x].obs;
-              this.cod_ref = this.componentes_silver.find(item => item.value.valor == response[x].cod_REF).value;
+              this.cod_ref = (response[x].cod_REF != null && response[x].cod_REF != "") ? this.componentes_silver.find(item => item.value.valor == response[x].cod_REF).value : "";
               this.nome_ref = response[x].nome_REF;
               this.medidas_consumo = response[x].unisto;
               this.id_fornecedor = response[x].id_FORNECEDOR;
@@ -206,7 +207,7 @@ export class CompformComponent implements OnInit {
               this.fator_multiplicacao = fator_multiplicacao.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
 
               if (response[x].factor_CONVERSAO != null) fator_conversao = response[x].factor_CONVERSAO;
-              this.fator_conversao = fator_conversao.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
+              this.fator_conversao = fator_conversao.toLocaleString(undefined, { minimumFractionDigits: 4 }).replace(/\s/g, '');
 
               if (response[x].tipo == "T") {
                 this.componente_check = true;
@@ -263,7 +264,7 @@ export class CompformComponent implements OnInit {
       componente.id_UNIDADE_COMPONENTE = this.medidas_valor;
       componente.data_CRIA = new Date();
       componente.inativo = false;
-      componente.cod_REF = this.cod_ref.valor;
+      componente.cod_REF = (this.cod_ref) ? this.cod_ref.valor : "";
       componente.nome_REF = this.nome_ref;
       componente.unisto = this.medidas_consumo;
       componente.id_FORNECEDOR = this.id_fornecedor;

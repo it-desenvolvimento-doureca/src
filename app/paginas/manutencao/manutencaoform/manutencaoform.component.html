@@ -91,29 +91,29 @@
                 <form (ngSubmit)="gravarlinha(item.pos)" ngNativeValidate>
                   <div class="col-md-12" style="padding: 3px 7px 3px 10px; display: inline-grid; width: 100%; background: #f5f5f5; border: 1px solid #e3e3e3;">
                     <div style=" margin: auto 0;">
-                      <button id="idbt{{item.id}}" (click)="adicionarEtiquetas(item.pos,item.id,$event)" title="Adicionar Etiquetas" [disabled]="!planeado || !acessoprep || disaddetiquetas"
+                      <button id="idbt{{item.id}}" (click)="adicionarEtiquetas(item.pos,item.id,$event)" title="Adicionar Etiquetas" [hidden]="!planeado || !acessoprep || disaddetiquetas || item.preparado"
                         type="button" style="color: black; padding: 5px; margin: 0; left: 55.3%;  position: absolute; margin-top: 4px; font-size: 18px;"
                         class="btn btn-white btn-round btn-just-icon">
                         <i class="fa fa-object-group" aria-hidden="true"></i>
                         <div class="ripple-container"></div>
                       </button>
-                      <button title="Histórico" [disabled]="item.id == null || dishistorico" type="button" style="color: black;  padding: 5px; margin: 0; left: 13%;"
+                      <button title="Histórico" [hidden]="item.id == null || dishistorico" type="button" style="color: black;  padding: 5px; margin: 0; left: 13%;"
                         class="btn btn-white btn-round btn-just-icon" (click)="historico(item.id)">
                         <i class="material-icons">show_chart</i>
                         <div class="ripple-container"></div>
                       </button>
-                      <button title="Imprimir Ficha" [disabled]="item.id == null || disimprimir" type="button" style="color: black;  padding: 5px; margin: 0; left: 20%;"
+                      <button title="Imprimir Ficha" [hidden]="item.id == null || disimprimir" type="button" style="color: black;  padding: 5px; margin: 0; left: 20%;"
                         class="btn btn-white btn-round btn-just-icon" (click)="imprimir('manutencao_individual',item.id)">
                         <i class="material-icons">print</i>
                         <div class="ripple-container"></div>
                       </button>
-                      <button title="Ver Etiquetas" [disabled]="item.id == null || disprevetiquetas" type="button" style="left: 59%; color: black; height: 30px; width: 43px; margin: 0px 13px 0px 0px;"
+                      <button title="Ver Etiquetas" [hidden]="item.id == null || disprevetiquetas" type="button" style="left: 59%; color: black; height: 30px; width: 43px; margin: 0px 13px 0px 0px;"
                         class="btn btn-white btn-round btn-just-icon" (click)="imprimir('manutencao_etiquetas',item.id)">
                         <i class="fa fa-search" style="font-size: 14px; position: absolute; left: 22px; top: 8px;" aria-hidden="true"></i>
                         <i class="fa fa-tags" style="font-size: 14px; position: absolute; left: 3px; bottom: 7px;" aria-hidden="true"></i>
                         <div class="ripple-container"></div>
                       </button>
-                      <button title="Imprimir Etiquetas" [disabled]="item.id == null || disimprimiretiquetas" type="button" style="left: 59%; color: black; height: 30px; width: 43px; margin: 0;"
+                      <button title="Imprimir Etiquetas" [hidden]="item.id == null || disimprimiretiquetas" type="button" style="left: 59%; color: black; height: 30px; width: 43px; margin: 0;"
                         class="btn btn-white btn-round btn-just-icon" (click)="imprimiretiquetas('manutencao_etiquetas',item.id)">
                         <i class="fa fa-print" style="font-size: 14px; position: absolute; left: 22px; top:9px;" aria-hidden="true"></i>
                         <i class="fa fa-tags" style="font-size: 14px; position: absolute; left: 3px; bottom: 7px;" aria-hidden="true"></i>
@@ -293,20 +293,21 @@
                               <th style="width: 8%; font-weight: 700;">Valor 1</th>
                               <th style="width: 5%; font-weight: 700;">Etiq.</th>
                               <th style="width: 9%;  padding: .75em 0 .75em 0; font-weight: 700;">Valor Água</th>
-                              <th style="width: 9%; font-weight: 700;">Unid. 1</th>
+                              <th style="width: 8%; font-weight: 700;">Unid. 1</th>
                               <th style="width: 8%; font-weight: 700;">Valor 2</th>
-                              <th style="width: 9%; font-weight: 700;">Unid. 2</th>
-                              <th style="width: 7%; font-weight: 700;">Stock</th>
+                              <th style="width: 8%; font-weight: 700;">Unid. 2</th>
+                              <th style="width: 6%; font-weight: 700;">Stock</th>
                               <th style="width: 5%; font-weight: 700;">Unid.</th>
+                              <th style="width: 5%; font-weight: 700;">Arm.</th>
                               <th style="width: 18%; font-weight: 700;">Observações</th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr *ngIf="item.aditivos.length == 0 && textotabela == null">
-                              <td style="text-align: center;" colspan="9"> O BANHO NÃO CONTÉM ADITIVOS... </td>
+                              <td style="text-align: center;" colspan="11"> O BANHO NÃO CONTÉM ADITIVOS... </td>
                             </tr>
                             <tr *ngIf="textotabela != null">
-                              <td style="text-align: center;" colspan="9"> {{textotabela}} </td>
+                              <td style="text-align: center;" colspan="11"> {{textotabela}} </td>
                             </tr>
                             <tr *ngFor="let aditem of item.aditivos">
                               <td style="padding: 5px 4px 0px 0px">
@@ -330,7 +331,7 @@
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
                                 <p-dropdown [filter]="true" [options]="medidas" [style]="{'width':'100%'}" [(ngModel)]="aditem.unidade1" [ngModelOptions]="{standalone: true}"
-                                  [disabled]="!modoedicao" [required]="true"> </p-dropdown>
+                                  [disabled]="true" [required]="true"> </p-dropdown>
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
                                 <input type="text" style="background: white;  text-align: center; height: 31px;" class="form-control" [(ngModel)]="aditem.valor2"
@@ -345,6 +346,9 @@
                               </td>
                               <td style="padding: 11px 0px 0px 0px; text-align: center;">
                                 <span style=" display: block;"> {{aditem.unidstock}}</span>
+                              </td>
+                              <td style="padding: 11px 0px 0px 0px; text-align: center;">
+                                <span style=" display: block;"> {{aditem.liecod}}</span>
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
                                 <input type="text" style="background: white; height: 31px;" class="form-control" [(ngModel)]="aditem.obs" [ngModelOptions]="{standalone: true}"
@@ -600,7 +604,7 @@
               <td style="padding: 0px 4px 0px 0px">
                 <div class="form-group">
                   <input id="{{etiq.id}}" (keyup.enter)="addlinhaetiqiadiv(etiq.id,numero2.value)" #numero2 type="number" style="text-align: center; height: 31px; width: 100%;"
-                    [(ngModel)]="etiq.numero" [ngModelOptions]="{standalone: true}" [disabled]="!(modoedicao || planeado) || disaddetiquetas">
+                    [(ngModel)]="etiq.numero" [ngModelOptions]="{standalone: true}" [disabled]="!(modoedicao || tempplaneado) || disaddetiquetas">
                 </div>
               </td>
               <td style="padding: 0px 4px 0px 0px">
@@ -611,23 +615,23 @@
               <td style="padding: 0px 4px 0px 0px">
                 <div class="form-group">
                   <input (input)="calculaFalta(true,etiq.id)" type="text" style=" text-align: center; height: 31px; width: 80%;" [(ngModel)]="etiq.consumir"
-                    [ngModelOptions]="{standalone: true}" [disabled]="!(modoedicao || planeado) || disaddetiquetas">
+                    [ngModelOptions]="{standalone: true}" [disabled]="!(modoedicao || tempplaneado) || disaddetiquetas">
                   <input [disabled]="true" type="text" style=" text-align: center; height: 31px; width: 15%;" [(ngModel)]="unidade1temp" [ngModelOptions]="{standalone: true}">
                 </div>
               </td>
               <td style="padding: 0px 4px 0px 0px">
                 <div class="form-group">
                   <input type="text" style=" text-align: center; height: 31px; width: 80%;" [(ngModel)]="etiq.quant_FINAL" [ngModelOptions]="{standalone: true}"
-                    [disabled]="!(modoedicao || planeado) || disaddetiquetas">
+                    [disabled]="!(modoedicao || tempplaneado) || disaddetiquetas">
                   <input [disabled]="true" type="text" style=" text-align: center; height: 31px; width: 15%;" [(ngModel)]="etiq.UNISTO" [ngModelOptions]="{standalone: true}">
                 </div>
               </td>
               <td style="padding: 0px 4px 0px 0px; width: 69px; height: 22px;">
-                <button (click)="addlinhaetiqiadiv(etiq.id,numero2.value)" type="button" class="ibtnDel btn btn-md btn-default " [disabled]="!(modoedicao || planeado) || disaddetiquetas"
+                <button (click)="addlinhaetiqiadiv(etiq.id,numero2.value)" type="button" class="ibtnDel btn btn-md btn-default " [disabled]="!(modoedicao || tempplaneado) || disaddetiquetas"
                   style="height: 27px;width: 2px;padding: 13px 21px 6px 7px;">
                   <i style="font-size: 15px; top: -7px" class="material-icons">add</i>
                 </button>
-                <button (click)="apagaretiquetaaditivo(etiq.id)" type="button" class="ibtnDel btn btn-md btn-danger " [disabled]="!(modoedicao || planeado) || disaddetiquetas"
+                <button (click)="apagaretiquetaaditivo(etiq.id)" type="button" class="ibtnDel btn btn-md btn-danger " [disabled]="!(modoedicao || tempplaneado) || disaddetiquetas"
                   style="height: 27px;width: 2px;padding: 13px 21px 6px 7px;">
                   <i style="font-size: 15px; top: -7px" class="material-icons">delete</i>
                 </button>
@@ -639,7 +643,7 @@
       <div class="modal-footer">
         <div style="text-align: center;">
           <button type="button" class="btn btn-danger" #closedialogetiq2 data-dismiss="modal">CANCELAR</button>
-          <button type="button" class="btn btn-success" (click)="guardaretiquetasaditivos()" [disabled]="!(modoedicao || planeado) || disaddetiquetas">GUARDAR</button>
+          <button type="button" class="btn btn-success" (click)="guardaretiquetasaditivos()" [disabled]="!(modoedicao || tempplaneado) || disaddetiquetas">GUARDAR</button>
         </div>
       </div>
     </div>

@@ -18,29 +18,51 @@
                       <h5 style="margin: 0; ">GERAL</h5>
                       <hr style="margin: 0px 0 7px 0;" />
                       <div class="form-group col-md-6" style="padding: 0px 18px 0 0;">
-                        <label for="pasta_ficheiro">Pasta Destino (Registo de Produção):</label>
+                        <label for="pasta_ficheiro">Pasta Destino Interface Silver:</label>
                         <input [disabled]="!modoedicao" type="text" class="form-control" id="pasta_ficheiro" [(ngModel)]="pasta_ficheiro" [ngModelOptions]="{standalone: true}"
-                          placeholder="c:\exemplo" required />
+                          placeholder="c:\exemplo\" required />
                       </div>
                       <div class="form-group col-md-6" style="padding: 0px;">
                         <label for="pasta_ETIQUETAS">Pasta Destino (Criação Etiquetas):</label>
                         <input [disabled]="!modoedicao" type="text" class="form-control" id="pasta_ETIQUETAS" [(ngModel)]="pasta_ETIQUETAS" [ngModelOptions]="{standalone: true}"
-                          placeholder="c:\exemplo" required />
+                          placeholder="c:\exemplo\" required />
                       </div>
                       <div class="form-group col-md-6" style="padding: 0px 18px 0 0;">
                         <label for="pasta_JASPERREPORT">Pasta Raiz para a Criação de Relatórios:</label>
-                        <input [disabled]="!modoedicao" type="text" class="form-control" id="pasta_JASPERREPORT" [(ngModel)]="pasta_JASPERREPORT" [ngModelOptions]="{standalone: true}"
-                          placeholder="" required />
+                        <input [disabled]="!modoedicao" type="text" class="form-control" id="pasta_JASPERREPORT" [(ngModel)]="pasta_JASPERREPORT"
+                          [ngModelOptions]="{standalone: true}" placeholder="" required />
                       </div>
                       <div class="form-group col-md-6" style="padding: 0px;">
                         <label for="modelo_REPORT">Modelo Report:</label>
                         <input [disabled]="!modoedicao" type="text" class="form-control" id="modelo_REPORT" [(ngModel)]="modelo_REPORT" [ngModelOptions]="{standalone: true}"
                           placeholder="" required />
                       </div>
-                      <div class="form-group col-md-12" style="padding: 0px 18px 0 0;">
+                      <div class="form-group col-md-6" style="padding: 0px 18px 0 0;">
                         <label for="url_SILVER">URL Silver:</label>
                         <input [disabled]="!modoedicao" type="text" class="form-control" id="url_SILVER" [(ngModel)]="url_SILVER" [ngModelOptions]="{standalone: true}"
                           placeholder="" required />
+                      </div>
+                      <div class="form-group col-md-6" style="padding: 0px 18px 0 0;">
+                        <label for="tempo_PLANEADAS">Tempo mínimo para visualizar as fichas planeadas (minutos):</label>
+                        <input [disabled]="!modoedicao" type="text" class="form-control" id="tempo_PLANEADAS" [(ngModel)]="tempo_PLANEADAS" [ngModelOptions]="{standalone: true}"
+                          placeholder="" required />
+                      </div>
+                    </div>
+                    <div class="col-md-12 " style="padding: 6px">
+                      <h5 style="margin: 0; ">CARTELAS</h5>
+                      <hr style="margin: 0px 0 7px 0;" />
+                      <div class="form-group col-md-6" style="padding: 0px 18px 0 0;">
+                        <label for="tempo_SINCRO_CARTELAS">Tempo Sincronização (minutos):</label>
+                        <input [disabled]="!modoedicao" type="text" class="form-control" id="tempo_SINCRO_CARTELAS" [(ngModel)]="tempo_SINCRO_CARTELAS"
+                          [ngModelOptions]="{standalone: true}" required />
+                      </div>
+                      <div class="form-group col-md-6" style="padding: 0px;">
+                        <div class="checkbox col-md-6" style="float: none; margin-left: 14px;">
+                          <input [disabled]="!modoedicao" type="checkbox" name="cartelas_ATIVO" id="radio7" [(ngModel)]="cartelas_ATIVO">
+                          <label for="radio7" style="color:black">
+                            Sincronismo Ativo
+                          </label>
+                        </div>
                       </div>
                     </div>
                     <div class="col-md-12">

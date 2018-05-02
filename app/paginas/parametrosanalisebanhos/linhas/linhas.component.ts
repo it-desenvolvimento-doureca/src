@@ -12,6 +12,10 @@ import { AB_DIC_LINHA_OF } from '../../../entidades/AB_DIC_LINHA_OF';
   styleUrls: ['./linhas.component.css']
 })
 export class LinhasComponent implements OnInit {
+  pasta: string;
+  utilizador: string;
+  senha: string;
+  dominio: string;
   tempof: any;
   encontrou: boolean;
   seccao: any;
@@ -56,6 +60,10 @@ export class LinhasComponent implements OnInit {
     this.subseccao = "";
     this.ref_COMPOSTO = "";
     this.cor_linha = '#ffffff';
+    this.pasta = "";
+    this.utilizador = "";
+    this.senha = "";
+    this.dominio = "";
 
     this.simular(this.dialoglinhas);
   }
@@ -132,6 +140,10 @@ export class LinhasComponent implements OnInit {
     LINHAS.seccao = this.seccao;
     LINHAS.subseccao = this.subseccao;
     LINHAS.ref_COMPOSTO = this.ref_COMPOSTO;
+    LINHAS.pasta = this.pasta;
+    LINHAS.utilizador = this.utilizador;
+    LINHAS.senha = this.senha;
+    LINHAS.dominio = this.dominio;
     LINHAS.inativo = false;
     if (this.novalinha) {
       this.ABDICLINHAService.create(LINHAS).subscribe(response => {
@@ -184,7 +196,11 @@ export class LinhasComponent implements OnInit {
     this.ABDICLINHAService.getAll().subscribe(
       response => {
         for (var x in response) {
-          this.linhas.push({ id: response[x].id_LINHA, nome: response[x].nome_LINHA, cor: response[x].cor, seccao: response[x].seccao, subseccao: response[x].subseccao, ref_COMPOSTO: response[x].ref_COMPOSTO });
+          this.linhas.push({
+            id: response[x].id_LINHA, nome: response[x].nome_LINHA, cor: response[x].cor, seccao: response[x].seccao,
+            subseccao: response[x].subseccao, ref_COMPOSTO: response[x].ref_COMPOSTO, pasta: response[x].pasta, utilizador: response[x].utilizador, senha: response[x].senha
+            , dominio: response[x].dominio
+          });
         }
         this.linhas = this.linhas.slice();
       },
@@ -205,6 +221,10 @@ export class LinhasComponent implements OnInit {
         DIC_LINHA.seccao = this.seccao;
         DIC_LINHA.subseccao = this.subseccao;
         DIC_LINHA.ref_COMPOSTO = this.ref_COMPOSTO;
+        DIC_LINHA.pasta = this.pasta;
+        DIC_LINHA.utilizador = this.utilizador;
+        DIC_LINHA.senha = this.senha;
+        DIC_LINHA.dominio = this.dominio;
         DIC_LINHA.data_ANULACAO = new Date();
         DIC_LINHA.utz_ANULACAO = JSON.parse(localStorage.getItem('userapp'))["id"];
         DIC_LINHA.inativo = true;
@@ -228,6 +248,10 @@ export class LinhasComponent implements OnInit {
     this.seccao = event.data.seccao;
     this.subseccao = event.data.subseccao;
     this.ref_COMPOSTO = event.data.ref_COMPOSTO;
+    this.pasta = event.data.pasta;
+    this.utilizador = event.data.utilizador;
+    this.senha = event.data.senha;
+    this.dominio = event.data.dominio;
     this.carregaTabela(event.data.id);
     this.simular(this.dialoglinhas);
   }

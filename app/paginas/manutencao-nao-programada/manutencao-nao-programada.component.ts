@@ -100,24 +100,29 @@ export class ManutencaoNaoProgramadaComponent implements OnInit {
 
     //this.query.push("Em Execução", "Executado");
 
-
+    
     if (this.filtroval) {
       this.filtro = [];
-      /* if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004preparacao") && JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004execucao")) {
-         this.filtro = [];
-       } else if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004execucao")) {
-         this.filtro.push("Preparado");
-       } else if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004preparacao")) {
-         this.filtro.push("Planeado", "Em Preparação");
-       }*/
+      if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004preparacao") && JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004execucao")) {
+        this.filtro = [];
+      } else {
+        if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004execucao")) {
+          this.filtro.push("Em Execução");
+        } if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004preparacao")) {
+          this.filtro.push("Planeado", "Em Preparação");
+        } if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004planeamento")) {
+          this.filtro.push("Em Planeamento");
+        }
+      }
     }
-    this.mensagemtabela = "A Carregar...";
     this.preenche_banhos();
     this.carregarlista();
 
 
   }
   carregarlista() {
+
+    this.mensagemtabela = "A Carregar...";
     var count = 0;
 
     if (this.globalVar.getfiltros("manutencaonaoprogramadaidbanho")) count = this.globalVar.getfiltros("manutencaonaoprogramadaidbanho").length;
@@ -199,6 +204,9 @@ export class ManutencaoNaoProgramadaComponent implements OnInit {
     var ids = [];
     for (var x in this.dataTableComponent.dataToRender) {
       ids.push(this.dataTableComponent.dataToRender[x].id);
+    }
+    if (this.dataTableComponent.dataToRender.length == 0) {
+      this.mensagemtabela = "Nenhum Registo foi encontrado...";
     }
     this.globalVar.setfiltros("manutencaonaoprogramada_id", ids);
   }

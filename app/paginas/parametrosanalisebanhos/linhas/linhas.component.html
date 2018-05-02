@@ -37,7 +37,7 @@
 <!-- Modal Linhas-->
 <div class="modal fade" id="myModallinhas" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content" >
+    <div class="modal-content">
       <!-- Modal Header -->
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">
@@ -50,25 +50,48 @@
       </div>
       <form role="form" ngNativeValidate (ngSubmit)="gravarlinhas()">
         <!-- Modal Body -->
-        <div class="modal-body col-md-12">
+        <div class="modal-body col-md-12" style="height: 77vh; overflow-y: auto;">
           <div class="col-md-6">
-            <div class="form-group">
+            <div class="form-group col-md-6" style="padding: 0px;">
               <label for="nmlinha">Nome Linha</label>
               <input type="text" class="form-control" id="nmlinha" [(ngModel)]="nome_linha" [ngModelOptions]="{standalone: true}" placeholder="Introduza o Nome da Linha"
                 required />
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-6" style="padding: 0px 0px 0px 10px;">
               <label for="nmlinha1">Código Secção</label>
-              <input type="text" class="form-control" id="nmlinha1" [(ngModel)]="seccao" [ngModelOptions]="{standalone: true}" placeholder="Introduza o Código da Secção"/>
+              <input type="text" class="form-control" id="nmlinha1" [(ngModel)]="seccao" [ngModelOptions]="{standalone: true}" placeholder="Introduza o Código da Secção"
+              />
+            </div>
+            <div class="form-group col-md-6" style="padding: 0px;">
+              <label for="nmlinha2">Código Sub-Secção</label>
+              <input type="text" class="form-control" id="nmlinha2" [(ngModel)]="subseccao" [ngModelOptions]="{standalone: true}" placeholder="Introduza o Códido da Sub-Secção"
+              />
+            </div>
+            <div class="form-group col-md-6" style="padding:0px 0px 0px 10px;">
+              <label for="nmlinha3">Referência Composto</label>
+              <input type="text" class="form-control" id="nmlinha3" [(ngModel)]="ref_COMPOSTO" [ngModelOptions]="{standalone: true}" placeholder="Introduza a Referência Composto"
+              />
             </div>
             <div class="form-group">
-                <label for="nmlinha2">Código Sub-Secção</label>
-                <input type="text" class="form-control" id="nmlinha2" [(ngModel)]="subseccao" [ngModelOptions]="{standalone: true}" placeholder="Introduza o Códido da Sub-Secção"/>
-              </div>
-              <div class="form-group">
-                  <label for="nmlinha3">Referência Composto</label>
-                  <input type="text" class="form-control" id="nmlinha3" [(ngModel)]="ref_COMPOSTO" [ngModelOptions]="{standalone: true}" placeholder="Introduza a Referência Composto"/>
-                </div>
+              <label for="nmlinha4">Pasta</label>
+              <input type="text" class="form-control" id="nmlinha4" [(ngModel)]="pasta" [ngModelOptions]="{standalone: true}" placeholder="C:/pasta/ ou 111.111.11.11/pasta/"
+              />
+            </div>
+            <div class="form-group col-md-4" style="padding: 0px;">
+              <label for="nmlinha5">Utilizador</label>
+              <input type="text" class="form-control" id="nmlinha5" [(ngModel)]="utilizador" [ngModelOptions]="{standalone: true}" placeholder="Introduza o Utilizador"
+              />
+            </div>
+            <div class="form-group col-md-4" style="padding: 0px 0px 0px 10px;">
+              <label for="nmlinha6">Password</label>
+              <input type="text" class="form-control" id="nmlinha6" [(ngModel)]="senha" [ngModelOptions]="{standalone: true}" placeholder="Introduza a Password"
+              />
+            </div>
+            <div class="form-group col-md-4" style="padding: 0px 0px 0px 10px;">
+              <label for="nmlinha6">Domínio</label>
+              <input type="text" class="form-control" id="nmlinha6" [(ngModel)]="dominio" [ngModelOptions]="{standalone: true}" placeholder="Introduza o Domínio"
+              />
+            </div>
             <div class="form-group">
               <label>Cor Linha</label>
               <p-colorPicker [(ngModel)]="cor_linha" [ngModelOptions]="{standalone: true}"></p-colorPicker>
@@ -105,7 +128,7 @@
         <!-- Modal Footer -->
         <div class="modal-footer">
           <button type="button" class="btn btn-default" #closedialoglinha data-dismiss="modal">Fechar</button>
-          <button type="button" (click)="apagarlinhas()" [hidden]="novalinha" class="btn btn-danger" >Remover</button>
+          <button type="button" (click)="apagarlinhas()" [hidden]="novalinha" class="btn btn-danger">Remover</button>
           <button type="submit" class="btn btn-success ">Gravar</button>
         </div>
       </form>

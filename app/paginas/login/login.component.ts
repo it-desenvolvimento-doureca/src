@@ -167,7 +167,7 @@ export class LoginComponent implements OnInit {
                       }
                     }
                     localStorage.setItem('acessos', JSON.stringify(array));
-
+                    location.reload(true);
                     if (this.url != "" && this.url != null) {
                       this.router.navigate([this.url]);
                     } else {
@@ -175,6 +175,7 @@ export class LoginComponent implements OnInit {
                     }
                   } else {
                     localStorage.setItem('acessos', JSON.stringify(array));
+                    location.reload(true);
                     if (this.url != "" && this.url != null) {
                       this.router.navigate([this.url]);
                     } else {

@@ -8,4 +8,8 @@ export class AB_DIC_LINHA {
     utz_ANULACAO: number;
     data_ANULACAO: Date;
     inativo: boolean;
+    pasta: string;
+    utilizador: string;
+    senha: string;
+    dominio: string;
 }

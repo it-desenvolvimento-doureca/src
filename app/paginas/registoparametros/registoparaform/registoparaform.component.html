@@ -49,8 +49,14 @@
                  <div class="col-md-2">
                   <div class="form-group form-black label-floating">
                     <label style="font-size: 14px;">Linha</label>
-                    <p-dropdown [style.background]="cor_linha" [options]="linhas" [style]="{'width':'150px'}" [(ngModel)]="linha" [ngModelOptions]="{standalone: true}"
-                      [disabled]="true" [required]="true"></p-dropdown>
+                    <p-dropdown [style.background]="cor_linha" class="droplinha" [options]="linhas" [style]="{'width':'150px'}"
+                    [(ngModel)]="linha" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao" [required]="true">
+                    <ng-template let-car pTemplate="item">
+                      <div class="ui-helper-clearfix" [style.background]="car.cor" style="position: relative;height: 25px;">
+                        {{car.label}}
+                      </div>
+                    </ng-template>
+                  </p-dropdown>
                   </div>
                 </div>
                 <div class="col-md-3">

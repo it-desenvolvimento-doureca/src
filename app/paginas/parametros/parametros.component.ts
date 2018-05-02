@@ -15,6 +15,9 @@ import { ConfirmationService } from 'primeng/primeng';
   styleUrls: ['./parametros.component.css']
 })
 export class ParametrosComponent implements OnInit {
+  tempo_SINCRO_CARTELAS: number;
+  cartelas_ATIVO: boolean;
+  tempo_PLANEADAS: any;
   pasta_JASPERREPORT: string;
   modelo_REPORT: string;
   pasta_ETIQUETAS: any;
@@ -90,7 +93,10 @@ export class ParametrosComponent implements OnInit {
           this.pasta_ficheiro = response[x].pasta_FICHEIRO;
           this.pasta_ETIQUETAS = response[x].pasta_ETIQUETAS;
           this.modelo_REPORT = response[x].modelo_REPORT;
+          this.tempo_SINCRO_CARTELAS = response[x].tempo_SINCRO_CARTELAS;
+          this.cartelas_ATIVO = response[x].cartelas_ATIVO;
           this.url_SILVER = response[x].url_SILVER;
+          this.tempo_PLANEADAS = response[x].tempo_PLANEADAS;
           this.pasta_JASPERREPORT = response[x].pasta_JASPERREPORT;
         }
       },
@@ -104,8 +110,10 @@ export class ParametrosComponent implements OnInit {
       response => {
         this.postos = [];
         for (var x in response) {
-          this.postos.push({ id_POSTO: response[x].id_POSTO, descricao: response[x].descricao, ip_POSTO: response[x].ip_POSTO, impressora: response[x].impressora,
-            ip_IMPRESSORA:response[x].ip_IMPRESSORA,nome_IMPRESSORA:response[x].nome_IMPRESSORA });
+          this.postos.push({
+            id_POSTO: response[x].id_POSTO, descricao: response[x].descricao, ip_POSTO: response[x].ip_POSTO, impressora: response[x].impressora,
+            ip_IMPRESSORA: response[x].ip_IMPRESSORA, nome_IMPRESSORA: response[x].nome_IMPRESSORA
+          });
         }
         this.postos = this.postos.slice();
       },
@@ -118,10 +126,13 @@ export class ParametrosComponent implements OnInit {
     parametros = this.parametros;
     parametros.pasta_FICHEIRO = this.pasta_ficheiro.trim();
     parametros.url_SILVER = this.url_SILVER.trim();
-    parametros.pasta_JASPERREPORT = this.pasta_JASPERREPORT.trim();   
-     parametros.pasta_ETIQUETAS = this.pasta_ETIQUETAS.trim();
+    parametros.tempo_PLANEADAS = this.tempo_PLANEADAS;
+    parametros.pasta_JASPERREPORT = this.pasta_JASPERREPORT.trim();
+    parametros.pasta_ETIQUETAS = this.pasta_ETIQUETAS.trim();
     parametros.modelo_REPORT = this.modelo_REPORT.trim();
-        
+    parametros.tempo_SINCRO_CARTELAS = this.tempo_SINCRO_CARTELAS;
+    parametros.cartelas_ATIVO = this.cartelas_ATIVO;
+
     this.GERPARAMETROSService.update(parametros).then(() => {
       for (var x in this.postos) {
         if (this.postos[x].id_POSTO.toString().substring(0, 1) == "P") {

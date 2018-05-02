@@ -75,11 +75,11 @@
                       required>
                   </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6"  style="margin-top: -16px;">
                   <div style="float: left; margin-right: 10px;">
                     <div class="form-group form-black label-floating">
-                      <label style="font-size: 14px;">Nº da Tina</label>
-                      <p-dropdown [filter]="true" [options]="tinas" [style]="{'width':'150px'}" [(ngModel)]="tinas_valor" [ngModelOptions]="{standalone: true}"
+                      <label style="font-size: 14px; margin-bottom: 0px;">Nº Tina</label> <br>
+                      <p-dropdown [filter]="true" [options]="tinas" [style]="{'width':'100px'}" [(ngModel)]="tinas_valor" [ngModelOptions]="{standalone: true}"
                         (onChange)="num_tina($event)" [disabled]="!modoedicao" [required]="true"></p-dropdown>
                       <span style="font-size: 12px; padding-right: 20px;">
                         <b>CAP(LT):</b> {{capacidade_tina}}</span>
@@ -87,9 +87,9 @@
                         <b>OBS. TINA:</b> {{obs_tina}}</span>
                     </div>
                   </div>
-                  <div>
-                    <div class="form-group form-black label-floating">
-                      <label style="font-size: 14px;">Zona</label>
+                  <div style="margin-top: -5px;">
+                    <div class="form-group form-black label-floating" style="float: left;">
+                      <label style="font-size: 14px; margin-bottom: 0px;">Zona</label><br>
                       <p-dropdown [options]="zonas" [style]="{'width':'150px'}" [(ngModel)]="zona" [ngModelOptions]="{standalone: true}" [disabled]="true"></p-dropdown>
                     </div>
                   </div>

@@ -646,6 +646,7 @@ export class BanhosformComponent implements OnInit {
         var banhos_aditivos = new AB_DIC_BANHO_ADITIVO;
         banhos_aditivos = res[0];
         banhos_aditivos.id_BANHO = id;
+        banhos_aditivos.id_ADITIVO = this.banhos_aditivos[x].ID_ADITIVO;
         banhos_aditivos.id_UNIDADE1 = this.banhos_aditivos[x].ID_UNIDADE1;
         banhos_aditivos.id_UNIDADE2 = this.banhos_aditivos[x].ID_UNIDADE2;
         banhos_aditivos.utz_ULT_MODIF = this.user;

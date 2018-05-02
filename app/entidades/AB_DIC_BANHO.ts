@@ -17,9 +17,9 @@ export class AB_DIC_BANHO {
     email_PARA: string;
     manutencaoreposicao: boolean;
     manutencaonaoprogramada: boolean;
-    dose1:number;
-    dose2:number;
-    dose3:number;
-    dose4:number;
-    dose5:number;
+    dose1:string;
+    dose2:string;
+    dose3:string;
+    dose4:string;
+    dose5:string;
 }
