@@ -32,7 +32,7 @@ export class MenuComponent implements OnInit {
     this.simular(this.dialog);
   }
 
-  abreAjuda(){
+  abreAjuda() {
     this.simular(this.dialog2);
   }
 
@@ -42,4 +42,17 @@ export class MenuComponent implements OnInit {
     this.renderer.invokeElementMethod(
       element.nativeElement, 'dispatchEvent', [event]);
   }
+
+  abrirdashboard() {
+    var acesso1 = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node040");
+    var acesso2 = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node041");
+    if (acesso1) {
+      this.router.navigate(['homegestaobanhos']);
+    } else if (acesso2) {
+      this.router.navigate(['listagem']);
+    }
+    //[routerLink]="['/homegestaobanhos']"
+  }
+
+
 }

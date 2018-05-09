@@ -39,6 +39,7 @@ import { ABMOVMANUTENCAOETIQService } from '../../../servicos/ab-mov-manutencao-
   styleUrls: ['./manutencaoform.component.css']
 })
 export class ManutencaoformComponent implements OnInit {
+  url = null;
   tempplaneado: any;
   acessoplaneamento = true;
   cisternadisabled: boolean;
@@ -139,7 +140,11 @@ export class ManutencaoformComponent implements OnInit {
   constructor(private ABMOVMANUTENCAOETIQService: ABMOVMANUTENCAOETIQService, private UploadService: UploadService, private GERPOSTOSService: GERPOSTOSService, private sanitizer: DomSanitizer, private RelatoriosService: RelatoriosService, private GERUTILIZADORESService: GERUTILIZADORESService, private elementRef: ElementRef, private GERARMAZEMService: GERARMAZEMService, private ADMOVREGPARAMOPERACAOService: ADMOVREGPARAMOPERACAOService, private ABMOVMANUTENCAOLINHAService: ABMOVMANUTENCAOLINHAService, private ABMOVMANUTENCAOCABService: ABMOVMANUTENCAOCABService, private ABMOVANALISEService: ABMOVANALISEService, private ABDICTIPOOPERACAOService: ABDICTIPOOPERACAOService, private ABDICTIPOADICAOService: ABDICTIPOADICAOService, private ABDICBANHOADITIVOService: ABDICBANHOADITIVOService, private ABMOVMANUTENCAOService: ABMOVMANUTENCAOService, private ABDICTURNOService: ABDICTURNOService, private ABDICTIPOMANUTENCAOService: ABDICTIPOMANUTENCAOService, private confirmationService: ConfirmationService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private ABDICBANHOService: ABDICBANHOService, private ABDICLINHAService: ABDICLINHAService, private globalVar: AppGlobals, private ABUNIDADADEMEDIDAService: ABUNIDADADEMEDIDAService, private location: Location, private router: Router, private renderer: Renderer, private route: ActivatedRoute) { }
 
   ngOnInit() {
-
+    var sub = this.route
+      .queryParams
+      .subscribe(params => {
+        this.url = params['redirect'];
+      });
 
     var s = document.createElement("script");
     s.type = "text/javascript";
@@ -233,12 +238,15 @@ export class ManutencaoformComponent implements OnInit {
             for (var x in response) {
               if (!this.acessoplaneamento) {
                 var min = (response[x][11] != null) ? response[x][11] : 0;
+                var min_max = (response[x][12] != null) ? response[x][12] : 0;
                 if (response[x][9] != null) {
                   var data = new Date(response[x][9] + " " + response[x][10].slice(0, 5));
                   var dataatual = new Date();
                   var total = data.getTime() - dataatual.getTime();
                   var minutos = Math.round(total / 60000);
-                  if (minutos <= min) {
+                  var total_max = dataatual.getTime() - data.getTime();
+                  var minutos_max = Math.round(total_max / 60000);
+                  if (minutos <= min && minutos_max <= min_max) {
                     this.manutencao.push(response[x][0]);
                   }
                 }
@@ -305,58 +313,69 @@ export class ManutencaoformComponent implements OnInit {
     this.planeado = false;
     this.preparado = false;
     this.planeamento = false;
-    this.ABMOVMANUTENCAOService.getbyID(id).subscribe(
-      response => {
-        var count = Object.keys(response).length;
-        if (count > 0) {
-          for (var x in response) {
-            this.manutencao_dados = response[x][0];
-            this.num_manutencao = response[x][0].id_MANUTENCAO;
-            this.tipo_manu_id = response[x][0].id_TIPO_MANUTENCAO;
-            this.data_planeamento = this.formatDate(response[x][0].data_PLANEAMENTO);
-            this.hora_planeamento = response[x][0].hora_PLANEAMENTO.slice(0, 5);
-            this.data_planeamendth = new Date(new Date(response[x][0].data_PLANEAMENTO).toDateString() + " " + response[x][0].hora_PLANEAMENTO.slice(0, 5));
-            this.datapl = response[x][0].data_PLANEAMENTO;
-            this.responsavel = response[x][4].nome_UTILIZADOR;
-            this.linha = this.linhas.find(item => item.value.id === response[x][0].id_LINHA).value;
-            this.id_turno = response[x][0].id_TURNO;
-            this.estado = response[x][0].estado;
-            this.cor_linha = response[x][1].cor;
-            if (this.estado == "Planeado") {
-              this.planeado = true;
-              this.globalVar.seteditar(false);
-              this.simular(this.alteraeditar);
-            } else if (this.estado == "Preparado") {
-              this.preparado = true;
-              this.globalVar.seteditar(false);
-              this.simular(this.alteraeditar);
-            } else if (this.estado == "Em Planeamento") {
-              this.planeamento = true;
-              this.globalVar.seteditar(true);
-              this.simular(this.alteraeditartrue);
-            } else if (this.estado == "Em Preparação") {
-              this.planeado = true;
-              this.globalVar.seteditar(false);
-              this.simular(this.alteraeditar);
-            } else if (this.estado == "Em Execução") {
-              this.preparado = true;
-              this.globalVar.seteditar(false);
-              this.simular(this.alteraeditar);
+    if (id != null) {
+      this.ABMOVMANUTENCAOService.getbyID(id).subscribe(
+        response => {
+          var count = Object.keys(response).length;
+          if (count > 0) {
+            for (var x in response) {
+              this.manutencao_dados = response[x][0];
+              this.num_manutencao = response[x][0].id_MANUTENCAO;
+              this.tipo_manu_id = response[x][0].id_TIPO_MANUTENCAO;
+              this.data_planeamento = this.formatDate(response[x][0].data_PLANEAMENTO);
+              this.hora_planeamento = response[x][0].hora_PLANEAMENTO.slice(0, 5);
+              this.data_planeamendth = new Date(new Date(response[x][0].data_PLANEAMENTO).toDateString() + " " + response[x][0].hora_PLANEAMENTO.slice(0, 5));
+              this.datapl = response[x][0].data_PLANEAMENTO;
+              this.responsavel = response[x][4].nome_UTILIZADOR;
+              this.linha = this.linhas.find(item => item.value.id === response[x][0].id_LINHA).value;
+              this.id_turno = response[x][0].id_TURNO;
+              this.estado = response[x][0].estado;
+              this.cor_linha = response[x][1].cor;
+              if (this.estado == "Planeado") {
+                this.planeado = true;
+                this.globalVar.seteditar(false);
+                this.simular(this.alteraeditar);
+              } else if (this.estado == "Preparado") {
+                this.preparado = true;
+                this.globalVar.seteditar(false);
+                this.simular(this.alteraeditar);
+              } else if (this.estado == "Em Planeamento") {
+                this.planeamento = true;
+                this.globalVar.seteditar(true);
+                this.simular(this.alteraeditartrue);
+              } else if (this.estado == "Em Preparação") {
+                this.planeado = true;
+                this.globalVar.seteditar(false);
+                this.simular(this.alteraeditar);
+              } else if (this.estado == "Em Execução") {
+                this.preparado = true;
+                this.globalVar.seteditar(false);
+                this.simular(this.alteraeditar);
+              }
+              else if (this.estado == "Executado") {
+                this.preparado = true;
+                this.globalVar.seteditar(false);
+                this.simular(this.alteraeditar);
+              }
+              if (this.admin) {
+                this.globalVar.seteditar(true);
+                this.simular(this.alteraeditartrue);
+              }
             }
-            else if (this.estado == "Executado") {
-              this.preparado = true;
-              this.globalVar.seteditar(false);
-              this.simular(this.alteraeditar);
-            }
-            if (this.admin) {
-              this.globalVar.seteditar(true);
-              this.simular(this.alteraeditartrue);
-            }
+            this.preenche_banhos(id);
           }
-          this.preenche_banhos(id);
-        }
-      },
-      error => console.log(error));
+        },
+        error => console.log(error));
+    } else {
+      var id2;
+      var sub = this.route
+        .queryParams
+        .subscribe(params => {
+          id2 = params['id'] || 0;
+        });
+      if (id2 != 0) this.inicia(id2);
+
+    }
   }
 
   //carrega linhas
@@ -451,16 +470,17 @@ export class ManutencaoformComponent implements OnInit {
             } else if (response[x][4] == null) {
               cor = "red";
             }
-
-            this.arrayForm.find(item => item.pos == pos).aditivos.push(
-              {
-                pos: pos2, cisterna: response[x][1].cisterna, cor: cor, liecod: response[x][0].liecod,
-                id_LIN: response[x][0].id_MANUTENCAO_LIN, id: response[x][0].id_ADITIVO, nome: response[x][1].nome_COMPONENTE, valor1: response[x][0].valor1, valor2: response[x][0].valor2,
-                unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: response[x][0].obs_PLANEAMENTO,
-                stock: stock, cod_REF: response[x][0].cod_REF, nome_REF: response[x][0].nome_REF, unidstock: response[x][0].stkunit, valor_agua: value, factor: response[x][1].factor_MULTIPLICACAO_AGUA
-              }
-            );
-            pos2++;
+            if (valor1 != 0 || valor2 != 0) {
+              this.arrayForm.find(item => item.pos == pos).aditivos.push(
+                {
+                  pos: pos2, cisterna: response[x][1].cisterna, factor_CONVERSAO: response[x][1].factor_CONVERSAO, cor: cor, liecod: response[x][0].liecod,
+                  id_LIN: response[x][0].id_MANUTENCAO_LIN, id: response[x][0].id_ADITIVO, nome: response[x][1].nome_COMPONENTE, valor1: response[x][0].valor1, valor2: response[x][0].valor2,
+                  unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: response[x][0].obs_PLANEAMENTO,
+                  stock: stock, cod_REF: response[x][0].cod_REF, nome_REF: response[x][1].nome_REF, unidstock: response[x][0].stkunit, valor_agua: value, factor: response[x][1].factor_MULTIPLICACAO_AGUA
+                }
+              );
+              pos2++;
+            }
           }
           this.arrayForm.find(item => item.pos == pos).aditivos = this.arrayForm.find(item => item.pos == pos).aditivos.slice();
           this.textotabela = null;
@@ -507,7 +527,7 @@ export class ManutencaoformComponent implements OnInit {
               if (response[x][1].cod_REF != null) {
                 this.carregaaditivosstock(response, x, pos, pos2, count, array);
               } else {
-                array.push({ liecod: null, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, nome_REF: response[x][0].nome_REF, cod_REF: response[x][1].cod_REF });
+                array.push({ liecod: null, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
                 this.ordernar(array);
                 if (pos2 == count) {
                   this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -534,16 +554,20 @@ export class ManutencaoformComponent implements OnInit {
           }
 
           var data = [{ proref: response[x][1].cod_REF, liecod: query.toString() }];
+
           this.GERARMAZEMService.getStock(data).subscribe(
             res1 => {
               var count = Object.keys(res1).length;
-              var liecod = null
+              var liecod = null;
+              var unid = "";
               if (count > 0) {
                 total = parseFloat(res1[0].STOQTE).toFixed(2);
                 total = total.replace(".", ",");
                 liecod = res1[0].LIECOD;
+                unid = res1[0].UNIUTI;
               }
-              array.push({ liecod: liecod, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: res1[0].UNIUTI, nome_REF: response[x][0].nome_REF, cod_REF: response[x][1].cod_REF });
+
+              array.push({ liecod: liecod, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: unid, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
               if (pos2 == total2) {
                 this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -552,7 +576,7 @@ export class ManutencaoformComponent implements OnInit {
 
             },
             error => {
-              array.push({ liecod: null, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][0].nome_REF, cod_REF: response[x][1].cod_REF });
+              array.push({ liecod: null, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
               if (pos2 == total2) {
                 this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -561,7 +585,7 @@ export class ManutencaoformComponent implements OnInit {
               console.log(error);
             });
         } else {
-          array.find(item => item.pos == pos).aditivos.push({ liecod: response[x][0].liecod, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][0].nome_REF, cod_REF: response[x][1].cod_REF });
+          array.find(item => item.pos == pos).aditivos.push({ liecod: response[x][0].liecod, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
           this.ordernar(array);
           if (pos2 == total2) {
             this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -699,7 +723,11 @@ export class ManutencaoformComponent implements OnInit {
         res => {
 
           this.simular(this.inputnotifi);
-          this.router.navigate(['manutencao/editar'], { queryParams: { id: res.id_MANUTENCAO } });
+          if (this.url != null) {
+            this.router.navigate(['manutencao/editar'], { queryParams: { id: res.id_MANUTENCAO, redirect: "listagem" } });
+          } else {
+            this.router.navigate(['manutencao/editar'], { queryParams: { id: res.id_MANUTENCAO } });
+          }
         }, error => {
           console.log(error); this.simular(this.inputerro);
         });
@@ -911,7 +939,12 @@ export class ManutencaoformComponent implements OnInit {
     this.i = this.i % this.manutencao.length;
     if (this.manutencao.length > 0) {
       this.inicia(this.manutencao[this.i]);
-      this.router.navigate(['manutencao/view'], { queryParams: { id: this.manutencao[this.i] } });
+
+      if (this.url != null) {
+        this.router.navigate(['manutencao/view'], { queryParams: { id: this.manutencao[this.i], redirect: "listagem" } });
+      } else {
+        this.router.navigate(['manutencao/view'], { queryParams: { id: this.manutencao[this.i] } });
+      }
     }
   }
 
@@ -920,7 +953,11 @@ export class ManutencaoformComponent implements OnInit {
       this.i = this.manutencao.length;
     }
     this.i = this.i - 1;
-    this.router.navigate(['manutencao/view'], { queryParams: { id: this.manutencao[this.i] } });
+    if (this.url != null) {
+      this.router.navigate(['manutencao/view'], { queryParams: { id: this.manutencao[this.i], redirect: "listagem" } });
+    } else {
+      this.router.navigate(['manutencao/view'], { queryParams: { id: this.manutencao[this.i] } });
+    }
     if (this.manutencao.length > 0) {
       this.inicia(this.manutencao[this.i]);
     }
@@ -1149,12 +1186,20 @@ export class ManutencaoformComponent implements OnInit {
           this.simular(this.inputgduplica);
           this.inicia(id);
           this.simular(this.waitingDialogclose);
-          this.router.navigate(['manutencao/editar'], { queryParams: { id: id } });
+          if (this.url != null) {
+            this.router.navigate(['manutencao/editar'], { queryParams: { id: id, redirect: "listagem" } });
+          } else {
+            this.router.navigate(['manutencao/editar'], { queryParams: { id: id } });
+          }
         } else {
           this.simular(this.inputgduplica);
           this.inicia(id);
           this.simular(this.waitingDialogclose);
-          this.router.navigate(['manutencao/editar'], { queryParams: { id: id } });
+          if (this.url != null) {
+            this.router.navigate(['manutencao/editar'], { queryParams: { id: id, redirect: "listagem" } });
+          } else {
+            this.router.navigate(['manutencao/editar'], { queryParams: { id: id } });
+          }
         }
       });
   }
@@ -1188,7 +1233,11 @@ export class ManutencaoformComponent implements OnInit {
         } else {
           if (parseInt(total) - 1 == count2) {
             this.simular(this.inputgravou);
-            this.router.navigate(['manutencao/editar'], { queryParams: { id: this.id } });
+            if (this.url != null) {
+              this.router.navigate(['manutencao/editar'], { queryParams: { id: this.id, redirect: "listagem" } });
+            } else {
+              this.router.navigate(['manutencao/editar'], { queryParams: { id: this.id } });
+            }
             this.simular(this.waitingDialogclose);
           }
         }
@@ -1205,7 +1254,11 @@ export class ManutencaoformComponent implements OnInit {
       res => {
         if (parseInt(total) - 1 == count2 && (count - 1) == parseInt(x)) {
           this.simular(this.inputgravou);
-          this.router.navigate(['manutencao/editar'], { queryParams: { id: this.id } });
+          if (this.url != null) {
+            this.router.navigate(['manutencao/editar'], { queryParams: { id: this.id, redirect: "listagem" } });
+          } else {
+            this.router.navigate(['manutencao/editar'], { queryParams: { id: this.id } });
+          }
           this.simular(this.waitingDialogclose);
         }
       }, error => {
@@ -1668,7 +1721,7 @@ export class ManutencaoformComponent implements OnInit {
     this.etiquetas = [];
     this.etiquetas.push({
       disabled: false,
-      id: "id" + this.idtempetiquetas, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
+      id: "id" + this.idtempetiquetas, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", quant_FINAL2: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
       LOTNUMENR: "", PROREF: "", PRODES: "", DATCRE: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: null, ETQNUMENR: "", INDREF: ""
     });
     this.pos_sele = pos;
@@ -1694,7 +1747,7 @@ export class ManutencaoformComponent implements OnInit {
       this.idtempetiquetas++;
       this.etiquetas.push({
         disabled: false,
-        id: "id" + this.idtempetiquetas, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
+        id: "id" + this.idtempetiquetas, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", quant_FINAL2: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
         LOTNUMENR: "", PROREF: "", PRODES: "", DATCRE: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: null, ETQNUMENR: "", INDREF: ""
       });
       setTimeout(() => {
@@ -1750,7 +1803,7 @@ export class ManutencaoformComponent implements OnInit {
       this.idtempetiquetas++;
       this.etiquetas.push({
         disabled: false,
-        id: "id" + this.idtempetiquetas, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
+        id: "id" + this.idtempetiquetas, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", quant_FINAL2: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
         LOTNUMENR: "", PROREF: "", PRODES: "", DATCRE: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: null, ETQNUMENR: "", INDREF: ""
       });
       setTimeout(() => {
@@ -1807,7 +1860,7 @@ export class ManutencaoformComponent implements OnInit {
           var conver = adi.factor_CONVERSAO;
           if (!adi.cisterna) {
             if (adi.factor_CONVERSAO == null || adi.factor_CONVERSAO == 0) conver = 1;
-            this.etiquetas[x].qtdconvers = parseFloat(this.etiquetas[x].qtd.replace(",", ".")) * conver;
+            this.etiquetas[x].qtdconvers = parseFloat(this.etiquetas[x].qtd.replace(",", ".")) / conver;
 
             if (this.tempQTD.find(item => item.ref == this.etiquetas[x].PROREF)) {
               var elem = this.tempQTD.find(item => item.ref == this.etiquetas[x].PROREF);
@@ -1834,7 +1887,8 @@ export class ManutencaoformComponent implements OnInit {
                 elem.qtd_falta = valor2;
                 if (consumir == 0) { adi.cor = "yellow" } else if (valor2 > 0) { adi.cor = "red" } else { adi.cor = "green" }
                 this.etiquetas[x].consumir = consumir;
-                this.etiquetas[x].quant_FINAL = qtd / conver;
+                this.etiquetas[x].quant_FINAL = qtd * conver;
+                this.etiquetas[x].quant_FINAL2 = qtd;
                 this.etiquetas[x].id_lin = adi.id_LIN;
 
               }
@@ -1860,7 +1914,8 @@ export class ManutencaoformComponent implements OnInit {
                 this.tempQTD.push({ ref: this.etiquetas[x].PROREF, qtdetiq: qtd, qtd_falta: valor2 });
                 if (consumir == 0) { adi.cor = "yellow" } else if (valor2 > 0) { adi.cor = "red" } else { adi.cor = "green" }
                 this.etiquetas[x].consumir = consumir;
-                this.etiquetas[x].quant_FINAL = qtd / conver;
+                this.etiquetas[x].quant_FINAL = qtd * conver;
+                this.etiquetas[x].quant_FINAL2 = qtd;
                 this.etiquetas[x].id_lin = adi.id_LIN;
               }
             }
@@ -1966,6 +2021,7 @@ export class ManutencaoformComponent implements OnInit {
             var consumir;
             var value = "0";
             var quant_FINAL;
+            var quant_FINAL2;
             var falta = valor1 - total;
             for (var x in response) {
               if (falta > 0) {
@@ -1973,7 +2029,7 @@ export class ManutencaoformComponent implements OnInit {
                   etiq.push(response[x].ETQNUM);
                   //console.log(response[x]);
                   if (response[x].ETQEMBQTE != null) value = parseFloat(response[x].ETQEMBQTE).toFixed(3);
-                  var qtd = parseFloat(value) * factor_conversao;
+                  var qtd = parseFloat(value) / factor_conversao;
                   var numm = falta;
                   consumir = qtd - numm;
                   falta = numm - qtd;
@@ -1986,7 +2042,8 @@ export class ManutencaoformComponent implements OnInit {
                   }
 
                   var qtd_f = Math.max(0, qtd - numm);
-                  quant_FINAL = (qtd_f / factor_conversao).toFixed(3);
+                  quant_FINAL = (qtd_f * factor_conversao).toFixed(3);
+                  quant_FINAL2 = (qtd_f * 1).toFixed(3);
 
                   /*console.log(qtd);
                   console.log(value);
@@ -2007,6 +2064,7 @@ export class ManutencaoformComponent implements OnInit {
                     PRODES: response[x].PRODES1,
                     DATCRE: response[x].DATCRE,
                     quant_FINAL: quant_FINAL,
+                    quant_FINAL2: quant_FINAL2,
                     qtd: value.replace(".", ","),
                     UNICOD: response[x].UNICOD,
                     VA1REF: response[x].VA1REF,
@@ -2062,6 +2120,7 @@ export class ManutencaoformComponent implements OnInit {
       this.tempQTD2 = [];
       var id_manu = this.arrayForm.find(item => item.pos == pos).id;
       var adi = this.arrayForm.find(item => item.pos == pos).aditivos.find(item => item.id_LIN == id);
+      this.cisternadisabled = true;
       this.ABMOVMANUTENCAOETIQService.getbyRef(id_manu, ref).subscribe(response => {
         var count = Object.keys(response).length;
         var encontrou = false;
@@ -2110,10 +2169,12 @@ export class ManutencaoformComponent implements OnInit {
             var quant_FINAL = (response[x].quant_FINAL != null) ? response[x].quant_FINAL.toFixed(3).replace(".", ",") : "0,000";
             var quant = (response[x].quant != null) ? response[x].quant.toFixed(3).replace(".", ",") : "0,000";
 
-            var qtdconvers = parseFloat(quant.replace(",", ".")) * conver;
+            var qtdconvers = parseFloat(quant.replace(",", ".")) / conver;
+            var qtd2 = (parseFloat(quant_FINAL.replace(",", ".")) / conver);
+            var quant_FINAL2 = (Math.max(0, qtd2)).toFixed(3).replace(".", ",");
 
             this.etiquetasaditivo.push({
-              id: response[x].id_MOV_MANU_ETIQUETA, numero: response[x].etqnum, produto: "", qtd: quant, consumir: consumir, quant_FINAL: quant_FINAL,
+              id: response[x].id_MOV_MANU_ETIQUETA, numero: response[x].etqnum, produto: "", qtd: quant, consumir: consumir, quant_FINAL: quant_FINAL, quant_FINAL2: quant_FINAL2,
               EMPCOD: response[x].empcod, ETQORILOT1: response[x].etqorilot1, LIECOD: response[x].liecod, LOTNUMENR: response[x].lotnumenr, PROREF: response[x].proref, PRODES: response[x].prodes, DATCRE: response[x].datcre,
               UNICOD: response[x].unicod, UNISTO: response[x].unisto, VA1REF: response[x].va1REF, VA2REF: response[x].va2REF, indnumenr: response[x].indnumenr, id_lin: response[x].id_MANUTENCAO_LIN, ETQNUMENR: response[x].etqnumenr, INDREF: response[x].indref,
               qtdconvers: qtdconvers.toFixed(3).replace(".", ",")
@@ -2124,7 +2185,7 @@ export class ManutencaoformComponent implements OnInit {
         }
 
         this.etiquetasaditivo.push({
-          id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
+          id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", quant_FINAL2: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
           LOTNUMENR: "", PROREF: "", PRODES: "", DATCRE: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: this.tempidlin, ETQNUMENR: "", INDREF: "", qtdconvers: ""
         });
 
@@ -2169,7 +2230,7 @@ export class ManutencaoformComponent implements OnInit {
       if (this.etiquetasaditivo[this.etiquetasaditivo.length - 1].numero != "") {
         this.idtempetiquetasaditivo++;
         this.etiquetasaditivo.push({
-          id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
+          id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", quant_FINAL2: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
           LOTNUMENR: "", PROREF: "", PRODES: "", DATCRE: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: this.tempidlin, ETQNUMENR: "", INDREF: "", qtdconvers: ""
         });
         setTimeout(() => {
@@ -2202,7 +2263,7 @@ export class ManutencaoformComponent implements OnInit {
     if (this.etiquetasaditivo.length == 0) {
       this.idtempetiquetasaditivo++;
       this.etiquetasaditivo.push({
-        id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
+        id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", quant_FINAL2: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
         LOTNUMENR: "", PROREF: "", PRODES: "", DATCRE: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: this.tempidlin, ETQNUMENR: "", INDREF: "", qtdconvers: ""
       });
       setTimeout(() => {
@@ -2225,7 +2286,7 @@ export class ManutencaoformComponent implements OnInit {
       if (this.etiquetasaditivo[this.etiquetasaditivo.length - 1].numero != "") {
         this.idtempetiquetasaditivo++;
         this.etiquetasaditivo.push({
-          id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
+          id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", quant_FINAL2: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
           LOTNUMENR: "", PROREF: "", PRODES: "", DATCRE: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: this.tempidlin, ETQNUMENR: "", INDREF: "", qtdconvers: ""
         });
         setTimeout(() => {
@@ -2244,7 +2305,7 @@ export class ManutencaoformComponent implements OnInit {
               etiqueta.produto = response[0].PRODES1;
               var value = "0";
               if (response[0].ETQEMBQTE != null) value = parseFloat(response[0].ETQEMBQTE).toFixed(3);
-              var qtd = parseFloat(value) * this.factor_conversao;
+              var qtd = parseFloat(value) / this.factor_conversao;
               etiqueta.qtdconvers = qtd.toFixed(3).replace(".", ",");
               etiqueta.qtd = value.replace(".", ",");
               etiqueta.EMPCOD = response[0].EMPCOD;
@@ -2274,10 +2335,11 @@ export class ManutencaoformComponent implements OnInit {
               } else {
                 consumir = numm;
               }
-              var cons = consumir.toLocaleString();
+              var cons = consumir.toString();
               etiqueta.consumir = parseFloat(cons).toFixed(3).replace(".", ",");
               var qtd_f = Math.max(0, qtd - numm);
-              etiqueta.quant_FINAL = (qtd_f / this.factor_conversao).toFixed(3).replace(".", ",");
+              etiqueta.quant_FINAL = (qtd_f * this.factor_conversao).toFixed(3).replace(".", ",");
+              etiqueta.quant_FINAL2 = (qtd_f * 1).toFixed(3).replace(".", ",");
               //etiqueta.qtdconvers = 0;
               this.tempconsumiraditivo = falta.toFixed(3).replace(".", ",");
             } else {
@@ -2381,8 +2443,9 @@ export class ManutencaoformComponent implements OnInit {
       if (this.etiquetasaditivo[y].numero != null && this.etiquetasaditivo[y].numero != "") {
         total = total - this.etiquetasaditivo[y].consumir.replace(",", ".");
         if (atualiza && this.etiquetasaditivo[y].id == id) {
-          var to_final = (this.etiquetasaditivo[y].qtdconvers.replace(",", ".") - this.etiquetasaditivo[y].consumir.replace(",", ".")) / this.factor_conversao;
+          var to_final = (this.etiquetasaditivo[y].qtdconvers.replace(",", ".") - this.etiquetasaditivo[y].consumir.replace(",", ".")) * this.factor_conversao;
           this.etiquetasaditivo[y].quant_FINAL = to_final.toFixed(3).replace(".", ",");
+          this.etiquetasaditivo[y].quant_FINAL2 = ((this.etiquetasaditivo[y].qtdconvers.replace(",", ".") - this.etiquetasaditivo[y].consumir.replace(",", "."))).toFixed(3).replace(".", ",");
         }
       }
     }
@@ -2392,9 +2455,30 @@ export class ManutencaoformComponent implements OnInit {
 
 
   criarficheiro(id) {
-    this.ABMOVMANUTENCAOETIQService.criaficheiro(id).subscribe(
+    var data = [{ id: id, ip_posto: this.getCookie("IP_CLIENT") }];
+    this.ABMOVMANUTENCAOETIQService.criaficheiro(data).subscribe(
       response => {
       }, error => { console.log(error); });
+  }
+
+  atualizaQUANT(id) {
+    for (var y in this.etiquetasaditivo) {
+      if (this.etiquetasaditivo[y].numero != null && this.etiquetasaditivo[y].numero != "") {
+        if (this.etiquetasaditivo[y].id == id) {
+          this.etiquetasaditivo[y].quant_FINAL = (this.etiquetasaditivo[y].quant_FINAL2 / this.factor_conversao).toString();
+        }
+
+      }
+    }
+  }
+  _keyPress(event: any) {
+    const pattern = /[0-9\+\.\+\,\ ]/;
+    let inputChar = String.fromCharCode(event.charCode);
+
+    if (!pattern.test(inputChar)) {
+      // invalid character, prevent input
+      event.preventDefault();
+    }
   }
 
 }

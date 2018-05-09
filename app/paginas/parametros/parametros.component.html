@@ -15,8 +15,8 @@
                   <form role="form" ngNativeValidate (ngSubmit)="gravar()">
                     <!-- Modal Body -->
                     <div class="col-md-12 " style="padding: 6px">
-                      <h5 style="margin: 0; ">GERAL</h5>
-                      <hr style="margin: 0px 0 7px 0;" />
+                      <h5 style="margin: 0; font-weight: 450;">GERAL</h5>
+                      <hr style="margin: 0px 0 7px 0; border:2; border-top: 2px solid #d5d3d3;"/>
                       <div class="form-group col-md-6" style="padding: 0px 18px 0 0;">
                         <label for="pasta_ficheiro">Pasta Destino Interface Silver:</label>
                         <input [disabled]="!modoedicao" type="text" class="form-control" id="pasta_ficheiro" [(ngModel)]="pasta_ficheiro" [ngModelOptions]="{standalone: true}"
@@ -42,15 +42,24 @@
                         <input [disabled]="!modoedicao" type="text" class="form-control" id="url_SILVER" [(ngModel)]="url_SILVER" [ngModelOptions]="{standalone: true}"
                           placeholder="" required />
                       </div>
+                    </div>
+                    <div class="col-md-12 " style="padding: 6px">
+                      <h5 style="margin: 0; font-weight: 450;">MANUTENÇÕES</h5>
+                      <hr style="margin: 0px 0 7px 0; border:2; border-top: 2px solid #d5d3d3;"/>
                       <div class="form-group col-md-6" style="padding: 0px 18px 0 0;">
                         <label for="tempo_PLANEADAS">Tempo mínimo para visualizar as fichas planeadas (minutos):</label>
                         <input [disabled]="!modoedicao" type="text" class="form-control" id="tempo_PLANEADAS" [(ngModel)]="tempo_PLANEADAS" [ngModelOptions]="{standalone: true}"
                           placeholder="" required />
                       </div>
+                      <div class="form-group col-md-6" style="padding: 0px 18px 0 0;">
+                        <label for="tempo_MAX_PLANEADAS">Tempo máximo para visualizar as fichas planeadas (minutos):</label>
+                        <input [disabled]="!modoedicao" type="text" class="form-control" id="tempo_MAX_PLANEADAS" [(ngModel)]="tempo_MAX_PLANEADAS"
+                          [ngModelOptions]="{standalone: true}" placeholder="" required />
+                      </div>
                     </div>
                     <div class="col-md-12 " style="padding: 6px">
-                      <h5 style="margin: 0; ">CARTELAS</h5>
-                      <hr style="margin: 0px 0 7px 0;" />
+                      <h5 style="margin: 0; font-weight: 450;">CARTELAS</h5>
+                      <hr style="margin: 0px 0 7px 0; border:2; border-top: 2px solid #d5d3d3;"/>
                       <div class="form-group col-md-6" style="padding: 0px 18px 0 0;">
                         <label for="tempo_SINCRO_CARTELAS">Tempo Sincronização (minutos):</label>
                         <input [disabled]="!modoedicao" type="text" class="form-control" id="tempo_SINCRO_CARTELAS" [(ngModel)]="tempo_SINCRO_CARTELAS"
@@ -66,8 +75,8 @@
                       </div>
                     </div>
                     <div class="col-md-12">
-                      <h5 style="margin: 0; ">POSTOS</h5>
-                      <hr style="margin: 0px 0 7px 0;" />
+                      <h5 style="margin: 0; font-weight: 450;">POSTOS</h5>
+                      <hr style="margin: 0px 0 7px 0; border:2; border-top: 2px solid #d5d3d3;"/>
                       <p-dataTable [style]="{'width':'100%'}" [editable]="modoedicao" [value]="postos" styleClass="tabelaPostos">
                         <p-column [editable]="true" field="descricao" header="POSTO">
                           <ng-template let-col let-car="rowData" pTemplate="body">

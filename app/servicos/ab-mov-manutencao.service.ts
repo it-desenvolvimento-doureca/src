@@ -21,33 +21,51 @@ export class ABMOVMANUTENCAOService {
       .catch((error: any) => Observable.throw('Server error'))
   }
 
-  getAll(query,classif): Observable<AB_MOV_MANUTENCAO[]> {
-    if(query.length <= 0) query = null;
-    const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAO/0/'+classif;
+  getAll(query, classif): Observable<AB_MOV_MANUTENCAO[]> {
+    if (query.length <= 0) query = null;
+    const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAO/0/' + classif;
     return this.http
       .post(url, JSON.stringify(query), { headers: this.headers })
       .map(this.extractData)
       .catch((error: any) => Observable.throw('Server error'));
   }
 
-  getAllid_banho(query,classif,idbanho): Observable<AB_MOV_MANUTENCAO[]> {
-    if(query.length <= 0) query = null;
-    const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAOidbanho/0/'+classif+'/'+idbanho;
+  getAllmanu(query): Observable<AB_MOV_MANUTENCAO[]> {
+    if (query.length <= 0) query = null;
+    const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAOall/0/';
     return this.http
       .post(url, JSON.stringify(query), { headers: this.headers })
       .map(this.extractData)
       .catch((error: any) => Observable.throw('Server error'));
   }
-  
 
-  getAllsrotid(query,classif): Observable<AB_MOV_MANUTENCAO[]> {
-    if(query.length <= 0) query = null;
-    const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAOsorid/0/'+classif;
+  getAllid_banho(query, classif, idbanho): Observable<AB_MOV_MANUTENCAO[]> {
+    if (query.length <= 0) query = null;
+    const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAOidbanho/0/' + classif + '/' + idbanho;
     return this.http
       .post(url, JSON.stringify(query), { headers: this.headers })
       .map(this.extractData)
       .catch((error: any) => Observable.throw('Server error'));
   }
+
+
+  getAllsrotid(query, classif): Observable<AB_MOV_MANUTENCAO[]> {
+    if (query.length <= 0) query = null;
+    const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAOsorid/0/' + classif;
+    return this.http
+      .post(url, JSON.stringify(query), { headers: this.headers })
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
+  getallAnaliseConsumos(data): Observable<AB_MOV_MANUTENCAO[]> {
+    const url = webUrl.host + '/rest/sirb/getallAnaliseConsumos/';
+    return this.http
+      .post(url, JSON.stringify(data), { headers: this.headers })
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
 
   getbyID(id): Observable<AB_MOV_MANUTENCAO[]> {
     const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAObyid/' + id + '/0';

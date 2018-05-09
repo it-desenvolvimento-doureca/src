@@ -9,4 +9,5 @@ export class GER_PARAMETROS {
     tempo_PLANEADAS: number;
     cartelas_ATIVO: boolean;
     tempo_SINCRO_CARTELAS: number;
+    tempo_MAX_PLANEADAS: number;
 }

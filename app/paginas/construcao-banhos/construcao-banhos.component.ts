@@ -102,7 +102,7 @@ export class ConstrucaoBanhosComponent implements OnInit {
         }*/
     var acessopla = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003planeamento");
     var acessoprep = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003preparacao");
-    var acessoexec = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "acessoexec");
+    var acessoexec = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003execucao");
 
     if (!acessopla) {
       this.query.push("Em Planeamento");
@@ -118,7 +118,7 @@ export class ConstrucaoBanhosComponent implements OnInit {
     }
 
     if (this.filtroval) {
-      if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003preparacao") && JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003execucao")) {
+      if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003planeamento") && JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003preparacao") && JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003execucao")) {
         this.filtro = [];
       } else {
         if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node003execucao")) {
@@ -153,12 +153,15 @@ export class ConstrucaoBanhosComponent implements OnInit {
           if (response[x][9] != null) banho = response[x][9] + " / " + response[x][10] + " - Tina: " + tina;
           if (!this.acessoplaneamento) {
             var min = (response[x][14] != null) ? response[x][14] : 0;
+            var min_max = (response[x][15] != null) ? response[x][15] : 0;
             if (response[x][12] != null) {
               var data = new Date(response[x][12] + " " + response[x][13].slice(0, 5));
               var dataatual = new Date();
               var total = data.getTime() - dataatual.getTime();
               var minutos = Math.round(total / 60000);
-              if (minutos <= min) {
+              var total_max = dataatual.getTime() - data.getTime();
+              var minutos_max = Math.round(total_max / 60000);
+              if (minutos <= min && minutos_max <= min_max) {
                 this.cols.push({
                   id: response[x][0], tipo_manu: response[x][1], data: this.formatDate(response[x][2]) + " - " + response[x][3].slice(0, 5),
                   cor: response[x][4], linha: response[x][5], turno: response[x][6], estado: response[x][7], tina: tina, banho: banho
@@ -233,6 +236,13 @@ export class ConstrucaoBanhosComponent implements OnInit {
     this.globalVar.setfiltros("construcaobanhos_id", ids);
   }
 
+  atualizaids() {
+    var ids = [];
+    for (var x in this.dataTableComponent.dataToRender) {
+      ids.push(this.dataTableComponent.dataToRender[x].id);
+    }
+    this.globalVar.setfiltros("construcaobanhos_id", ids);
+  }
   //clicar 2 vezes na tabela abre linha
   abrir(event) {
     this.router.navigate(['construcaobanhos/view'], { queryParams: { id: event.data.id } });

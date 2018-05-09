@@ -10,7 +10,7 @@
         <div style="margin-top:20px">
             <div class="panel-group" id="accordion">
                 <div class="panel panel-default">
-                    <div  [routerLink]="['/homegestaobanhos']" class="panel-heading" [ngClass]="{ 'active':router.isActive('/manutencao',true) || router.isActive('/registo',true) ||router.isActive('/fornecedor',true) || router.isActive('/tinas',true)|| router.isActive('/componentes',true)|| router.isActive('/banhos',true)
+                    <div  (click)="abrirdashboard()" class="panel-heading" [ngClass]="{ 'active':router.isActive('/manutencao',true) || router.isActive('/registo',true) ||router.isActive('/fornecedor',true) || router.isActive('/tinas',true)|| router.isActive('/componentes',true)|| router.isActive('/banhos',true)
                     || router.isActive('/gestaobanhos_relatorios',true) || router.isActive('/operacoes',true)|| router.isActive('/homegestaobanhos',true) || router.isActive('/linhas',true) || router.isActive('/unidades',true)|| router.isActive('/zonas',true)|| router.isActive('/turnos',true) || router.isActive('/adicoes',true) || router.isActive('/manutencoes',true) || router.isActive('/registopara',true)  || router.isActive('/manutencaonaoprogramada',true) || router.isActive('/manutencaoreposicao',true) || router.isActive('/construcaobanhos',true) }">
                         <h4 class="panel-title">
                             <a id="node0" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
@@ -55,6 +55,20 @@
                                         <li id="node03" data-toggle="collapse" [routerLinkActive]="['active']">
                                             <a [routerLink]="['/gestaobanhos_relatorios']">Relatórios de Gestão</a>
                                         </li>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <li id="node05" data-toggle="collapse" data-target="#analiseconsumos" class="collapsed" [ngClass]="{ 'active': router.isActive('/analiseconsumos',true)}">
+                                            <a >Consultas
+                                                <span class="arrow"></span>
+                                            </a>
+                                        </li>
+                                        <ul class="sub-menu collapse" id="analiseconsumos">
+                                            <li id="node051" [routerLinkActive]="['active']" [routerLink]="['/analiseconsumos']">
+                                                <a>Análise de Consumos</a>
+                                            </li>
+                                        </ul>
                                     </td>
                                 </tr>
                                 <tr>

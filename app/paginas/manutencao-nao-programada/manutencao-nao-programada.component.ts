@@ -100,10 +100,10 @@ export class ManutencaoNaoProgramadaComponent implements OnInit {
 
     //this.query.push("Em Execução", "Executado");
 
-    
+
     if (this.filtroval) {
       this.filtro = [];
-      if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004preparacao") && JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004execucao")) {
+      if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004planeamento") && JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004preparacao") && JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004execucao")) {
         this.filtro = [];
       } else {
         if (JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node004execucao")) {
@@ -207,6 +207,15 @@ export class ManutencaoNaoProgramadaComponent implements OnInit {
     }
     if (this.dataTableComponent.dataToRender.length == 0) {
       this.mensagemtabela = "Nenhum Registo foi encontrado...";
+    }
+
+    this.globalVar.setfiltros("manutencaonaoprogramada_id", ids);
+  }
+
+  atualizaids() {
+    var ids = [];
+    for (var x in this.dataTableComponent.dataToRender) {
+      ids.push(this.dataTableComponent.dataToRender[x].id);
     }
     this.globalVar.setfiltros("manutencaonaoprogramada_id", ids);
   }

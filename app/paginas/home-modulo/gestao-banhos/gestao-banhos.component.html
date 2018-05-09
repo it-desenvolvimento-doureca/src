@@ -1,4 +1,11 @@
 <div class="main-content">
+
+  <ol *ngIf="dashb.length > 1" class="breadcrumb brand-primary">
+    <li *ngFor="let d of dashb">
+      <a routerLink="{{d.link}}" [ngClass]="d.ativo ? 'active' : ''">{{d.titulo}}</a>
+    </li>
+  </ol>
+
   <div class="form-group col-md-12" style="padding: 12px;">
     <form (ngSubmit)="atualizar()" ngNativeValidate>
       <div class="col-md-2 div_header">
@@ -86,7 +93,8 @@
           <div class="card-content">
             <div class="col-md-12" style="float: none;">
               <b style="margin-left: 10px;">Linha: </b>{{linha}}
-              <span  (click)="IrPara('banhos',banho_combo.id)"  style="cursor: pointer;"><b style="margin-left: 10px;">Banho: </b>{{banho}}</span>
+              <span (click)="IrPara('banhos',banho_combo.id)" style="cursor: pointer;">
+                <b style="margin-left: 10px;">Banho: </b>{{banho}}</span>
               <b style="margin-left: 10px;">Tina: </b>{{tina}}
             </div>
             <div class="table-responsive">
@@ -131,7 +139,8 @@
           <div class="card-content">
             <div class="col-md-12" style="float: none;">
               <b style="margin-left: 10px;">Linha: </b>{{linha}}
-              <span  (click)="IrPara('banhos',banho_combo.id)"  style="cursor: pointer;"><b style="margin-left: 10px;">Banho: </b>{{banho}}</span>
+              <span (click)="IrPara('banhos',banho_combo.id)" style="cursor: pointer;">
+                <b style="margin-left: 10px;">Banho: </b>{{banho}}</span>
               <b style="margin-left: 10px;">Tina: </b>{{tina}}
             </div>
             <div class="table-responsive">

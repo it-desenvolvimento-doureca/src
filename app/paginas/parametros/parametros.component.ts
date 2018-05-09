@@ -15,6 +15,7 @@ import { ConfirmationService } from 'primeng/primeng';
   styleUrls: ['./parametros.component.css']
 })
 export class ParametrosComponent implements OnInit {
+  tempo_MAX_PLANEADAS: any;
   tempo_SINCRO_CARTELAS: number;
   cartelas_ATIVO: boolean;
   tempo_PLANEADAS: any;
@@ -97,6 +98,7 @@ export class ParametrosComponent implements OnInit {
           this.cartelas_ATIVO = response[x].cartelas_ATIVO;
           this.url_SILVER = response[x].url_SILVER;
           this.tempo_PLANEADAS = response[x].tempo_PLANEADAS;
+          this.tempo_MAX_PLANEADAS = response[x].tempo_MAX_PLANEADAS;
           this.pasta_JASPERREPORT = response[x].pasta_JASPERREPORT;
         }
       },
@@ -127,6 +129,7 @@ export class ParametrosComponent implements OnInit {
     parametros.pasta_FICHEIRO = this.pasta_ficheiro.trim();
     parametros.url_SILVER = this.url_SILVER.trim();
     parametros.tempo_PLANEADAS = this.tempo_PLANEADAS;
+    parametros.tempo_MAX_PLANEADAS = this.tempo_MAX_PLANEADAS;
     parametros.pasta_JASPERREPORT = this.pasta_JASPERREPORT.trim();
     parametros.pasta_ETIQUETAS = this.pasta_ETIQUETAS.trim();
     parametros.modelo_REPORT = this.modelo_REPORT.trim();

@@ -315,14 +315,14 @@
                                   [disabled]="true">
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
-                                <input autocomplete="off" (ngModelChange)="atualizarvaloragua(valoruni.value,aditem.factor,aditem.pos,item.pos)" #valoruni
+                                <input autocomplete="off" (keypress)="_keyPress($event)" (ngModelChange)="atualizarvaloragua(valoruni.value,aditem.factor,aditem.pos,item.pos)" #valoruni
                                   type="text" style="background: white; text-align: center; height: 31px;" class="form-control"
                                   [(ngModel)]="aditem.valor1" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
                               </td>
                               <td style="padding: 5px 4px 0px 0px; text-align: -webkit-center;">
                                 <button id="idbt2{{aditem.id_LIN}}" (click)="verEtiquetas(aditem.id_LIN,aditem.cod_REF,aditem.nome_REF,aditem.unidade1,aditem.valor1,aditem.factor_CONVERSAO,item.pos,$event,aditem.cisterna,item.preparado)"
                                   class="btetiqueta btn btn-white btn-round btn-just-icon" style="padding: 3px 3px; margin: auto;"
-                                  [disabled]="!planeado || !acessoprep" type="button" title="Ver Etiquetas">
+                                  [disabled]="(!planeado || !acessoprep ) && !item.preparado" type="button" title="Ver Etiquetas">
                                   <i class="fa fa-tags {{aditem.cor}}" aria-hidden="true"></i>
                                 </button>
                               </td>
@@ -614,16 +614,16 @@
               </td>
               <td style="padding: 0px 4px 0px 0px">
                 <div class="form-group">
-                  <input (input)="calculaFalta(true,etiq.id)" type="text" style=" text-align: center; height: 31px; width: 80%;" [(ngModel)]="etiq.consumir"
+                  <input (keypress)="_keyPress($event)" (input)="calculaFalta(true,etiq.id)" type="text" style=" text-align: center; height: 31px; width: 80%;" [(ngModel)]="etiq.consumir"
                     [ngModelOptions]="{standalone: true}" [disabled]="!(modoedicao || tempplaneado) || disaddetiquetas">
                   <input [disabled]="true" type="text" style=" text-align: center; height: 31px; width: 15%;" [(ngModel)]="unidade1temp" [ngModelOptions]="{standalone: true}">
                 </div>
               </td>
               <td style="padding: 0px 4px 0px 0px">
                 <div class="form-group">
-                  <input type="text" style=" text-align: center; height: 31px; width: 80%;" [(ngModel)]="etiq.quant_FINAL" [ngModelOptions]="{standalone: true}"
+                  <input (keypress)="_keyPress($event)" (input)="atualizaQUANT(etiq.id)" type="text" style=" text-align: center; height: 31px; width: 80%;" [(ngModel)]="etiq.quant_FINAL2" [ngModelOptions]="{standalone: true}"
                     [disabled]="!(modoedicao || tempplaneado) || disaddetiquetas">
-                  <input [disabled]="true" type="text" style=" text-align: center; height: 31px; width: 15%;" [(ngModel)]="etiq.UNISTO" [ngModelOptions]="{standalone: true}">
+                  <input [disabled]="true" type="text" style=" text-align: center; height: 31px; width: 15%;" [(ngModel)]="unidade1temp" [ngModelOptions]="{standalone: true}">
                 </div>
               </td>
               <td style="padding: 0px 4px 0px 0px; width: 69px; height: 22px;">

@@ -5,19 +5,27 @@ import { AppGlobals } from 'app/menu/sidebar.metadata';
 import { Router } from '@angular/router';
 import { HeaderComponent } from 'app/paginas/header-componente/header.component';
 import { GridOptions } from 'ag-grid';
-import { ABMOVANALISEService } from 'app/servicos/ab-mov-analise.service';
-import { ABMOVANALISELINHAService } from 'app/servicos/ab-mov-analise-linha.service';
-import { RegistoProducao } from 'app/servicos/registoproducao.service';
 import { GERVISTASService } from 'app/servicos/ger-vistas.service';
 import { GER_VISTAS } from 'app/entidades/GER_VISTAS';
-
+import { ABMOVMANUTENCAOService } from '../../../servicos/ab-mov-manutencao.service';
+import { ABDICTIPOMANUTENCAOService } from '../../../servicos/ab-dic-tipo-manutencao.service';
 @Component({
-  selector: 'app-cartelas',
-  templateUrl: './cartelas.component.html',
-  styleUrls: ['./cartelas.component.css']
+  selector: 'app-analiseconsumos',
+  templateUrl: './analiseconsumos.component.html',
+  styleUrls: ['./analiseconsumos.component.css']
 })
-export class CartelasComponent {
+export class AnaliseconsumosComponent {
 
+  tipos: any[];
+  classifs = [];
+  estados = [];
+  ID_TIPO_MANUTENCAO: any;
+  DATA_PLANEAMENTO: any;
+  DATA_PLANEAMENTO2: any;
+  DATA_PREVISTA: any;
+  DATA_PREVISTA2: any;
+  classif: any;
+  estado: any;
   utilizadores = [];
   op_temp: any;
   user_temp: any;
@@ -29,10 +37,9 @@ export class CartelasComponent {
   disCriar: boolean;
   disGravar: boolean;
   disEditar = true;
-  utilizador: any;
   referencia: any;
-  lote: any;
-  tina: any;
+  NOME_REF: any;
+  NOME_COMPONENTE: any;
   filterstate;
   sortstate;
   groupstate;
@@ -65,19 +72,36 @@ export class CartelasComponent {
   public HeaderGroupComponent = this.HeaderGroupComponent;
 
 
-  constructor(private renderer: Renderer, private confirmationService: ConfirmationService, private GERVISTASService: GERVISTASService, private RegistoProducao: RegistoProducao, private ABMOVANALISEService: ABMOVANALISEService, private ABMOVANALISELINHAService: ABMOVANALISELINHAService) {
+  constructor(private ABDICTIPOMANUTENCAOService: ABDICTIPOMANUTENCAOService, private renderer: Renderer, private confirmationService: ConfirmationService, private ABMOVMANUTENCAOService: ABMOVMANUTENCAOService, private GERVISTASService: GERVISTASService) {
+
     this.page_size = '100';
     this.overlayLoadingTemplate = '<span class="ag-overlay-loading-center">A pesquisar..</span>';
-    this.disEditar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node33editar");
-    this.disGravar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node33gravar");
-    this.disCriar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node33criar");
+    this.disEditar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node051editar");
+    this.disGravar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node051gravar");
+    this.disCriar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node051criar");
     this.user = JSON.parse(localStorage.getItem('userapp'))["id"];
+    this.DATA_PLANEAMENTO = new Date();
+    this.DATA_PLANEAMENTO2 = new Date(new Date().getFullYear(), 0, 1);
 
+    this.estados = [{ label: "Seleccione um estado", value: null }, { label: "Em Planeamento", value: "Em Planeamento" }, { label: "Planeado", value: "Planeado" },
+    { label: "Em Preparação", value: "Em Preparação" }, { label: "Preparado", value: "Preparado" }, { label: "Em Execução", value: "Em Execução" }, { label: "Executado", value: "Executado" }];
 
+    this.classifs = [{ label: "Seleccione uma Man.", value: null }, { label: "Manutenção Planeada", value: "M" }, { label: "Construção Banho", value: "B" },
+    { label: "Não Programada", value: "N" }, { label: "Reposição", value: "R" }];
 
+    this.ABDICTIPOMANUTENCAOService.getAll(["M", "B", "R", "N"]).subscribe(
+      response => {
+        this.tipos = [];
+        this.tipos.push({ label: "Seleccione um Tipo", value: null });
+        for (var x in response) {
+          this.tipos.push({ label: response[x].nome_TIPO_MANUTENCAO, value: response[x].id_TIPO_MANUTENCAO });
+        }
+        this.tipos = this.tipos.slice();
+      },
+      error => console.log(error));
 
     //carregas vistas
-    this.GERVISTASService.getbyid_pagina(2).subscribe(
+    this.GERVISTASService.getbyid_pagina(3).subscribe(
       response => {
         //console.log(response)
         //this.config.push({ label: 'Sel. Vista', value: 0 });
@@ -100,15 +124,15 @@ export class CartelasComponent {
       error => console.log(error));
 
     //carrega utilizadores
-    this.RegistoProducao.getUser().subscribe(
-      response => {
-        this.utilizadores.push({ label: "Seleccione Utilizador", value: null })
-        for (var x in response) {
-          this.utilizadores.push({ label: response[x].RESCOD + " - " + response[x].RESDES, value: response[x].RESCOD });
-        }
-        this.utilizadores = this.utilizadores.slice();
-      },
-      error => console.log(error));
+    /* this.RegistoProducao.getUser().subscribe(
+       response => {
+         this.utilizadores.push({ label: "Seleccione Utilizador", value: null })
+         for (var x in response) {
+           this.utilizadores.push({ label: response[x].RESCOD + " - " + response[x].RESDES, value: response[x].RESCOD });
+         }
+         this.utilizadores = this.utilizadores.slice();
+       },
+       error => console.log(error));*/
 
     // we pass an empty gridOptions in, so we can grab the api out
     this.gridOptions = {
@@ -243,6 +267,7 @@ export class CartelasComponent {
       filtros += (this.ref_temp != null) ? "<strong>&nbsp;|&nbsp;</strong>Referência:" + this.ref_temp : ""
       filtros += "</p>";
       return filtros;*/
+    return "";
   }
 
   extractData(res) {
@@ -281,23 +306,10 @@ export class CartelasComponent {
 
   analises(inicio) {
     this.gridOptions.api.showLoadingOverlay();
-    this.columnDefs.push({ headerName: "TITLE", filter: 'text', field: "TITLE", width: 107, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "CARREGAR_ID", filter: 'text', field: "CARREGAR_ID", width: 166, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "SUPPORT_PROGRAM", filter: 'text', field: "SUPPORT_PROGRAM", width: 212, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "RECEITA", filter: 'text', field: "RECEITA", width: 127, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "DESCRICAO", filter: 'text', field: "DESCRICAO", width: 148, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "SUPORTE", filter: 'text', field: "SUPORTE", width: 135, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "N_MANUTEN", filter: 'text', field: "N_MANUTEN", width: 153, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "PRETRATTAMENTO", filter: 'text', field: "PRETRATTAMENTO", width: 196, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "COBRE", filter: 'text', field: "COBRE", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "NICHEL", filter: 'text', field: "NICHEL", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "NIQUEL_FINITURA", filter: 'text', field: "NIQUEL_FINITURA", width: 190, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "CROMAGEM", filter: 'text', field: "CROMAGEM", width: 149, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "DESMETALLIZACAO", filter: 'text', field: "DESMETALLIZACAO", width: 201, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "PECAS", filter: 'text', field: "PECAS", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "SUPERFICIE", filter: 'text', field: "SUPERFICIE", width: 154, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "ID MANUTENÇÃO", filter: 'text', field: "ID_MANUTENCAO", width: 190, enableValue: true, enableRowGroup: true, enablePivot: true });
+
     this.columnDefs.push({
-      headerName: "DATA_INICIO", field: "DATA_INICIO", width: 157, enableValue: true, enableRowGroup: true, enablePivot: true, comparator: dateComparator, filter: 'date', filterParams: {
+      headerName: "DATA PLANEAMENTO", field: "DATA_PLANEAMENTO", width: 215, enableValue: true, enableRowGroup: true, enablePivot: true, comparator: dateComparator, filter: 'date', filterParams: {
         comparator: function (filterLocalDateAtMidnight, cellValue) {
           var dateAsString = cellValue;
           var dateParts = dateAsString.split("/");
@@ -317,44 +329,114 @@ export class CartelasComponent {
         }
       }
     });
-    this.columnDefs.push({ headerName: "HORA_INICIO", filter: 'text', field: "HORA_INICIO", width: 158, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({
-      headerName: "DATA_FIM", field: "DATA_FIM", width: 135, enableValue: true, enableRowGroup: true, enablePivot: true, comparator: dateComparator, filter: 'date', filterParams: {
-        comparator: function (filterLocalDateAtMidnight, cellValue) {
-          var dateAsString = cellValue;
-          var dateParts = dateAsString.split("/");
-          var cellDate = new Date(Number(dateParts[2]), Number(dateParts[1]) - 1, Number(dateParts[0]));
-
-          if (filterLocalDateAtMidnight.getTime() == cellDate.getTime()) {
-            return 0
-          }
-
-          if (cellDate < filterLocalDateAtMidnight) {
-            return -1;
-          }
-
-          if (cellDate > filterLocalDateAtMidnight) {
-            return 1;
-          }
-        }
-      }
-    });
-    this.columnDefs.push({ headerName: "HORA_FIM", filter: 'text', field: "HORA_FIM", width: 140, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "AREATOTAL", filter: 'text', field: "AREATOTAL", width: 152, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "LOAD_PIECES", filter: 'text', field: "LOAD_PIECES", width: 164, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "DESCRICAO HIST.", filter: 'text', field: "DESCRICAO_HIST", width: 180, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "SEQUENCIA", filter: 'text', field: "SEQUENCIA", width: 147, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "HORA PLANEAMENTO", filter: 'text', field: "HORA_PLANEAMENTO", width: 215, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "ESTADO", filter: 'text', field: "ESTADO", width: 140, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "MANUTENÇÕES", filter: 'text', field: "CLASSIFICACAO", width: 185, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "TIPO MANUTENÇÃO", filter: 'text', field: "TIPO_MANUTENCAO", width: 205, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "LINHA", filter: 'text', field: "LINHA", width: 115, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "TURNO", filter: 'text', field: "TURNO", width: 135, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "UTZ_PLAN", filter: 'text', field: "UTZ_PLAN", width: 153, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "BANHO", filter: 'text', field: "BANHO", width: 196, enableValue: true, enableRowGroup: true, enablePivot: true });
     this.columnDefs.push({ headerName: "TINA", filter: 'text', field: "TINA", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "TEMPO_INICIO", filter: 'text', field: "TEMPO_INICIO", width: 167, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "TEMPO_FIM", filter: 'text', field: "TEMPO_FIM", width: 152, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "DURACAO", filter: 'text', field: "DURACAO", width: 136, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "LIMITE_INCIO", filter: 'text', field: "LIMITE_INCIO", width: 163, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "LIMITE_FIM", filter: 'text', field: "LIMITE_FIM", width: 142, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "TEMPERATURA_BANHO", filter: 'text', field: "TEMPERATURA_BANHO", width: 230, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "RACK_CODE", filter: 'text', field: "RACK_CODE", width: 153, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "RACK_TYPE", filter: 'text', field: "RACK_TYPE", width: 148, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "LOAD_RAW", filter: 'text', field: "LOAD_RAW", width: 141, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "LOAD_USER", filter: 'text', field: "LOAD_USER", width: 143, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "TIPO OPERAÇÃO", filter: 'text', field: "TIPO_OPERACAO", width: 180, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "TIPO ADIÇÃO", filter: 'text', field: "TIPO_ADICAO", width: 190, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "OBS EXECUÇÃO", filter: 'text', field: "OBS_EXECUCAO", width: 190, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "OBS PLANEAMENTO", filter: 'text', field: "OBS_PLANEAMENTO", width: 215, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "OBS PREPARAÇÃOO", filter: 'text', field: "OBS_PREPARACAO", width: 215, enableValue: true, enableRowGroup: true, enablePivot: true });
+
+    this.columnDefs.push({ headerName: "UTZ EXECUCAO", filter: 'text', field: "UTZ_EXECUCAO", width: 201, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "UTZ PREPARAÇÃO", filter: 'text', field: "UTZ_PREPARACAO", width: 210, enableValue: true, enableRowGroup: true, enablePivot: true });
+
+    this.columnDefs.push({
+      headerName: "DATA_PREVISTA", field: "DATA_PREVISTA", width: 180, enableValue: true, enableRowGroup: true, enablePivot: true, comparator: dateComparator, filter: 'date', filterParams: {
+        comparator: function (filterLocalDateAtMidnight, cellValue) {
+          var dateAsString = cellValue;
+          var dateParts = dateAsString.split("/");
+          var cellDate = new Date(Number(dateParts[2]), Number(dateParts[1]) - 1, Number(dateParts[0]));
+
+          if (filterLocalDateAtMidnight.getTime() == cellDate.getTime()) {
+            return 0
+          }
+
+          if (cellDate < filterLocalDateAtMidnight) {
+            return -1;
+          }
+
+          if (cellDate > filterLocalDateAtMidnight) {
+            return 1;
+          }
+        }
+      }
+    });
+    this.columnDefs.push({ headerName: "HORA PREVISTA", filter: 'text', field: "HORA_PREVISTA", width: 180, enableValue: true, enableRowGroup: true, enablePivot: true });
+
+
+    this.columnDefs.push({
+      headerName: "DATA EXECUÇÃO", field: "DATA_EXECUCAO", width: 190, enableValue: true, enableRowGroup: true, enablePivot: true, comparator: dateComparator, filter: 'date', filterParams: {
+        comparator: function (filterLocalDateAtMidnight, cellValue) {
+          var dateAsString = cellValue;
+          var dateParts = dateAsString.split("/");
+          var cellDate = new Date(Number(dateParts[2]), Number(dateParts[1]) - 1, Number(dateParts[0]));
+
+          if (filterLocalDateAtMidnight.getTime() == cellDate.getTime()) {
+            return 0
+          }
+
+          if (cellDate < filterLocalDateAtMidnight) {
+            return -1;
+          }
+
+          if (cellDate > filterLocalDateAtMidnight) {
+            return 1;
+          }
+        }
+      }
+    });
+    this.columnDefs.push({ headerName: "HORA EXECUÇÃO", filter: 'text', field: "HORA_EXECUCAO", width: 195, enableValue: true, enableRowGroup: true, enablePivot: true });
+
+    this.columnDefs.push({
+      headerName: "DATA PREPARAÇÃO", field: "DATA_PREPARACAO", width: 205, enableValue: true, enableRowGroup: true, enablePivot: true, comparator: dateComparator, filter: 'date', filterParams: {
+        comparator: function (filterLocalDateAtMidnight, cellValue) {
+          var dateAsString = cellValue;
+          var dateParts = dateAsString.split("/");
+          var cellDate = new Date(Number(dateParts[2]), Number(dateParts[1]) - 1, Number(dateParts[0]));
+
+          if (filterLocalDateAtMidnight.getTime() == cellDate.getTime()) {
+            return 0
+          }
+
+          if (cellDate < filterLocalDateAtMidnight) {
+            return -1;
+          }
+
+          if (cellDate > filterLocalDateAtMidnight) {
+            return 1;
+          }
+        }
+      }
+    });
+    this.columnDefs.push({ headerName: "HORA PREPARAÇÃO", filter: 'text', field: "HORA_PREPARACAO", width: 210, enableValue: true, enableRowGroup: true, enablePivot: true });
+
+
+
+
+    this.columnDefs.push({ headerName: "DOSES", filter: 'text', field: "DOSES", width: 152, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "NOME REF", filter: 'text', field: "NOME_REF", width: 164, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "COD REF", filter: 'text', field: "COD_REF", width: 180, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "NOME ADITIVO", filter: 'text', field: "NOME_COMPONENTE", width: 220, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "STOCK", filter: 'text', field: "STOCK", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "STKUNIT", filter: 'text', field: "STKUNIT", width: 167, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "VALOR1", filter: 'text', field: "VALOR1", width: 152, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "UNIDADE1", filter: 'text', field: "UNIDADE1", width: 136, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "VALOR2", filter: 'text', field: "VALOR2", width: 163, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "UNIDADE2", filter: 'text', field: "UNIDADE2", width: 142, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "VALOR ÁGUA", filter: 'text', field: "VALOR_AGUA", width: 230, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "LIECOD", filter: 'text', field: "LIECOD", width: 153, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "ETQNUM", filter: 'text', field: "ETQNUM", width: 148, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "QUANT", filter: 'text', field: "QUANT", width: 141, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "QUANT FINAL", filter: 'text', field: "QUANT_FINAL", width: 166, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "CONSUMIR", filter: 'text', field: "CONSUMIR", width: 166, enableValue: true, enableRowGroup: true, enablePivot: true });
+    // this.columnDefs.push({ headerName: "FACTOR CONVERSÃO", filter: 'text', field: "FACTOR_CONVERSAO", width: 143, enableValue: true, enableRowGroup: true, enablePivot: true });
 
 
 
@@ -362,50 +444,25 @@ export class CartelasComponent {
     var count = 0;
 
     this.columnfam(count, inicio);
-    //if (this.famSeleccionadas.length == 0) if (inicio) this.configuracoes(null);
+
   }
 
   columnfam(count, inicio) {
-    /*this.RegistoProducao.getFam([fam]).subscribe(
-      res => {
-        var column = { headerName: "FAM " + fam, suppressMenu: true, field: "defeito", children: [] };
-        for (var x in res) {
-          column.children.push({ id: res[x], headerName: res[x], field: res[x], width: 120, enableValue: true, enableRowGroup: true, enablePivot: true })
-          this.columdefeito.push(res[x]);
-        }
-        this.columnDefs.push(column);
-        this.columnDefs = this.columnDefs.slice();
-
-        if (count == this.famSeleccionadas.length) {
-          var date2 = new Date(this.data_fim).toLocaleDateString().replace(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/, "$3-$2-$1");
-          var date = new Date(this.data_ini).toLocaleDateString().replace(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/, "$3-$2-$1");
-
-          if (isNaN(new Date(this.data_ini).getDate()) || date2 == '1970-01-01') date2 = null;
-          if (isNaN(new Date(this.data_fim).getDate()) || date == '1970-01-01') date = null;
-
-          this.fam_temp = this.famSeleccionadas;
-          this.date_temp = date;
-          this.date2_temp = date2;
-          this.ref_temp = this.referencia;
-          this.user_temp = this.utilizador;
-          this.op_temp = this.operacao;
-
-         this.famSeleccionadas, inicio, date, date2, this.referencia, this.utilizador, this.operacao);
-        }
-      },
-      error => console.log(error));*/
-    this.componentes();
+    this.componentes(inicio);
   }
 
 
 
-  componentes() {
+  componentes(inicio, update = false) {
     var days = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado-Feira'];
     var month = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 
     if (this.gridOptions.api != null) this.gridOptions.api.showLoadingOverlay();
-    var data = [{ utilizador: this.utilizador, ref: this.referencia, lote: this.lote, tina: this.tina }];
-    this.RegistoProducao.getCartelas(data).subscribe(
+    var data = [{
+      ESTADO: this.estado, CLASSIF: this.classif, DATA_PLANEAMENTO: this.DATA_PLANEAMENTO, DATA_PLANEAMENTO2: this.DATA_PLANEAMENTO2, DATA_PREVISTA: this.DATA_PREVISTA,
+      DATA_PREVISTA2: this.DATA_PREVISTA2, COD_REF: this.referencia, NOME_REF: this.NOME_REF, NOME_COMPONENTE: this.NOME_COMPONENTE, ID_TIPO_MANUTENCAO: this.ID_TIPO_MANUTENCAO
+    }];
+    this.ABMOVMANUTENCAOService.getallAnaliseConsumos(data).subscribe(
       response => {
         var total = Object.keys(response).length;
         if (total > 0) {
@@ -427,46 +484,73 @@ export class CartelasComponent {
             rowData['ano'] = new Date(response[y][10]).getFullYear();
             */
 
-            rowData['TITLE'] = response[y].TITLE;
-            rowData['CARREGAR_ID'] = response[y].CARREGAR_ID;
-            rowData['SUPPORT_PROGRAM'] = response[y].SUPPORT_PROGRAM;
-            rowData['RECEITA'] = response[y].RECEITA;
-            rowData['DESCRICAO'] = response[y].DESCRICAO;
-            rowData['SUPORTE'] = response[y].SUPORTE;
-            rowData['N_MANUTEN'] = response[y].N_MANUTEN;
-            rowData['PRETRATTAMENTO'] = response[y].PRETRATTAMENTO;
-            rowData['COBRE'] = response[y].COBRE;
-            rowData['NICHEL'] = response[y].NICHEL;
-            rowData['NIQUEL_FINITURA'] = response[y].NIQUEL_FINITURA;
-            rowData['CROMAGEM'] = response[y].CROMAGEM;
-            rowData['DESMETALLIZACAO'] = response[y].DESMETALLIZACAO;
-            rowData['PECAS'] = response[y].PECAS;
-            rowData['SUPERFICIE'] = response[y].SUPERFICIE;
-            rowData['DATA_INICIO'] = (response[y].DATA_INICIO == null) ? response[y].DATA_INICIO : new Date(response[y].DATA_INICIO).toLocaleDateString();
-            rowData['HORA_INICIO'] = (response[y].HORA_INICIO == null) ? response[y].HORA_INICIO : response[y].HORA_INICIO.slice(0, 8);
-            rowData['DATA_FIM'] = (response[y].DATA_FIM == null) ? response[y].DATA_FIM : new Date(response[y].DATA_FIM).toLocaleDateString();;
-            rowData['HORA_FIM'] = (response[y].HORA_FIM == null) ? response[y].HORA_FIM : response[y].HORA_FIM.slice(0, 8);
-            rowData['AREATOTAL'] = response[y].AREATOTAL;
-            rowData['LOAD_PIECES'] = response[y].LOAD_PIECES;
-            rowData['DESCRICAO_HIST'] = response[y].DESCRICAO_HIST;
-            rowData['SEQUENCIA'] = response[y].SEQUENCIA;
-            rowData['TINA'] = response[y].TINA;
-            rowData['TEMPO_INICIO'] = (response[y].TEMPO_INICIO == null) ? response[y].TEMPO_INICIO : response[y].TEMPO_INICIO.slice(0, 8);
-            rowData['TEMPO_FIM'] = (response[y].TEMPO_FIM == null) ? response[y].TEMPO_FIM : response[y].TEMPO_FIM.slice(0, 8);
-            rowData['DURACAO'] = (response[y].DURACAO == null) ? response[y].DURACAO : response[y].DURACAO.slice(0, 8);
-            rowData['LIMITE_INCIO'] = (response[y].LIMITE_INCIO == null) ? response[y].LIMITE_INCIO : response[y].LIMITE_INCIO.slice(0, 8);
-            rowData['LIMITE_FIM'] = (response[y].LIMITE_FIM == null) ? response[y].LIMITE_FIM : response[y].LIMITE_FIM.slice(0, 8);
-            rowData['TEMPERATURA_BANHO'] = response[y].TEMPERATURA_BANHO;
-            rowData['RACK_CODE'] = response[y].RACK_CODE;
-            rowData['RACK_TYPE'] = response[y].RACK_TYPE;
-            rowData['LOAD_RAW'] = response[y].LOAD_RAW;
-            rowData['LOAD_USER'] = response[y].LOAD_USER;
+            rowData['ID_MANUTENCAO'] = response[y][0];
+            rowData['ESTADO'] = response[y][3];
 
-            var count = 15;
-            for (var x in this.columdefeito) {
-              // rowData[this.columdefeito[x]] = (response[y][count] == null) ? 0 : response[y][count];
-              count++;
+
+            var manutencao = "";
+            if (response[y][4] == "M") {
+              manutencao = "Manutenção Planeada";
+            } else if (response[y][4] == "B") {
+              manutencao = "Construção Banho";
+            } else if (response[y][4] == "N") {
+              manutencao = "Não Programada";
+            } else if (response[y][4] == "R") {
+              manutencao = "Reposição";
             }
+            rowData['CLASSIFICACAO'] = manutencao;
+
+
+            rowData['TIPO_MANUTENCAO'] = response[y][5];
+            rowData['LINHA'] = response[y][6];
+            rowData['TURNO'] = response[y][7];
+            rowData['UTZ_PLAN'] = response[y][8];
+            rowData['BANHO'] = response[y][9] + "/" + response[y][10];
+            rowData['TINA'] = response[y][11];
+            rowData['TIPO_OPERACAO'] = response[y][12];
+            rowData['TIPO_ADICAO'] = response[y][13];
+            rowData['OBS_EXECUCAO'] = response[y][14];
+            rowData['OBS_PLANEAMENTO'] = response[y][15];
+            rowData['OBS_PREPARACAO'] = response[y][16];
+            rowData['UTZ_EXECUCAO'] = response[y][23];
+
+            rowData['DATA_PLANEAMENTO'] = (response[y][1] == null) ? response[y][1] : new Date(response[y][1]).toLocaleDateString();
+            rowData['HORA_PLANEAMENTO'] = (response[y][2] == null) ? response[y][2] : response[y][2].slice(0, 8);
+
+            rowData['DATA_PREVISTA'] = (response[y][21] == null) ? response[y][21] : new Date(response[y][21]).toLocaleDateString();
+            rowData['HORA_PREVISTA'] = (response[y][22] == null) ? response[y][22] : response[y][22].slice(0, 8);
+
+            rowData['DATA_EXECUCAO'] = (response[y][17] == null) ? response[y][17] : new Date(response[y][17]).toLocaleDateString();
+            rowData['HORA_EXECUCAO'] = (response[y][18] == null) ? response[y][18] : response[y][18].slice(0, 8);
+
+            rowData['DATA_PREPARACAO'] = (response[y][19] == null) ? response[y][19] : new Date(response[y][19]).toLocaleDateString();
+            rowData['HORA_PREPARACAO'] = (response[y][20] == null) ? response[y][20] : response[y][20].slice(0, 8);
+
+            rowData['UTZ_PREPARACAO'] = response[y][24];
+            rowData['DOSES'] = response[y][25];
+            rowData['NOME_REF'] = response[y][27];
+            rowData['COD_REF'] = response[y][28];
+            rowData['NOME_COMPONENTE'] = response[y][29];
+
+            rowData['STOCK'] = response[y][30];
+            rowData['STKUNIT'] = response[y][31];
+            rowData['VALOR1'] = response[y][32];
+            rowData['UNIDADE1'] = response[y][33];
+            rowData['VALOR2'] = response[y][34];
+            rowData['UNIDADE2'] = response[y][35];
+            rowData['VALOR_AGUA'] = response[y][36];
+            rowData['LIECOD'] = response[y][37];
+            rowData['ETQNUM'] = response[y][38];
+            rowData['QUANT'] = response[y][39];
+            rowData['QUANT_FINAL'] = response[y][40];
+            //rowData['FACTOR_CONVERSAO'] = response[y][42];
+            rowData['CONSUMIR'] = response[y][42];
+
+            /* var count = 15;
+             for (var x in this.columdefeito) {
+               // rowData[this.columdefeito[x]] = (response[y][count] == null) ? 0 : response[y][count];
+               count++;
+             }*/
             this.rowData1.push(rowData);
           }
 
@@ -475,15 +559,7 @@ export class CartelasComponent {
           var valor = this.page_size;
           if (valor == 'todos') valor = this.rowData.length;
           if (this.gridOptions.api != null) this.gridOptions.api.paginationSetPageSize(Number(valor));
-          this.configuracoes(null);
-          /* if (inicio) {
-             this.configuracoes(null);
-           } else {*/
-          /* this.gridOptions.columnApi.setColumnState(this.colstate);
-           this.gridOptions.columnApi.setColumnGroupState(this.groupstate);
-           this.gridOptions.api.setSortModel(this.sortstate);
-           this.gridOptions.api.setFilterModel(this.filterstate);*/
-          /* }*/
+          this.configuracoes(null, update);
         } else {
           this.rowData = [];
         }
@@ -552,7 +628,7 @@ export class CartelasComponent {
           vistas.sortstate = JSON.stringify(this.gridOptions.api.getSortModel());
           vistas.filterstate = JSON.stringify(this.gridOptions.api.getFilterModel());
           vistas.descricao = this.texto_vista;
-          vistas.pagina = 2;
+          vistas.pagina = 3;
           this.GERVISTASService.update(vistas).then(result => {
             var array = this.array.find(item => item.id == this.num_vista);
             this.config.find(item => item.value == this.num_vista).label = this.texto_vista;
@@ -595,7 +671,7 @@ export class CartelasComponent {
     vistas.sortstate = JSON.stringify(this.gridOptions.api.getSortModel());
     vistas.filterstate = JSON.stringify(this.gridOptions.api.getFilterModel());
     vistas.descricao = this.texto_vista;
-    vistas.pagina = 2;
+    vistas.pagina = 3;
     this.GERVISTASService.create(vistas).subscribe(result => {
 
       this.array.push({
@@ -644,14 +720,20 @@ export class CartelasComponent {
   }
 
   configuracoes(event, update = false) {
-    this.texto_vista = this.config.find(item => item.value == this.num_vista).label;
+    if (this.config.length > 0) this.texto_vista = this.config.find(item => item.value == this.num_vista).label;
     if (this.num_vista != 0) {
       var array = this.array.find(item => item.id == this.num_vista);
       if (array && !update) {
-        if (this.gridOptions.api != null) this.gridOptions.columnApi.setColumnState(array.colState);
-        if (this.gridOptions.api != null) this.gridOptions.columnApi.setColumnGroupState(array.groupState);
-        if (this.gridOptions.api != null) this.gridOptions.api.setSortModel(array.sortState);
-        if (this.gridOptions.api != null) this.gridOptions.api.setFilterModel(array.filterState);
+        /* if (this.gridOptions.api != null) this.gridOptions.columnApi.setColumnState(array.colState);
+         if (this.gridOptions.api != null) this.gridOptions.columnApi.setColumnGroupState(array.groupState);
+         if (this.gridOptions.api != null) this.gridOptions.api.setSortModel(array.sortState);
+         if (this.gridOptions.api != null) this.gridOptions.api.setFilterModel(array.filterState);*/
+
+        if (this.gridOptions.api != null) {
+          setTimeout(() => {
+            this.restoreState();
+          }, 200);
+        }
         if (array.adminedit) {
           if (JSON.parse(localStorage.getItem('userapp'))["admin"]) {
             this.disEditar = false;
@@ -708,15 +790,16 @@ export class CartelasComponent {
   }
 
   createRowData(inicio, update = false) {
-    this.colstate = this.gridOptions.columnApi.getColumnState();
-    this.groupstate = this.gridOptions.columnApi.getColumnGroupState();
-    this.sortstate = this.gridOptions.api.getSortModel();
-    this.filterstate = this.gridOptions.api.getFilterModel();
+
+    /* this.colstate = this.gridOptions.columnApi.getColumnState();
+     this.groupstate = this.gridOptions.columnApi.getColumnGroupState();
+     this.sortstate = this.gridOptions.api.getSortModel();
+     this.filterstate = this.gridOptions.api.getFilterModel();*/
 
     if (update) {
       this.rowData1 = [];
       this.gridOptions.api.showLoadingOverlay();
-      this.componentes();
+      this.componentes(inicio, update);
     } else {
       this.rowData1 = [];
       this.gridOptions.api.showLoadingOverlay();
@@ -916,6 +999,7 @@ function setText(selector, text) {
   }
 
 }
+
 
 
 

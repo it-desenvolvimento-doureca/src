@@ -68,13 +68,13 @@ export class ABMOVMANUTENCAOETIQService {
       .catch(this.handleError);
   }
 
-  criaficheiro(id) {
-    const url = webUrl.host + '/rest/sirb/ficheiro/' + id ;
+  criaficheiro(data) {
+    const url = webUrl.host + '/rest/sirb/ficheiro/';
     return this.http
-        .get(url)
-        .map((res: Response) => res.json())
-        .catch((error: any) => Observable.throw('Server error'));
-}
+      .post(url, JSON.stringify(data), { headers: this.headers })
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw('Server error'));
+  }
 
   private extractData(res: Response) {
     let body = res.json();

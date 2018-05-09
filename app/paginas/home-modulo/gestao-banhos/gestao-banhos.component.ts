@@ -16,6 +16,7 @@ import { ABMOVMANUTENCAOLINHAService } from 'app/servicos/ab-mov-manutencao-linh
   styleUrls: ['./gestao-banhos.component.css']
 })
 export class GestaoBanhosComponent implements OnInit {
+  dashb = [];
   banho_combo;
   linha_combo;
   data_fim: any;
@@ -60,6 +61,15 @@ export class GestaoBanhosComponent implements OnInit {
         // Defaults to 0 if no query param provided.
         back = params['redirect'] || 0;
       });
+
+    var acesso1 = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node040");
+    var acesso2 = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node041");
+    if (acesso1) {
+      this.dashb.push({ link: '/homegestaobanhos', titulo: "Quadro de análise", ativo: true });
+    }
+    if (acesso2) {
+      this.dashb.push({ link: '/listagem', titulo: "Lista Manutenções Pendentes", ativo: false });
+    }
 
     this.width = 100 / (this.num_items + 1);
     this.data_fim = new Date();

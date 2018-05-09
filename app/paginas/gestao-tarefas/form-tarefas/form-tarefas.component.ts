@@ -24,6 +24,7 @@ export class FormTarefasComponent implements OnInit {
   tinas = [];
   obs = "";
   data = null;
+  utilizadores = [{ nome: "Admin", id: 1 }, { nome: "Teste", id: 2 }];
 
   @ViewChild('fileInput') fileInput: FileUpload;
   @ViewChild('dialoglinhas') dialoglinhas: ElementRef;

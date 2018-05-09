@@ -10,7 +10,7 @@
           </div>
           <div class="card-content table-responsive">
 
-            <p-dataTable  [emptyMessage]="mensagemtabela"  [style]="{'min-height':'300px'}" [value]="cols" dataKey="id" [rows]="25" [paginator]="true" [pageLinks]="3"
+            <p-dataTable (onFilter)="atualizaids()"  [emptyMessage]="mensagemtabela"  [style]="{'min-height':'300px'}" [value]="cols" dataKey="id" [rows]="25" [paginator]="true" [pageLinks]="3"
               (onRowDblclick)="abrir($event)" [rowsPerPageOptions]="[25,50,100,'todos']">
               <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="id" header="Nº Manut não Prog.">
                 <ng-template pTemplate="filter" let-col>

@@ -106,6 +106,8 @@ import { CartelasComponent } from './paginas/lmep/cartelas/cartelas.component';
 import { ABDICLINHAOFService } from './servicos/ab-dic-linha-of.service';
 import { ABMOVMANUTENCAOETIQService } from 'app/servicos/ab-mov-manutencao-etiq.service';
 import { CalendarioComponent } from './paginas/gestao-tarefas/calendario/calendario.component';
+import { ListagemManutencoesComponent } from './paginas/listagem-manutencoes/listagem-manutencoes.component';
+import { AnaliseconsumosComponent } from './paginas/consultas/analiseconsumos/analiseconsumos.component';
 
 const routes: Routes = [
   { path: 'dashboard', component: HomeComponent, canActivate: [LoginService] },
@@ -238,6 +240,8 @@ const routes: Routes = [
   { path: 'lmep_relatorios', component: ViewerComponent, canActivate: [LoginService], data: { breadcrumb: "Relatórios Gestão" } },
   { path: 'configjasper', component: ConfComponent, canActivate: [LoginService], data: { breadcrumb: "Configurações Jasper" } },
   { path: 'parametrosraks', component: ParametrosRaksComponent, canActivate: [LoginService], data: { breadcrumb: "Parâmetros Raks" } },
+  { path: 'listagem', component: ListagemManutencoesComponent, canActivate: [LoginService], data: { breadcrumb: "Manutenções Ativas" } },
+  { path: 'analiseconsumos', component: AnaliseconsumosComponent, canActivate: [LoginService], data: { breadcrumb: "Análise Consumos" } },
 
   { path: 'login', component: LoginComponent },
   {
@@ -312,7 +316,9 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     MantencaoNaoProgramadafromComponent,
     ParametrosRaksComponent,
     CartelasComponent,
-    CalendarioComponent
+    CalendarioComponent,
+    ListagemManutencoesComponent,
+    AnaliseconsumosComponent
   ],
   imports: [
     BrowserModule,

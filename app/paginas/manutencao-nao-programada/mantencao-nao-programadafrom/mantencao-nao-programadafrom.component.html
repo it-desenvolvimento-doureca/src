@@ -142,8 +142,8 @@
                       </div>
                       <div class="[ form-group ]" [hidden]="(item.id == '' || item.id == null)|| acessoexecucao" style="float: left; margin-left:10px;">
                         <input (change)="confirmar_linha(item.pos,item.id,item.id_manu)" type="checkbox" name="fancy-checkbox-succ{{item.pos}}" id="fancy-checkbox-succ{{item.pos}}"
-                          [(ngModel)]="item.executado1" [disabled]="item.executado " [ngModelOptions]="{standalone: true}" autocomplete="off"
-                        />
+                          [(ngModel)]="item.executado1" [disabled]="item.executado " [ngModelOptions]="{standalone: true}"
+                          autocomplete="off" />
                         <div class="[ btn-group ]" style="margin: 4px 0px 0px 0px;">
                           <label style=" padding: 1px 18px 3px 8px; font-size: 21px;" [ngClass]="{ 'cor_amarelo': !item.executado,'disabled': item.executado }"
                             for="fancy-checkbox-succ{{item.pos}}" class="[ btn btn-success ]" id="burst-8">
@@ -310,7 +310,7 @@
                                   [disabled]="true">
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
-                                <input autocomplete="off" (ngModelChange)="atualizarvaloragua(valoruni.value,aditem.factor,aditem.pos,item.pos)" #valoruni
+                                <input autocomplete="off" (keypress)="_keyPress($event)" (ngModelChange)="atualizarvaloragua(valoruni.value,aditem.factor,aditem.pos,item.pos)" #valoruni
                                   type="text" style="background: white; text-align: center; height: 31px;" class="form-control"
                                   [(ngModel)]="aditem.valor1" [ngModelOptions]="{standalone: true}" [disabled]="(!modoedicao && !item.preparado) || aditem.disabled || item.executado">
                               </td>
@@ -611,24 +611,24 @@
               </td>
               <td style="padding: 0px 4px 0px 0px">
                 <div class="form-group">
-                  <input (input)="calculaFalta(true,etiq.id)" type="text" style=" text-align: center; height: 31px; width: 80%;" [(ngModel)]="etiq.consumir"
-                    [ngModelOptions]="{standalone: true}" [disabled]="!(modoedicao || executado) || disaddetiquetas">
+                  <input (keypress)="_keyPress($event)" (input)="calculaFalta(true,etiq.id)" type="text" style=" text-align: center; height: 31px; width: 80%;" [(ngModel)]="etiq.consumir"
+                    [ngModelOptions]="{standalone: true}" [disabled]="!(modoedicao || preparado) || disaddetiquetas">
                   <input [disabled]="true" type="text" style=" text-align: center; height: 31px; width: 15%;" [(ngModel)]="unidade1temp" [ngModelOptions]="{standalone: true}">
                 </div>
               </td>
               <td style="padding: 0px 4px 0px 0px">
                 <div class="form-group">
-                  <input type="text" style=" text-align: center; height: 31px; width: 80%;" [(ngModel)]="etiq.quant_FINAL" [ngModelOptions]="{standalone: true}"
-                    [disabled]="!(modoedicao || executado) || disaddetiquetas">
-                  <input [disabled]="true" type="text" style=" text-align: center; height: 31px; width: 15%;" [(ngModel)]="etiq.UNISTO" [ngModelOptions]="{standalone: true}">
+                  <input (keypress)="_keyPress($event)" (input)="atualizaQUANT(etiq.id)" type="text" style=" text-align: center; height: 31px; width: 80%;" [(ngModel)]="etiq.quant_FINAL2" [ngModelOptions]="{standalone: true}"
+                    [disabled]="!(modoedicao || preparado) || disaddetiquetas">
+                  <input [disabled]="true" type="text" style=" text-align: center; height: 31px; width: 15%;" [(ngModel)]="unidade1temp" [ngModelOptions]="{standalone: true}">
                 </div>
               </td>
               <td style="padding: 0px 4px 0px 0px; width: 69px; height: 22px;">
-                <button (click)="addlinhaetiqiadiv(etiq.id,numero2.value)" type="button" class="ibtnDel btn btn-md btn-default " [disabled]="!(modoedicao || executado) || disaddetiquetas"
+                <button (click)="addlinhaetiqiadiv(etiq.id,numero2.value)" type="button" class="ibtnDel btn btn-md btn-default " [disabled]="!(modoedicao || preparado) || disaddetiquetas"
                   style="height: 27px;width: 2px;padding: 13px 21px 6px 7px;">
                   <i style="font-size: 15px; top: -7px" class="material-icons">add</i>
                 </button>
-                <button (click)="apagaretiquetaaditivo(etiq.id)" type="button" class="ibtnDel btn btn-md btn-danger " [disabled]="!(modoedicao || executado) || disaddetiquetas"
+                <button (click)="apagaretiquetaaditivo(etiq.id)" type="button" class="ibtnDel btn btn-md btn-danger " [disabled]="!(modoedicao || preparado) || disaddetiquetas"
                   style="height: 27px;width: 2px;padding: 13px 21px 6px 7px;">
                   <i style="font-size: 15px; top: -7px" class="material-icons">delete</i>
                 </button>
@@ -640,7 +640,7 @@
       <div class="modal-footer">
         <div style="text-align: center;">
           <button type="button" class="btn btn-danger" #closedialogetiq2 data-dismiss="modal">CANCELAR</button>
-          <button type="button" class="btn btn-success" (click)="guardaretiquetasaditivos()" [disabled]="!(modoedicao || executado) || disaddetiquetas">GUARDAR</button>
+          <button type="button" class="btn btn-success" (click)="guardaretiquetasaditivos()" [disabled]="!(modoedicao || preparado) || disaddetiquetas">GUARDAR</button>
         </div>
       </div>
     </div>
