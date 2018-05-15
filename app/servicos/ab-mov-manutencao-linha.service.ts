@@ -51,6 +51,16 @@ export class ABMOVMANUTENCAOLINHAService {
       .map(this.extractData)
       .catch((error: any) => Observable.throw('Server error'));
   }
+
+
+  apagar_linhas(id) {
+    return this.http
+      .delete(webUrl.host + '/rest/sirb/apagar_linhas/' + id + '')
+      .toPromise()
+      .then(res => res)
+      .catch(this.handleError);
+  }
+
   delete(id) {
     return this.http
       .delete(webUrl.host + '/rest/sirb/deleteAB_MOV_MANUTENCAO_LINHA/' + id + '')

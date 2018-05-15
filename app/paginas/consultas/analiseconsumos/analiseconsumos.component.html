@@ -89,16 +89,21 @@
                     <button (click)="createRowData()">Atualizar Gráfico</button>-->
 
                   <div class="col-md-2" style="padding: 0; width: 14%;">
-                    <b>Data Planeamento maior que:</b>
+                    <b>Data Preparação maior que:</b>
                     <p-calendar dateFormat="yy-mm-dd" class="inputcalen" placeholder="aaa-mm-dd" [style]="{'height':'27px'}" [monthNavigator]="true"
                       [yearNavigator]="true" yearRange="2000:2050" [(ngModel)]="DATA_PLANEAMENTO2" [ngModelOptions]="{standalone: true}"
                       [showIcon]="true"></p-calendar>
                   </div>
                   <div class="col-md-2" style="padding: 0; width: 14%;">
-                    <b>Data Planeamento menor que:</b>
+                    <b>Data Preparação menor que:</b>
                     <p-calendar dateFormat="yy-mm-dd" class="inputcalen" placeholder="aaaa-mm-dd" [style]="{'height':'27px'}" [monthNavigator]="true"
                       [yearNavigator]="true" yearRange="2000:2050" [(ngModel)]="DATA_PLANEAMENTO" [ngModelOptions]="{standalone: true}"
                       [showIcon]="true"></p-calendar>
+                  </div>
+                  <div class="col-md-3" style="padding: 0; width: 14%;">
+                    <b>Número da Semana</b>
+                    <p-multiSelect [(ngModel)]="numerosemana" [ngModelOptions]="{standalone: true}" [options]="numerosemanas" [style]="{'width':'96%','height':'27px','padding':'3px 0px 0px 7px'}"
+                      styleClass="ui-column-filter"></p-multiSelect>
                   </div>
                   <div class="col-md-2" style="padding: 0; width: 14%;">
                     <b>Data Prevista maior que:</b>
@@ -129,8 +134,8 @@
                   </div>
                   <div class="col-md-3" style="padding: 0; width: 14%;">
                     <b>Estado</b>
-                    <p-dropdown [(ngModel)]="estado" [ngModelOptions]="{standalone: true}" #dd [options]="estados" [style]="{'width':'96%','height':'27px'}"
-                      filter="true"></p-dropdown>
+                    <p-multiSelect [(ngModel)]="estado" [ngModelOptions]="{standalone: true}" [options]="estados" [style]="{'width':'96%','height':'27px'}"
+                      styleClass="ui-column-filter"></p-multiSelect>
                   </div>
                   <div class="col-md-3" style="padding: 0; width: 14%;">
                     <b>Manutenção</b>

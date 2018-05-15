@@ -21,4 +21,6 @@ export class AB_MOV_MANUTENCAO_ETIQ {
     indnumenr: number;
     prodes: number;
     datcre: number;
+    etqoriqte1: number;
+
 }

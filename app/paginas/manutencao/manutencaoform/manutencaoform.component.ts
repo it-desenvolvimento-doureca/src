@@ -470,7 +470,7 @@ export class ManutencaoformComponent implements OnInit {
             } else if (response[x][4] == null) {
               cor = "red";
             }
-            if (valor1 != 0 || valor2 != 0) {
+            if (valor1 != 0 || valor2 != 0 || this.planeamento) {
               this.arrayForm.find(item => item.pos == pos).aditivos.push(
                 {
                   pos: pos2, cisterna: response[x][1].cisterna, factor_CONVERSAO: response[x][1].factor_CONVERSAO, cor: cor, liecod: response[x][0].liecod,
@@ -859,7 +859,7 @@ export class ManutencaoformComponent implements OnInit {
           MOV_MANUTENCAO_LINHA.valor_AGUA = value;
           MOV_MANUTENCAO_LINHA.obs_PLANEAMENTO = this.arrayForm.find(item => item.pos == pos).aditivos[x].obs;
           MOV_MANUTENCAO_LINHA.hora_PREVISTA = this.arrayForm.find(item => item.pos == pos).hora_pre;
-          MOV_MANUTENCAO_LINHA.stock = this.arrayForm.find(item => item.pos == pos).aditivos[x].stock.replace(",", ".");
+          MOV_MANUTENCAO_LINHA.stock = (this.arrayForm.find(item => item.pos == pos).aditivos[x].stock) ? this.arrayForm.find(item => item.pos == pos).aditivos[x].stock.replace(",", ".") : null;
           MOV_MANUTENCAO_LINHA.cod_REF = this.arrayForm.find(item => item.pos == pos).aditivos[x].cod_REF;
           MOV_MANUTENCAO_LINHA.stkunit = this.arrayForm.find(item => item.pos == pos).aditivos[x].unidstock;
           MOV_MANUTENCAO_LINHA.liecod = this.arrayForm.find(item => item.pos == pos).aditivos[x].liecod;
@@ -1084,9 +1084,13 @@ export class ManutencaoformComponent implements OnInit {
         MOV_MANUTENCAO.hora_PLANEAMENTO = hora_p;
         MOV_MANUTENCAO.data_PLANEAMENTO = data_p;
         MOV_MANUTENCAO.estado = "Planeado";
-        this.ABMOVMANUTENCAOService.update(MOV_MANUTENCAO).then(() => {
-          this.router.navigate(['manutencao']);
-          this.simular(this.inputgravou);
+        this.ABMOVMANUTENCAOLINHAService.apagar_linhas(MOV_MANUTENCAO.id_MANUTENCAO).then(() => {
+          this.ABMOVMANUTENCAOService.update(MOV_MANUTENCAO).then(() => {
+            this.router.navigate(['manutencao']);
+            this.simular(this.inputgravou);
+          }, error => {
+            console.log(error); this.simular(this.inputerro);
+          });
         }, error => {
           console.log(error); this.simular(this.inputerro);
         });
@@ -1721,7 +1725,7 @@ export class ManutencaoformComponent implements OnInit {
     this.etiquetas = [];
     this.etiquetas.push({
       disabled: false,
-      id: "id" + this.idtempetiquetas, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", quant_FINAL2: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
+      id: "id" + this.idtempetiquetas, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", quant_FINAL2: "", EMPCOD: "", ETQORIQTE1: null, ETQORILOT1: "", LIECOD: "",
       LOTNUMENR: "", PROREF: "", PRODES: "", DATCRE: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: null, ETQNUMENR: "", INDREF: ""
     });
     this.pos_sele = pos;
@@ -1747,7 +1751,7 @@ export class ManutencaoformComponent implements OnInit {
       this.idtempetiquetas++;
       this.etiquetas.push({
         disabled: false,
-        id: "id" + this.idtempetiquetas, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", quant_FINAL2: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
+        id: "id" + this.idtempetiquetas, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", quant_FINAL2: "", EMPCOD: "", ETQORIQTE1: null, ETQORILOT1: "", LIECOD: "",
         LOTNUMENR: "", PROREF: "", PRODES: "", DATCRE: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: null, ETQNUMENR: "", INDREF: ""
       });
       setTimeout(() => {
@@ -1775,6 +1779,7 @@ export class ManutencaoformComponent implements OnInit {
           etiqueta.qtd = value.replace(".", ",");
           etiqueta.EMPCOD = response[0].EMPCOD;
           etiqueta.ETQORILOT1 = response[0].ETQORILOT1;
+          etiqueta.ETQORIQTE1 = response[0].ETQORIQTE1;
           etiqueta.LIECOD = response[0].LIECOD;
           etiqueta.LOTNUMENR = response[0].LOTNUMENR;
           etiqueta.PROREF = response[0].PROREF;
@@ -1803,7 +1808,7 @@ export class ManutencaoformComponent implements OnInit {
       this.idtempetiquetas++;
       this.etiquetas.push({
         disabled: false,
-        id: "id" + this.idtempetiquetas, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", quant_FINAL2: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
+        id: "id" + this.idtempetiquetas, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", quant_FINAL2: "", EMPCOD: "", ETQORIQTE1: null, ETQORILOT1: "", LIECOD: "",
         LOTNUMENR: "", PROREF: "", PRODES: "", DATCRE: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: null, ETQNUMENR: "", INDREF: ""
       });
       setTimeout(() => {
@@ -1866,7 +1871,10 @@ export class ManutencaoformComponent implements OnInit {
               var elem = this.tempQTD.find(item => item.ref == this.etiquetas[x].PROREF);
               if (total != 0) {
                 elem.qtd_falta = (adi.valor1.replace(",", ".") - total);
+              } else if (elem.qtd_falta == 0 && count > 0) {
+                elem.qtd_falta = adi.valor1.replace(",", ".");
               }
+
 
               if (elem.qtd_falta >= 0) {
                 var valor = elem.qtd_falta;
@@ -1959,6 +1967,8 @@ export class ManutencaoformComponent implements OnInit {
     ETI.utz_CRIA = this.user;
     ETI.data_CRIA = data;
     ETI.etqnumenr = etiqueta.ETQNUMENR;
+    ETI.etqoriqte1 = parseFloat(etiqueta.ETQORIQTE1);
+
 
     this.ABMOVMANUTENCAOETIQService.create(ETI).subscribe(
       res => {
@@ -2072,6 +2082,7 @@ export class ManutencaoformComponent implements OnInit {
                     indnumenr: response[x].INDNUMENR,
                     UNISTO: response[x].UNISTO,
                     ETQNUMENR: response[x].ETQNUMENR,
+                    ETQORIQTE1: response[x].ETQORIQTE1,
                   }];
 
                   this.inseriretiquetas(etiqueta[0], new Date(), carrega, falta, valor1, factor_conversao, event);
@@ -2107,9 +2118,9 @@ export class ManutencaoformComponent implements OnInit {
     this.factor_conversao = factor_conversao;
     this.cod_ref = ref;
     this.adit_design = nome;
-    this.valor1temp = (valor != null) ? valor.replace(",", ".") : "";
+    this.valor1temp = (valor != null && valor != "") ? valor.replace(",", ".") : "";
     this.unidade1temp = "--";
-    this.tempconsumiraditivo = valor;
+    this.tempconsumiraditivo = (valor != null && valor != "") ? valor.replace(",", ".") : "0";
     this.posmovacab = pos;
     this.tempidlin = id;
     this.tempplaneado = !preparado;
@@ -2175,7 +2186,7 @@ export class ManutencaoformComponent implements OnInit {
 
             this.etiquetasaditivo.push({
               id: response[x].id_MOV_MANU_ETIQUETA, numero: response[x].etqnum, produto: "", qtd: quant, consumir: consumir, quant_FINAL: quant_FINAL, quant_FINAL2: quant_FINAL2,
-              EMPCOD: response[x].empcod, ETQORILOT1: response[x].etqorilot1, LIECOD: response[x].liecod, LOTNUMENR: response[x].lotnumenr, PROREF: response[x].proref, PRODES: response[x].prodes, DATCRE: response[x].datcre,
+              EMPCOD: response[x].empcod, ETQORIQTE1: response[x].etqoriqte1, ETQORILOT1: response[x].etqorilot1, LIECOD: response[x].liecod, LOTNUMENR: response[x].lotnumenr, PROREF: response[x].proref, PRODES: response[x].prodes, DATCRE: response[x].datcre,
               UNICOD: response[x].unicod, UNISTO: response[x].unisto, VA1REF: response[x].va1REF, VA2REF: response[x].va2REF, indnumenr: response[x].indnumenr, id_lin: response[x].id_MANUTENCAO_LIN, ETQNUMENR: response[x].etqnumenr, INDREF: response[x].indref,
               qtdconvers: qtdconvers.toFixed(3).replace(".", ",")
             });
@@ -2185,7 +2196,7 @@ export class ManutencaoformComponent implements OnInit {
         }
 
         this.etiquetasaditivo.push({
-          id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", quant_FINAL2: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
+          id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", quant_FINAL2: "", EMPCOD: "", ETQORIQTE1: null, ETQORILOT1: "", LIECOD: "",
           LOTNUMENR: "", PROREF: "", PRODES: "", DATCRE: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: this.tempidlin, ETQNUMENR: "", INDREF: "", qtdconvers: ""
         });
 
@@ -2230,7 +2241,7 @@ export class ManutencaoformComponent implements OnInit {
       if (this.etiquetasaditivo[this.etiquetasaditivo.length - 1].numero != "") {
         this.idtempetiquetasaditivo++;
         this.etiquetasaditivo.push({
-          id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", quant_FINAL2: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
+          id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", quant_FINAL2: "", EMPCOD: "", ETQORIQTE1: null, ETQORILOT1: "", LIECOD: "",
           LOTNUMENR: "", PROREF: "", PRODES: "", DATCRE: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: this.tempidlin, ETQNUMENR: "", INDREF: "", qtdconvers: ""
         });
         setTimeout(() => {
@@ -2263,7 +2274,7 @@ export class ManutencaoformComponent implements OnInit {
     if (this.etiquetasaditivo.length == 0) {
       this.idtempetiquetasaditivo++;
       this.etiquetasaditivo.push({
-        id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", quant_FINAL2: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
+        id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", quant_FINAL2: "", EMPCOD: "", ETQORIQTE1: null, ETQORILOT1: "", LIECOD: "",
         LOTNUMENR: "", PROREF: "", PRODES: "", DATCRE: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: this.tempidlin, ETQNUMENR: "", INDREF: "", qtdconvers: ""
       });
       setTimeout(() => {
@@ -2286,7 +2297,7 @@ export class ManutencaoformComponent implements OnInit {
       if (this.etiquetasaditivo[this.etiquetasaditivo.length - 1].numero != "") {
         this.idtempetiquetasaditivo++;
         this.etiquetasaditivo.push({
-          id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", quant_FINAL2: "", EMPCOD: "", ETQORILOT1: "", LIECOD: "",
+          id: "id" + this.idtempetiquetasaditivo, numero: "", produto: "", qtd: "", consumir: "", quant_FINAL: "", quant_FINAL2: "", EMPCOD: "", ETQORIQTE1: null, ETQORILOT1: "", LIECOD: "",
           LOTNUMENR: "", PROREF: "", PRODES: "", DATCRE: "", UNICOD: "", UNISTO: "", VA1REF: " ", VA2REF: " ", indnumenr: "", id_lin: this.tempidlin, ETQNUMENR: "", INDREF: "", qtdconvers: ""
         });
         setTimeout(() => {
@@ -2310,6 +2321,7 @@ export class ManutencaoformComponent implements OnInit {
               etiqueta.qtd = value.replace(".", ",");
               etiqueta.EMPCOD = response[0].EMPCOD;
               etiqueta.ETQORILOT1 = response[0].ETQORILOT1;
+              etiqueta.ETQORIQTE1 = response[0].ETQORIQTE1;
               etiqueta.LIECOD = response[0].LIECOD;
               etiqueta.LOTNUMENR = response[0].LOTNUMENR;
               etiqueta.PROREF = response[0].PROREF;
@@ -2444,13 +2456,21 @@ export class ManutencaoformComponent implements OnInit {
         total = total - this.etiquetasaditivo[y].consumir.replace(",", ".");
         if (atualiza && this.etiquetasaditivo[y].id == id) {
           var to_final = (this.etiquetasaditivo[y].qtdconvers.replace(",", ".") - this.etiquetasaditivo[y].consumir.replace(",", ".")) * this.factor_conversao;
+          var to_final2 = (this.etiquetasaditivo[y].qtdconvers.replace(",", ".") - this.etiquetasaditivo[y].consumir.replace(",", ".")) * this.factor_conversao;
+          if (to_final < 0) to_final = 0;
           this.etiquetasaditivo[y].quant_FINAL = to_final.toFixed(3).replace(".", ",");
-          this.etiquetasaditivo[y].quant_FINAL2 = ((this.etiquetasaditivo[y].qtdconvers.replace(",", ".") - this.etiquetasaditivo[y].consumir.replace(",", "."))).toFixed(3).replace(".", ",");
+          if (((this.etiquetasaditivo[y].qtdconvers.replace(",", ".") - this.etiquetasaditivo[y].consumir.replace(",", "."))) > 0) {
+            this.etiquetasaditivo[y].quant_FINAL2 = ((this.etiquetasaditivo[y].qtdconvers.replace(",", ".") - this.etiquetasaditivo[y].consumir.replace(",", "."))).toFixed(3).replace(".", ",");
+          } else {
+            this.etiquetasaditivo[y].quant_FINAL2 = "0,000"
+          }
         }
       }
     }
 
+    if (total.toFixed(3) == "-0.000") total = 0;
     this.tempconsumiraditivo = total.toFixed(3).replace(".", ",");
+
   }
 
 
@@ -2465,12 +2485,40 @@ export class ManutencaoformComponent implements OnInit {
     for (var y in this.etiquetasaditivo) {
       if (this.etiquetasaditivo[y].numero != null && this.etiquetasaditivo[y].numero != "") {
         if (this.etiquetasaditivo[y].id == id) {
-          this.etiquetasaditivo[y].quant_FINAL = (this.etiquetasaditivo[y].quant_FINAL2 / this.factor_conversao).toString();
-        }
 
+          var maximo = this.etiquetasaditivo[y].ETQORIQTE1;
+          var qtdf = 0;
+          var qtdf2 = (this.etiquetasaditivo[y].quant_FINAL2).replace(",", ".");
+          var consumir = (this.etiquetasaditivo[y].consumir).replace(",", ".");
+
+          if (this.etiquetasaditivo[y].ETQORIQTE1 >= ((qtdf2 / this.factor_conversao) + parseFloat(consumir))) {
+            this.etiquetasaditivo[y].quant_FINAL = (qtdf2 / this.factor_conversao).toString();
+          } else {
+            this.mensagem_aviso = "O máximo de quantidade da etiqueta foi ultrapassado!";
+
+            let elm2 = document.getElementById("dialogAvisoContent");
+            let elem3 = document.getElementById("mainpagecontent");
+            let h = elem3.getBoundingClientRect().height;
+
+            document.getElementById("dialogAviso").style.height = Math.abs(h + 300) + 'px';
+            let coords = document.getElementById("toptexttop").offsetTop;
+            elm2.style.top = Math.abs(coords - 10) + 'px';
+
+            elm2.style.bottom = 'none';
+
+            this.simular(this.dialogAviso);
+
+            this.etiquetasaditivo[y].quant_FINAL = maximo - parseFloat(consumir);
+            this.etiquetasaditivo[y].quant_FINAL2 = ((maximo - parseFloat(consumir)) * this.factor_conversao).toString();
+          }
+
+        }
+        // console.log(this.etiquetasaditivo[y].quant_FINAL);
       }
     }
+
   }
+
   _keyPress(event: any) {
     const pattern = /[0-9\+\.\+\,\ ]/;
     let inputChar = String.fromCharCode(event.charCode);
