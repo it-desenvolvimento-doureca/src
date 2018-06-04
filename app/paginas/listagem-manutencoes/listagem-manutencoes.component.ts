@@ -280,6 +280,10 @@ export class ListagemManutencoesComponent implements OnInit {
           } else if (response[x][9] == "R") {
             manutencao = "Reposição";
           }
+          var cor_tipo = "";
+          if (response[x][14] != null && response[x][14] != '' && response[x][14] != "#ffffff") {
+            cor_tipo = response[x][14];
+          }
 
           if (!this.acessoplaneamento) {
             var min = (response[x][12] != null) ? response[x][12] : 0;
@@ -293,7 +297,7 @@ export class ListagemManutencoesComponent implements OnInit {
               var minutos_max = Math.round(total_max / 60000);
               if (minutos <= min && minutos_max <= min_max) {
                 this.cols.push({
-                  id: response[x][0], tipo: response[x][1], data: this.formatDate(response[x][2]) + " - " + response[x][3].slice(0, 5),
+                  id: response[x][0], tipo: response[x][1], data: this.formatDate(response[x][2]) + " - " + response[x][3].slice(0, 5), cor_tipo: cor_tipo,
                   cor: response[x][4], linha: response[x][5], turno: response[x][6], estado: response[x][7], manutencao: manutencao, classif: response[x][9]
                 });
               }
@@ -301,7 +305,7 @@ export class ListagemManutencoesComponent implements OnInit {
 
           } else {
             this.cols.push({
-              id: response[x][0], tipo: response[x][1], data: this.formatDate(response[x][2]) + " - " + response[x][3].slice(0, 5),
+              id: response[x][0], tipo: response[x][1], data: this.formatDate(response[x][2]) + " - " + response[x][3].slice(0, 5), cor_tipo: cor_tipo,
               cor: response[x][4], linha: response[x][5], turno: response[x][6], estado: response[x][7], manutencao: manutencao, classif: response[x][9]
             });
           }

@@ -142,7 +142,7 @@ export class LinhasComponent implements OnInit {
     LINHAS.ref_COMPOSTO = this.ref_COMPOSTO;
     LINHAS.pasta = this.pasta;
     LINHAS.utilizador = this.utilizador;
-    LINHAS.senha = this.senha;
+    LINHAS.senha = btoa(this.senha);
     LINHAS.dominio = this.dominio;
     LINHAS.inativo = false;
     if (this.novalinha) {
@@ -198,7 +198,7 @@ export class LinhasComponent implements OnInit {
         for (var x in response) {
           this.linhas.push({
             id: response[x].id_LINHA, nome: response[x].nome_LINHA, cor: response[x].cor, seccao: response[x].seccao,
-            subseccao: response[x].subseccao, ref_COMPOSTO: response[x].ref_COMPOSTO, pasta: response[x].pasta, utilizador: response[x].utilizador, senha: response[x].senha
+            subseccao: response[x].subseccao, ref_COMPOSTO: response[x].ref_COMPOSTO, pasta: response[x].pasta, utilizador: response[x].utilizador, senha: atob(response[x].senha)
             , dominio: response[x].dominio
           });
         }

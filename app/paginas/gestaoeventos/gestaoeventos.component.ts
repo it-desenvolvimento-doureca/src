@@ -104,7 +104,7 @@ export class GestaoeventosComponent implements OnInit {
         for (var x in response) {
           this.email_assunto = response[x][0].email_ASSUNTO;
           this.email_mensagem = response[x][0].email_MENSAGEM;
-          this.email_para = (response[x][0].email_PARA != null && response[x][0].email_PARA != "")? response[x][0].email_PARA.split(",") : [];
+          this.email_para = (response[x][0].email_PARA != null && response[x][0].email_PARA != "") ? response[x][0].email_PARA.split(",") : [];
           this.inclui_anexo = response[x][0].email_ANEXO;
           this.estado = response[x][0].estado;
           this.observacoes = response[x][0].obs;
@@ -123,19 +123,63 @@ export class GestaoeventosComponent implements OnInit {
   dragStart(event, val) {
     this.draggedCar = val;
   }
+  /*
+    drop(event) {
+      if (this.modoedicao) {
+        var droparea = (<HTMLInputElement><any>document.getElementsByClassName('ql-editor')[0]);
+        var input = false;
+        if (event.target.className.search("editor_texto2")) {
+          droparea = (<HTMLInputElement><any>document.getElementsByClassName("editor_texto2")[0]);
+          input = true;
+        }
+        //droparea.focus();
+        var sel, range;
+        sel = window.getSelection();
+        var class_find = ((sel.baseNode.parentNode != null) ? sel.baseNode.parentNode.offsetParent.className.search("editor_texto") : -1);
+  
+        if (class_find > 0 && sel.getRangeAt && sel.rangeCount) {
+          //console.log("a")
+          range = sel.getRangeAt(0);
+          //range.deleteContents();
+          var frag = document.createDocumentFragment();
+          frag.appendChild(document.createTextNode("{" + this.draggedCar + "}"));
+          range.insertNode(frag);
+        } else {
+          if (input) {
+            droparea.value = droparea.value + "{" + this.draggedCar + "}";
+          } else {
+            droparea.appendChild(document.createTextNode("{" + this.draggedCar + "}"))
+          }
+        }
+      }
+    }*/
+
 
   drop(event) {
     if (this.modoedicao) {
-      var droparea = (<HTMLInputElement><any>document.getElementsByClassName('ql-editor')[0]);
+      var droparea = null;
+
       var input = false;
       if (event.target.className.search("editor_texto2")) {
         droparea = (<HTMLInputElement><any>document.getElementsByClassName("editor_texto2")[0]);
         input = true;
       }
-      //droparea.focus();
+
+      if (input) {
+        droparea.value = droparea.value + "{" + this.draggedCar + "}";
+      }
+    }
+  }
+
+
+  drop1(event) {
+    if (this.modoedicao) {
+      var droparea = (<HTMLInputElement><any>document.getElementsByClassName('ql-editor')[0]);
+
       var sel, range;
       sel = window.getSelection();
       var class_find = ((sel.baseNode.parentNode != null) ? sel.baseNode.parentNode.offsetParent.className.search("editor_texto") : -1);
+
 
       if (class_find > 0 && sel.getRangeAt && sel.rangeCount) {
         //console.log("a")
@@ -145,11 +189,9 @@ export class GestaoeventosComponent implements OnInit {
         frag.appendChild(document.createTextNode("{" + this.draggedCar + "}"));
         range.insertNode(frag);
       } else {
-        if (input) {
-          droparea.value = droparea.value + "{" + this.draggedCar + "}";
-        } else {
-          droparea.appendChild(document.createTextNode("{" + this.draggedCar + "}"))
-        }
+
+        droparea.appendChild(document.createTextNode("{" + this.draggedCar + "}"))
+
       }
     }
   }

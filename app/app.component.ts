@@ -13,6 +13,7 @@ import { FileUpload } from 'primeng/primeng';
     styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+    myDate: Date;
     btdisabled: boolean;
     listfile;
     uploadedFiles = [];;
@@ -29,6 +30,10 @@ export class AppComponent {
     @ViewChild('closedialog') closedialog: ElementRef;
     @ViewChild('closedialog2') closedialog2: ElementRef;
     constructor(private UploadService: UploadService, private GERPERFILLINService: GERPERFILLINService, private globalVar: AppGlobals, private ABDICLINHAService: ABDICLINHAService, private renderer: Renderer, location: Location, private router: Router) {
+        //this.myDate = new Date(); 
+        setInterval(() => {         //replaced function() by ()=>
+            this.myDate = new Date();
+        }, 1000);
         this.location = location;
         //preenche combobox linhas
         this.ABDICLINHAService.getAll().subscribe(
@@ -145,7 +150,7 @@ export class AppComponent {
 
         var data = [{ MODULO: 1, MOMENTO: "Enviar Pedido Ajuda", PAGINA: "Interno", FICHEIROS: this.listfile, ESTADO: true, DADOS: dados }];
         this.UploadService.verficaEventos(data).subscribe(result => {
-          this.simular(this.closedialog2);
+            this.simular(this.closedialog2);
             this.email_assunto = "";
             this.email_mensagem = "";
             this.fileInput.files = [];

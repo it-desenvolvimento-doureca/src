@@ -60,6 +60,11 @@
                   <p-multiSelect [(ngModel)]="tipo" [ngModelOptions]="{standalone: true}" [options]="tipos" [style]="{'width':'100%','padding': '2px 0px 0px 0px','height': '32px'}"
                     (onChange)="filtrar($event.value,col.field,false,col.filterMatchMode)" styleClass="ui-column-filter"></p-multiSelect>
                 </ng-template>
+                <ng-template let-car="rowData" pTemplate="body">
+                  <div [style.background]="car['cor_tipo']">
+                    {{car['tipo']}}
+                  </div>
+                </ng-template>
               </p-column>
               <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="data" header="Data">
                 <ng-template pTemplate="filter" let-col>

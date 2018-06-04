@@ -91,7 +91,8 @@
                   <div class="col-md-12" style="padding: 3px 7px 3px 10px; display: inline-grid; width: 100%; background: #f5f5f5; border: 1px solid #e3e3e3;">
                     <div style=" margin: auto 0;">
                       <button id="idbt{{item.id}}" (click)="adicionarEtiquetas(item.pos,item.id,$event)" title="Adicionar Etiquetas" [hidden]="!planeado || !acessoprep || disaddetiquetas"
-                        type="button" style="color: black; padding: 5px; margin: 0; left: 55.3%; position: absolute; margin-top: 4px; font-size: 18px;" class="btn btn-white btn-round btn-just-icon">
+                        type="button" style="color: black; padding: 5px; margin: 0; left: 55.3%; position: absolute; margin-top: 4px; font-size: 18px;"
+                        class="btn btn-white btn-round btn-just-icon">
                         <i class="fa fa-object-group" aria-hidden="true"></i>
                         <div class="ripple-container"></div>
                       </button>
@@ -158,13 +159,13 @@
                       <div class="col-md-12 form-group form-black label-floating" style="padding: 0;">
                         <label style="font-size: 14px;">Banho</label>
                         <p-dropdown [filter]="true" [options]="banhos" [style]="{'width':'75%','height':'27px'}" [(ngModel)]="item.id_banho" [ngModelOptions]="{standalone: true}"
-                          (onChange)="nome_tinas($event,item.pos)" [required]="true" [disabled]="!modoedicao || item.fixo"></p-dropdown>
+                          (onChange)="nome_tinas($event,item.pos)" [required]="true" [disabled]="!modoedicao || item.fixo || item.id != null"></p-dropdown>
                       </div>
                       <div class="col-md-12  form-group form-black label-floating" style="padding: 0px;">
                         <div class=" col-md-6 form-group form-black label-floating" style="padding: 0px;">
                           <label style="font-size: 14px; float: left;">Tina</label>
-                          <input type="text" [disabled]="true" style=" float: left; margin-left: 5px; padding-bottom: 0px; "
-                            [(ngModel)]="item.tina" [ngModelOptions]="{standalone: true}">
+                          <input type="text" [disabled]="true" style=" float: left; margin-left: 5px; padding-bottom: 0px; " [(ngModel)]="item.tina"
+                            [ngModelOptions]="{standalone: true}">
                         </div>
                         <div class="col-md-6 form-group form-black label-floating" style="padding: 0px;">
                           <label style="font-size: 14px; float: left; width: 40%; margin-left: 8px;">Capacidade</label>
@@ -174,7 +175,7 @@
                       </div>
                       <div class="col-md-12 form-group form-black label-floating" style="padding: 0px;">
                         <label style="font-size: 14px; float: left;">Cod. Análise</label>
-                        <input type="text" style="background: white;" [disabled]="true"  style=" width: 74.5%; margin-left: 5px;float: left; padding-bottom: 0px; "
+                        <input type="text" style="background: white;" [disabled]="true" style=" width: 74.5%; margin-left: 5px;float: left; padding-bottom: 0px; "
                           [(ngModel)]="item.nome_analise" [ngModelOptions]="{standalone: true}">
                         <button id="close" (click)="limpar(item.pos)" class="btn btn-white btn-round btn-just-icon" style="padding: 3px 3px; margin: auto;"
                           type="button" [hidden]=" item.cod_analise == null" [disabled]="true">
@@ -189,14 +190,16 @@
                       </div>
                       <div class="col-md-12 form-group form-black label-floating calendarmanu" style="padding: 0px; /*margin-bottom: 6px;*/">
                         <label style="font-size: 14px; float: left;/* margin-top: 11px;*/">Data/Hora Prev</label>
-                        <p-calendar  [style]="{'width':'150px','height':'30px','padding':'3px 4px'}" dateFormat="yy-mm-dd" placeholder="yyyy-mm-dd"
+                        <p-calendar [style]="{'width':'150px','height':'30px','padding':'3px 4px'}" dateFormat="yy-mm-dd" placeholder="yyyy-mm-dd"
                           [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [(ngModel)]="item.data_pre"
                           [ngModelOptions]="{standalone: true}" [showIcon]="true" [hidden]="!modoedicao" [required]="true"></p-calendar>
-                        <label style="width:100px; margin: 0px 0 0 4px; padding: 0px 0px 3px 4px; height: 25.8px;" class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{item.data_pre | date: 'yyyy-MM-dd'}}</label>
+                        <label style="width:100px; margin: 0px 0 0 4px; padding: 0px 0px 3px 4px; height: 25.8px;" class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all"
+                          [hidden]="modoedicao">{{item.data_pre | date: 'yyyy-MM-dd'}}</label>
                         <input [hidden]="!modoedicao" style="width:80px; padding: 5px 4px;" [(ngModel)]="item.hora_pre" [ngModelOptions]="{standalone: true}"
                           type="time" class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all" ng-reflect-ng-class="ui-inputtext ui-widget ui-stat"
                           required="true" placeholder="hh:mm">
-                        <label style="width:70px; margin: 0px 0 0 4px; padding: 0px 0px 3px 4px; height: 25.8px;" class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all" [hidden]="modoedicao">{{item.hora_pre}}</label>
+                        <label style="width:70px; margin: 0px 0 0 4px; padding: 0px 0px 3px 4px; height: 25.8px;" class="ng-tns-c3-11 ui-dropdown-label ui-inputtext ui-corner-all"
+                          [hidden]="modoedicao">{{item.hora_pre}}</label>
 
                       </div>
                       <div class="col-md-12  form-group form-black label-floating" style="padding: 0px;">
@@ -230,13 +233,13 @@
                       </div>
                       <div class="col-md-12  form-group form-black label-floating" style="padding: 0px;">
                         <label style="font-size: 14px; float: left; margin-right: 4px;">Obs. Planea.</label>
-                        <textarea  pInputTextarea id="default" class="keyboard " [(ngModel)]="item.obs_pla"
-                          [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao"> </textarea>
+                        <textarea [ngClass]="item.obs_pla != '' && item.obs_pla != null ? 'bordervermelho' : 'bordernormal'" pInputTextarea id="default"
+                          class="keyboard " [(ngModel)]="item.obs_pla" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao"> </textarea>
                       </div>
                       <div class="col-md-12  form-group form-black label-floating" style="padding: 0px;">
                         <label style="font-size: 14px; float: left; margin-right: 4px;">Obs. Prepara.</label>
-                        <textarea  pInputTextarea  id="default" class="keyboard " [(ngModel)]="item.obs_prep"
-                          [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao && item.preparado || planeamento"> </textarea>
+                        <textarea [ngClass]="item.obs_prep != '' && item.obs_prep != null ? 'bordervermelho' : 'bordernormal'" pInputTextarea id="default"
+                          class="keyboard " [(ngModel)]="item.obs_prep" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao && item.preparado || planeamento"> </textarea>
                       </div>
                       <div class="col-md-12 form-group form-black label-floating" style="padding: 0px;">
                         <div class=" col-md-6 form-group form-black label-floating" style="padding: 0px; width: 56%;">
@@ -246,27 +249,25 @@
                         </div>
                         <div class=" col-md-6 form-group form-black label-floating" style="padding: 0px; width: 44%;">
                           <label style="font-size: 14px; float: left; width: 34%;">Data/Hora </label>
-                          <input type="text" [disabled]="true"  style="width: 61%; float: left;  margin-left: 4px; padding-bottom: 0px;"
-                            [(ngModel)]="item.data_prep" [ngModelOptions]="{standalone: true}">
+                          <input type="text" [disabled]="true" style="width: 61%; float: left;  margin-left: 4px; padding-bottom: 0px;" [(ngModel)]="item.data_prep"
+                            [ngModelOptions]="{standalone: true}">
                         </div>
                       </div>
                       <div class="col-md-12  form-group form-black label-floating" style="padding: 0px;">
                         <label style="font-size: 14px; float: left; margin-right: 4px;">Obs. Exec.</label>
-                        <textarea  pInputTextarea  id="default" class="keyboard" [(ngModel)]="item.obs_exec"
-                          [ngModelOptions]="{standalone: true}" [disabled]="(!modoedicao && !item.preparado) || item.executado || planeamento">  </textarea>
+                        <textarea [ngClass]="item.obs_exec != '' && item.obs_exec != null ? 'bordervermelho' : 'bordernormal'" pInputTextarea id="default"
+                          class="keyboard" [(ngModel)]="item.obs_exec" [ngModelOptions]="{standalone: true}" [disabled]="(!modoedicao && !item.preparado) || item.executado || planeamento">  </textarea>
                       </div>
                       <div class="col-md-12 form-group form-black label-floating" style="padding: 0px;">
-                        <div  class="col-md-6  form-group form-black label-floating"
-                          style="padding: 0px; width: 56%;">
+                        <div class="col-md-6  form-group form-black label-floating" style="padding: 0px; width: 56%;">
                           <label style="font-size: 14px; float: left;  width: 41%;">Resp. Exec</label>
                           <p-dropdown [filter]="true" [options]="utilizadores" [style]="{'width':'250px'}" [(ngModel)]="item.resp_exe_id" [ngModelOptions]="{standalone: true}"
                             [hidden]="true" [disabled]="!modoedicao"></p-dropdown>
                           <!--!modoedicao || (modoedicao && !admin)-->
-                          <input [hidden]="false" type="text"  [disabled]="true"  style="width: 56%; float: left; margin-left: 5px; padding-bottom: 0px; "
+                          <input [hidden]="false" type="text" [disabled]="true" style="width: 56%; float: left; margin-left: 5px; padding-bottom: 0px; "
                             [(ngModel)]="item.resp_exe" [ngModelOptions]="{standalone: true}">
                         </div>
-                        <div  class="col-md-6 form-group form-black label-floating"
-                          style="padding: 0px;  width: 44%;">
+                        <div class="col-md-6 form-group form-black label-floating" style="padding: 0px;  width: 44%;">
                           <label style="font-size: 14px; float: left; width: 34%;">Data/Hora </label>
                           <p-calendar [style]="{'width':'120px','height':'31px','padding':'0px 5px'}" dateFormat="yy-mm-dd" placeholder="yyyy-mm-dd"
                             [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [(ngModel)]="item.data_exc"
@@ -278,7 +279,7 @@
                             [ngModelOptions]="{standalone: true}" type="time" class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all"
                             ng-reflect-ng-class="ui-inputtext ui-widget ui-stat" placeholder="hh:mm">-->
 
-                          <input [hidden]="false" type="text"  [disabled]="true"  style="width: 61%; float: left; margin-left: 4px; padding-bottom: 0px; "
+                          <input [hidden]="false" type="text" [disabled]="true" style="width: 61%; float: left; margin-left: 4px; padding-bottom: 0px; "
                             [(ngModel)]="item.data_exc" [ngModelOptions]="{standalone: true}">
                         </div>
                       </div>
@@ -303,7 +304,7 @@
                           </thead>
                           <tbody>
                             <tr *ngIf="item.aditivos.length == 0 && textotabela == null">
-                              <td style="text-align: center;" colspan="11"> O BANHO NÃO CONTÉM COMPONENTES... </td>
+                              <td style="text-align: center;" colspan="11"> O BANHO NÃO CONTÉM ADITIVOS... </td>
                             </tr>
                             <tr *ngIf="textotabela != null">
                               <td style="text-align: center;" colspan="11"> {{textotabela}} </td>
@@ -314,14 +315,15 @@
                                   [disabled]="true">
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
-                                <input autocomplete="off" (keypress)="_keyPress($event)" (ngModelChange)="atualizarvaloragua(valoruni.value,aditem.factor,aditem.pos,item.pos)" #valoruni type="tel" style="background: white; text-align: center; height: 31px;"
-                                  id="number1" class="keyboard form-control keyboard-numpad" [(ngModel)]="aditem.valor1" [ngModelOptions]="{standalone: true}"
+                                <input autocomplete="off" (keypress)="_keyPress($event)" (ngModelChange)="atualizarvaloragua(valoruni.value,aditem.factor,aditem.pos,item.pos)"
+                                  #valoruni type="tel" style="background: white; text-align: center; height: 31px;" id="number1"
+                                  class="keyboard form-control keyboard-numpad" [(ngModel)]="aditem.valor1" [ngModelOptions]="{standalone: true}"
                                   [disabled]="!modoedicao">
                               </td>
                               <td style="padding: 5px 4px 0px 0px; text-align: -webkit-center;">
-                                <button id="idbt2{{aditem.id_LIN}}"(click)="verEtiquetas(aditem.id_LIN,aditem.cod_REF,aditem.nome_REF,aditem.unidade1,aditem.valor1,aditem.factor_CONVERSAO,item.pos,$event,aditem.cisterna,item.preparado)"
-                                  class="btetiqueta btn btn-white btn-round btn-just-icon" style="padding: 3px 3px; margin: auto;" [disabled]="(!planeado || !acessoprep ) && !item.preparado"
-                                  type="button" title="Ver Etiquetas">
+                                <button id="idbt2{{aditem.id_LIN}}" (click)="verEtiquetas(aditem.id_LIN,aditem.cod_REF,aditem.nome_REF,aditem.unidade1,aditem.valor1,aditem.factor_CONVERSAO,item.pos,$event,aditem.cisterna,item.preparado)"
+                                  class="btetiqueta btn btn-white btn-round btn-just-icon" style="padding: 3px 3px; margin: auto;"
+                                  [disabled]="(!planeado || !acessoprep ) && !item.preparado" type="button" title="Ver Etiquetas">
                                   <i class="fa fa-tags {{aditem.cor}}" aria-hidden="true"></i>
                                 </button>
                               </td>
@@ -350,14 +352,15 @@
                                 <span style=" display: block;"> {{aditem.liecod}}</span>
                               </td>
                               <td style="padding: 5px 4px 0px 0px">
-                                <input type="text" style="background: white; height: 31px;" id="default3" class="keyboard keyboard-numpad form-control" [(ngModel)]="aditem.obs"
-                                  [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao">
+                                <input [ngClass]="aditem.obs != '' && aditem.obs != null ? 'bordervermelho2' : 'bordernormal2'" type="text" style="background: white; height: 31px;"
+                                  id="default3" class="keyboard keyboard-numpad form-control" [(ngModel)]="aditem.obs" [ngModelOptions]="{standalone: true}"
+                                  [disabled]="!modoedicao">
                               </td>
                             </tr>
 
                           </tbody>
                         </table>
-                      <!-- <button (click)="criarficheiro(item.id)" type="button" class="btn btn-success">Teste Ficheiro</button>-->
+                        <!-- <button (click)="criarficheiro(item.id)" type="button" class="btn btn-success">Teste Ficheiro</button>-->
                       </div>
                       <!-- <p-dataTable [value]="item.aditivos" dataKey="id">
                         <p-column styleclass="text-danger" field="nome" header="Aditivo">
@@ -532,8 +535,8 @@
             <tr *ngFor="let etiq of etiquetas" style="padding: 5px 4px 0px 0px">
               <td style="padding: 5px 4px 0px 0px">
                 <div class="form-group">
-                  <input [disabled]="etiq.disabled" id="{{etiq.id}}" #numero (keyup.enter)="addlinhaetiq(etiq.id,numero.value)" type="number" style="  text-align: center; height: 31px; width: 100%;"
-                    [(ngModel)]="etiq.numero" [ngModelOptions]="{standalone: true}">
+                  <input [disabled]="etiq.disabled" id="{{etiq.id}}" #numero (keyup.enter)="addlinhaetiq(etiq.id,numero.value)" type="number"
+                    style="  text-align: center; height: 31px; width: 100%;" [(ngModel)]="etiq.numero" [ngModelOptions]="{standalone: true}">
                 </div>
               </td>
               <td style="padding: 5px 4px 0px 0px">
@@ -544,7 +547,8 @@
               </td>
               <td style="padding: 5px 4px 0px 0px">
                 <div class="form-group">
-                  <input  [ngClass]="etiq.qtd.replace(',','.') < 0 ? 'manu_cor_vermelho' : ''" [disabled]="true" type="text" style=" text-align: center; height: 31px; width: 70%;" [(ngModel)]="etiq.qtd" [ngModelOptions]="{standalone: true}">
+                  <input [ngClass]="etiq.qtd.replace(',','.') < 0 ? 'manu_cor_vermelho' : ''" [disabled]="true" type="text" style=" text-align: center; height: 31px; width: 70%;"
+                    [(ngModel)]="etiq.qtd" [ngModelOptions]="{standalone: true}">
                   <input [disabled]="true" type="text" style=" text-align: center; height: 31px; width: 25%;" [(ngModel)]="etiq.UNISTO" [ngModelOptions]="{standalone: true}">
                 </div>
               </td>
@@ -597,8 +601,8 @@
             <tr *ngFor="let etiq of etiquetasaditivo" style="padding: 0px 4px 0px 0px">
               <td style="padding: 0px 4px 0px 0px">
                 <div class="form-group">
-                  <input id="{{etiq.id}}" (keyup.enter)="addlinhaetiqiadiv(etiq.id,numero2.value)" #numero2 type="number" style="text-align: center; height: 31px; width: 100%;"
-                    [(ngModel)]="etiq.numero" [ngModelOptions]="{standalone: true}" [disabled]="!(modoedicao || planeado ) || disaddetiquetas">
+                  <input id="{{etiq.id}}" (keyup.enter)="addlinhaetiqiadiv(etiq.id,numero2.value,etiq.ETQNUMENR)" #numero2 type="number" style="text-align: center; height: 31px; width: 100%;"
+                    [(ngModel)]="etiq.numero" [ngModelOptions]="{standalone: true}" [disabled]="!(modoedicao || planeado ) || disaddetiquetas || etiq.ETQNUMENR != ''">
                 </div>
               </td>
               <td style="padding: 0px 4px 0px 0px">
@@ -608,21 +612,21 @@
               </td>
               <td style="padding: 0px 4px 0px 0px">
                 <div class="form-group">
-                  <input (keypress)="_keyPress($event)" (input)="calculaFalta(true,etiq.id)" type="text" style=" text-align: center; height: 31px; width: 80%;" [(ngModel)]="etiq.consumir"
-                    [ngModelOptions]="{standalone: true}" [disabled]="!(modoedicao || planeado) || disaddetiquetas">
+                  <input (keypress)="_keyPress($event)" (input)="calculaFalta(true,etiq.id)" type="text" style=" text-align: center; height: 31px; width: 80%;"
+                    [(ngModel)]="etiq.consumir" [ngModelOptions]="{standalone: true}" [disabled]="!(modoedicao || planeado) || disaddetiquetas">
                   <input [disabled]="true" type="text" style=" text-align: center; height: 31px; width: 15%;" [(ngModel)]="unidade1temp" [ngModelOptions]="{standalone: true}">
                 </div>
               </td>
               <td style="padding: 0px 4px 0px 0px">
                 <div class="form-group">
-                  <input (keypress)="_keyPress($event)" (input)="atualizaQUANT(etiq.id)" type="text" style=" text-align: center; height: 31px; width: 80%;" [(ngModel)]="etiq.quant_FINAL2" [ngModelOptions]="{standalone: true}"
-                    [disabled]="!(modoedicao || planeado) || disaddetiquetas">
+                  <input (keypress)="_keyPress($event)" (input)="atualizaQUANT(etiq.id)" type="text" style=" text-align: center; height: 31px; width: 80%;"
+                    [(ngModel)]="etiq.quant_FINAL2" [ngModelOptions]="{standalone: true}" [disabled]="!(modoedicao || planeado) || disaddetiquetas">
                   <input [disabled]="true" type="text" style=" text-align: center; height: 31px; width: 15%;" [(ngModel)]="unidade1temp" [ngModelOptions]="{standalone: true}">
                 </div>
               </td>
               <td style="padding: 0px 4px 0px 0px; width: 69px; height: 22px;">
-                <button (click)="addlinhaetiqiadiv(etiq.id,numero2.value)" type="button" class="ibtnDel btn btn-md btn-default " [disabled]="!(modoedicao || planeado) || disaddetiquetas"
-                  style="height: 27px;width: 2px;padding: 13px 21px 6px 7px;">
+                <button (click)="addlinhaetiqiadiv(etiq.id,numero2.value,etiq.ETQNUMENR)" type="button" class="ibtnDel btn btn-md btn-default "
+                  [disabled]="!(modoedicao || planeado) || disaddetiquetas" style="height: 27px;width: 2px;padding: 13px 21px 6px 7px;">
                   <i style="font-size: 15px; top: -7px" class="material-icons">add</i>
                 </button>
                 <button (click)="apagaretiquetaaditivo(etiq.id)" type="button" class="ibtnDel btn btn-md btn-danger " [disabled]="!(modoedicao || planeado) || disaddetiquetas"
@@ -637,7 +641,7 @@
       <div class="modal-footer">
         <div style="text-align: center;">
           <button type="button" class="btn btn-danger" #closedialogetiq2 data-dismiss="modal">CANCELAR</button>
-          <button type="button" class="btn btn-success" (click)="guardaretiquetasaditivos()" [disabled]="!(modoedicao || planeado) || disaddetiquetas">GUARDAR</button>
+          <button type="button" class="btn btn-success" (click)="guardaretiquetasaditivos()" [disabled]="!(modoedicao || planeado) || disaddetiquetas || tempgravar">GUARDAR</button>
         </div>
       </div>
     </div>
@@ -664,6 +668,7 @@
       <!-- Modal Body -->
       <div class="" style="text-align: center; padding-bottom: 20px; padding-top: 10px;">
         <h4>{{mensagem_aviso}}</h4>
+        <span>{{mensagem_aviso2}}</span>
       </div>
       <div class="modal-footer">
         <div style="text-align: center;">

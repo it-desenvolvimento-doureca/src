@@ -58,6 +58,9 @@
     text-align: left  !important;
 }
 
+.tabelauser .ui-datatable-scrollable-body {
+    overflow-x: auto;
+}
 .row-bordered:after {
     content: "";
     display: block;

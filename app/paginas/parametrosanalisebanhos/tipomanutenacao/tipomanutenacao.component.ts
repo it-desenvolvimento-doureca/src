@@ -9,6 +9,7 @@ import { AppGlobals } from "app/menu/sidebar.metadata";
   styleUrls: ['./tipomanutenacao.component.css']
 })
 export class TipomanutenacaoComponent implements OnInit {
+  cor: string;
   classificacao;
   classif: string = null;
   manutencoes: any[];
@@ -48,6 +49,7 @@ export class TipomanutenacaoComponent implements OnInit {
     this.id_manutencao_selected = 0;
     this.valor_manutencao = "";
     this.classif = null;
+    this.cor = "";
     this.simular(this.dialog);
   }
 
@@ -58,6 +60,7 @@ export class TipomanutenacaoComponent implements OnInit {
     var tipo_manutencao = new AB_DIC_TIPO_MANUTENCAO;
     tipo_manutencao.nome_TIPO_MANUTENCAO = this.valor_manutencao;
     tipo_manutencao.inativo = false;
+    tipo_manutencao.cor = "#" + this.cor;
     tipo_manutencao.classif = this.classif;
     if (this.novo) {
       this.ABDICTIPOMANUTENCAOService.create(tipo_manutencao).subscribe(response => {
@@ -79,13 +82,15 @@ export class TipomanutenacaoComponent implements OnInit {
   //listar os dados das unidades de manutencoes na tabela
   listar_manutencoes() {
     this.manutencoes = [];
-    this.ABDICTIPOMANUTENCAOService.getAll(["M","B", "R", "N"]).subscribe(
+    this.ABDICTIPOMANUTENCAOService.getAll(["M", "B", "R", "N"]).subscribe(
       response => {
         for (var x in response) {
           var classif_nome = "Manutenção Banho";
-         // if (response[x].classif == "B") classif_nome = "Construção Banho";
-          classif_nome =  this.classificacao.find(item => item.value == response[x].classif).label;
-          this.manutencoes.push({ id: response[x].id_TIPO_MANUTENCAO, nome: response[x].nome_TIPO_MANUTENCAO, classif: response[x].classif, classif_nome: classif_nome });
+          // if (response[x].classif == "B") classif_nome = "Construção Banho";
+          var cor = "#ffffff";
+          if (response[x].cor != null) cor = response[x].cor;
+          classif_nome = this.classificacao.find(item => item.value == response[x].classif).label;
+          this.manutencoes.push({ id: response[x].id_TIPO_MANUTENCAO, cor: cor, nome: response[x].nome_TIPO_MANUTENCAO, classif: response[x].classif, classif_nome: classif_nome });
         }
         this.manutencoes = this.manutencoes.slice();
       },
@@ -100,6 +105,7 @@ export class TipomanutenacaoComponent implements OnInit {
     tipo_manutencao.nome_TIPO_MANUTENCAO = this.valor_manutencao;
     tipo_manutencao.id_TIPO_MANUTENCAO = this.id_manutencao_selected;
     tipo_manutencao.classif = this.classif;
+    tipo_manutencao.cor = "#" + this.cor;
     tipo_manutencao.data_ANULACAO = new Date();
     tipo_manutencao.utz_ANULACAO = JSON.parse(localStorage.getItem('userapp'))["id"];
     tipo_manutencao.inativo = true;
@@ -114,6 +120,7 @@ export class TipomanutenacaoComponent implements OnInit {
   onRowSelect(event) {
     this.id_manutencao_selected = event.data.id;
     this.valor_manutencao = event.data.nome;
+    this.cor = event.data.cor;
     this.classif = event.data.classif;
     this.novo = false;
     this.simular(this.dialog);

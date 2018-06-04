@@ -108,6 +108,12 @@ import { ABMOVMANUTENCAOETIQService } from 'app/servicos/ab-mov-manutencao-etiq.
 import { CalendarioComponent } from './paginas/gestao-tarefas/calendario/calendario.component';
 import { ListagemManutencoesComponent } from './paginas/listagem-manutencoes/listagem-manutencoes.component';
 import { AnaliseconsumosComponent } from './paginas/consultas/analiseconsumos/analiseconsumos.component';
+import { GestaoeventostemporaisComponent } from './paginas/gestaoeventostemporais/gestaoeventostemporais.component';
+import { GEREVENTOSPROGRAMADOSService } from './servicos/ger-eventos-programados.service';
+import { ListaeventostempComponent } from './paginas/gestaoeventostemporais/listaeventostemp/listaeventostemp.component';
+import { CorrecaoquantidadesComponent } from './paginas/utilitarios/correcaoquantidades/correcaoquantidades.component';
+import { AnaliseEtiquetasComponent } from './paginas/utilitarios/analise-etiquetas/analise-etiquetas.component';
+import { AnaliseconsumosetiquetasComponent } from './paginas/consultas/analiseconsumosetiquetas/analiseconsumosetiquetas.component';
 
 const routes: Routes = [
   { path: 'dashboard', component: HomeComponent, canActivate: [LoginService] },
@@ -221,11 +227,22 @@ const routes: Routes = [
   { path: 'operacoes', component: TipooperacaoComponent, canActivate: [LoginService], data: { breadcrumb: "Tipo Operação" } },
   { path: 'perfil/editar', component: PerfilComponent, canActivate: [LoginService], data: { breadcrumb: "Perfil" } },
   { path: 'relatorio', component: RelatorioViewerComponent, canActivate: [LoginService], data: { breadcrumb: "Relatório" } },
+  { path: 'correcaoquantidades', component: CorrecaoquantidadesComponent, canActivate: [LoginService], data: { breadcrumb: "Correção de Quantidades de Etiquetas" } },
+  { path: 'analiseetiquetas', component: AnaliseEtiquetasComponent, canActivate: [LoginService], data: { breadcrumb: "Análise de Etiquetas" } },
+
 
   { path: 'teste1', component: GestaoTarefasComponent, canActivate: [LoginService], data: { breadcrumb: "Teste1" } },
   { path: 'teste2', component: FormTarefasComponent, canActivate: [LoginService], data: { breadcrumb: "Teste2" } },
   { path: 'calendario', component: CalendarioComponent, canActivate: [LoginService], data: { breadcrumb: "Calendário" } },
 
+  {
+    path: 'eventosprogramados', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Eventos Programados" },
+    children: [
+      { path: '', component: ListaeventostempComponent, canActivate: [LoginService], data: { breadcrumb: "" } },
+      { path: 'view', component: GestaoeventostemporaisComponent, canActivate: [LoginService], data: { breadcrumb: "Gestão Evento Programado" } },
+      { path: 'editar', component: GestaoeventostemporaisComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } },
+      { path: 'novo', component: GestaoeventostemporaisComponent, canActivate: [LoginService], data: { breadcrumb: "Novo" } }]
+  },
   {
     path: 'eventos', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Eventos" },
     children: [
@@ -242,6 +259,7 @@ const routes: Routes = [
   { path: 'parametrosraks', component: ParametrosRaksComponent, canActivate: [LoginService], data: { breadcrumb: "Parâmetros Raks" } },
   { path: 'listagem', component: ListagemManutencoesComponent, canActivate: [LoginService], data: { breadcrumb: "Manutenções Ativas" } },
   { path: 'analiseconsumos', component: AnaliseconsumosComponent, canActivate: [LoginService], data: { breadcrumb: "Análise Consumos" } },
+  { path: 'analiseconsumosetiquetas', component: AnaliseconsumosetiquetasComponent, canActivate: [LoginService], data: { breadcrumb: "Análise Consumos por Etiquetas" } },
 
   { path: 'login', component: LoginComponent },
   {
@@ -318,7 +336,12 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     CartelasComponent,
     CalendarioComponent,
     ListagemManutencoesComponent,
-    AnaliseconsumosComponent
+    AnaliseconsumosComponent,
+    GestaoeventostemporaisComponent,
+    ListaeventostempComponent,
+    CorrecaoquantidadesComponent,
+    AnaliseEtiquetasComponent,
+    AnaliseconsumosetiquetasComponent
   ],
   imports: [
     BrowserModule,
@@ -397,6 +420,7 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     GERPOSTOSService,
     ABDICLINHAOFService,
     ABMOVMANUTENCAOETIQService,
+    GEREVENTOSPROGRAMADOSService,
     GERFORNECEDORService],
   bootstrap: [AppComponent]
 })

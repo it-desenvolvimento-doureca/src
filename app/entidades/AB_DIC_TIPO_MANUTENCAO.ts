@@ -5,6 +5,6 @@ export class AB_DIC_TIPO_MANUTENCAO {
     data_ANULACAO: Date;
     inativo: boolean;
     classif: string;
-    
+    cor: string;
 
 }

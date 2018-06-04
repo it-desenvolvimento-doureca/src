@@ -66,6 +66,14 @@ export class ABMOVMANUTENCAOService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
+  getallAnaliseConsumos2(data): Observable<AB_MOV_MANUTENCAO[]> {
+    const url = webUrl.host + '/rest/sirb/getallAnaliseConsumos2/';
+    return this.http
+      .post(url, JSON.stringify(data), { headers: this.headers })
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
 
   getbyID(id): Observable<AB_MOV_MANUTENCAO[]> {
     const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAObyid/' + id + '/0';

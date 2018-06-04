@@ -12,29 +12,35 @@
 
   <div class="main-panel" *ngIf="isMaps('login')">
     <div id="toptexttop" class="top_text" style="color:black; position: sticky; top: 0; z-index: 1041; background: #eeeeee; -webkit-ruby-position: before; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
-      <nav class="navbar navbar-transparent navbar-absolute gradient" style="padding-top: 3px;">
+      <nav class="navbar navbar-transparent navbar-absolute gradient" style="padding-top: 3px; height: 100%;">
         <div class="container-fluid" style="position: relative">
           <div class="col-md-12">
-            <div class="col-md-8 col-lg-7" style="max-height:37px; margin: auto; padding: 0;">
-              <div style="float: left;">
+            <div class="col-lg-8 col-md-8 col-sm-12" style=" margin: auto; padding: 0;">
+              <div style="float: left; width: 204px;">
                 <img src="assets/img/logo.png" style="max-height:42px;" />
               </div>
               <div class="versao" style="display: -webkit-inline-box; margin-left: 5px; margin-top: 11px; color: black;">
                 <span>
-                  <b style="font-size: 13pt;">Sistema de Gestão Integrado de Informação da Doureca</b>
+                  <b class="hidden-xs" style="font-size: 13pt;">Sistema de Gestão Integrado de Informação da Doureca</b>
+                  <b class="hidden-sm hidden-md hidden-lg"  style="font-size: 13pt;">SGIID</b>
+                  <b style="font-size: 12pt; margin-left: 25px;">{{ myDate | date: 'yyyy-MM-dd' }} &nbsp;&nbsp;&nbsp; {{ myDate | date: 'HH:mm:ss' }}</b>
                 </span>
                 <span style="font-size: 7pt; margin-top: -3px;position: absolute;">
                   ({{modulo}} - {{versao}})
                 </span>
               </div>
             </div>
-            <div class="col-md-5 utz" style=" margin: auto; text-align:right; padding: 0;">
+            <div class="col-md-4 col-sm-12 utz" style=" margin: auto; text-align:right; padding: 0; right: 0; float: right;">
               <div style="font-size: 11pt; display: -webkit-inline-box; margin-left: 5px; margin-top: 11px; color: black;">
                 <b style="vertical-align: middle;">Utilizador:</b>
                 <span style="vertical-align: middle;"> {{isnome()}}</span>
+                <a id="go-button" style="margin-top: -9px; margin-left: 12px; display: block; cursor: pointer; float: right; ">
+                  <i class="material-icons" style="font-size: 37px; color: black;">fullscreen</i>
+                </a>
                 <a class="dropdown-toggle" title="Sair" (click)="logout()" style="margin-top: -4px; margin-left: 32px; float: right; background: black; color: white; cursor: pointer; border:1px solid  white;">
                   <i class="material-icons">close</i>
                 </a>
+
               </div>
             </div>
           </div>
@@ -281,34 +287,35 @@
           </div>
           <div class="form-group">
             <label for="mensagem">Mensagem (descreva o problema):</label>
-            <p-editor id="comment" [(ngModel)]="email_mensagem" [ngModelOptions]="{standalone: true}"
-              [style]="{'height':'24vh'}"></p-editor>
+            <p-editor id="comment" [(ngModel)]="email_mensagem" [ngModelOptions]="{standalone: true}" [style]="{'height':'24vh'}"></p-editor>
           </div>
-         <!-- --> <div class="row row-bordered">
-              <div class="col-md-12" style="padding-bottom: 0">
-                <h6 style="margin: 0px">
-                  <b>Anexar Ficheiros</b>
-                </h6>
-              </div>
+          <!-- -->
+          <div class="row row-bordered">
+            <div class="col-md-12" style="padding-bottom: 0">
+              <h6 style="margin: 0px">
+                <b>Anexar Ficheiros</b>
+              </h6>
             </div>
-            <div>
-              <p-fileUpload #fileInput name="myfile[]" multiple="multiple" maxFileSize="1000000"
-                invalidFileSizeMessageSummary="{0}: Tamanho do ficheiro inválido, " invalidFileTypeMessageDetail="tipos de ficheiros permitidos: {0}."
-                invalidFileSizeMessageDetail="O tamanho máximo do upload é {0}." invalidFileTypeMessageSummary="{0}: tipo de ficheiro inválido, "
-                chooseLabel="Seleccionar" cancelLabel="Cancelar" [showUploadButton]="false"></p-fileUpload>
-              <div *ngIf="uploadedFiles.length">
-                <div *ngFor="let file of uploadedFiles" class="ui-fileupload-row" style="float: left;border: 1px solid blue;">
-                  <div>{{file.name}}</div>
-                  <div>{{file.size}} bytes</div>
-                  <div>
-                    <button icon="fa-close" pbutton="" type="button" ng-reflect-icon="fa-close" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only">
-                      <span class="ui-button-icon-left ui-c fa fa-fw fa-close"></span>
-                      <span class="ui-button-text ui-c">ui-btn</span>
-                    </button>
-                  </div>
+          </div>
+          <div>
+            <p-fileUpload #fileInput name="myfile[]" multiple="multiple" maxFileSize="1000000" invalidFileSizeMessageSummary="{0}: Tamanho do ficheiro inválido, "
+              invalidFileTypeMessageDetail="tipos de ficheiros permitidos: {0}." invalidFileSizeMessageDetail="O tamanho máximo do upload é {0}."
+              invalidFileTypeMessageSummary="{0}: tipo de ficheiro inválido, " chooseLabel="Seleccionar" cancelLabel="Cancelar"
+              [showUploadButton]="false"></p-fileUpload>
+            <div *ngIf="uploadedFiles.length">
+              <div *ngFor="let file of uploadedFiles" class="ui-fileupload-row" style="float: left;border: 1px solid blue;">
+                <div>{{file.name}}</div>
+                <div>{{file.size}} bytes</div>
+                <div>
+                  <button icon="fa-close" pbutton="" type="button" ng-reflect-icon="fa-close" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only">
+                    <span class="ui-button-icon-left ui-c fa fa-fw fa-close"></span>
+                    <span class="ui-button-text ui-c">ui-btn</span>
+                  </button>
                 </div>
               </div>
-            </div> <!-- -->
+            </div>
+          </div>
+          <!-- -->
         </div>
         <!-- Modal Footer -->
         <div class="modal-footer">

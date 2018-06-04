@@ -33,8 +33,8 @@
                     <div class="col-md-4">
                       <div class="form-group form-black label-floating">
                         <p style="font-size: 14px;">Estado</p>
-                        <p-dropdown [style]="{'width':'100%'}" [options]="tinas" [(ngModel)]="tinas_valor" [ngModelOptions]="{standalone: true}"
-                          [disabled]="!modoedicao" [required]="true"></p-dropdown>
+                        <p-dropdown [style]="{'width':'100%'}" [options]="estados" [(ngModel)]="estado" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao"
+                          [required]="true"></p-dropdown>
                       </div>
                       <div class="form-group form-black label-floating">
                         <p style="font-size: 14px;">Data Início</p>
@@ -45,7 +45,7 @@
                     <div class="col-md-4">
                       <div class="form-group form-black label-floating">
                         <p style="font-size: 14px;">Prioridade</p>
-                        <p-dropdown [style]="{'width':'100%'}" [options]="tinas" [(ngModel)]="tinas_valor" [ngModelOptions]="{standalone: true}"
+                        <p-dropdown [style]="{'width':'100%'}" [options]="prioridades" [(ngModel)]="prioridade" [ngModelOptions]="{standalone: true}"
                           [disabled]="!modoedicao" [required]="true"></p-dropdown>
                       </div>
                       <div class="form-group form-black label-floating">
@@ -148,10 +148,13 @@
 
                 <!--*************Utilizadores****************-->
                 <div role="tabpanel" class="tab-pane" id="utilizadores">
-                  <p-dataTable [value]="utilizadores" class="tabelauser">
-                    <p-column field="nome" header="Nome" [style]="{'width':'80%','font-size': '12px'}">
+                  <p-dataTable scrollable="true" scrollHeight="250px" [value]="utilizadores" class="tabelauser">
+                    <p-column field="nome" [filter]="true" header="Nome" [style]="{'width':'80%','font-size': '12px'}">
                     </p-column>
                     <p-column [style]="{'width':'10%','font-size': '12px'}" field="atribuido" header="Atribuir a">
+                      <ng-template pTemplate="filter" let-col>
+                        <p-checkbox [disabled]="!modoedicao" (click)="check()"  [(ngModel)]="checkvalue" binary="true" [ngModelOptions]="{standalone: true}"></p-checkbox>
+                      </ng-template>
                       <ng-template pTemplate="body" let-col let-row="rowData ">
                         <p-checkbox [disabled]="!modoedicao" [(ngModel)]="row[col.field]" binary="true" [ngModelOptions]="{standalone: true}"></p-checkbox>
                       </ng-template>
@@ -223,9 +226,10 @@
 
   <button class="btn btn-primary btn-lg" #dialoglinhas data-toggle="modal" [hidden]="true" data-target="#myModallinhas" data-backdrop="false"></button>
   <!-- Modal -->
-  <div class="modal fade" id="myModallinhas" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div style="padding-top: 20px; background: #80808073;" class="modal fade" id="myModallinhas" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="vertical-alignment-helper">
-      <div class="modal-dialog vertical-align-center">
+      <div class="modal-dialog vertical-align-top">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">
@@ -240,22 +244,22 @@
                 <div class="col-md-4">
                   <div class="form-group form-black label-floating">
                     <p style="font-size: 14px;">Estado</p>
-                    <p-dropdown [style]="{'width':'100%'}" [options]="tinas" [(ngModel)]="tinas_valor" [ngModelOptions]="{standalone: true}"
-                      [disabled]="!modoedicao"></p-dropdown>
+                    <p-dropdown [style]="{'width':'100%'}" [options]="estados" [(ngModel)]="estado2" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao"></p-dropdown>
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="form-group form-black label-floating">
                     <p style="font-size: 14px;">Data Início</p>
-                    <p-calendar [style]="{'width':'94%'}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2070"
+                    <p-calendar required [style]="{'width':'94%'}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2070"
                       [(ngModel)]="datain_item" [ngModelOptions]="{standalone: true}" [showIcon]="true" [hidden]="!modoedicao"></p-calendar>
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="form-group form-black label-floating">
                     <p style="font-size: 14px;">Data Limite</p>
-                    <p-calendar [style]="{'width':'94%'}" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2070"
-                      [(ngModel)]="datafim_item" [ngModelOptions]="{standalone: true}" [showIcon]="true" [hidden]="!modoedicao"></p-calendar>
+                    <p-calendar required [style]="{'width':'94%'}" [minDate]="datain_item" dateFormat="yy-mm-dd" [monthNavigator]="true" [yearNavigator]="true"
+                      yearRange="2000:2070" [(ngModel)]="datafim_item" [ngModelOptions]="{standalone: true}" [showIcon]="true"
+                      [hidden]="!modoedicao"></p-calendar>
                   </div>
                 </div>
               </div>
@@ -264,7 +268,7 @@
                   <div class="form-group">
                     <div>
                       <p style="font-size: 14px;">Observações</p>
-                      <textarea class="form-control1" rows="3" [(ngModel)]="obs" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao"></textarea>
+                      <textarea class="form-control1" rows="3" [(ngModel)]="obs_item" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao"></textarea>
                     </div>
                   </div>
                 </div>

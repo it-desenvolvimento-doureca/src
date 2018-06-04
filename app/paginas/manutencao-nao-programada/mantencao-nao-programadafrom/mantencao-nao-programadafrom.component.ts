@@ -39,9 +39,13 @@ import { AB_MOV_MANUTENCAO_ETIQ } from '../../../entidades/AB_MOV_MANUTENCAO_ETI
 })
 export class MantencaoNaoProgramadafromComponent implements OnInit {
 
+  mensagem_aviso2: string;
+  tempgravar: boolean;
+  username: any;
+  tempecontrou: boolean;
   url = null;
   acessoexecucao: boolean;
-  cisternadisabled: boolean;
+  cisternadisabled = false;
   tempcisterna: any;
   disimprimiretiquetas: boolean;
   disprevetiquetas: boolean;
@@ -177,6 +181,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
      {pos: 2, id: null, id_banho: 1, tina: 2, capacidade: "11 L", aditivos: [{ id: 1, valor: 10, unidade: "aa", obs: "" }] }];*/
 
     this.user = JSON.parse(localStorage.getItem('userapp'))["id"];
+    this.username = JSON.parse(localStorage.getItem('userapp'))["nome"];
 
     var url = this.router.routerState.snapshot.url;
     url = url.slice(1);
@@ -1410,7 +1415,89 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
       error => console.log(error));
   }
 
+  evento(dados, momento) {
+
+    var data = [{ MODULO: 1, MOMENTO: momento, PAGINA: "Manutenções", ESTADO: true, DADOS: dados }];
+
+    //envia email depois com ficheiro
+    this.UploadService.verficaEventos(data).subscribe(result => {
+
+    }, error => {
+      console.log(error);
+    });
+
+  }
+
   confirmar_linha(pos, id, id_manu) {
+
+    
+    this.arrayForm.find(item => item.pos == pos).preparado = false;
+    var aditivo = [];
+    var aditivo2 = [];
+    var encontrou2 = false;
+    var encontrou3 = false;
+    this.ABMOVMANUTENCAOLINHAService.getbyIDtotal(id).subscribe(
+      resp => {
+        var count = Object.keys(resp).length;
+        if (count > 0) {
+          for (var x in resp) {
+
+            var adi = this.arrayForm.find(item => item.pos == pos).aditivos.find(item => item.id_LIN == resp[x][2]);
+            if (adi) {
+              if (parseInt(resp[x][1]) == 0 && resp[x][0].cisterna && adi.valor1 != null && adi.valor1 != "" && adi.valor1 != 0) {
+                encontrou2 = true;
+                aditivo.push(resp[x][0].nome_COMPONENTE);
+              }
+
+              if (resp[x][3] > resp[x][4]) {
+                encontrou3 = true;
+                aditivo2.push(resp[x][0].nome_COMPONENTE);
+              }
+            }
+          }
+
+          if (encontrou3) {
+            this.mensagem_aviso = "O Valor a consumir para o(s) aditivo(s): " + aditivo2 + ", é superior ao valor planeado!!";
+            this.mensagem_aviso2 = "Se realmente necessita consumir mais do que o planeado, então deverá fazer adicionalmente uma manutenção não planeada para registo da necessidade de consumo adicional."
+            let elm2 = document.getElementById("dialogAvisoContent");
+            let elem3 = document.getElementById("mainpagecontent");
+            let h = elem3.getBoundingClientRect().height;
+
+            document.getElementById("dialogAviso").style.height = Math.abs(h + 300) + 'px';
+            let coords = document.getElementById("toptexttop").offsetTop;
+            elm2.style.top = Math.abs(coords - 10) + 'px';
+
+            elm2.style.bottom = 'none';
+
+            this.simular(this.dialogAviso);
+
+          } else if (encontrou2) {
+            this.mensagem_aviso = "É necessário validar a etiqueta do(s) aditivo(s): " + aditivo + ", do tipo cisterna!!";
+            this.mensagem_aviso2 = "";
+            let elm2 = document.getElementById("dialogAvisoContent");
+            let elem3 = document.getElementById("mainpagecontent");
+            let h = elem3.getBoundingClientRect().height;
+
+            document.getElementById("dialogAviso").style.height = Math.abs(h + 300) + 'px';
+            let coords = document.getElementById("toptexttop").offsetTop;
+            elm2.style.top = Math.abs(coords - 10) + 'px';
+
+            elm2.style.bottom = 'none';
+
+            this.simular(this.dialogAviso);
+          } else {
+             this.confirmar_linha1(pos, id, id_manu);
+          }
+        } else {
+          this.confirmar_linha1(pos, id, id_manu);
+        }
+      }, error => {
+        this.confirmar_linha1(pos, id, id_manu);
+        console.log(error);
+      });
+  }
+
+  confirmar_linha1(pos, id, id_manu) {
     this.arrayForm.find(item => item.pos == pos).executado = false;
     var encontrou = false;
     for (var x in this.arrayForm.find(item => item.pos == pos).aditivos) {
@@ -1480,6 +1567,18 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
             MOV_MANUTENCAO.estado = this.estado;
             MOV_MANUTENCAO.data_ULT_MODIF = new Date();
             MOV_MANUTENCAO.utz_ULT_MODIF = this.user;
+
+            var dados = "{numero_manutencao::" + id_manu + "\n/data_manutencao::" + this.data_planeamento + "\n/nome_banho::" + this.banhos.find(item => item.value.id == MOV_MANUTENCAO_CAB.id_BANHO).label
+              + "\n/tina::" + this.arrayForm.find(item => item.pos == pos).tina + "\n/utilizador::" + this.username + "\n/linha::"
+              + this.linhas.find(item => item.value.id === MOV_MANUTENCAO.id_LINHA).label
+              + "\n/tina::" + this.banhos.find(item => item.value.id == MOV_MANUTENCAO_CAB.id_BANHO).value.nome_tina
+              + "\n/tipo_manutencao::" + this.tipo_manu.find(item => item.value == MOV_MANUTENCAO.id_TIPO_MANUTENCAO).label
+              + "\n/datahorapreparacao::" + ""
+              + "\n/datahoraexecucao::" + this.formatDate(MOV_MANUTENCAO_CAB.data_EXECUCAO) + "  " + MOV_MANUTENCAO_CAB.hora_EXECUCAO
+              + "\n/observacao_preparacao::" + ""
+              + "\n/observacao_execucao::" + MOV_MANUTENCAO_CAB.obs_EXECUCAO + "}";
+
+            if (MOV_MANUTENCAO_CAB.obs_EXECUCAO != "" && MOV_MANUTENCAO_CAB.obs_EXECUCAO != null) this.evento(dados, "Ao Executar");
             this.ABMOVMANUTENCAOService.update(MOV_MANUTENCAO).then(() => {
               //this.inicia(id_manu);
               this.criarficheiro(id);
@@ -1979,7 +2078,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
 
   }
 
-  inseriretiquetas(etiqueta, data, carrega = false, falta = 1, valor1 = 0, factor_conversao = 0, event = null) {
+  inseriretiquetas(etiqueta, data, carrega = false, falta = 1, valor1 = 0, factor_conversao = 0, event = null, count = 0, x = "0") {
     var ETI = new AB_MOV_MANUTENCAO_ETIQ;
     ETI.id_MANUTENCAO_LIN = etiqueta.id_lin;
     ETI.consumir = etiqueta.consumir;
@@ -2008,7 +2107,15 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
 
     this.ABMOVMANUTENCAOETIQService.create(ETI).subscribe(
       res => {
-        if (falta == 0 && carrega) this.carregaetiquetas(etiqueta.id_lin, valor1, factor_conversao, event);
+        if (falta == 0 && carrega) {
+          this.carregaetiquetas(etiqueta.id_lin, valor1, factor_conversao, event);
+          this.cisternadisabled = false;
+        } else {
+          if (carrega && count == (parseInt(x) + 1)) {
+            this.carregaetiquetas(etiqueta.id_lin, valor1, factor_conversao, event);
+            this.cisternadisabled = false;
+          }
+        }
       }, error => {
         console.log(error); this.simular(this.inputerro);
       });
@@ -2018,7 +2125,6 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
   verificacisterna(pos) {
     this.tempQTD2 = [];
     for (var x in this.arrayForm.find(item => item.pos == pos).aditivos) {
-      //console.log(this.arrayForm.find(item => item.pos == pos).aditivos[x].cisterna)
       if (this.arrayForm.find(item => item.pos == pos).aditivos[x].cisterna) {
         var id_manu = this.arrayForm.find(item => item.pos == pos).id;
         var ref = this.arrayForm.find(item => item.pos == pos).aditivos[x].cod_REF;
@@ -2030,32 +2136,36 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
         var adi = this.arrayForm.find(item => item.pos == pos).aditivos[x];
         if (factor_conversao == null || factor_conversao == 0) { factor_conversao = 1; }
 
-        this.ABMOVMANUTENCAOETIQService.getbyRef(id_manu, ref).subscribe(response => {
-          var count = Object.keys(response).length;
-          var encontrou = false;
-          var total = 0;
-          if (count > 0) {
-            for (var z in response) {
-              /*if (response[z][0].etqnum == etique) {
-                encontrou = true;
-              }*/
-              etiq.push(response[z][0].etqnum);
-              if (!this.tempQTD2.find(item => item.ref == response[z][0].proref)) {
-                total = response[z][1];
-                this.tempQTD2.push({ ref: response[z][0].proref, qtdetiq: 0, qtd_falta: response[z][1] });
-              }
-            }
-            if (true) {
-              this.adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, true);
-            }
-          } else {
-            this.adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, true);
-          }
-        }, error => {
-          console.log(error);
-        });
+        this.verificacisterna2(id_manu, ref, etiq, valor1, factor_conversao, id_lin, adi);
       }
     }
+  }
+
+  verificacisterna2(id_manu, ref, etiq, valor1, factor_conversao, id_lin, adi) {
+    this.ABMOVMANUTENCAOETIQService.getbyRef(id_manu, ref).subscribe(response => {
+      var count = Object.keys(response).length;
+      var encontrou = false;
+      var total = 0;
+      if (count > 0) {
+        for (var z in response) {
+          /*if (response[z][0].etqnum == etique) {
+            encontrou = true;
+          }*/
+          etiq.push(response[z][0].etqnum);
+          if (!this.tempQTD2.find(item => item.ref == response[z][0].proref)) {
+            total = response[z][1];
+            this.tempQTD2.push({ ref: response[z][0].proref, qtdetiq: 0, qtd_falta: response[z][1] });
+          }
+        }
+        if (true) {
+          this.adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, true);
+        }
+      } else {
+        this.adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, true);
+      }
+    }, error => {
+      console.log(error);
+    });
   }
 
   adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, cisterna, carrega = false, event = null) {
@@ -2122,8 +2232,13 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
                     ETQORIQTE1: response[x].ETQORIQTE1,
                   }];
 
-                  this.inseriretiquetas(etiqueta[0], new Date(), carrega, falta, valor1, factor_conversao, event);
+                  this.inseriretiquetas(etiqueta[0], new Date(), carrega, falta, valor1, factor_conversao, event, count, x);
                   if (adi.cor == "yellow") { } else if (falta > 0) { adi.cor = "red" } else if (falta == 0) { adi.cor = "green" }
+                } else {
+                  if (carrega && count == (parseInt(x) + 1)) {
+                    this.cisternadisabled = false;
+                    this.carregaetiquetas(id_lin, valor1, factor_conversao, event);
+                  }
                 }
               } else {
                 //if(carrega && count == (parseInt(x)+1)) this.carregaetiquetas(id_lin, valor1, factor_conversao, event);
@@ -2149,6 +2264,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
 
   /********************ETIQUETAS INDIVIDUAL POR ADITIVO******************* */
   verEtiquetas(id, ref, nome, unidade, valor, factor_CONVERSAO, pos, event, cisterna, preparado) {
+    this.tempgravar = false;
     this.tempcisterna = cisterna;
     this.disaddetiquetas = preparado;
     var factor_conversao = factor_CONVERSAO;
@@ -2193,8 +2309,8 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
         console.log(error);
       });
     } else {
-      this.cisternadisabled = false;
-      this.carregaetiquetas(id, valor, factor_CONVERSAO, event);
+      //this.cisternadisabled = false;
+      if (!this.cisternadisabled) { this.carregaetiquetas(id, valor, factor_CONVERSAO, event); }
     }
 
   }
@@ -2255,13 +2371,13 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
       }, error => { console.log(error); });
   }
 
-  addlinhaetiqiadiv(id, campo) {
-    if (campo != "") {
+  addlinhaetiqiadiv(id, campo, ETQNUMENR) {
+    if (campo != "" && (ETQNUMENR == "" || ETQNUMENR == null)) {
       if (!this.tempcisterna) {
         this.adicionadadosaditiovs(id, campo);
       } else {
         this.mensagem_aviso = "Não é possível adicionar Etiqueta ao um aditivo Cisterna!";
-
+        this.mensagem_aviso2 = "";
         let elm2 = document.getElementById("dialogAvisoContent");
         let elem3 = document.getElementById("mainpagecontent");
         let h = elem3.getBoundingClientRect().height;
@@ -2392,6 +2508,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
               this.tempconsumiraditivo = falta.toFixed(3).replace(".", ",");
             } else {
               this.mensagem_aviso = "Etiqueta não pertence a este aditivo ou é negativa!";
+              this.mensagem_aviso2 = "";
               let elm2 = document.getElementById("dialogAvisoContent");
               let elem3 = document.getElementById("mainpagecontent");
               let h = elem3.getBoundingClientRect().height;
@@ -2404,10 +2521,24 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
               this.simular(this.dialogAviso);
             }
 
+          } else {
+            this.mensagem_aviso = "Etiqueta nº " + etiquetan.substring(etiquetan.length - 10) + " não existe!";
+            this.mensagem_aviso2 = "";
+            let elm2 = document.getElementById("dialogAvisoContent");
+            let elem3 = document.getElementById("mainpagecontent");
+            let h = elem3.getBoundingClientRect().height;
+
+            document.getElementById("dialogAviso").style.height = Math.abs(h + 300) + 'px';
+            let coords = document.getElementById("toptexttop").offsetTop;
+            elm2.style.top = Math.abs(coords - 10) + 'px';
+
+            elm2.style.bottom = 'none';
+            this.simular(this.dialogAviso);
           }
         }, error => { console.log(error); });
     } else {
       this.mensagem_aviso = "Etiqueta já foi adicionada!";
+      this.mensagem_aviso2 = "";
       let elm2 = document.getElementById("dialogAvisoContent");
       let elem3 = document.getElementById("mainpagecontent");
       let h = elem3.getBoundingClientRect().height;
@@ -2422,10 +2553,157 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
   }
 
   guardaretiquetasaditivos() {
+    this.tempecontrou = false;
+    var count = 0;
+    var encontrou = false;
+    if (!this.tempgravar) {
+      this.tempgravar = true;
+      for (var y in this.etiquetasaditivo) {
+        //&& this.etiquetasaditivo[y].ETQNUMENR != ""
+        if (this.etiquetasaditivo[y].numero != null && this.etiquetasaditivo[y].numero != "" && this.etiquetasaditivo[y].ETQNUMENR == "") {
+          count++;
+          encontrou = true;
+          this.verificaetiquetaaogravar(this.etiquetasaditivo[y].id, this.etiquetasaditivo[y].numero, count);
+        }
+      }
+      if (!encontrou) {
+        this.gravaeti();
+      }
+    }
+  }
+
+  verificaetiquetaaogravar(id, campo, num) {
+    var count = 0;
+    var count2 = 0;
+    var etiquetan = "0000000000" + campo;
     for (var y in this.etiquetasaditivo) {
+      if (this.etiquetasaditivo[y].numero == etiquetan.substring(etiquetan.length - 10) && this.etiquetasaditivo[y].ETQNUMENR != "") {
+        count++;
+      }
+      if (this.etiquetasaditivo[y].numero != null && this.etiquetasaditivo[y].numero != "" && this.etiquetasaditivo[y].ETQNUMENR == "") {
+        count2++;
+      }
+    }
+
+    if (count < 1) {
+      this.ABMOVMANUTENCAOLINHAService.getDadosEtiqueta(etiquetan.substring(etiquetan.length - 10)).subscribe(
+        response => {
+          var count = Object.keys(response).length;
+          if (count > 0) {
+
+            if (this.cod_ref == response[0].PROREF) {
+
+              var etiqueta = this.etiquetasaditivo.find(item => item.id == id);
+              etiqueta.numero = etiquetan.substring(etiquetan.length - 10);
+              etiqueta.produto = response[0].PRODES1;
+              var value = "0";
+              if (response[0].ETQEMBQTE != null) value = parseFloat(response[0].ETQEMBQTE).toFixed(3);
+              var qtd = parseFloat(value) / this.factor_conversao;
+              etiqueta.qtdconvers = qtd.toFixed(3).replace(".", ",");
+              etiqueta.qtd = value.replace(".", ",");
+              etiqueta.EMPCOD = response[0].EMPCOD;
+              etiqueta.ETQORILOT1 = response[0].ETQORILOT1;
+              etiqueta.LIECOD = response[0].LIECOD;
+              etiqueta.LOTNUMENR = response[0].LOTNUMENR;
+              etiqueta.PROREF = response[0].PROREF;
+              etiqueta.PRODES = response[0].PRODES1;
+              etiqueta.DATCRE = response[0].DATCRE;
+              etiqueta.UNICOD = response[0].UNICOD;
+              etiqueta.UNISTO = response[0].UNISTO;
+              etiqueta.VA1REF = response[0].VA1REF;
+              etiqueta.VA2REF = response[0].VA2REF;
+              etiqueta.indnumenr = response[0].INDNUMENR;
+              etiqueta.INDREF = response[0].INDREF;
+              etiqueta.ETQNUMENR = response[0].ETQNUMENR;
+              etiqueta.ETQORIQTE1 = response[0].ETQORIQTE1;
+
+              var numm = this.tempconsumiraditivo.replace(",", ".");
+              var consumir;
+              var falta;
+              numm = Math.max(0, numm);
+              if (etiqueta.consumir == null || etiqueta.consumir == "") {
+                falta = numm - qtd;
+                consumir = qtd - numm;
+                consumir = Math.max(0, consumir);
+                falta = Math.max(0, falta);
+                if (consumir == 0) {
+                  consumir = qtd;
+                } else {
+                  consumir = numm;
+                }
+              } else {
+                consumir = etiqueta.consumir.replace(",", ".") * 1;
+                falta = parseFloat(this.tempconsumiraditivo.replace(",", "."));
+                numm = consumir;
+              }
+              var cons = consumir.toString();
+              etiqueta.consumir = parseFloat(cons).toFixed(3).replace(".", ",");
+              var qtd_f = Math.max(0, qtd - numm);
+              etiqueta.quant_FINAL = (qtd_f * this.factor_conversao).toFixed(3).replace(".", ",");
+              etiqueta.quant_FINAL2 = (qtd_f * 1).toFixed(3).replace(".", ",");
+              //etiqueta.qtdconvers = 0;
+              this.tempconsumiraditivo = falta.toFixed(3).replace(".", ",");
+            } else {
+              this.mensagem_aviso = "Etiqueta não pertence a este aditivo ou é negativa!";
+              this.mensagem_aviso2 = "";
+              let elm2 = document.getElementById("dialogAvisoContent");
+              let elem3 = document.getElementById("mainpagecontent");
+              let h = elem3.getBoundingClientRect().height;
+
+              document.getElementById("dialogAviso").style.height = Math.abs(h + 300) + 'px';
+              let coords = document.getElementById("toptexttop").offsetTop;
+              elm2.style.top = Math.abs(coords - 10) + 'px';
+
+              elm2.style.bottom = 'none';
+              this.simular(this.dialogAviso);
+              this.tempgravar = false;
+            }
+
+          } else {
+            this.mensagem_aviso = "Etiqueta nº " + etiquetan.substring(etiquetan.length - 10) + " não existe!";
+            this.mensagem_aviso2 = "";
+            let elm2 = document.getElementById("dialogAvisoContent");
+            let elem3 = document.getElementById("mainpagecontent");
+            let h = elem3.getBoundingClientRect().height;
+
+            document.getElementById("dialogAviso").style.height = Math.abs(h + 300) + 'px';
+            let coords = document.getElementById("toptexttop").offsetTop;
+            elm2.style.top = Math.abs(coords - 10) + 'px';
+
+            elm2.style.bottom = 'none';
+            this.simular(this.dialogAviso);
+            this.tempecontrou = true;
+            this.tempgravar = false;
+          }
+
+          if (num == count2 && !this.tempecontrou) this.gravaeti();
+        }, error => { console.log(error); });
+    } else {
+      this.mensagem_aviso = "Etiqueta nº " + etiquetan.substring(etiquetan.length - 10) + " já foi adicionada!";
+      this.mensagem_aviso2 = "";
+      let elm2 = document.getElementById("dialogAvisoContent");
+      let elem3 = document.getElementById("mainpagecontent");
+      let h = elem3.getBoundingClientRect().height;
+
+      document.getElementById("dialogAviso").style.height = Math.abs(h + 300) + 'px';
+      let coords = document.getElementById("toptexttop").offsetTop;
+      elm2.style.top = Math.abs(coords - 10) + 'px';
+
+      elm2.style.bottom = 'none';
+      this.simular(this.dialogAviso);
+      this.tempecontrou = true;
+      this.tempgravar = false;
+    }
+  }
+
+
+  gravaeti() {
+    for (var y in this.etiquetasaditivo) {
+      //&& this.etiquetasaditivo[y].ETQNUMENR != ""
       if (this.etiquetasaditivo[y].numero != null && this.etiquetasaditivo[y].numero != "") {
         this.etiquetasaditivo[y].quant_FINAL = this.etiquetasaditivo[y].quant_FINAL.replace(",", ".");
         this.etiquetasaditivo[y].consumir = this.etiquetasaditivo[y].consumir.replace(",", ".");
+        //console.log(this.etiquetasaditivo[y])
         if (this.etiquetasaditivo[y].id.toString().substring(0, 2) == "id") {
           this.inseriretiquetas(this.etiquetasaditivo[y], new Date());
         } else {
@@ -2435,6 +2713,9 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
     }
     this.verificaetiquetaaditivo();
     this.simular(this.closedialogetiq2);
+    setTimeout(function () {
+      this.tempgravar = false;
+    }, 500);
   }
 
   atualizaetiquetas(etiqueta) {
@@ -2530,7 +2811,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
             this.etiquetasaditivo[y].quant_FINAL = (qtdf2 / this.factor_conversao).toString();
           } else {
             this.mensagem_aviso = "O máximo de quantidade da etiqueta foi ultrapassado!";
-
+            this.mensagem_aviso2 = "";
             let elm2 = document.getElementById("dialogAvisoContent");
             let elem3 = document.getElementById("mainpagecontent");
             let h = elem3.getBoundingClientRect().height;

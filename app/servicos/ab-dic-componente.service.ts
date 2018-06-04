@@ -46,6 +46,13 @@ export class ABDICCOMPONENTEService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
+  getEtiquetas(data){
+    return this.http
+    .post(webUrl.host + '/rest/sirb/getEtiquetas', data, { headers: this.headers })
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
   delete(id) {
     return this.http
       .delete(webUrl.host + '/rest/sirb/deleteAB_DIC_COMPONENTE/' + id + '')

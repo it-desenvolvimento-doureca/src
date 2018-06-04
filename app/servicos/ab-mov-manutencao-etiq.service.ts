@@ -76,6 +76,23 @@ export class ABMOVMANUTENCAOETIQService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
+  criaficheirocorrecao(data) {
+    const url = webUrl.host + '/rest/sirb/ficheirocorrecao/';
+    return this.http
+      .post(url, JSON.stringify(data), { headers: this.headers })
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
+
+  ficheiroimprimiretiqueta(data) {
+    const url = webUrl.host + '/rest/sirb/ficheiroimprimiretiqueta/';
+    return this.http
+      .post(url, JSON.stringify(data), { headers: this.headers })
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
   private extractData(res: Response) {
     let body = res.json();
     return body;

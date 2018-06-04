@@ -435,16 +435,19 @@ export class AnaliseconsumosComponent {
     this.columnDefs.push({ headerName: "STOCK", valueFormatter: currencyFormatter, field: "STOCK", width: 120, enableValue: true, enableRowGroup: true, enablePivot: true });
     this.columnDefs.push({ headerName: "UNID. STOCK", field: "STKUNIT", width: 200, enableValue: true, enableRowGroup: true, enablePivot: true });
     this.columnDefs.push({ headerName: "VALOR 1", valueFormatter: currencyFormatter, field: "VALOR1", width: 152, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "VALOR 1 UNID. STOCK", valueFormatter: currencyFormatter, field: "QUANTPLANEADA", width: 260, enableValue: true, enableRowGroup: true, enablePivot: true });
+    this.columnDefs.push({ headerName: "FACTOR CONVERSÃO", valueFormatter: currencyFormatter, field: "CONVERSOR", width: 220, enableValue: true, enableRowGroup: true, enablePivot: true });
     this.columnDefs.push({ headerName: "UNIDADE1", field: "UNIDADE1", width: 136, enableValue: true, enableRowGroup: true, enablePivot: true });
     this.columnDefs.push({ headerName: "VALOR 2", valueFormatter: currencyFormatter, field: "VALOR2", width: 163, enableValue: true, enableRowGroup: true, enablePivot: true });
     this.columnDefs.push({ headerName: "UNIDADE2", field: "UNIDADE2", width: 142, enableValue: true, enableRowGroup: true, enablePivot: true });
     this.columnDefs.push({ headerName: "VALOR ÁGUA", valueFormatter: currencyFormatter, field: "VALOR_AGUA", width: 230, enableValue: true, enableRowGroup: true, enablePivot: true });
     this.columnDefs.push({ headerName: "LIECOD", field: "LIECOD", width: 153, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "ETQNUM", field: "ETQNUM", width: 148, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "QUANT", field: "QUANT", valueFormatter: currencyFormatter, width: 141, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "QUANT FINAL UNID. STOCK", valueFormatter: currencyFormatter, field: "QUANT_FINAL", width: 265, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "CONSUMIR", field: "CONSUMIR", valueFormatter: currencyFormatter, width: 166, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "QUANT FINAL UNID. ADITIVO", valueFormatter: currencyFormatter, field: "QUANT_FINAL2", width: 268, enableValue: true, enableRowGroup: true, enablePivot: true });
+    // this.columnDefs.push({ headerName: "ETQNUM", field: "ETQNUM", width: 148, enableValue: true, enableRowGroup: true, enablePivot: true });
+    // this.columnDefs.push({ headerName: "QUANT", field: "QUANT", valueFormatter: currencyFormatter, width: 141, enableValue: true, enableRowGroup: true, enablePivot: true });
+    //this.columnDefs.push({ headerName: "QUANT FINAL UNID. STOCK", valueFormatter: currencyFormatter, field: "QUANT_FINAL", width: 265, enableValue: true, enableRowGroup: true, enablePivot: true });
+    //this.columnDefs.push({ headerName: "CONSUMIR", field: "CONSUMIR", valueFormatter: currencyFormatter, width: 166, enableValue: true, enableRowGroup: true, enablePivot: true });
+    //this.columnDefs.push({ headerName: "CONSUMIR UNID. STOCK", field: "CONSUMIRUNIDSTOCK", valueFormatter: currencyFormatter, width: 260, enableValue: true, enableRowGroup: true, enablePivot: true });   
+    //this.columnDefs.push({ headerName: "QUANT FINAL UNID. ADITIVO", valueFormatter: currencyFormatter, field: "QUANT_FINAL2", width: 268, enableValue: true, enableRowGroup: true, enablePivot: true });
     this.columnDefs.push({ headerName: "NÚMERO DA SEMANA", field: "NUMEROSEMANA", width: 268, enableValue: true, enableRowGroup: true, enablePivot: true });
     // this.columnDefs.push({ headerName: "FACTOR CONVERSÃO", filter: 'text', field: "FACTOR_CONVERSAO", width: 143, enableValue: true, enableRowGroup: true, enablePivot: true });
 
@@ -477,7 +480,7 @@ export class AnaliseconsumosComponent {
       ESTADO: estado, CLASSIF: this.classif, DATA_PLANEAMENTO: this.DATA_PLANEAMENTO, DATA_PLANEAMENTO2: this.DATA_PLANEAMENTO2, DATA_PREVISTA: this.DATA_PREVISTA,
       DATA_PREVISTA2: this.DATA_PREVISTA2, COD_REF: this.referencia, NOME_REF: this.NOME_REF, NOME_COMPONENTE: this.NOME_COMPONENTE, ID_TIPO_MANUTENCAO: this.ID_TIPO_MANUTENCAO
     }];
-    this.ABMOVMANUTENCAOService.getallAnaliseConsumos(data).subscribe(
+    this.ABMOVMANUTENCAOService.getallAnaliseConsumos2(data).subscribe(
       response => {
         var total = Object.keys(response).length;
         if (total > 0) {
@@ -556,14 +559,19 @@ export class AnaliseconsumosComponent {
             rowData['UNIDADE2'] = response[y][35];
             rowData['VALOR_AGUA'] = response[y][36];
             rowData['LIECOD'] = response[y][37];
-            rowData['ETQNUM'] = response[y][38];
-            rowData['QUANT'] = response[y][39];
-            rowData['QUANT_FINAL'] = response[y][40];
-            rowData['QUANT_FINAL2'] = (response[y][40] != null && response[y][42] != null) ? parseFloat((response[y][40] / response[y][42]).toFixed(4)) : "";
-            //rowData['FACTOR_CONVERSAO'] = response[y][42];
-            rowData['CONSUMIR'] = response[y][42];
+            // rowData['ETQNUM'] = response[y][38];
+            // rowData['QUANT'] = response[y][39];
+            // rowData['QUANT_FINAL'] = response[y][40];
+            rowData['CONVERSOR'] = (response[y][38] != null && response[y][38] != "" && response[y][38] != 0) ? parseFloat(response[y][38]) : 1;
+            //rowData['QUANT_FINAL2'] = (response[y][40] != null) ? parseFloat((response[y][40] / rowData['CONVERSOR']).toFixed(4)) : "";
+            rowData['QUANTPLANEADA'] = (response[y][32] != null) ? parseFloat((response[y][32].replace(",", ".") * rowData['CONVERSOR']).toFixed(4)) : "";
 
-            rowData['NUMEROSEMANA'] = response[y][43];
+  
+
+            // rowData['CONSUMIRUNIDSTOCK'] = (response[y][42] != null) ? parseFloat((response[y][42] * rowData['CONVERSOR']).toFixed(4)) : "";
+            // rowData['CONSUMIR'] = (response[y][42] == null) ? "": parseFloat(response[y][42]);
+
+            rowData['NUMEROSEMANA'] = response[y][39];
             /* var count = 15;
              for (var x in this.columdefeito) {
                // rowData[this.columdefeito[x]] = (response[y][count] == null) ? 0 : response[y][count];
