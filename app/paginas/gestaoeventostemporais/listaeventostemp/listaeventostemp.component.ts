@@ -43,7 +43,7 @@ export class ListaeventostempComponent implements OnInit {
     this.GEREVENTOSPROGRAMADOSService.getAll().subscribe(
       response => {
         for (var x in response) {
-          this.cols.push({ id: response[x][0].id, modulo: response[x][1].nome_MODULO, pagina: response[x][0].pagina, momento: response[x][0].momento, estado: response[x][0].estado });
+          this.cols.push({ id: response[x][0].id, modulo: response[x][1].nome_MODULO, data: response[x][0].data_INICIAL + " " + response[x][0].hora.slice(0, 5), pagina: response[x][0].pagina, momento: response[x][0].momento, estado: response[x][0].estado });
         }
         this.cols = this.cols.slice();
       },
@@ -68,7 +68,7 @@ export class ListaeventostempComponent implements OnInit {
 
   //filtro coluna linha
   filtrar(value, coluna) {
-  
+
     this.dataTableComponent.filter(value.toString(), coluna, 'contains');
 
     /*this.globalVar.setfiltros("eventos", this.dataTableComponent.filters);

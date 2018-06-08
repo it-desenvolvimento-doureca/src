@@ -101,12 +101,13 @@ export class AnaliseEtiquetasComponent implements OnInit {
       icon: 'fa fa-print',
       accept: () => {
 
-        var etiqueta = this.etiquetasaditivo.find(item => item.numero = etiquetanum);
+        var etiqueta = this.etiquetasaditivo.find(item => item.numero == etiquetanum);
 
         var data = [{
           ip_posto: this.getCookie("IP_CLIENT"), DATCRE: etiqueta.datcre, QUANT: etiqueta.qtd, UNIDADE: etiqueta.unicod,
           ETIQUETA: etiqueta.numero, PROREF: etiqueta.PROREF, ETQORILOT1: etiqueta.etqorilot1, PRODES: etiqueta.PRODES1
         }];
+
         this.ABMOVMANUTENCAOETIQService.ficheiroimprimiretiqueta(data).subscribe(
           response => {
             this.simular(this.inputgravou)

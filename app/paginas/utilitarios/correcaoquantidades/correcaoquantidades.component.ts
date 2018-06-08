@@ -80,7 +80,7 @@ export class CorrecaoquantidadesComponent implements OnInit {
             etiqueta.numero = etiquetan.substring(etiquetan.length - 10);
             etiqueta.produto = response[0].PRODES1;
             var value = "0";
-            if (response[0].ETQEMBQTE != null) value = parseFloat(response[0].ETQEMBQTE).toFixed(3);
+            if (response[0].ETQEMBQTE != null) value = parseFloat(response[0].ETQEMBQTE).toFixed(4);
 
             etiqueta.qtd = value.replace(".", ",");
             etiqueta.EMPCOD = response[0].EMPCOD;
@@ -221,7 +221,7 @@ export class CorrecaoquantidadesComponent implements OnInit {
     ETI.proref = etiqueta.PROREF;
     ETI.prodes = etiqueta.PRODES;
     ETI.datcre = etiqueta.DATCRE;
-    ETI.quant_FINAL = etiqueta.quant_FINAL;
+    ETI.quant_FINAL = etiqueta.quant_FINAL.replace(",", ".");
     ETI.quant = etiqueta.qtd.replace(",", ".");
     ETI.unicod = etiqueta.UNICOD;
     ETI.va1REF = etiqueta.VA1REF;
@@ -234,7 +234,6 @@ export class CorrecaoquantidadesComponent implements OnInit {
     ETI.sinal = etiqueta.sinal;
     ETI.observacao = "Correção Quantidades";
     ETI.etqoriqte1 = parseFloat(etiqueta.ETQORIQTE1);
-
 
 
     this.ABMOVMANUTENCAOETIQService.create(ETI).subscribe(

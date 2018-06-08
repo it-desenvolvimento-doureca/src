@@ -114,6 +114,7 @@ import { ListaeventostempComponent } from './paginas/gestaoeventostemporais/list
 import { CorrecaoquantidadesComponent } from './paginas/utilitarios/correcaoquantidades/correcaoquantidades.component';
 import { AnaliseEtiquetasComponent } from './paginas/utilitarios/analise-etiquetas/analise-etiquetas.component';
 import { AnaliseconsumosetiquetasComponent } from './paginas/consultas/analiseconsumosetiquetas/analiseconsumosetiquetas.component';
+import { TarefasComponent } from './paginas/home-modulo/tarefas/tarefas.component';
 
 const routes: Routes = [
   { path: 'dashboard', component: HomeComponent, canActivate: [LoginService] },
@@ -167,6 +168,7 @@ const routes: Routes = [
       { path: 'historico', component: HistoricoAnalisesComponent, canActivate: [LoginService], data: { breadcrumb: "Histórico" } },]
   },
   { path: 'homegestaobanhos', component: GestaoBanhosComponent, canActivate: [LoginService], data: { breadcrumb: "Gestão Banhos" } },
+  { path: 'hometarefas', component: TarefasComponent, canActivate: [LoginService], data: { breadcrumb: "Gestão Tarefas" } },
   {
     path: 'manutencao', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Manutenções Planedas" },
     children: [
@@ -341,7 +343,8 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     ListaeventostempComponent,
     CorrecaoquantidadesComponent,
     AnaliseEtiquetasComponent,
-    AnaliseconsumosetiquetasComponent
+    AnaliseconsumosetiquetasComponent,
+    TarefasComponent
   ],
   imports: [
     BrowserModule,

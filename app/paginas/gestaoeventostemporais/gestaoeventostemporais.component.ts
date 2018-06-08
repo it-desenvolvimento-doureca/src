@@ -226,7 +226,8 @@ export class GestaoeventostemporaisComponent implements OnInit {
         }
         this.eventosProgramados = this.eventosProgramados.slice();
         this.i = this.eventosProgramados.indexOf(+id);
-        this.inicia(this.i);
+        this.inicia(this.eventosProgramados[this.i]);
+
       },
       error => {
         console.log(error);
@@ -286,9 +287,9 @@ export class GestaoeventostemporaisComponent implements OnInit {
 
     eventos.total_OCORRENCIAS = 0;
 
-    if (eventos.data_PROX_OCORRENCIA == null || eventos.data_PROX_OCORRENCIA > this.data_INICIAL)
-      eventos.data_PROX_OCORRENCIA = this.data_INICIAL;
-
+    //if (eventos.data_PROX_OCORRENCIA == null || eventos.data_PROX_OCORRENCIA > this.data_INICIAL)
+    eventos.data_PROX_OCORRENCIA = this.data_INICIAL;
+    
 
     if (this.novo) {
       eventos.utz_CRIA = this.user;
