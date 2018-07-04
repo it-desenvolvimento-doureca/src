@@ -397,7 +397,14 @@ export class ManutencaoformComponent implements OnInit {
             var hora_exc = null;
             var id_adicao = null;
             var int_op = this.intervalo_op.find(item => item.value.id == response[x][0].id_TIPO_OPERACAO).value;
-            var id_banho = this.banhos.find(item => item.value.id == response[x][0].id_BANHO).value;
+            var id_banho = null;
+            if (this.banhos.find(item => item.value.id == response[x][0].id_BANHO)) {
+              id_banho = this.banhos.find(item => item.value.id == response[x][0].id_BANHO).value;
+            } else {
+              this.banhos.push({ label: response[x][0].id_BANHO + " / Banho Removido ou Inativo", value: { id: response[x][0].id_BANHO } });
+              id_banho = this.banhos.find(item => item.value.id == response[x][0].id_BANHO).value;
+            }
+
             var nome_analise = "";
             this.executado = false
             var preparado = false
@@ -2442,7 +2449,7 @@ export class ManutencaoformComponent implements OnInit {
           var count = Object.keys(response).length;
           if (count > 0) {
 
-            if (this.cod_ref == response[0].PROREF) {
+            if (this.cod_ref == response[0].PROREF && response[0].ETQEMBQTE > 0) {
 
               var etiqueta = this.etiquetasaditivo.find(item => item.id == id);
               etiqueta.numero = etiquetan.substring(etiquetan.length - 10);
@@ -2574,7 +2581,7 @@ export class ManutencaoformComponent implements OnInit {
           var count = Object.keys(response).length;
           if (count > 0) {
 
-            if (this.cod_ref == response[0].PROREF) {
+            if (this.cod_ref == response[0].PROREF && response[0].ETQEMBQTE > 0) {
 
               var etiqueta = this.etiquetasaditivo.find(item => item.id == id);
               etiqueta.numero = etiquetan.substring(etiquetan.length - 10);
@@ -2640,6 +2647,7 @@ export class ManutencaoformComponent implements OnInit {
               elm2.style.bottom = 'none';
               this.simular(this.dialogAviso);
               this.tempgravar = false;
+              this.tempecontrou = true;
             }
 
           } else {

@@ -7,6 +7,7 @@ import { AppGlobals } from '../../menu/sidebar.metadata';
 import { Router } from '@angular/router';
 import { ABDICTIPOMANUTENCAOService } from '../../servicos/ab-dic-tipo-manutencao.service';
 import { Observable } from 'rxjs';
+import { ABDICBANHOService } from '../../servicos/ab-dic-banho.service';
 
 @Component({
   selector: 'app-listagem-manutencoes',
@@ -28,7 +29,7 @@ export class ListagemManutencoesComponent implements OnInit {
   manutencao = [];
   mensagemtabela: string;
   acessoplaneamento = true;
-  banho: string;
+  banho;
   banhos: any[];
   filtro2: any;
   filtroval;
@@ -55,7 +56,7 @@ export class ListagemManutencoesComponent implements OnInit {
   @ViewChild('waitingDialog') waitingDialog: ElementRef;
   @ViewChild('waitingDialogclose') waitingDialogclose: ElementRef;
 
-  constructor(private ABDICTIPOMANUTENCAOService: ABDICTIPOMANUTENCAOService, private ABDICLINHAService: ABDICLINHAService, private renderer: Renderer, private ABMOVMANUTENCAOCABService: ABMOVMANUTENCAOCABService, private ABMOVMANUTENCAOService: ABMOVMANUTENCAOService, private router: Router, private globalVar: AppGlobals) { }
+  constructor(private ABDICBANHOService: ABDICBANHOService, private ABDICTIPOMANUTENCAOService: ABDICTIPOMANUTENCAOService, private ABDICLINHAService: ABDICLINHAService, private renderer: Renderer, private ABMOVMANUTENCAOCABService: ABMOVMANUTENCAOCABService, private ABMOVMANUTENCAOService: ABMOVMANUTENCAOService, private router: Router, private globalVar: AppGlobals) { }
 
   ngOnInit() {
 
@@ -247,7 +248,7 @@ export class ListagemManutencoesComponent implements OnInit {
 
 
     //this.carregarlista();
-
+    this.preenche_banhos();
     this.timer = Observable.timer(0, 180000);
     this.subscription = this.timer.subscribe(t => {
       this.carregarlista();
@@ -261,7 +262,13 @@ export class ListagemManutencoesComponent implements OnInit {
   carregarlista() {
     this.mensagemtabela = "A Carregar...";
     this.cols = [];
-    var data = [{ query: this.query.toString(), classif: this.manutencaoquery.toString() }];
+    var construcaobanhos_id = [];
+    var manutencao_id = [];
+    var manutencaonaoprogramada_id = [];
+    var manutencaoreposicao_id = [];
+    var banho = this.globalVar.getfiltros("listagemidbanho");
+
+    var data = [{ query: this.query.toString(), classif: this.manutencaoquery.toString(), querybanho: banho }];
     this.ABMOVMANUTENCAOService.getAllmanu(data).subscribe(
       response => {
         var count = Object.keys(response).length;
@@ -309,12 +316,29 @@ export class ListagemManutencoesComponent implements OnInit {
               cor: response[x][4], linha: response[x][5], turno: response[x][6], estado: response[x][7], manutencao: manutencao, classif: response[x][9]
             });
           }
+
+          if (response[x][9] == "M") {
+            manutencao_id.push(response[x][0]);
+          } else if (response[x][9] == "B") {
+            construcaobanhos_id.push(response[x][0]);
+          } else if (response[x][9] == "N") {
+            manutencaonaoprogramada_id.push(response[x][0]);
+          } else if (response[x][9] == "R") {
+            manutencaoreposicao_id.push(response[x][0]);
+          }
         }
+
         this.cols = this.cols.slice();
         if (this.linha == null || this.linha == "") this.linha = this.globalVar.getlinha();
         this.filtrar(this.linha, "linha", true);
 
         if (this.filtroval) this.filtrar(this.filtro, "estado", true, "in");
+
+        this.globalVar.setfiltros("construcaobanhos_id", construcaobanhos_id);
+        this.globalVar.setfiltros("manutencao_id", manutencao_id);
+        this.globalVar.setfiltros("manutencaonaoprogramada_id", manutencaonaoprogramada_id);
+        this.globalVar.setfiltros("manutencaoreposicao_id", manutencaoreposicao_id);
+
       },
       error => console.log(error));
 
@@ -343,6 +367,13 @@ export class ListagemManutencoesComponent implements OnInit {
 
   }
 
+
+  pesquisarbanhos(id) {
+    this.globalVar.setfiltros("listagemidbanho", id);
+
+    this.carregarlista();
+  }
+
   //limpar filtro
   reset() {
     for (var x in this.dataTableComponent.filters) {
@@ -356,6 +387,11 @@ export class ListagemManutencoesComponent implements OnInit {
     this.tipo = null;
     this.manutencao = null;
     this.dataTableComponent.filter("", "", "");
+    if (this.banho != null) {
+      this.banho = null;
+      this.globalVar.setfiltros("listagemidbanho", null);
+      this.carregarlista();
+    }
   }
 
   //filtro coluna linha
@@ -448,7 +484,7 @@ export class ListagemManutencoesComponent implements OnInit {
     this.router.navigate(['manutencaoreposicao/novo'], { queryParams: { redirect: "listagem" } });
   }
 
-  pesquisarbanhos(id) {
+  /*pesquisarbanhos(id) {
     if (id) {
       var ids = [];
       this.ABMOVMANUTENCAOCABService.getbyID_banhoall(id).subscribe(
@@ -472,7 +508,7 @@ export class ListagemManutencoesComponent implements OnInit {
       this.id_manu = "";
       this.filtrar('', "id", false, "in")
     }
-  }
+  }*/
 
 
   //simular click para mostrar mensagem
@@ -499,5 +535,24 @@ export class ListagemManutencoesComponent implements OnInit {
     this.carregarlista();
   }
 
+  //preenche combobox banhos
+  preenche_banhos() {
+    this.banhos = [];
+    //preenche combobox banhos
+    var linha = 0;
+    if (this.linha != null) linha = this.linha;
+    this.ABDICBANHOService.getAllLINHAbylinha(linha).subscribe(
+      response => {
+        this.banhos.push({ label: 'Seleccione Banho', value: null });
+        for (var x in response) {
+          this.banhos.push({ label: response[x][0].id_BANHO + " / " + response[x][0].nome_BANHO + " - Tina: " + response[x][2].cod_TINA, value: response[x][0].id_BANHO });
+        }
+        this.banhos = this.banhos.slice();
+        var count = 0;
+        if (this.globalVar.getfiltros("listagemidbanho")) count = 1;
+        if (count > 0) this.banho = this.globalVar.getfiltros("listagemidbanho");
+      },
+      error => console.log(error));
+  }
 
 }

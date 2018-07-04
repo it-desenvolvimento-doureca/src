@@ -213,7 +213,7 @@ export class RegistoformComponent implements OnInit {
 
   //preenche tabela componentes apartir do banho seleccionado
   banhosComp(id) {
-    this.ABDICBANHOCOMPONENTEService.getbyid_banho(id).subscribe(
+    this.ABDICBANHOCOMPONENTEService.getbyid_banho(id, this.data_ANALISE).subscribe(
       response => {
         var count = Object.keys(response).length;
         //se existir componentes do banho
@@ -261,19 +261,20 @@ export class RegistoformComponent implements OnInit {
             var limite_VERDE_SUP = null;
             if (response[x][0].calculo != null) calculo = response[x][0].calculo.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
             if (response[x][0].resultado != null) resultado = response[x][0].resultado.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '');
-            if (response[x][2] != null) limite_AMARELO_INF = response[x][2].toLocaleString(undefined, { minimumFractionDigits: 2 }).replace(/\s/g, '');
-            if (response[x][4] != null) limite_VERDE_INF = response[x][4].toLocaleString(undefined, { minimumFractionDigits: 2 }).replace(/\s/g, '');
-            if (response[x][3] != null) limite_AMARELO_SUP = response[x][3].toLocaleString(undefined, { minimumFractionDigits: 2 }).replace(/\s/g, '');
-            if (response[x][5] != null) limite_VERDE_SUP = response[x][5].toLocaleString(undefined, { minimumFractionDigits: 2 }).replace(/\s/g, '');
+            if (response[x][0].limite_AMARELO_INF != null) limite_AMARELO_INF =response[x][0].limite_AMARELO_INF.toLocaleString(undefined, { minimumFractionDigits: 2 }).replace(/\s/g, '');
+            if (response[x][0].limite_VERDE_INF != null) limite_VERDE_INF = response[x][0].limite_VERDE_INF.toLocaleString(undefined, { minimumFractionDigits: 2 }).replace(/\s/g, '');
+            if (response[x][0].limite_AMARELO_SUP != null) limite_AMARELO_SUP = response[x][0].limite_AMARELO_SUP.toLocaleString(undefined, { minimumFractionDigits: 2 }).replace(/\s/g, '');
+            if (response[x][0].limite_VERDE_SUP != null) limite_VERDE_SUP = response[x][0].limite_VERDE_SUP.toLocaleString(undefined, { minimumFractionDigits: 2 }).replace(/\s/g, '');
             this.banho_componentes.push({
-              cor: null, pos: this.pos, unidade: response[x][6], sinal: response[x][0].sinal,
-              limite_AMARELO_INF: response[x][2], limite_VERDE_INF: response[x][4], limite_AMARELO_SUP: response[x][3], limite_VERDE_SUP: response[x][5],
+              cor: null, pos: this.pos, unidade: response[x][2], sinal: response[x][0].sinal,
+              limite_AMARELO_INF: response[x][0].limite_AMARELO_INF, limite_VERDE_INF:response[x][0].limite_VERDE_INF, 
+              limite_AMARELO_SUP: response[x][0].limite_AMARELO_SUP, limite_VERDE_SUP: response[x][0].limite_VERDE_SUP,
               vlimite_AMARELO_INF: limite_AMARELO_INF, vlimite_VERDE_INF: limite_VERDE_INF, vlimite_AMARELO_SUP: limite_AMARELO_SUP, vlimite_VERDE_SUP: limite_VERDE_SUP,
               id_ANALISE_LIN: response[x][0].id_ANALISE_LIN, id: response[x][0].id_COMPONENTE, nome_comp: response[x][1].nome_COMPONENTE, resultado: resultado,
               calculo: calculo
             });
-
-            this.verificalimites(response[x][0].calculo, response[x][2], response[x][3], response[x][4], response[x][5], this.pos)
+            
+            this.verificalimites(response[x][0].calculo, response[x][0].limite_AMARELO_INF, response[x][0].limite_AMARELO_SUP, response[x][0].limite_VERDE_INF, response[x][0].limite_VERDE_SUP, this.pos)
           }
           this.banho_componentes = this.banho_componentes.slice();
         }
@@ -476,6 +477,21 @@ export class RegistoformComponent implements OnInit {
             banho_comp.sinal = this.banho_componentes[x].sinal;
             banho_comp.id_COMPONENTE = this.banho_componentes[x].id;
 
+
+            var limite_VERDE_INF = null;
+            var limite_AMARELO_INF = null;
+            var limite_VERDE_SUP = null;
+            var limite_AMARELO_SUP = null;
+            if (this.banho_componentes[x].vlimite_AMARELO_INF != null) limite_AMARELO_INF = parseFloat(this.banho_componentes[x].vlimite_AMARELO_INF.replace(",", "."));
+            if (this.banho_componentes[x].vlimite_AMARELO_SUP != null) limite_AMARELO_SUP = parseFloat(this.banho_componentes[x].vlimite_AMARELO_SUP.replace(",", "."));
+            if (this.banho_componentes[x].vlimite_VERDE_SUP != null) limite_VERDE_SUP = parseFloat(this.banho_componentes[x].vlimite_VERDE_SUP.replace(",", "."));
+            if (this.banho_componentes[x].vlimite_VERDE_INF != null) limite_VERDE_INF = parseFloat(this.banho_componentes[x].vlimite_VERDE_INF.replace(",", "."));
+
+            banho_comp.limite_AMARELO_INF = limite_AMARELO_INF;
+            banho_comp.limite_AMARELO_SUP = limite_AMARELO_SUP;
+            banho_comp.limite_VERDE_INF = limite_VERDE_INF;
+            banho_comp.limite_VERDE_SUP = limite_VERDE_SUP;
+
             this.criacomponente(banho_comp);
           } else {
 
@@ -588,8 +604,8 @@ export class RegistoformComponent implements OnInit {
   }
 
   conclui(id, evento) {
-    this.ABMOVANALISELINHAService.getbyid_analise(id, this.banhos_valor['id']).subscribe(
-      response => {
+    /*this.ABMOVANALISELINHAService.getbyid_analise(id, this.banhos_valor['id']).subscribe(
+      response => {*/
 
         var analise = new AB_MOV_ANALISE;
         analise = this.analise_dados;
@@ -621,8 +637,8 @@ export class RegistoformComponent implements OnInit {
         });
 
 
-      },
-      error => console.log(error));
+     /* },
+      error => console.log(error));*/
   }
 
 
@@ -654,8 +670,8 @@ export class RegistoformComponent implements OnInit {
             id = params['id'] || 0;
           });
 
-        this.ABMOVANALISELINHAService.getbyid_analise(id, this.banhos_valor['id']).subscribe(
-          response => {
+        /*this.ABMOVANALISELINHAService.getbyid_analise(id, this.banhos_valor['id']).subscribe(
+          response => {*/
 
             var analise = new AB_MOV_ANALISE;
             analise = this.analise_dados;
@@ -671,8 +687,8 @@ export class RegistoformComponent implements OnInit {
 
 
 
-          },
-          error => console.log(error));
+        /*  },
+          error => console.log(error));*/
       }
 
     });
@@ -704,8 +720,8 @@ export class RegistoformComponent implements OnInit {
       icon: 'fa fa-trash',
       accept: () => {
 
-        this.ABMOVANALISELINHAService.getbyid_analise(id, this.banhos_valor['id']).subscribe(
-          response => {
+        /*this.ABMOVANALISELINHAService.getbyid_analise(id, this.banhos_valor['id']).subscribe(
+          response => {*/
 
             var analise = new AB_MOV_ANALISE;
             analise = this.analise_dados;
@@ -720,8 +736,8 @@ export class RegistoformComponent implements OnInit {
 
 
 
-          },
-          error => console.log(error));
+         /* },
+          error => console.log(error));*/
       }
     });
   }

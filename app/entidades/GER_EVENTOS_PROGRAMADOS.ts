@@ -32,5 +32,9 @@ export class GER_EVENTOS_PROGRAMADOS {
     data_APAGA: Date;
     utz_APAGA: number;
     inativo: boolean;
+    utilizador: string;
+    senha: string;
+    dominio: string;
+    
 
 }

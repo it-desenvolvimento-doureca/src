@@ -10,7 +10,7 @@ import { HomeComponent } from './paginas/home/home.component';
 import { RouterComponent } from "app/router.component";
 import { FornecedoresComponent } from './paginas/fornecedores/fornecedores.component';
 import { TinasComponent } from './paginas/tinas/tinas.component';
-import { DataTableModule, SharedModule, ConfirmDialogModule, ConfirmationService, DropdownModule, CalendarModule, DialogModule, ColorPickerModule, RadioButtonModule, TreeNode, ChartModule, PickListModule, MultiSelectModule, EditorModule, AutoCompleteModule, ProgressBarModule, FileUploadModule, ToggleButtonModule, ListboxModule, ScheduleModule } from 'primeng/primeng';
+import { DataTableModule, SharedModule, ConfirmDialogModule, ConfirmationService, DropdownModule, CalendarModule, DialogModule, ColorPickerModule, RadioButtonModule, TreeNode, ChartModule, PickListModule, MultiSelectModule, EditorModule, AutoCompleteModule, ProgressBarModule, FileUploadModule, ToggleButtonModule, ListboxModule, ScheduleModule, OrderListModule } from 'primeng/primeng';
 import { AppGlobals } from "app/menu/sidebar.metadata";
 import { FormComponent } from './paginas/fornecedores/form/form.component';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -115,6 +115,7 @@ import { CorrecaoquantidadesComponent } from './paginas/utilitarios/correcaoquan
 import { AnaliseEtiquetasComponent } from './paginas/utilitarios/analise-etiquetas/analise-etiquetas.component';
 import { AnaliseconsumosetiquetasComponent } from './paginas/consultas/analiseconsumosetiquetas/analiseconsumosetiquetas.component';
 import { TarefasComponent } from './paginas/home-modulo/tarefas/tarefas.component';
+import { ProdutosComponent } from './paginas/moduloepi/produtos/produtos.component';
 
 const routes: Routes = [
   { path: 'dashboard', component: HomeComponent, canActivate: [LoginService] },
@@ -235,6 +236,7 @@ const routes: Routes = [
 
   { path: 'teste1', component: GestaoTarefasComponent, canActivate: [LoginService], data: { breadcrumb: "Teste1" } },
   { path: 'teste2', component: FormTarefasComponent, canActivate: [LoginService], data: { breadcrumb: "Teste2" } },
+  { path: 'teste3', component: ProdutosComponent, canActivate: [LoginService], data: { breadcrumb: "Teste3" } },
   { path: 'calendario', component: CalendarioComponent, canActivate: [LoginService], data: { breadcrumb: "Calendário" } },
 
   {
@@ -344,7 +346,8 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     CorrecaoquantidadesComponent,
     AnaliseEtiquetasComponent,
     AnaliseconsumosetiquetasComponent,
-    TarefasComponent
+    TarefasComponent,
+    ProdutosComponent
   ],
   imports: [
     BrowserModule,
@@ -374,6 +377,7 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     ProgressBarModule,
     DragDropModule,
     ScheduleModule,
+    OrderListModule,
     AgGridModule.withComponents(
       [
         HeaderGroupComponent,

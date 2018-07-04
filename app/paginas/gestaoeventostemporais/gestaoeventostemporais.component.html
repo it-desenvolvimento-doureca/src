@@ -1,4 +1,4 @@
-<app-controlos (apagarbt)="apagar()" (anteriorbt)="anterior()" (seguintebt)="seguinte()" ></app-controlos>
+<app-controlos (apagarbt)="apagar()" (anteriorbt)="anterior()" (seguintebt)="seguinte()"></app-controlos>
 <div class="main-content">
   <div class="container-fluid">
     <div class="row">
@@ -20,8 +20,8 @@
                           <b>Módulo:</b>
                           <br>
                           <div *ngIf="!modoedicao">{{modulo_nome}}</div>
-                          <p-dropdown [required]="true" [hidden]="!modoedicao" [filter]="true" [options]="modulos" [style]="{'width':'100%'}"
-                            [ngModelOptions]="{standalone: true}" [(ngModel)]="modulo" [ngModelOptions]="{standalone: true}"></p-dropdown>
+                          <p-dropdown [required]="true" [hidden]="!modoedicao" [filter]="true" [options]="modulos" [style]="{'width':'100%'}" [ngModelOptions]="{standalone: true}"
+                            [(ngModel)]="modulo" [ngModelOptions]="{standalone: true}"></p-dropdown>
                         </div>
                         <div class="col-md-3 div_header">
                           <b> Página:</b>
@@ -191,13 +191,30 @@
                         <div class="form-group col-md-6">
                           <label for="qquery">Query:</label>
                           <input [disabled]="!modoedicao" type="text" class="form-control editor_texto2" id="qquery" [(ngModel)]="query" [ngModelOptions]="{standalone: true}"
-                            placeholder="select id from tabela" name="qquery" [required]="criar_FICHEIRO ? true : null " />
+                            placeholder="select ID_TABELA as id, NOME_CAMPO as nome from TABELA" name="qquery" [required]="criar_FICHEIRO ? true : null "
+                          />
+                          <span style="top: -9px; position: relative; font-size: 11px; font-weight: 500;">*campos obrigatórios na query: id e nome.</span>
                         </div>
                         <div class="form-group col-md-6">
                           <label for="pastdest">Pasta destino:</label>
                           <input [disabled]="!modoedicao" type="text" class="form-control editor_texto2" id="pastdest" [(ngModel)]="pasta_DESTINO"
-                            [ngModelOptions]="{standalone: true}" placeholder="select id from tabela" name="pastdest" [required]="criar_FICHEIRO ? true : null "
-                          />
+                            [ngModelOptions]="{standalone: true}" placeholder="C:/pasta/ ou 111.111.11.11/pasta/" name="pastdest"
+                            [required]="criar_FICHEIRO ? true : null " />
+                        </div>
+                        <div class="form-group col-md-2">
+                          <label for="utilizador">Utilizador:</label>
+                          <input [disabled]="!modoedicao" type="text" autocomplete="nope" class="form-control editor_texto2" id="utilizador" [(ngModel)]="utilizador" [ngModelOptions]="{standalone: true}"
+                            placeholder="" name="utilizador" />
+                        </div>
+                        <div class="form-group col-md-2">
+                          <label for="senha">Password:</label>
+                          <input [disabled]="!modoedicao" type="password"  autocomplete="new-password" class="form-control editor_texto2" id="senha" [(ngModel)]="senha" [ngModelOptions]="{standalone: true}"
+                            placeholder="" name="senha" />
+                        </div>
+                        <div class="form-group col-md-2">
+                          <label for="dominio">Domínio:</label>
+                          <input [disabled]="!modoedicao" type="text" class="form-control editor_texto2" id="dominio" [(ngModel)]="dominio" [ngModelOptions]="{standalone: true}"
+                            placeholder="" name="dominio" />
                         </div>
                       </div>
                     </div>

@@ -20,10 +20,10 @@ export class ABDICBANHOCOMPONENTEService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
-  getbyid_banho(id): Observable<AB_DIC_BANHO_COMPONENTE[]> {
+  getbyid_banho(id,data): Observable<AB_DIC_BANHO_COMPONENTE[]> {
     const url = webUrl.host + '/rest/sirb/getAB_DIC_BANHO_COMPONENTEbyid_banho/' + id;
     return this.http
-      .get(url)
+      .post(url,data, { headers: this.headers })
       .map(this.extractData)
       .catch((error: any) => Observable.throw('Server error'));
   }

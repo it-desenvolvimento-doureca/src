@@ -53,6 +53,9 @@ export class GestaoeventostemporaisComponent implements OnInit {
 
   @ViewChild('inputgravou') inputgravou: ElementRef;
   @ViewChild('inputerro') inputerro: ElementRef;
+  utilizador: string;
+  senha: string;
+  dominio: string;
 
   constructor(private GERMODULOService: GERMODULOService, private confirmationService: ConfirmationService, private router: Router, private GERUTILIZADORESService: GERUTILIZADORESService, private renderer: Renderer, private GEREVENTOSPROGRAMADOSService: GEREVENTOSPROGRAMADOSService, private route: ActivatedRoute, private location: Location, private globalVar: AppGlobals) { }
 
@@ -166,6 +169,9 @@ export class GestaoeventostemporaisComponent implements OnInit {
           this.anexa_FICHEIROS = response[0].anexa_FICHEIROS;
           this.data_PROX_OCORRENCIA = response[0].data_PROX_OCORRENCIA;
           this.observacoes = response[0].observacoes;
+          this.utilizador = response[0].utilizador;
+          this.senha = (response[0].senha != null) ? atob(response[0].senha) : "";
+          this.dominio = response[0].dominio;
         }
       }, error => { console.log(error); });
   }
@@ -280,16 +286,21 @@ export class GestaoeventostemporaisComponent implements OnInit {
     eventos.criar_FICHEIRO = this.criar_FICHEIRO;
     eventos.nome_RELATORIO = this.nome_RELATORIO;
     eventos.pasta_DESTINO = this.pasta_DESTINO;
+    eventos.senha = btoa(this.senha);
+    eventos.utilizador = this.utilizador;
+    eventos.dominio = this.dominio;
+
     eventos.query = this.query;
 
     eventos.observacoes = this.observacoes;
+
     eventos.inativo = false;
 
     eventos.total_OCORRENCIAS = 0;
 
     //if (eventos.data_PROX_OCORRENCIA == null || eventos.data_PROX_OCORRENCIA > this.data_INICIAL)
     eventos.data_PROX_OCORRENCIA = this.data_INICIAL;
-    
+
 
     if (this.novo) {
       eventos.utz_CRIA = this.user;
