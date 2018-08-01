@@ -80,17 +80,7 @@ export class ListaComponent {
     this.disCriar = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node31criar");
     this.user = JSON.parse(localStorage.getItem('userapp'))["id"];
     this.famSeleccionadas = [];
-    this.RegistoProducao.getAllfam().subscribe(
-      response => {
-        //console.log(response)
-        for (var x in response) {
-          this.familias.push({ label: response[x], value: response[x] })
-          this.famSeleccionadas.push(response[x]);
-          this.selectedall.push(response[x]);
-        }
 
-      },
-      error => console.log(error));
 
     //carrega operações
     this.RegistoProducao.getOP().subscribe(
@@ -114,26 +104,16 @@ export class ListaComponent {
       },
       error => console.log(error));
 
-    //carregas vistas
-    this.GERVISTASService.getbyid_pagina(1).subscribe(
+    this.RegistoProducao.getAllfam().subscribe(
       response => {
         //console.log(response)
-        //this.config.push({ label: 'Sel. Vista', value: 0 });
-        //this.num_vista = 0;
-        var primeiro = true;
         for (var x in response) {
-          this.config.push({ label: response[x].descricao, value: response[x].id })
-          this.array.push({
-            adminedit: primeiro,
-            id: response[x].id, descricao: response[x].descricao,
-            colState: JSON.parse(response[x].colstate), sortState: JSON.parse(response[x].sortstate),
-            groupState: JSON.parse(response[x].groupstate), filterState: JSON.parse(response[x].filterstate), familias: JSON.parse(response[x].familias)
-          });
-          if (primeiro && response[x].familias != null && response[x].familias != "") this.famSeleccionadas = JSON.parse(response[x].familias);
-          primeiro = false;         
-          this.num_vista = this.config[0].value;
+          this.familias.push({ label: response[x], value: response[x] })
+          this.famSeleccionadas.push(response[x]);
+          this.selectedall.push(response[x]);
         }
-        this.createRowData(true);
+        this.inicia();
+
       },
       error => console.log(error));
 
@@ -243,6 +223,31 @@ export class ListaComponent {
         menuIcon: 'fa-bars'
       }
     }
+  }
+
+  inicia() {
+    //carregas vistas
+    this.GERVISTASService.getbyid_pagina(1).subscribe(
+      response => {
+        //console.log(response)
+        //this.config.push({ label: 'Sel. Vista', value: 0 });
+        //this.num_vista = 0;
+        var primeiro = true;
+        for (var x in response) {
+          this.config.push({ label: response[x].descricao, value: response[x].id })
+          this.array.push({
+            adminedit: primeiro,
+            id: response[x].id, descricao: response[x].descricao,
+            colState: JSON.parse(response[x].colstate), sortState: JSON.parse(response[x].sortstate),
+            groupState: JSON.parse(response[x].groupstate), filterState: JSON.parse(response[x].filterstate), familias: JSON.parse(response[x].familias)
+          });
+          if (primeiro && response[x].familias != null && response[x].familias != "") this.famSeleccionadas = JSON.parse(response[x].familias);
+          primeiro = false;
+          this.num_vista = this.config[0].value;
+        }
+        this.createRowData(true);
+      },
+      error => console.log(error));
   }
 
   onPaginationChanged() {
@@ -394,7 +399,7 @@ export class ListaComponent {
     var days = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado-Feira'];
     var month = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 
-    if(this.gridOptions.api != null) this.gridOptions.api.showLoadingOverlay();
+    if (this.gridOptions.api != null) this.gridOptions.api.showLoadingOverlay();
     var data = [{ user: user, ref: ref, fam: (fam != null) ? fam.toString() : "", op_cod: op_cod, date1: (date) ? date : null, date2: (date2) ? date2 : null }]
     this.RegistoProducao.getAll(data).subscribe(
       response => {
@@ -430,7 +435,7 @@ export class ListaComponent {
           this.rowData = this.rowData1.slice();
           var valor = this.page_size;
           if (valor == 'todos') valor = this.rowData.length;
-          if(this.gridOptions.api != null)  this.gridOptions.api.paginationSetPageSize(Number(valor));
+          if (this.gridOptions.api != null) this.gridOptions.api.paginationSetPageSize(Number(valor));
 
           if (inicio) {
             this.configuracoes(null);
@@ -602,14 +607,14 @@ export class ListaComponent {
   }
 
   configuracoes(event, update = false) {
-    this.texto_vista = this.config.find(item => item.value == this.num_vista).label;
+    if (this.config.length > 0) this.texto_vista = this.config.find(item => item.value == this.num_vista).label;
     if (this.num_vista != 0) {
       var array = this.array.find(item => item.id == this.num_vista);
       if (array && !update) {
-        if(this.gridOptions.api != null) this.gridOptions.columnApi.setColumnState(array.colState);
-        if(this.gridOptions.api != null) this.gridOptions.columnApi.setColumnGroupState(array.groupState);
-        if(this.gridOptions.api != null) this.gridOptions.api.setSortModel(array.sortState);
-        if(this.gridOptions.api != null) this.gridOptions.api.setFilterModel(array.filterState);
+        if (this.gridOptions.api != null) this.gridOptions.columnApi.setColumnState(array.colState);
+        if (this.gridOptions.api != null) this.gridOptions.columnApi.setColumnGroupState(array.groupState);
+        if (this.gridOptions.api != null) this.gridOptions.api.setSortModel(array.sortState);
+        if (this.gridOptions.api != null) this.gridOptions.api.setFilterModel(array.filterState);
         if (array.adminedit) {
           if (JSON.parse(localStorage.getItem('userapp'))["admin"]) {
             this.disEditar = false;

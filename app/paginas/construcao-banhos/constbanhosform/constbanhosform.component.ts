@@ -941,6 +941,7 @@ export class ConstbanhosformComponent implements OnInit {
           MOV_MANUTENCAO_LINHA.nome_REF = this.arrayForm.find(item => item.pos == pos).aditivos[x].nome_REF;
           MOV_MANUTENCAO_LINHA.stkunit = this.arrayForm.find(item => item.pos == pos).aditivos[x].unidstock;
           MOV_MANUTENCAO_LINHA.liecod = this.arrayForm.find(item => item.pos == pos).aditivos[x].liecod;
+          MOV_MANUTENCAO_LINHA.nome_REF = this.arrayForm.find(item => item.pos == pos).aditivos[x].nome_REF;
 
           this.criar(MOV_MANUTENCAO_LINHA, pos, x);
         } else {
@@ -2264,7 +2265,7 @@ export class ConstbanhosformComponent implements OnInit {
 
                   var qtd_f = Math.max(0, qtd - numm);
                   quant_FINAL = (qtd_f * factor_conversao).toFixed(3);
-                  quant_FINAL2 = (qtd_f * 1).toFixed(3);
+                  quant_FINAL2 = (qtd_f * 1).toFixed(4);
 
                   /*console.log(qtd);
                   console.log(value);
@@ -2401,7 +2402,7 @@ export class ConstbanhosformComponent implements OnInit {
 
             var qtdconvers = parseFloat(quant.replace(",", ".")) / conver;
             var qtd2 = (parseFloat(quant_FINAL.replace(",", ".")) / conver);
-            var quant_FINAL2 = (Math.max(0, qtd2)).toFixed(3).replace(".", ",");
+            var quant_FINAL2 = (Math.max(0, qtd2)).toFixed(4).replace(".", ",");
 
             this.etiquetasaditivo.push({
               id: response[x].id_MOV_MANU_ETIQUETA, numero: response[x].etqnum, produto: "", qtd: quant, consumir: consumir, quant_FINAL: quant_FINAL, quant_FINAL2: quant_FINAL2,
@@ -2569,7 +2570,7 @@ export class ConstbanhosformComponent implements OnInit {
               etiqueta.consumir = parseFloat(cons).toFixed(3).replace(".", ",");
               var qtd_f = Math.max(0, qtd - numm);
               etiqueta.quant_FINAL = (qtd_f * this.factor_conversao).toFixed(3).replace(".", ",");
-              etiqueta.quant_FINAL2 = (qtd_f * 1).toFixed(3).replace(".", ",");
+              etiqueta.quant_FINAL2 = (qtd_f * 1).toFixed(4).replace(".", ",");
               //etiqueta.qtdconvers = 0;
               this.tempconsumiraditivo = falta.toFixed(3).replace(".", ",");
             } else {
@@ -2707,7 +2708,7 @@ export class ConstbanhosformComponent implements OnInit {
               etiqueta.consumir = parseFloat(cons).toFixed(3).replace(".", ",");
               var qtd_f = Math.max(0, qtd - numm);
               etiqueta.quant_FINAL = (qtd_f * this.factor_conversao).toFixed(3).replace(".", ",");
-              etiqueta.quant_FINAL2 = (qtd_f * 1).toFixed(3).replace(".", ",");
+              etiqueta.quant_FINAL2 = (qtd_f * 1).toFixed(4).replace(".", ",");
               //etiqueta.qtdconvers = 0;
               this.tempconsumiraditivo = falta.toFixed(3).replace(".", ",");
             } else {
@@ -2844,9 +2845,9 @@ export class ConstbanhosformComponent implements OnInit {
           if (to_final < 0) to_final = 0;
           this.etiquetasaditivo[y].quant_FINAL = to_final.toFixed(3).replace(".", ",");
           if (((this.etiquetasaditivo[y].qtdconvers.replace(",", ".") - this.etiquetasaditivo[y].consumir.replace(",", "."))) > 0) {
-            this.etiquetasaditivo[y].quant_FINAL2 = ((this.etiquetasaditivo[y].qtdconvers.replace(",", ".") - this.etiquetasaditivo[y].consumir.replace(",", "."))).toFixed(3).replace(".", ",");
+            this.etiquetasaditivo[y].quant_FINAL2 = ((this.etiquetasaditivo[y].qtdconvers.replace(",", ".") - this.etiquetasaditivo[y].consumir.replace(",", "."))).toFixed(4).replace(".", ",");
           } else {
-            this.etiquetasaditivo[y].quant_FINAL2 = "0,000"
+            this.etiquetasaditivo[y].quant_FINAL2 = "0,0000"
           }
         }
       }

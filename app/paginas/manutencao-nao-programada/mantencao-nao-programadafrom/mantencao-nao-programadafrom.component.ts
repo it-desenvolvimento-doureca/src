@@ -865,6 +865,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
           MOV_MANUTENCAO_LINHA.cod_REF = this.arrayForm.find(item => item.pos == pos).aditivos[x].cod_REF;
           MOV_MANUTENCAO_LINHA.stkunit = this.arrayForm.find(item => item.pos == pos).aditivos[x].unidstock;
           MOV_MANUTENCAO_LINHA.liecod = this.arrayForm.find(item => item.pos == pos).aditivos[x].liecod;
+          MOV_MANUTENCAO_LINHA.nome_REF = this.arrayForm.find(item => item.pos == pos).aditivos[x].nome_REF;
 
           this.criar(MOV_MANUTENCAO_LINHA, pos, x, id_manu, count);
         } else {
@@ -1540,10 +1541,17 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
            MOV_MANUTENCAO_CAB.utz_PREPARACAO = this.user;
            MOV_MANUTENCAO_CAB.hora_PREPARACAO = new Date().toLocaleTimeString().slice(0, 5);*/
 
-          MOV_MANUTENCAO_CAB.data_EXECUCAO = new Date();
+          var data_manu = new Date();
+          MOV_MANUTENCAO_CAB.data_EXECUCAO = data_manu;
           MOV_MANUTENCAO_CAB.utz_EXECUCAO = this.user;
-          MOV_MANUTENCAO_CAB.hora_EXECUCAO = new Date().toLocaleTimeString().slice(0, 5);
+          MOV_MANUTENCAO_CAB.hora_EXECUCAO = data_manu.toLocaleTimeString().slice(0, 5);
           MOV_MANUTENCAO_CAB.obs_EXECUCAO = this.arrayForm.find(item => item.pos == pos).obs_exec;
+
+
+          MOV_MANUTENCAO_CAB.data_PREPARACAO = data_manu;
+          MOV_MANUTENCAO_CAB.utz_PREPARACAO = this.user;
+          MOV_MANUTENCAO_CAB.hora_PREPARACAO = data_manu.toLocaleTimeString().slice(0, 5);
+
           this.arrayForm.find(item => item.pos == pos).executado = true
           if (this.admin && this.arrayForm.find(item => item.pos == pos).data_exc != null) {
             MOV_MANUTENCAO_CAB.data_EXECUCAO = (this.arrayForm.find(item => item.pos == pos).data_exc == null) ? null : new Date(this.arrayForm.find(item => item.pos == pos).data_exc);
@@ -2206,7 +2214,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
 
                   var qtd_f = Math.max(0, qtd - numm);
                   quant_FINAL = (qtd_f * factor_conversao).toFixed(3);
-                  quant_FINAL2 = (qtd_f * 1).toFixed(3);
+                  quant_FINAL2 = (qtd_f * 1).toFixed(4);
 
                   /*console.log(qtd);
                   console.log(value);
@@ -2341,7 +2349,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
 
             var qtdconvers = parseFloat(quant.replace(",", ".")) / conver;
             var qtd2 = (parseFloat(quant_FINAL.replace(",", ".")) / conver);
-            var quant_FINAL2 = (Math.max(0, qtd2)).toFixed(3).replace(".", ",");
+            var quant_FINAL2 = (Math.max(0, qtd2)).toFixed(4).replace(".", ",");
             //if (parseFloat(quant_FINAL.replace(",", ".")) == 0) quant_FINAL2 = (Math.max(0, 0)).toFixed(3).replace(".", ",");
             this.etiquetasaditivo.push({
               id: response[x].id_MOV_MANU_ETIQUETA, numero: response[x].etqnum, produto: "", qtd: quant, consumir: consumir, quant_FINAL: quant_FINAL, quant_FINAL2: quant_FINAL2,
@@ -2509,7 +2517,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
               etiqueta.consumir = parseFloat(cons).toFixed(3).replace(".", ",");
               var qtd_f = Math.max(0, qtd - numm);
               etiqueta.quant_FINAL = (qtd_f * this.factor_conversao).toFixed(3).replace(".", ",");
-              etiqueta.quant_FINAL2 = (qtd_f * 1).toFixed(3).replace(".", ",");
+              etiqueta.quant_FINAL2 = (qtd_f * 1).toFixed(4).replace(".", ",");
               //etiqueta.qtdconvers = 0;
               this.tempconsumiraditivo = falta.toFixed(3).replace(".", ",");
             } else {
@@ -2646,7 +2654,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
               etiqueta.consumir = parseFloat(cons).toFixed(3).replace(".", ",");
               var qtd_f = Math.max(0, qtd - numm);
               etiqueta.quant_FINAL = (qtd_f * this.factor_conversao).toFixed(3).replace(".", ",");
-              etiqueta.quant_FINAL2 = (qtd_f * 1).toFixed(3).replace(".", ",");
+              etiqueta.quant_FINAL2 = (qtd_f * 1).toFixed(4).replace(".", ",");
               //etiqueta.qtdconvers = 0;
               this.tempconsumiraditivo = falta.toFixed(3).replace(".", ",");
             } else {
@@ -2783,9 +2791,9 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
           if (to_final < 0) to_final = 0;
           this.etiquetasaditivo[y].quant_FINAL = to_final.toFixed(3).replace(".", ",");
           if (((this.etiquetasaditivo[y].qtdconvers.replace(",", ".") - this.etiquetasaditivo[y].consumir.replace(",", "."))) > 0) {
-            this.etiquetasaditivo[y].quant_FINAL2 = ((this.etiquetasaditivo[y].qtdconvers.replace(",", ".") - this.etiquetasaditivo[y].consumir.replace(",", "."))).toFixed(3).replace(".", ",");
+            this.etiquetasaditivo[y].quant_FINAL2 = ((this.etiquetasaditivo[y].qtdconvers.replace(",", ".") - this.etiquetasaditivo[y].consumir.replace(",", "."))).toFixed(4).replace(".", ",");
           } else {
-            this.etiquetasaditivo[y].quant_FINAL2 = "0,000"
+            this.etiquetasaditivo[y].quant_FINAL2 = "0,0000"
           }
         }
       }

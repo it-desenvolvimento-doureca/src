@@ -16,7 +16,8 @@ export class AppComponent {
     myDate: Date;
     btdisabled: boolean;
     listfile;
-    uploadedFiles = [];;
+    uploadedFiles = [];semInternet: boolean;
+;
     email_assunto: string;
     email_mensagem: string;
     nome: any;
@@ -30,9 +31,15 @@ export class AppComponent {
     @ViewChild('closedialog') closedialog: ElementRef;
     @ViewChild('closedialog2') closedialog2: ElementRef;
     constructor(private UploadService: UploadService, private GERPERFILLINService: GERPERFILLINService, private globalVar: AppGlobals, private ABDICLINHAService: ABDICLINHAService, private renderer: Renderer, location: Location, private router: Router) {
-        //this.myDate = new Date(); 
+        //this.myDate = new Date();
+        this.semInternet = false; 
         setInterval(() => {         //replaced function() by ()=>
             this.myDate = new Date();
+            if (navigator.onLine) {
+                this.semInternet = false;
+              } else {
+                this.semInternet = true;
+              }
         }, 1000);
         this.location = location;
         //preenche combobox linhas

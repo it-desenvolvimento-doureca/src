@@ -17,7 +17,7 @@ import { ABDICTIPOMANUTENCAOService } from '../../../servicos/ab-dic-tipo-manute
 })
 export class AnaliseconsumosetiquetasComponent {
 
- 
+
   numerosemana;
   numerosemanas: any;
   tipos: any[];
@@ -87,7 +87,7 @@ export class AnaliseconsumosetiquetasComponent {
     this.DATA_PLANEAMENTO = new Date();
     this.DATA_PLANEAMENTO2 = new Date(new Date().getFullYear(), 0, 1);
 
-    this.estados = [{ label: "Seleccione um estado", value: null }, { label: "Em Planeamento", value: "'Em Planeamento'" }, { label: "Planeado", value: "'Planeado'" },
+    this.estados = [/*{ label: "Seleccione um estado", value: null },*/ { label: "Em Planeamento", value: "'Em Planeamento'" }, { label: "Planeado", value: "'Planeado'" },
     { label: "Em Preparação", value: "'Em Preparação'" }, { label: "Preparado", value: "'Preparado'" }, { label: "Em Execução", value: "'Em Execução'" }, { label: "Executado", value: "'Executado'" }];
 
     this.classifs = [{ label: "Seleccione uma Man.", value: null }, { label: "Manutenção Planeada", value: "M" }, { label: "Construção Banho", value: "B" },
@@ -448,7 +448,7 @@ export class AnaliseconsumosetiquetasComponent {
     this.columnDefs.push({ headerName: "QUANT", field: "QUANT", valueFormatter: currencyFormatter, width: 141, enableValue: true, enableRowGroup: true, enablePivot: true });
     this.columnDefs.push({ headerName: "QUANT FINAL UNID. STOCK", valueFormatter: currencyFormatter, field: "QUANT_FINAL", width: 265, enableValue: true, enableRowGroup: true, enablePivot: true });
     this.columnDefs.push({ headerName: "CONSUMIR", field: "CONSUMIR", valueFormatter: currencyFormatter, width: 166, enableValue: true, enableRowGroup: true, enablePivot: true });
-    this.columnDefs.push({ headerName: "CONSUMIR UNID. STOCK", field: "CONSUMIRUNIDSTOCK", valueFormatter: currencyFormatter, width: 260, enableValue: true, enableRowGroup: true, enablePivot: true });   
+    this.columnDefs.push({ headerName: "CONSUMIR UNID. STOCK", field: "CONSUMIRUNIDSTOCK", valueFormatter: currencyFormatter, width: 260, enableValue: true, enableRowGroup: true, enablePivot: true });
     this.columnDefs.push({ headerName: "QUANT FINAL UNID. ADITIVO", valueFormatter: currencyFormatter, field: "QUANT_FINAL2", width: 268, enableValue: true, enableRowGroup: true, enablePivot: true });
     this.columnDefs.push({ headerName: "NÚMERO DA SEMANA", field: "NUMEROSEMANA", width: 268, enableValue: true, enableRowGroup: true, enablePivot: true });
     // this.columnDefs.push({ headerName: "FACTOR CONVERSÃO", filter: 'text', field: "FACTOR_CONVERSAO", width: 143, enableValue: true, enableRowGroup: true, enablePivot: true });
@@ -479,9 +479,10 @@ export class AnaliseconsumosetiquetasComponent {
     if (this.numerosemana && this.numerosemana != null && this.numerosemana != '') nsem = this.numerosemana.toString();
     var data = [{
       NUMEROSEMANA: nsem,
-      ESTADO: estado, CLASSIF: this.classif, DATA_PLANEAMENTO: this.DATA_PLANEAMENTO, DATA_PLANEAMENTO2: this.DATA_PLANEAMENTO2, DATA_PREVISTA: this.DATA_PREVISTA,
-      DATA_PREVISTA2: this.DATA_PREVISTA2, COD_REF: this.referencia, NOME_REF: this.NOME_REF, NOME_COMPONENTE: this.NOME_COMPONENTE, ID_TIPO_MANUTENCAO: this.ID_TIPO_MANUTENCAO
+      ESTADO: estado, CLASSIF: this.classif, DATA_PLANEAMENTO: this.formatDate(this.DATA_PLANEAMENTO), DATA_PLANEAMENTO2: this.formatDate(this.DATA_PLANEAMENTO2), DATA_PREVISTA: this.formatDate(this.DATA_PREVISTA),
+      DATA_PREVISTA2: this.formatDate(this.DATA_PREVISTA2), COD_REF: this.referencia, NOME_REF: this.NOME_REF, NOME_COMPONENTE: this.NOME_COMPONENTE, ID_TIPO_MANUTENCAO: this.ID_TIPO_MANUTENCAO
     }];
+
     this.ABMOVMANUTENCAOService.getallAnaliseConsumos(data).subscribe(
       response => {
         var total = Object.keys(response).length;
@@ -570,7 +571,7 @@ export class AnaliseconsumosetiquetasComponent {
 
 
             rowData['CONSUMIRUNIDSTOCK'] = (response[y][42] != null) ? parseFloat((response[y][42] * rowData['CONVERSOR']).toFixed(4)) : "";
-            rowData['CONSUMIR'] = (response[y][42] == null) ? "": parseFloat(response[y][42]);
+            rowData['CONSUMIR'] = (response[y][42] == null) ? "" : parseFloat(response[y][42]);
 
             rowData['NUMEROSEMANA'] = response[y][43];
             /* var count = 15;
@@ -815,15 +816,19 @@ export class AnaliseconsumosetiquetasComponent {
 
   //formatar a data para yyyy-mm-dd
   formatDate(date) {
-    var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear();
+    if (date == null) {
+      return null;
+    } else {
+      var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
 
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
+      if (month.length < 2) month = '0' + month;
+      if (day.length < 2) day = '0' + day;
 
-    return [year, month, day].join('-');
+      return [year, month, day].join('-');
+    }
   }
 
   createRowData(inicio, update = false) {

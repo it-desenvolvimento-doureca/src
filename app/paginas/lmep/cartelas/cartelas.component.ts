@@ -644,7 +644,7 @@ export class CartelasComponent {
   }
 
   configuracoes(event, update = false) {
-    this.texto_vista = this.config.find(item => item.value == this.num_vista).label;
+    if (this.config.length > 0) this.texto_vista = this.config.find(item => item.value == this.num_vista).label;
     if (this.num_vista != 0) {
       var array = this.array.find(item => item.id == this.num_vista);
       if (array && !update) {
