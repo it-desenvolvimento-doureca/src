@@ -9,9 +9,9 @@ import { AppGlobals } from "app/menu/sidebar.metadata";
 @Injectable()
 export class ABDICBANHOService {
   handleError: any;
-  
+
   private headers = new Headers({ 'Content-Type': 'application/json' });
-  constructor(private http: Http,private globalVar: AppGlobals) { }
+  constructor(private http: Http, private globalVar: AppGlobals) { }
 
   create(data: AB_DIC_BANHO) {
     return this.http
@@ -45,8 +45,17 @@ export class ABDICBANHOService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
-  getAllLINHAbylinha_tipo(id,tipo) {
-    const url = webUrl.host + '/rest/sirb/getAllLINHAbylinha_tipo/' + id + '/0/'+tipo;
+  getAllLINHAbylinhatodos(id) {
+    const url = webUrl.host + '/rest/sirb/getAllLINHAbylinhatodos/' + id + '/0';
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
+
+  getAllLINHAbylinha_tipo(id, tipo) {
+    const url = webUrl.host + '/rest/sirb/getAllLINHAbylinha_tipo/' + id + '/0/' + tipo;
     return this.http
       .get(url)
       .map(this.extractData)

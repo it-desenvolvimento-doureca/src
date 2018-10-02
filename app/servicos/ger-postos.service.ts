@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response } from '@angular/http';
 import { Observable } from "rxjs/Observable";
-
 import 'rxjs/Rx';
 import { webUrl } from 'assets/config/webUrl';
 import { GER_POSTOS } from 'app/entidades/GER_POSTOS';

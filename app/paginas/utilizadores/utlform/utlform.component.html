@@ -79,12 +79,12 @@
                 <div class="col-md-2">
                   <div class="form-group form-black label-floating">
                     <label style="font-size: 14px;">Módulo</label>
-                    <p-dropdown [disabled]="!modoedicao" [filter]="true" [options]="modulos" (onChange)="atualizaperfil()" [style]="{'width':'100%'}"
+                    <p-dropdown [disabled]="!modoedicao || novo" [filter]="true" [options]="modulos" (onChange)="atualizaperfil()" [style]="{'width':'100%'}"
                       [ngModelOptions]="{standalone: true}" [(ngModel)]="id_modulo" [ngModelOptions]="{standalone: true}"></p-dropdown>
                   </div>
                 </div>
                 <div class="col-md-8">
-                  <p-pickList [class.disabled]="!modoedicao" (onMoveToTarget)="onMoveToTarget($event)" (onMoveToSource)="onMoveToSource($event)"
+                  <p-pickList [class.disabled]="!modoedicao || novo" (onMoveToTarget)="onMoveToTarget($event)" (onMoveToSource)="onMoveToSource($event)"
                     [source]="sourcePerfil" [showTargetControls]="false" [showSourceControls]="false" [target]="targetPerfil"
                     sourceHeader="Perfis" targetHeader="Perfis do Utilizador" [responsive]="true" filterBy="nome" dragdrop="true"
                     filterBy="nome" sourceFilterPlaceholder="Pesquisar pelo perfil" targetFilterPlaceholder="Pesquisar pelo perfil"

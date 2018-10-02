@@ -31,14 +31,14 @@ export class ABDICCOMPONENTEService {
   }
 
   getAll(tipo): Observable<AB_DIC_COMPONENTE[]> {
-    const url = webUrl.host + '/rest/sirb/getAB_DIC_COMPONENTE/'+tipo;
+    const url = webUrl.host + '/rest/sirb/getAB_DIC_COMPONENTE/' + tipo;
     return this.http
       .get(url)
       .map(this.extractData)
       .catch((error: any) => Observable.throw('Server error'));
   }
 
-   getComponentes(){
+  getComponentes() {
     const url = webUrl.host + '/rest/sirb/getComponentes';
     return this.http
       .get(url)
@@ -46,9 +46,42 @@ export class ABDICCOMPONENTEService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
-  getEtiquetas(data){
+  getComponentesTodos() {
+    const url = webUrl.host + '/rest/sirb/getComponentesTodos';
     return this.http
-    .post(webUrl.host + '/rest/sirb/getEtiquetas', data, { headers: this.headers })
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
+  getClientes() {
+    const url = webUrl.host + '/rest/sirb/getClientes';
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
+  getMoradas(clicod) {
+    const url = webUrl.host + '/rest/sirb/getMoradas/' + clicod;
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+
+  }
+
+  getComponentesdoCliente(clicod, etsnum) {
+    const url = webUrl.host + '/rest/sirb/getComponentesdoCliente/' + clicod + '/' + etsnum;
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
+  getEtiquetas(data) {
+    return this.http
+      .post(webUrl.host + '/rest/sirb/getEtiquetas', data, { headers: this.headers })
       .map(this.extractData)
       .catch((error: any) => Observable.throw('Server error'));
   }

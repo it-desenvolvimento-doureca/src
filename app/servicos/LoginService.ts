@@ -16,7 +16,15 @@ export class LoginService implements CanActivate {
     private userIsAuthenticated: boolean;
     private user;
     private password;
-    private nodes = { node000: "registo", node001: "manutencao", node002: "registopara", node003: "construcaobanhos", node004: "manutencaonaoprogramada", node005: "manutencaoreposicao", node010: "tinas", node011: "componentes", node012: "banhos", node013: "fornecedor", node020: "linhas", node021: "unidades", node022: "zonas", node023: "turnos", node024: "adicoes", node025: "manutencoes", node026: "operacoes", node027: "armazens", node10: "utilizadores", node11: "config", node12: "parametros", node13: "eventos", node14: "configjasper", node16: "eventosprogramados", node2: "analisesjasper", node31: "grid", node33: "cartelas", node040: "homegestaobanhos", node041: "listagem", node051: "analiseconsumos",node052: "analiseconsumosetiquetas", node060: "correcaoquantidades", node061: "analiseetiquetas" };
+    private nodes = {
+        node000: "registo", node001: "manutencao", node002: "registopara", node003: "construcaobanhos", node004: "manutencaonaoprogramada", node005: "manutencaoreposicao",
+        node010: "tinas", node011: "componentes", node012: "banhos", node013: "fornecedor", node020: "linhas", node021: "unidades", node022: "zonas", node023: "turnos",
+        node024: "adicoes", node025: "manutencoes", node026: "operacoes", node027: "armazens", node10: "utilizadores", node11: "config", node12: "parametros",
+        node13: "eventos", node14: "configjasper", node16: "eventosprogramados", node2: "analisesjasper", node31: "grid", node33: "cartelas", node040: "homegestaobanhos",
+        node041: "listagem", node051: "analiseconsumos", node052: "analiseconsumosetiquetas", node060: "correcaoquantidades", node061: "analiseetiquetas",
+        node500: "reclamacoesclientes", node520: "rejeicoes", node521: "tiposreclamacoes", node522: "grausimportancia", node523: "tiposdefeito",
+        node524: "ficheirosanalise", node525: "temposresposta", node526: "accoesreclamacoes", node17: "departamentos", node18: "seccoes", node19: "grupos"
+    };
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 

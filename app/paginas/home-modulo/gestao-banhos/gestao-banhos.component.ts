@@ -234,8 +234,8 @@ export class GestaoBanhosComponent implements OnInit {
               dados2.push(null);
             }
             var cor = this.verificalimites(response[x][0].calculo, response[x][0].limite_AMARELO_INF, response[x][0].limite_AMARELO_SUP, response[x][0].limite_VERDE_INF, response[x][0].limite_VERDE_SUP);
-            this.corpo.push({ cor: cor, id: response[x][1].id_COMPONENTE, componente: response[x][1].nome_COMPONENTE, resultado: calculo, valores: dados })
-            this.datasetsgraf.push({ id: response[x][1].id_COMPONENTE, label: response[x][1].nome_COMPONENTE, data: dados2, fill: false, borderColor: this.getRandomColor(x), borderWidth: 2 });
+            this.corpo.push({ cor: cor, id: response[x][1].id_COMPONENTE, componente: response[x][1].nome_COMPONENTE, medida: response[x][3], resultado: calculo, valores: dados })
+            this.datasetsgraf.push({ id: response[x][1].id_COMPONENTE, label: response[x][1].nome_COMPONENTE + "(" + response[x][3] + ")", data: dados2, fill: false, borderColor: this.getRandomColor(x), borderWidth: 2 });
           }
 
           for (var y in this.cabecalho) {
@@ -295,21 +295,21 @@ export class GestaoBanhosComponent implements OnInit {
   getresultados(id, id_comp, id_banho, count) {
 
     if (id) {
-      this.ABMOVANALISELINHAService.getbyid_analise_comp(id, id_comp, id_banho).subscribe(
+      this.ABMOVANALISELINHAService.getbyid_analise_comp2(id, id_comp, id_banho).subscribe(
         response => {
 
           for (var x in response) {
             var index_comp = null;
             var index_analise = null;
             var index_datasetsgraf = null;
-            index_comp = this.corpo.find(item => item.id == response[x].id_COMPONENTE);
-            index_analise = this.cabecalho.findIndex(item => item.id == response[x].id_ANALISE);
-            index_datasetsgraf = this.datasetsgraf.find(item => item.id == response[x].id_COMPONENTE)
+            index_comp = this.corpo.find(item => item.id == response[x][0].id_COMPONENTE);
+            index_analise = this.cabecalho.findIndex(item => item.id == response[x][0].id_ANALISE);
+            index_datasetsgraf = this.datasetsgraf.find(item => item.id == response[x][0].id_COMPONENTE)
             //console.log(response)
             if (index_comp != null && index_analise != null) {
-              index_comp.valores[index_analise].valor = (response[x].calculo != null) ? response[x].calculo.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '') : "";
-              index_comp.valores[index_analise].cor = this.verificalimites(response[x].calculo, response[x].limite_AMARELO_INF, response[x].limite_AMARELO_SUP, response[x].limite_VERDE_INF, response[x].limite_VERDE_SUP);
-              var calculo3 = (response[x].calculo != null) ? response[x].calculo.toFixed(3) : null;
+              index_comp.valores[index_analise].valor = (response[x][0].calculo != null) ? response[x][0].calculo.toLocaleString(undefined, { minimumFractionDigits: 3 }).replace(/\s/g, '') : "";
+              index_comp.valores[index_analise].cor = this.verificalimites(response[x][0].calculo, response[x][1], response[x][2], response[x][3], response[x][4]);
+              var calculo3 = (response[x][0].calculo != null) ? response[x][0].calculo.toFixed(3) : null;
 
               index_datasetsgraf.data[index_analise] = calculo3
             }
@@ -473,7 +473,7 @@ export class GestaoBanhosComponent implements OnInit {
     this.banhos = [];
     //preenche combobox banhos
     ///if (this.linha != null) linha = this.linha;
-    this.ABDICBANHOService.getAllLINHAbylinha(linha).subscribe(
+    this.ABDICBANHOService.getAllLINHAbylinhatodos(linha).subscribe(
       response => {
         this.banhos.push({ label: 'Seleccione Banho', value: "" });
         for (var x in response) {

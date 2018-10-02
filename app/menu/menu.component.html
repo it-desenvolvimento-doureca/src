@@ -9,6 +9,8 @@
     <div class="nav-container">
         <div style="margin-top:20px">
             <div class="panel-group" id="accordion">
+
+                <!-- MENU BANHOS -->
                 <div class="panel panel-default">
                     <div (click)="abrirdashboard()" class="panel-heading" [ngClass]="{ 'active':router.isActive('/manutencao',true) || router.isActive('/registo',true) ||router.isActive('/fornecedor',true) || router.isActive('/tinas',true)|| router.isActive('/componentes',true)|| router.isActive('/banhos',true)
                     || router.isActive('/gestaobanhos_relatorios',true) || router.isActive('/operacoes',true)|| router.isActive('/homegestaobanhos',true) || router.isActive('/linhas',true) || router.isActive('/unidades',true)|| router.isActive('/zonas',true)|| router.isActive('/turnos',true) || router.isActive('/adicoes',true) || router.isActive('/manutencoes',true) || router.isActive('/registopara',true)  || router.isActive('/manutencaonaoprogramada',true) || router.isActive('/manutencaoreposicao',true) || router.isActive('/construcaobanhos',true) }">
@@ -23,7 +25,8 @@
                             <table class="table">
                                 <tr>
                                     <td>
-                                        <li id="node00" (click)="linha()" data-toggle="collapse" data-target="#movi" class="collapsed" [ngClass]="{'active':router.isActive('/manutencao',true) || router.isActive('/registopara',true)  || router.isActive('/construcaobanhos',true) ||  router.isActive('/manutencaonaoprogramada',true) || router.isActive('/manutencaoreposicao',true) || router.isActive('/registo',true)}">
+                                        <li id="node00" (click)="linha()" data-toggle="collapse" data-target="#movi"
+                                            class="collapsed" [ngClass]="{'active':router.isActive('/manutencao',true) || router.isActive('/registopara',true)  || router.isActive('/construcaobanhos',true) ||  router.isActive('/manutencaonaoprogramada',true) || router.isActive('/manutencaoreposicao',true) || router.isActive('/registo',true)}">
                                             <a>Movimentos
                                                 <span class="arrow"></span>
                                             </a>
@@ -59,7 +62,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <li id="node05" data-toggle="collapse" data-target="#analiseconsumos" class="collapsed" [ngClass]="{ 'active': router.isActive('/analiseconsumos',true)}">
+                                        <li id="node05" data-toggle="collapse" data-target="#analiseconsumos" class="collapsed"
+                                            [ngClass]="{ 'active': router.isActive('/analiseconsumos',true)}">
                                             <a>Consultas
                                                 <span class="arrow"></span>
                                             </a>
@@ -76,7 +80,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <li id="node01" data-toggle="collapse" data-target="#tabelas" class="collapsed" [ngClass]="{ 'active': router.isActive('/fornecedor',true) || router.isActive('/tinas',true)|| router.isActive('/componentes',true)||router.isActive('/banhos',true)}">
+                                        <li id="node01" data-toggle="collapse" data-target="#tabelas" class="collapsed"
+                                            [ngClass]="{ 'active': router.isActive('/fornecedor',true) || router.isActive('/tinas',true)|| router.isActive('/componentes',true)||router.isActive('/banhos',true)}">
                                             <a (click)="linha()">Tabelas
                                                 <span class="arrow"></span>
                                             </a>
@@ -99,7 +104,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <li id="node02" data-toggle="collapse" data-target="#parametros" class="collapsed" [ngClass]="{ 'active': router.isActive('/operacoes',true) || router.isActive('/linhas',true) || router.isActive('/unidades',true)|| router.isActive('/zonas',true)|| router.isActive('/turnos',true) || router.isActive('/adicoes',true) || router.isActive('/manutencoes',true)}">
+                                        <li id="node02" data-toggle="collapse" data-target="#parametros" class="collapsed"
+                                            [ngClass]="{ 'active': router.isActive('/operacoes',true) || router.isActive('/linhas',true) || router.isActive('/unidades',true)|| router.isActive('/zonas',true)|| router.isActive('/turnos',true) || router.isActive('/adicoes',true) || router.isActive('/manutencoes',true)}">
                                             <a>Parâmetros
                                                 <span class="arrow"></span>
                                             </a>
@@ -134,7 +140,8 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <li id="node06" data-toggle="collapse" data-target="#utilitarios" class="collapsed" [ngClass]="{ 'active': router.isActive('/correcaoquantidades',true) || router.isActive('/analiseetiquetas',true) }">
+                                        <li id="node06" data-toggle="collapse" data-target="#utilitarios" class="collapsed"
+                                            [ngClass]="{ 'active': router.isActive('/correcaoquantidades',true) || router.isActive('/analiseetiquetas',true) }">
                                             <a>Utilitários
                                                 <span class="arrow"></span>
                                             </a>
@@ -153,6 +160,8 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- MENU LMEP -->
                 <div class="panel panel-default">
                     <div class="panel-heading" [class.active]="router.isActive('/grid',true) || router.isActive('/lmep_relatorios',true)">
                         <h4 class="panel-title">
@@ -188,6 +197,105 @@
                         </div>
                     </div>
                 </div>
+
+
+
+                <!-- MENU RECLAMAÇÕES-->
+                <!---->
+                <div class="panel panel-default">
+                    <div class="panel-heading" [ngClass]="{ 'active': router.isActive('/reclamacoesclientes',true) || router.isActive('/temposresposta',true) || router.isActive('/rejeicoes',true)  || router.isActive('/accoesreclamacoes',true) || router.isActive('/tiposreclamacoes',true) || router.isActive('/grausimportancia',true)|| router.isActive('/tiposdefeito',true) || router.isActive('/ficheirosanalise',true) }">
+                        <h4 class="panel-title">
+                            <a id="node5" data-toggle="collapse" data-parent="#accordion" href="#collapsereclamacoes">
+                                <span class="glyphicon glyphicon-list-alt ">
+                                </span>Reclamações</a>
+                        </h4>
+                    </div>
+                    <div id="collapsereclamacoes" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <table class="table">
+                                <tr>
+                                    <td>
+                                        <li id="node50" data-toggle="collapse" data-target="#movi3" class="collapsed"
+                                            [ngClass]="{'active':router.isActive('/reclamacoesclientes',true) }">
+                                            <a>Movimentos
+                                                <span class="arrow"></span>
+                                            </a>
+                                        </li>
+                                        <ul class="sub-menu collapse" id="movi3">
+                                            <li id="node500" [routerLinkActive]="['active']" [routerLink]="['/reclamacoesclientes']">
+                                                <a>Reclamações Clientes</a>
+                                            </li>
+                                            <li id="node501" [routerLinkActive]="['active']" [routerLink]="['/manutencao']">
+                                                <a>Reclamações Fornecedores</a>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <li id="node53" data-toggle="collapse" [routerLinkActive]="['active']">
+                                            <a [routerLink]="['/gestaobanhos_relatorios']">Relatórios de Gestão</a>
+                                        </li>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <li id="node55" data-toggle="collapse" data-target="#rrrclam" class="collapsed"
+                                            [ngClass]="{ 'active': router.isActive('/analiseconsumos',true)}">
+                                            <a>Consultas
+                                                <span class="arrow"></span>
+                                            </a>
+                                        </li>
+                                        <!--<ul class="sub-menu collapse" id="rrrclam">
+                                            <li id="node551" [routerLinkActive]="['active']" [routerLink]="['/analiseconsumos']">
+                                                <a>Análise de Consumos</a>
+                                            </li>
+                                            <li id="node552" [routerLinkActive]="['active']" [routerLink]="['/analiseconsumosetiquetas']">
+                                                <a>Análise Cons. Etiquetas</a>
+                                            </li>
+                                        </ul>-->
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <li id="node52" data-toggle="collapse" data-target="#parametrosrecl" class="collapsed"
+                                            [ngClass]="{ 'active': router.isActive('/temposresposta',true) || router.isActive('/rejeicoes',true) || router.isActive('/accoesreclamacoes',true)  || router.isActive('/tiposreclamacoes',true) || router.isActive('/grausimportancia',true)|| router.isActive('/tiposdefeito',true) || router.isActive('/ficheirosanalise',true) }">
+                                            <a>Parâmetros
+                                                <span class="arrow"></span>
+                                            </a>
+                                        </li>
+                                        <ul class="sub-menu collapse" id="parametrosrecl">
+                                            <li id="node520" [routerLinkActive]="['active']" [routerLink]="['/rejeicoes']">
+                                                <a>Rejeições</a>
+                                            </li>
+                                            <li id="node521" [routerLinkActive]="['active']" [routerLink]="['/tiposreclamacoes']">
+                                                <a>Tipos de Reclamações</a>
+                                            </li>
+                                            <li id="node522" [routerLinkActive]="['active']" [routerLink]="['/grausimportancia']">
+                                                <a>Graus de Importância</a>
+                                            </li>
+                                            <li id="node523" [routerLinkActive]="['active']" [routerLink]="['/tiposdefeito']">
+                                                <a>Tipos de Defeito</a>
+                                            </li>
+                                            <li id="node524" [routerLinkActive]="['active']" [routerLink]="['/ficheirosanalise']">
+                                                <a>Ficheiros de Análise</a>
+                                            </li>
+                                            <li id="node525" [routerLinkActive]="['active']" [routerLink]="['/temposresposta']">
+                                                <a>Tempos de Resposta</a>
+                                            </li>
+                                            <li id="node526" [routerLinkActive]="['active']" [routerLink]="['/accoesreclamacoes']">
+                                                <a>Acções de Reclamações</a>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!---->
+                <!-- MENU ANÁLISES GESTÃO -->
                 <div class="panel panel-default">
                     <div class="panel-heading" [class.active]="router.isActive('/analisesjasper',true)">
                         <h4 class="panel-title">
@@ -210,8 +318,11 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- MENU CONFIGURAÇÕES -->
                 <div class="panel panel-default">
-                    <div class="panel-heading" [ngClass]="{ 'active': router.isActive('/utilizadores',true) || router.isActive('/config',true) || router.isActive('/parametros',true) || router.isActive('/eventos',true)}">
+                    <div class="panel-heading" [ngClass]="{ 'active': router.isActive('/utilizadores',true) || router.isActive('/config',true) || router.isActive('/parametros',true) || router.isActive('/eventos',true)
+                    || router.isActive('/grupos',true) || router.isActive('/seccoes',true) || router.isActive('/departamentos',true)}">
                         <h4 class="panel-title">
                             <a id="node1" data-toggle="collapse" data-parent="#accordion" href="#collapseConf">
                                 <span class="glyphicon glyphicon-cog ">
@@ -270,10 +381,33 @@
                                         </li>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td>
+                                        <li id="node17" [routerLinkActive]="['active']">
+                                            <a [routerLink]="['/departamentos']">Departamentos</a>
+                                        </li>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <li id="node18" [routerLinkActive]="['active']">
+                                            <a [routerLink]="['/seccoes']">Secções</a>
+                                        </li>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <li id="node19" [routerLinkActive]="['active']">
+                                            <a [routerLink]="['/grupos']">Grupos</a>
+                                        </li>
+                                    </td>
+                                </tr>
                             </table>
                         </div>
                     </div>
                 </div>
+
+                <!-- MENU CONTA -->
                 <div class="panel panel-default">
                     <div class="panel-heading" [class.active]="router.isActive('/perfil',true)">
                         <h4 class="panel-title">

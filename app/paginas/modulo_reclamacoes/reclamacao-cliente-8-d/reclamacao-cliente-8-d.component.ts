@@ -1,0 +1,2745 @@
+import { Component, OnInit, ViewChild, Renderer, ElementRef } from '@angular/core';
+import { webUrl } from 'assets/config/webUrl';
+import { FileUpload, ConfirmationService } from '../../../../../node_modules/primeng/primeng';
+import { DomSanitizer } from '@angular/platform-browser';
+import { UploadService } from '../../../servicos/upload.service';
+import { AppGlobals } from '../../../menu/sidebar.metadata';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
+import { RCMOVRECLAMACAOService } from '../../../servicos/rc-mov-reclamacao.service';
+import { RC_MOV_RECLAMACAO } from '../../../entidades/RC_MOV_RECLAMACAO';
+import { RCDICTIPODEFEITOService } from '../../../servicos/rc-dic-tipo-defeito.service';
+import { RCDICTIPORECLAMACAOService } from '../../../servicos/rc-dic-tipo-reclamacao.service';
+import { RCDICREJEICAOService } from '../../../servicos/rc-dic-rejeicao.service';
+import { RCDICGRAUIMPORTANCIAService } from '../../../servicos/rc-dic-grau-importancia.service';
+import { ABDICCOMPONENTEService } from '../../../servicos/ab-dic-componente.service';
+import { RC_MOV_RECLAMACAO_FICHEIROS } from '../../../entidades/RC_MOV_RECLAMACAO_FICHEIROS';
+import { RC_MOV_RECLAMACAO_EQUIPA } from '../../../entidades/RC_MOV_RECLAMACAO_EQUIPA';
+import { RC_MOV_RECLAMACAO_ARTIGO_SIMILARES } from '../../../entidades/RC_MOV_RECLAMACAO_ARTIGO_SIMILARES';
+import { RC_MOV_RECLAMACAO_PLANO_ACCOES_IMEDIATAS } from '../../../entidades/RC_MOV_RECLAMACAO_PLANO_ACCOES_IMEDIATAS';
+import { RC_MOV_RECLAMACAO_PLANO_ACCOES_CORRETIVAS } from '../../../entidades/RC_MOV_RECLAMACAO_PLANO_ACCOES_CORRETIVAS';
+import { RC_MOV_RECLAMACAO_PLANO_ACCOES_PREVENTIVAS } from '../../../entidades/RC_MOV_RECLAMACAO_PLANO_ACCOES_PREVENTIVAS';
+import { RC_MOV_RECLAMACAO_ENVIOS_GARANTIDOS } from '../../../entidades/RC_MOV_RECLAMACAO_ENVIOS_GARANTIDOS';
+import { RCDICTEMPORESPOSTAService } from '../../../servicos/rc-dic-tempo-resposta.service';
+import { RCMOVRECLAMACAOFICHEIROSService } from '../../../servicos/rc-mov-reclamacao-ficheiros.service';
+import { RCMOVRECLAMACAOEQUIPAService } from '../../../servicos/rc-mov-reclamacao-equipa.service';
+import { RCMOVRECLAMACAOARTIGOSIMILARESService } from '../../../servicos/rc-mov-reclamacao-artigo-similares.service';
+import { RCMOVRECLAMACAOPLANOACCOESIMEDIATASService } from '../../../servicos/rc-mov-reclamacao-plano-accoes-imediatas.service';
+import { RCMOVRECLAMACAOPLANOACCOESCORRETIVASService } from '../../../servicos/rc-mov-reclamacao-plano-accoes-corretivas.service';
+import { RCMOVRECLAMACAOPLANOACCOESPREVENTIVASService } from '../../../servicos/rc-mov-reclamacao-plano-accoes-preventivas.service';
+import { RCMOVRECLAMACAOENVIOSGARANTIDOSService } from '../../../servicos/rc-mov-reclamacao-envios-garantidos.service';
+import { RCDICFICHEIROSANALISEService } from '../../../servicos/rc-dic-ficheiros-analise.service';
+import { GERUTILIZADORESService } from '../../../servicos/ger-utilizadores.service';
+import { GERGRUPOService } from '../../../servicos/ger-grupo.service';
+import * as FileSaver from 'file-saver';
+import { RCDICACCOESRECLAMACAOService } from '../../../servicos/rc-dic-accoes-reclamacao.service';
+import { RCMOVRECLAMACAOSTOCKService } from '../../../servicos/rc-mov-reclamacao-stock.service';
+import { RC_MOV_RECLAMACAO_STOCK } from '../../../entidades/RC_MOV_RECLAMACAO_STOCK';
+import { RC_DIC_ACCOES_RECLAMACAO } from '../../../entidades/RC_DIC_ACCOES_RECLAMACAO';
+
+@Component({
+  selector: 'app-reclamacao-cliente-8-d',
+  templateUrl: './reclamacao-cliente-8-d.component.html',
+  styleUrls: ['./reclamacao-cliente-8-d.component.css']
+})
+export class ReclamacaoCliente8DComponent implements OnInit {
+  modoedicao = false;
+
+  drop_rejeicao = [];
+  drop_tipo_reclamacao = [];
+  drop_grau_importancia = [];
+  drop_cliente = [];
+  drop_referencia = [];
+  drop_tipo_defeito = [];
+  drop_numero_reclamacao = [];
+  drop_utilizadores = [];
+
+
+  classstep = "step-1"
+  tabelaEnvios = [];
+  tabelapreventiva = [];
+  tabelaaccoesimediatas = [];
+  ficheirodeanalise = [];
+  tabelaEquipa = [];
+  tabelaArtigosSimilar = [];
+
+  fileselect = [];
+  temporesposta = [];
+  uploadedFiles: any[] = [];
+  filedescricao = [];
+  fileselectinput = [];
+  display: boolean = false;
+  displaysctockref = false;
+  srcelement;
+  type: string;
+  numero_RECLAMACAO;
+  titulo;
+  numero_RECLAMACAO_CLIENTE;
+  data_CRIA;
+  data_RECLAMACAO;
+  rejeicao;
+  tipo_RECLAMACAO;
+  utz_CRIA;
+  utz_RESPONSAVEL;
+  grau_IMPORTANCIA;
+  resposta_INICIAL;
+  cliente;
+  morada_CLIENTE;
+  contato_CLIENTE;
+  email_CLIENTE;
+  telefone_CLIENTE;
+  referencia;
+  designacao_REF;
+  familia_REF;
+  lote;
+  tipo_DEFEITO;
+  reclamacao_REVISTA;
+  qtd_ENVIADA;
+  qtd_RECUSADA;
+  devolucao;
+  observacoes_RECLAMACAO;
+  step1CONCLUIDO;
+  step2CONCLUIDO;
+  step3CONCLUIDO;
+  step4CONCLUIDO;
+  step5CONCLUIDO;
+  step6CONCLUIDO;
+  step7CONCLUIDO;
+  step8CONCLUIDO;
+  descricao_PROBLEMA;
+  problema_REPETIDO;
+  numero_RECLAMACAO_REPETIDA;
+  reclamacao_REPETIDA_ACEITE;
+  accoes_EVITAR;
+  observacoes_ACCOES_EVITAR;
+  causas_PROBLEMA;
+  data_PREVISTA_REPOSTA4;
+  dias_RESPOSTA4;
+  data_REAL_RESPOSTA4;
+  dias_ATRASO4;
+  responsabilidade_ATRASO4;
+  accoes_NECESSARIAS;
+  accoes_NECESSARIAS_TEXTO;
+  reclamacao_ENCERRADA;
+  data_FECHO;
+  data_PREVISTA_REPOSTA6;
+  dias_RESPOSTA6;
+  data_REAL_RESPOSTA6;
+  dias_ATRASO6;
+  responsabilidade_ATRASO6;
+  custos_EXTERNA;
+  custos_INTERNA;
+  custos_DEVOLUCAO;
+  custos_OUTROS;
+  custos_TOTAL;
+  custos_INTERNA_QTD_CLASSIF;
+  custos_INTERNA_QTD_REJEITADA;
+  custos_REJEICAO_INTERNA;
+  custos_EXTERNA_QTD_CLASSIF;
+  custos_EXTERNA_QTD_REJEITADA;
+  custos_REJEICAO_EXTERNA;
+
+  ref_IGUAIS: boolean;
+  observacoes_RESULTADOS: string;
+  user: any;
+  novo: boolean;
+  reclamacoes: any;
+  i: any;
+
+
+  @ViewChild('fileInput') fileInput: FileUpload;
+  @ViewChild('inputnotifi') inputnotifi: ElementRef;
+  @ViewChild('inputgravou') inputgravou: ElementRef;
+  @ViewChild('inputapagar') inputapagar: ElementRef;
+  @ViewChild('inputerro') inputerro: ElementRef;
+  @ViewChild('inputerroficheiro') inputerroficheiro: ElementRef;
+  @ViewChild('buttongravar') buttongravar: ElementRef;
+
+  reclamacao_dados: RC_MOV_RECLAMACAO;
+  hora_CRIA: string;
+  hora_RECLAMACAO;
+  tabelaaccoescorretivas: any[] = [];
+  tabelaEficacia: any[] = [];
+  responsabilidade_ATRASO4_DESCRICAO: string;
+  responsabilidade_ATRASO6_DESCRICAO: string;
+  seguimento_FORNECEDORES: boolean;
+  amdec: boolean;
+  plano_VIGILANCIA: boolean;
+  formacao_OPERARIO: boolean;
+  plano_MANUTENCAO: boolean;
+  disimprimir: boolean;
+  drop_utilizadores2: any;
+  step1CONCLUIDO_UTZ: any;
+  step2CONCLUIDO_UTZ: any;
+  step3CONCLUIDO_UTZ: any;
+  step4CONCLUIDO_UTZ: any;
+  step5CONCLUIDO_UTZ: any;
+  step6CONCLUIDO_UTZ: any;
+  step7CONCLUIDO_UTZ: any;
+  step8CONCLUIDO_UTZ: any;
+
+  acessoSTEP1 = false;
+  acessoSTEP2 = false;
+  acessoSTEP3 = false;
+  acessoSTEP4 = false;
+  acessoSTEP5 = false;
+  acessoSTEP6 = false;
+  acessoSTEP7 = false;
+  acessoSTEP8 = false;
+  acessoadicionarACCAO = false;
+  hora_PREVISTA_REPOSTA4: string;
+  hora_REAL_RESPOSTA4: string;
+  hora_PREVISTA_REPOSTA6: string;
+  hora_REAL_RESPOSTA6: string;
+  temp_RECLAMACAO: RC_MOV_RECLAMACAO;
+  step1CONCLUIDO_DATA: Date;
+  step8CONCLUIDO_DATA: Date;
+  step7CONCLUIDO_DATA: Date;
+  step6CONCLUIDO_DATA: Date;
+  step5CONCLUIDO_DATA: Date;
+  step4CONCLUIDO_DATA: Date;
+  step3CONCLUIDO_DATA: Date;
+  step2CONCLUIDO_DATA: Date;
+  drop_moradas: any[] = [];
+  referencia_temp: string;
+  etsnum: string;
+  apagarficheiros: any;
+  nomeficheiro: any;
+  campo_x: any;
+  selectedType = "lote";
+  types: { label: string; value: string; icon: string; }[];
+  types2: { label: string; value: string; icon: string; }[];
+  displaystock: boolean;
+  displayenvios: boolean;
+  displayplaneado: boolean;
+  displayencomendado: boolean;
+  tabelaencomendado: any[];
+  tabelaplaneado: any[];
+  tabelastock: any[];
+  displayLoading: boolean;
+  drop_artigos: any[];
+  drop_accoes: any[];
+  validaloading: boolean;
+  displayvalidacao: boolean;
+  errovalida: string = ""; displayconsultaLotes: boolean;
+  tabelaConsultaLotes: any[];
+  selectedType2: string;
+  descricaoeng: string;
+  id_selected: number;
+  descricaopt: string;
+  descricaofr: string;
+  displayAddAccao: boolean;
+
+
+  constructor(private confirmationService: ConfirmationService, private RCMOVRECLAMACAOSTOCKService: RCMOVRECLAMACAOSTOCKService, private RCDICACCOESRECLAMACAOService: RCDICACCOESRECLAMACAOService, private GERGRUPOService: GERGRUPOService, private GERUTILIZADORESService: GERUTILIZADORESService, private RCDICFICHEIROSANALISEService: RCDICFICHEIROSANALISEService, private RCMOVRECLAMACAOENVIOSGARANTIDOSService: RCMOVRECLAMACAOENVIOSGARANTIDOSService, private RCMOVRECLAMACAOPLANOACCOESPREVENTIVASService: RCMOVRECLAMACAOPLANOACCOESPREVENTIVASService, private RCMOVRECLAMACAOPLANOACCOESCORRETIVASService: RCMOVRECLAMACAOPLANOACCOESCORRETIVASService, private RCMOVRECLAMACAOPLANOACCOESIMEDIATASService: RCMOVRECLAMACAOPLANOACCOESIMEDIATASService, private RCMOVRECLAMACAOARTIGOSIMILARESService: RCMOVRECLAMACAOARTIGOSIMILARESService, private RCMOVRECLAMACAOEQUIPAService: RCMOVRECLAMACAOEQUIPAService
+    , private RCMOVRECLAMACAOFICHEIROSService: RCMOVRECLAMACAOFICHEIROSService, private RCDICTEMPORESPOSTAService: RCDICTEMPORESPOSTAService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private RCDICTIPODEFEITOService: RCDICTIPODEFEITOService, private RCDICTIPORECLAMACAOService: RCDICTIPORECLAMACAOService, private RCDICREJEICAOService: RCDICREJEICAOService, private RCDICGRAUIMPORTANCIAService: RCDICGRAUIMPORTANCIAService, private renderer: Renderer, private RCMOVRECLAMACAOService: RCMOVRECLAMACAOService, private route: ActivatedRoute, private location: Location, private sanitizer: DomSanitizer, private UploadService: UploadService, private globalVar: AppGlobals, private router: Router) { }
+
+  ngOnInit() {
+
+    this.types = [
+      { label: 'Lote', value: 'lote', icon: 'fa-close' },
+      { label: 'Etiqueta', value: 'etiqueta', icon: 'fa-close' },
+      { label: 'Guia', value: 'guia', icon: 'fa-close' }
+    ];
+
+    this.types2 = [
+      { label: 'Atual', value: 'atual', icon: 'fa-close' },
+      { label: 'À data', value: 'nadata', icon: 'fa-close' }
+    ];
+
+
+    this.globalVar.setapagar(true);
+    this.globalVar.seteditar(true);
+    this.globalVar.setvoltar(true);
+    this.globalVar.seteditar(true);
+    this.globalVar.setseguinte(true);
+    this.globalVar.setanterior(true);
+    this.globalVar.setatualizar(false);
+    this.globalVar.setduplicar(false);
+    this.globalVar.sethistorico(false);
+    this.globalVar.setcriarmanutencao(false);
+    this.globalVar.setdisCriarmanutencao(true);
+
+    this.user = JSON.parse(localStorage.getItem('userapp'))["id"];
+
+    var url = this.router.routerState.snapshot.url;
+    url = url.slice(1);
+    var urlarray = url.split("/");
+
+    if (urlarray[1].match("editar") || urlarray[1].match("view")) {
+      this.novo = false;
+
+      var id;
+      var sub = this.route
+        .queryParams
+        .subscribe(params => {
+          id = params['id'] || 0;
+        });
+      if (this.globalVar.getfiltros("reclamacaocliente_id") && this.globalVar.getfiltros("reclamacaocliente_id").length > 0) {
+        this.reclamacoes = this.globalVar.getfiltros("reclamacaocliente_id");
+        this.i = this.reclamacoes.indexOf(+id);
+        this.carregaDados(true, this.reclamacoes[this.i]);
+      }
+      else {
+        //preenche array para navegar 
+        this.RCMOVRECLAMACAOService.getAll().subscribe(
+          response => {
+            this.reclamacoes = [];
+            for (var x in response) {
+              this.reclamacoes.push(response[x].id_RECLAMACAO);
+              if (response[x].id_RECLAMACAO != id) this.drop_numero_reclamacao.push({ label: response[x].id_RECLAMACAO + ' - ' + response[x].referencia + ' / ' + response[x].nome_CLIENTE, value: response[x].id_RECLAMACAO });
+            }
+
+            this.i = this.reclamacoes.indexOf(+id);
+            this.carregaDados(true, this.reclamacoes[this.i]);
+            //this.inicia(this.reclamacoes[this.i]);
+
+
+          }, error => { console.log(error); });
+      }
+
+      this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node500editar"));
+      this.globalVar.setdisCriar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node500criar"));
+      this.globalVar.setdisApagar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node500apagar"));
+
+      this.acessoSTEP1 = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node500step1");
+      this.acessoSTEP2 = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node500step2");
+      this.acessoSTEP3 = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node500step3");
+      this.acessoSTEP4 = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node500step4");
+      this.acessoSTEP5 = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node500step5");
+      this.acessoSTEP6 = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node500step6");
+      this.acessoSTEP7 = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node500step7");
+      this.acessoSTEP8 = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node500step8");
+
+      this.acessoadicionarACCAO = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node526");
+
+      this.apagarficheiros = JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node500apagarficheiros");
+
+
+
+      if (!this.acessoSTEP1) this.classstep = "";
+
+      this.disimprimir = !JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node500imprimir");
+    }
+
+    if (urlarray[1] != null) {
+      if (urlarray[1].match("editar")) {
+        this.globalVar.setseguinte(false);
+        this.globalVar.setanterior(false);
+        this.globalVar.setapagar(false);
+        this.globalVar.setcriar(true);
+        this.modoedicao = true;
+
+      } else if (urlarray[1].match("novo")) {
+        this.globalVar.setseguinte(false);
+        this.globalVar.setanterior(false);
+        this.globalVar.setapagar(false);
+        this.globalVar.setcriar(false);
+        this.novo = true;
+        this.globalVar.seteditar(false);
+        this.modoedicao = true;
+        var dirtyFormID = 'formReclama';
+        var resetForm = <HTMLFormElement>document.getElementById(dirtyFormID);
+        resetForm.reset();
+        this.data_CRIA = new Date();
+        this.hora_CRIA = new Date().toLocaleTimeString().slice(0, 5);
+        this.utz_CRIA = this.user;
+        this.carregaDados(false, null);
+
+      } else if (urlarray[1].match("view")) {
+        this.globalVar.setcriar(true);
+      }
+    }
+
+  }
+
+
+  carregaDados(inicia, id) {
+    //preenche array para navegar 
+    this.RCDICREJEICAOService.getAll().subscribe(
+      response => {
+        this.drop_rejeicao = [];
+        this.drop_rejeicao.push({ label: 'Sel. Rejeição', value: "" });
+        for (var x in response) {
+          this.drop_rejeicao.push({ label: response[x].descricao, value: response[x].id });
+        }
+        this.carregaUtilizadores(inicia, id);
+      }, error => {
+        this.carregaUtilizadores(inicia, id);
+        console.log(error);
+      });
+
+
+    // drop_cliente = [{ label: "Doureca", value: 1 }];
+
+  }
+
+
+
+  carregaUtilizadores(inicia, id) {
+    this.drop_utilizadores = [];
+    this.drop_utilizadores2 = [];
+    this.GERUTILIZADORESService.getAll().subscribe(
+      response => {
+        this.drop_utilizadores2.push({ label: "Seleccionar Utilizador", value: null });
+        var grupo = [];
+        for (var x in response) {
+          grupo.push({ label: response[x].nome_UTILIZADOR, value: "u" + response[x].id_UTILIZADOR });
+          this.drop_utilizadores2.push({ label: response[x].nome_UTILIZADOR, value: response[x].id_UTILIZADOR });
+        }
+        this.drop_utilizadores.push({ label: "Utilizadores", itens: grupo });
+
+        this.drop_utilizadores = this.drop_utilizadores.slice();
+        this.drop_utilizadores2 = this.drop_utilizadores2.slice();
+        this.carregaaccoes(inicia, id);
+      },
+      error => { console.log(error); this.carregaaccoes(inicia, id); });
+  }
+
+  carregaaccoes(inicia, id, continua = true) {
+    this.drop_accoes = [];
+    this.RCDICACCOESRECLAMACAOService.getAll().subscribe(
+      response => {
+        this.drop_accoes.push({ label: "Seleccionar Acção", value: null });
+
+        for (var x in response) {
+          this.drop_accoes.push({ label: response[x].descricao_PT, value: { id: response[x].id, descricao: response[x].descricao_PT } });
+        }
+
+        this.drop_accoes = this.drop_accoes.slice();
+        if (continua) this.carregaGrupos(inicia, id);
+      },
+      error => { console.log(error); if (continua) this.carregaGrupos(inicia, id); });
+  }
+
+  carregaGrupos(inicia, id) {
+    this.GERGRUPOService.getAll().subscribe(
+      response => {
+        var grupo = [];
+        for (var x in response) {
+          grupo.push({ label: response[x].descricao, value: "g" + response[x].id });
+        }
+        this.drop_utilizadores.push({ label: "Grupos", itens: grupo });
+
+        this.drop_utilizadores = this.drop_utilizadores.slice();
+        this.tempoResposta(inicia, id);
+      },
+      error => { console.log(error); this.tempoResposta(inicia, id); });
+  }
+
+  tempoResposta(inicia, id) {
+    this.RCDICTEMPORESPOSTAService.getAll().subscribe(
+      response => {
+        this.temporesposta = [];
+        for (var x in response) {
+          this.temporesposta['step1'] = response[x].tempo_RESPOSTA_STEP1;
+          this.temporesposta['step2'] = response[x].tempo_RESPOSTA_STEP2;
+          this.temporesposta['step3'] = response[x].tempo_RESPOSTA_STEP3;
+          this.temporesposta['step4'] = response[x].tempo_RESPOSTA_STEP4;
+          this.temporesposta['step5'] = response[x].tempo_RESPOSTA_STEP5;
+          this.temporesposta['step6'] = response[x].tempo_RESPOSTA_STEP6;
+          this.temporesposta['step7'] = response[x].tempo_RESPOSTA_STEP7;
+          this.temporesposta['step8'] = response[x].tempo_RESPOSTA_STEP8;
+
+        }
+        this.tiporeclamacao(inicia, id);
+      }, error => { this.tiporeclamacao(inicia, id); console.log(error); });
+  }
+
+  tiporeclamacao(inicia, id) {
+    this.RCDICTIPORECLAMACAOService.getAll().subscribe(
+      response => {
+        this.drop_tipo_reclamacao = [];
+        this.drop_tipo_reclamacao.push({ label: 'Sel. Tipo Recla.', value: "" });
+        for (var x in response) {
+          this.drop_tipo_reclamacao.push({ label: response[x].descricao, value: response[x].id });
+        }
+        this.grauimportancia(inicia, id);
+      }, error => { this.grauimportancia(inicia, id); console.log(error); });
+  }
+
+  grauimportancia(inicia, id) {
+    this.RCDICGRAUIMPORTANCIAService.getAll().subscribe(
+      response => {
+        this.drop_grau_importancia = [];
+        this.drop_grau_importancia.push({ label: 'Sel. Grau Import.', value: "" });
+        for (var x in response) {
+          this.drop_grau_importancia.push({ label: response[x].descricao, value: response[x].id });
+        }
+        this.tipodefeito(inicia, id);
+      }, error => { this.tipodefeito(inicia, id); console.log(error); });
+  }
+
+  tipodefeito(inicia, id) {
+    this.RCDICTIPODEFEITOService.getAll().subscribe(
+      response => {
+        this.drop_tipo_defeito = [];
+        this.drop_tipo_defeito.push({ label: 'Sel. Tipo Defeito', value: "" });
+        for (var x in response) {
+          this.drop_tipo_defeito.push({ label: response[x].descricao, value: response[x].id });
+        }
+        this.artigos(inicia, id);
+      }, error => { this.artigos(inicia, id); console.log(error); });
+  }
+
+  artigos(inicia, id) {
+    if (!this.novo) {
+      this.ABDICCOMPONENTEService.getComponentesTodos().subscribe(
+        response => {
+          this.drop_artigos = [];
+          var count = Object.keys(response).length;
+          if (count > 0) {
+            this.drop_artigos.push({ label: 'Sel. Ref. Comp.', value: null });
+            for (var x in response) {
+              this.drop_artigos.push({ label: response[x].PROREF + ' - ' + response[x].PRODES1 + ' ' + response[x].PRODES2, value: { valor: response[x].PROREF, design: response[x].PRODES1, FAMCOD: response[x].FAMCOD } });
+            }
+          }
+          this.clientes(inicia, id);
+        }, error => { this.clientes(inicia, id); console.log(error); });
+    } else {
+      this.clientes(inicia, id);
+    }
+  }
+
+  clientes(inicia, id) {
+    this.ABDICCOMPONENTEService.getClientes().subscribe(
+      response => {
+        this.drop_cliente = [];
+        this.drop_cliente.push({ label: 'Sel. Cliente.', value: "" });
+        for (var x in response) {
+          this.drop_cliente.push({ label: response[x].ADRNOM, value: { id: response[x].CLICOD, nome: response[x].ADRNOM } });
+        }
+        this.drop_cliente = this.drop_cliente.slice();
+
+        if (inicia) this.inicia(id);
+      }, error => {
+        if (inicia) this.inicia(id);
+        console.log(error);
+      });
+  }
+
+  inicia(id) {
+
+    this.RCMOVRECLAMACAOService.getbyID(id).subscribe(
+      response => {
+        var count = Object.keys(response).length;
+        //se existir banhos com o id
+        if (count > 0) {
+          this.reclamacao_dados = response[0];
+          for (var x in response) {
+            this.temp_RECLAMACAO = response[x];
+            this.numero_RECLAMACAO = response[x].id_RECLAMACAO;
+            this.titulo = response[x].titulo;
+            this.selectedType = (response[x].tipo_CAMPO_LOTE != null && response[x].tipo_CAMPO_LOTE != "") ? response[x].tipo_CAMPO_LOTE : "lote";
+            this.numero_RECLAMACAO_CLIENTE = response[x].numero_RECLAMACAO_CLIENTE;
+            this.data_CRIA = new Date(response[x].data_CRIA);
+            this.hora_CRIA = new Date(response[x].data_CRIA).toLocaleTimeString().slice(0, 5);
+            this.data_RECLAMACAO = new Date(response[x].data_RECLAMACAO);
+            this.hora_RECLAMACAO = new Date(response[x].data_RECLAMACAO).toLocaleTimeString().slice(0, 5);
+            this.rejeicao = response[x].rejeicao;
+            this.tipo_RECLAMACAO = response[x].id_TIPO_RECLAMACAO;
+            this.utz_CRIA = response[x].utz_CRIA;
+            this.utz_RESPONSAVEL = response[x].utz_RESPONSAVEL;
+            this.grau_IMPORTANCIA = response[x].grau_IMPORTANCIA;
+            this.resposta_INICIAL = response[x].resposta_INICIAL;
+            this.cliente = this.drop_cliente.find(item => item.value.id == response[x].id_CLIENTE).value;
+
+            //this.morada_CLIENTE = response[x].morada_CLIENTE;
+
+            this.contato_CLIENTE = response[x].contato_CLIENTE;
+            this.email_CLIENTE = response[x].email_CLIENTE;
+            this.telefone_CLIENTE = response[x].telefone_CLIENTE;
+            this.referencia_temp = response[x].referencia;
+            this.etsnum = response[x].etsnum;
+            //this.referencia = this.drop_referencia.find(item => item.value.valor == response[x].referencia).value;
+            this.designacao_REF = response[x].designacao_REF;
+            this.familia_REF = response[x].familia_REF;
+            this.lote = response[x].lote;
+            this.tipo_DEFEITO = response[x].tipo_DEFEITO;
+            this.reclamacao_REVISTA = response[x].reclamacao_REVISTA;
+            this.qtd_ENVIADA = response[x].qtd_ENVIADA;
+            this.qtd_RECUSADA = response[x].qtd_RECUSADA;
+            this.devolucao = response[x].devolucao;
+            this.observacoes_RECLAMACAO = response[x].observacoes_RECLAMACAO;
+            this.step1CONCLUIDO = response[x].step1CONCLUIDO;
+            this.step2CONCLUIDO = response[x].step2CONCLUIDO;
+            this.step3CONCLUIDO = response[x].step3CONCLUIDO;
+            this.step4CONCLUIDO = response[x].step4CONCLUIDO;
+            this.step5CONCLUIDO = response[x].step5CONCLUIDO;
+            this.step6CONCLUIDO = response[x].step6CONCLUIDO;
+            this.step7CONCLUIDO = response[x].step7CONCLUIDO;
+            this.step8CONCLUIDO = response[x].step8CONCLUIDO;
+
+            this.step1CONCLUIDO_DATA = (response[x].step1CONCLUIDO_DATA != null) ? new Date(response[x].step1CONCLUIDO_DATA) : null;
+            this.step2CONCLUIDO_DATA = (response[x].step2CONCLUIDO_DATA != null) ? new Date(response[x].step2CONCLUIDO_DATA) : null;
+            this.step3CONCLUIDO_DATA = (response[x].step3CONCLUIDO_DATA != null) ? new Date(response[x].step3CONCLUIDO_DATA) : null;
+            this.step4CONCLUIDO_DATA = (response[x].step4CONCLUIDO_DATA != null) ? new Date(response[x].step4CONCLUIDO_DATA) : null;
+            this.step5CONCLUIDO_DATA = (response[x].step5CONCLUIDO_DATA != null) ? new Date(response[x].step5CONCLUIDO_DATA) : null;
+            this.step6CONCLUIDO_DATA = (response[x].step6CONCLUIDO_DATA != null) ? new Date(response[x].step6CONCLUIDO_DATA) : null;
+            this.step7CONCLUIDO_DATA = (response[x].step7CONCLUIDO_DATA != null) ? new Date(response[x].step7CONCLUIDO_DATA) : null;
+            this.step8CONCLUIDO_DATA = (response[x].step8CONCLUIDO_DATA != null) ? new Date(response[x].step8CONCLUIDO_DATA) : null;
+
+            this.step1CONCLUIDO_UTZ = response[x].step1CONCLUIDO_UTZ;
+            this.step2CONCLUIDO_UTZ = response[x].step2CONCLUIDO_UTZ;
+            this.step3CONCLUIDO_UTZ = response[x].step3CONCLUIDO_UTZ;
+            this.step4CONCLUIDO_UTZ = response[x].step4CONCLUIDO_UTZ;
+            this.step5CONCLUIDO_UTZ = response[x].step5CONCLUIDO_UTZ;
+            this.step6CONCLUIDO_UTZ = response[x].step6CONCLUIDO_UTZ;
+            this.step7CONCLUIDO_UTZ = response[x].step7CONCLUIDO_UTZ;
+            this.step8CONCLUIDO_UTZ = response[x].step8CONCLUIDO_UTZ;
+
+            this.descricao_PROBLEMA = response[x].descricao_PROBLEMA;
+            this.problema_REPETIDO = response[x].problema_REPETIDO;
+            this.numero_RECLAMACAO_REPETIDA = response[x].numero_RECLAMACAO_REPETIDA;
+            this.reclamacao_REPETIDA_ACEITE = response[x].reclamacao_REPETIDA_ACEITE;
+            this.ref_IGUAIS = response[x].ref_IGUAIS;
+
+            this.seguimento_FORNECEDORES = response[x].seguimento_FORNECEDORES;
+            this.amdec = response[x].amdec;
+            this.plano_VIGILANCIA = response[x].plano_VIGILANCIA;
+            this.formacao_OPERARIO = response[x].formacao_OPERARIO;
+            this.plano_MANUTENCAO = response[x].plano_MANUTENCAO;
+            this.accoes_EVITAR = response[x].accoes_EVITAR;
+            this.observacoes_ACCOES_EVITAR = response[x].observacoes_ACCOES_EVITAR;
+            this.causas_PROBLEMA = response[x].causas_PROBLEMA;
+
+            this.data_PREVISTA_REPOSTA4 = new Date(response[x].data_PREVISTA_REPOSTA4);
+            this.hora_PREVISTA_REPOSTA4 = new Date(response[x].data_PREVISTA_REPOSTA4).toLocaleTimeString().slice(0, 5);
+            this.dias_RESPOSTA4 = response[x].dias_RESPOSTA4;
+            this.data_REAL_RESPOSTA4 = new Date(response[x].data_REAL_RESPOSTA4);
+            this.hora_REAL_RESPOSTA4 = new Date(response[x].data_REAL_RESPOSTA4).toLocaleTimeString().slice(0, 5);
+            this.dias_ATRASO4 = response[x].dias_ATRASO4;
+            this.responsabilidade_ATRASO4 = response[x].responsabilidade_ATRASO4;
+            this.responsabilidade_ATRASO4_DESCRICAO = response[x].responsabilidade_ATRASO4_DESCRICAO;
+
+            this.accoes_NECESSARIAS = response[x].accoes_NECESSARIAS;
+            this.accoes_NECESSARIAS_TEXTO = response[x].accoes_NECESSARIAS_TEXTO;
+            this.reclamacao_ENCERRADA = response[x].reclamacao_ENCERRADA;
+            this.data_FECHO = new Date(response[x].data_FECHO);
+            this.observacoes_RESULTADOS = response[x].observacoes_RESULTADOS;
+
+            this.data_PREVISTA_REPOSTA6 = new Date(response[x].data_PREVISTA_REPOSTA6);
+            this.hora_PREVISTA_REPOSTA6 = new Date(response[x].data_PREVISTA_REPOSTA4).toLocaleTimeString().slice(0, 5);
+            this.dias_RESPOSTA6 = response[x].dias_RESPOSTA6;
+            this.data_REAL_RESPOSTA6 = new Date(response[x].data_REAL_RESPOSTA6);
+            this.hora_REAL_RESPOSTA6 = new Date(response[x].data_REAL_RESPOSTA6).toLocaleTimeString().slice(0, 5);
+            this.dias_ATRASO6 = response[x].dias_ATRASO6;
+            this.responsabilidade_ATRASO6 = response[x].responsabilidade_ATRASO6;
+            this.responsabilidade_ATRASO6_DESCRICAO = response[x].responsabilidade_ATRASO6_DESCRICAO;
+
+
+            this.custos_DEVOLUCAO = response[x].custos_DEVOLUCAO;
+            this.custos_EXTERNA = response[x].custos_EXTERNA;
+            this.custos_EXTERNA_QTD_CLASSIF = response[x].custos_EXTERNA_QTD_CLASSIF;
+            this.custos_EXTERNA_QTD_REJEITADA = response[x].custos_EXTERNA_QTD_REJEITADA;
+            this.custos_INTERNA = response[x].custos_INTERNA;
+            this.custos_INTERNA_QTD_CLASSIF = response[x].custos_INTERNA_QTD_CLASSIF;
+            this.custos_INTERNA_QTD_REJEITADA = response[x].custos_INTERNA_QTD_REJEITADA;
+            this.custos_OUTROS = response[x].custos_OUTROS;
+            this.custos_REJEICAO_EXTERNA = response[x].custos_REJEICAO_EXTERNA;
+            this.custos_REJEICAO_INTERNA = response[x].custos_REJEICAO_INTERNA;
+            this.custos_TOTAL = response[x].custos_TOTAL;
+
+
+            var data = new Date(new Date(this.data_RECLAMACAO).toDateString() + " " + this.hora_RECLAMACAO.slice(0, 5));
+
+            this.temporesposta['step1_data'] = new Date(data);
+            this.temporesposta['step2_data'] = new Date(data);
+            this.temporesposta['step3_data'] = new Date(data);
+            this.temporesposta['step4_data'] = new Date(data);
+            this.temporesposta['step5_data'] = new Date(data);
+            this.temporesposta['step6_data'] = new Date(data);
+            this.temporesposta['step7_data'] = new Date(data);
+            this.temporesposta['step8_data'] = new Date(data);
+
+            this.temporesposta['step1_data'].setDate(data.getDate() + this.temporesposta['step1']);
+            this.temporesposta['step2_data'].setDate(data.getDate() + this.temporesposta['step2']);
+            this.temporesposta['step3_data'].setDate(data.getDate() + this.temporesposta['step3']);
+            this.temporesposta['step4_data'].setDate(data.getDate() + this.temporesposta['step4']);
+            this.temporesposta['step5_data'].setDate(data.getDate() + this.temporesposta['step5']);
+            this.temporesposta['step6_data'].setDate(data.getDate() + this.temporesposta['step6']);
+            this.temporesposta['step7_data'].setDate(data.getDate() + this.temporesposta['step7']);
+            this.temporesposta['step8_data'].setDate(data.getDate() + this.temporesposta['step8']);
+
+          }
+
+          this.getMoradas(this.cliente.id, true);
+          this.getArtigos(this.etsnum, true);
+          this.carregatabelaFiles(id);
+        }
+
+      }, error => { console.log(error); });
+
+  }
+
+  carregatabelaFiles(id) {
+    this.uploadedFiles = [];
+    this.fileselect = [];
+    this.fileselectinput = [];
+    this.RCMOVRECLAMACAOFICHEIROSService.getbyidreclamacao(id).subscribe(
+      response => {
+        var count = Object.keys(response).length;
+        if (count > 0) {
+          for (var x in response) {
+            if (response[x].id_FICHEIRO == null) {
+              this.uploadedFiles.push({
+                data: response[x],
+                id: response[x].id, name: response[x].nome,
+                src: response[x].caminho, type: response[x].tipo, datatype: response[x].datatype, size: response[x].tamanho, descricao: response[x].descricao
+              });
+            } else {
+              this.fileselect[response[x].id_FICHEIRO] = true;
+              this.fileselectinput[response[x].id_FICHEIRO] = [];
+              this.fileselectinput[response[x].id_FICHEIRO].id = response[x].id;
+              this.fileselectinput[response[x].id_FICHEIRO].src = response[x].caminho;
+              this.fileselectinput[response[x].id_FICHEIRO].name = response[x].nome;
+              this.fileselectinput[response[x].id_FICHEIRO].type = response[x].tipo;
+              this.fileselectinput[response[x].id_FICHEIRO].size = response[x].tamanho;
+              this.fileselectinput[response[x].id_FICHEIRO].datatype = response[x].datatype;
+              this.fileselect[response[x].id_FICHEIRO] = response[x].checked;
+            }
+          }
+          this.uploadedFiles = this.uploadedFiles.slice();
+        }
+        this.carregatabelaEquipa(id);
+      }, error => { this.carregatabelaEquipa(id); console.log(error); });
+
+  }
+
+  carregatabelaEquipa(id) {
+    this.tabelaEquipa = [];
+
+    this.RCMOVRECLAMACAOEQUIPAService.getbyidreclamacao(id).subscribe(
+      response => {
+        var count = Object.keys(response).length;
+        if (count > 0) {
+          for (var x in response) {
+            this.tabelaEquipa.push({
+              data: response[x],
+              id: response[x].id, responsavel: response[x].id_UTZ,
+              area: response[x].area, email: response[x].email, telefone: response[x].telefone
+            });
+
+          }
+          this.tabelaEquipa = this.tabelaEquipa.slice();
+        }
+        this.carregaArtigosSimilares(id);
+      }, error => { this.carregaArtigosSimilares(id); console.log(error); });
+  }
+
+  /**************************************************** */
+  carregaArtigosSimilares(id) {
+    this.tabelaArtigosSimilar = [];
+
+    this.RCMOVRECLAMACAOARTIGOSIMILARESService.getbyidreclamacao(id).subscribe(
+      response => {
+        var count = Object.keys(response).length;
+        if (count > 0) {
+          for (var x in response) {
+
+            var artigo = this.drop_artigos.find(item => item.value != null && item.value.valor == response[x].codref).value;
+
+            this.tabelaArtigosSimilar.push({
+              data: response[x],
+              id: response[x].id, qtd: response[x].quantidade,
+              artigo: artigo, designacao: response[x].designacao, of: response[x].ofnum, onde: response[x].onde
+            });
+
+          }
+          this.tabelaArtigosSimilar = this.tabelaArtigosSimilar.slice();
+        }
+        this.carregatabelaaccoesimediatas(id);
+      }, error => { this.carregatabelaaccoesimediatas(id); console.log(error); });
+  }
+
+
+  /************************************************** */
+  carregatabelaaccoesimediatas(id) {
+    this.tabelaaccoesimediatas = [];
+
+
+    this.RCMOVRECLAMACAOPLANOACCOESIMEDIATASService.getbyidreclamacao(id).subscribe(
+      response => {
+        var count = Object.keys(response).length;
+        if (count > 0) {
+          for (var x in response) {
+            var tipo = response[x].tipo_RESPONSAVEL;
+            var data_real = null;
+            if (response[x].data_REAL != null) {
+              data_real = new Date(response[x].data_REAL);
+            }
+            var accao = null;
+            if (this.drop_cliente.find(item => item.value.id == response[x].descricao)) {
+              accao = this.drop_cliente.find(item => item.value.id == response[x].descricao)
+            }
+            this.tabelaaccoesimediatas.push({
+              data: response[x], concluido_UTZ: response[x].concluido_UTZ,
+              id: response[x].id, data_REAL: data_real, responsavel: tipo + response[x].responsavel, id_ACCOES: accao,
+              data_PREVISTA: new Date(response[x].data_PREVISTA), ordem: response[x].ordem, descricao: response[x].descricao
+            });
+
+          }
+          this.tabelaaccoesimediatas = this.tabelaaccoesimediatas.slice();
+        }
+        this.carregaficheirodeanalise(id);
+      }, error => { this.carregaficheirodeanalise(id); console.log(error); });
+  }
+
+  /************************************************** */
+  carregaficheirodeanalise(id) {
+    this.ficheirodeanalise = [];
+    this.RCDICFICHEIROSANALISEService.getAll().subscribe(
+      response => {
+        var count = Object.keys(response).length;
+        if (count > 0) {
+          for (var x in response) {
+            this.ficheirodeanalise.push({
+              data: response[x],
+              id: response[x].id, label: response[x].descricao
+            });
+
+          }
+          this.ficheirodeanalise = this.ficheirodeanalise.slice();
+        }
+        this.carregatabalecorretiva(id);
+      }, error => { this.carregatabalecorretiva(id); console.log(error); });
+  }
+
+
+  /********************  TABELA CORRETIVA E EFICACIA **************************** */
+  carregatabalecorretiva(id) {
+
+    this.tabelaaccoescorretivas = [];
+    this.tabelaEficacia = [];
+
+    this.RCMOVRECLAMACAOPLANOACCOESCORRETIVASService.getbyidreclamacao(id).subscribe(
+      response => {
+        var count = Object.keys(response).length;
+        if (count > 0) {
+          for (var x in response) {
+            var tipo = response[x].tipo_RESPONSAVEL;
+            var data_real = null;
+            if (response[x].data_REAL != null) {
+              data_real = new Date(response[x].data_REAL);
+            }
+            var accao = null;
+            if (this.drop_cliente.find(item => item.value.id == response[x].descricao)) {
+              accao = this.drop_cliente.find(item => item.value.id == response[x].descricao)
+            }
+
+            if (response[x].tipo == "C") {
+
+              this.tabelaaccoescorretivas.push({
+                data: response[x], concluido_UTZ: response[x].concluido_UTZ,
+                id: response[x].id, data_REAL: data_real, responsavel: tipo + response[x].responsavel, id_ACCOES: accao,
+                data_PREVISTA: new Date(response[x].data_PREVISTA), descricao: response[x].descricao
+              });
+
+            } else if (response[x].tipo == "E") {
+
+              this.tabelaEficacia.push({
+                data: response[x], concluido_UTZ: response[x].concluido_UTZ,
+                id: response[x].id, data_REAL: data_real, responsavel: tipo + response[x].responsavel, id_ACCOES: accao,
+                data_PREVISTA: new Date(response[x].data_PREVISTA), descricao: response[x].descricao
+              });
+
+            }
+
+          }
+          this.tabelaEficacia = this.tabelaEficacia.slice();
+          this.tabelaaccoescorretivas = this.tabelaaccoescorretivas.slice();
+        }
+        this.carregatabelapreventivas(id);
+      }, error => { this.carregatabelapreventivas(id); console.log(error); });
+  }
+
+
+
+  /************************************************************ */
+  carregatabelapreventivas(id) {
+    this.tabelapreventiva = [];
+
+    this.RCMOVRECLAMACAOPLANOACCOESPREVENTIVASService.getbyidreclamacao(id).subscribe(
+      response => {
+        var count = Object.keys(response).length;
+        if (count > 0) {
+          for (var x in response) {
+            var tipo = response[x].tipo_RESPONSAVEL;
+            this.tabelapreventiva.push({
+              data: response[x],
+              id: response[x].id, ordem: 1,
+              responsavel: tipo + response[x].responsavel, descricao: response[x].descricao
+            });
+
+          }
+          this.tabelapreventiva = this.tabelapreventiva.slice();
+        }
+        this.carregatabelasEnvios(id);
+      }, error => { this.carregatabelasEnvios(id); console.log(error); });
+  }
+
+  /************************************************************************ */
+  carregatabelasEnvios(id) {
+    this.tabelaEnvios = [];
+    this.RCMOVRECLAMACAOENVIOSGARANTIDOSService.getbyidreclamacao(id).subscribe(
+      response => {
+        var count = Object.keys(response).length;
+        if (count > 0) {
+          for (var x in response) {
+            this.tabelaEnvios.push({
+              data: response[x],
+              id: response[x].id, envio: response[x].ordem, qtd: response[x].quantidade, guia: response[x].numero_GUIA
+            });
+
+          }
+          //console.log("FIM");
+          this.tabelaEnvios = this.tabelaEnvios.slice();
+        }
+
+      }, error => { console.log(error); });
+  }
+
+  alteraReferencia(event) {
+    this.designacao_REF = "";
+    if (this.referencia != null && this.referencia != "") {
+      this.designacao_REF = this.referencia.design;
+      this.familia_REF = this.referencia.FAMCOD;
+    }
+  }
+
+  resetActive(event, step) {
+    this.classstep = step;
+  }
+
+  adicionar_linha(tabela) {
+    if (tabela == "tabelaEnvios") {
+      this.tabelaEnvios.push({ id: null, descricao: "", envio: "4º", qtd: "4", guia: "4" });
+      this.tabelaEnvios = this.tabelaEnvios.slice();
+    } else if (tabela == "tabelaaccoesimediatas") {
+      let sum = 0;
+      if (this.tabelaaccoesimediatas.length > 0) sum = this.tabelaaccoesimediatas.reduce((max, b) => Math.max(max, b.ordem), this.tabelaaccoesimediatas[0].ordem)
+
+      this.tabelaaccoesimediatas.push({ ordem: sum + 1, concluido_UTZ: null, descricao: "", id_ACCOES: null, responsavel: null, data_REAL: "", data_PREVISTA: this.temporesposta['step3_data'] });
+      this.tabelaaccoesimediatas = this.tabelaaccoesimediatas.slice();
+    } else if (tabela == "tabelaEquipa") {
+      this.tabelaEquipa.push({ id: null, responsavel: null, area: "", email: "", telefone: "" });
+      this.tabelaEquipa = this.tabelaEquipa.slice();
+    } else if (tabela == "tabelapreventiva") {
+      let sum = 0;
+      if (this.tabelapreventiva.length > 0) sum = this.tabelapreventiva.reduce((max, b) => Math.max(max, b.ordem), this.tabelapreventiva[0].ordem)
+
+      this.tabelapreventiva.push({ id: null, ordem: sum + 1, descricao: "", responsavel: null });
+      this.tabelapreventiva = this.tabelapreventiva.slice();
+    } else if (tabela == "tabelaArtigosSimilar") {
+      this.tabelaArtigosSimilar.push({ id: null, artigo: "", of: "", qtd: 0, onde: "" });
+      this.tabelaArtigosSimilar = this.tabelaArtigosSimilar.slice();
+    } else if (tabela == "tabelaaccoescorretivas") {
+      this.tabelaaccoescorretivas.push({ id: null, concluido_UTZ: null, responsavel: null, descricao: "", id_ACCOES: null, data_REAL: "", data_PREVISTA: this.temporesposta['step4_data'] });
+      this.tabelaaccoescorretivas = this.tabelaaccoescorretivas.slice();
+    } else if (tabela == "tabelaEficacia") {
+      this.tabelaEficacia.push({ id: null, responsavel: null, concluido_UTZ: null, descricao: "", id_ACCOES: null, data_REAL: "", data_PREVISTA: this.temporesposta['step5_data'] });
+      this.tabelaEficacia = this.tabelaEficacia.slice();
+    }
+
+  }
+
+  apagar_linha(tabela, index) {
+    if (tabela == "tabelaEnvios") {
+      var tab = this.tabelaEnvios[index];
+      if (tab.id == null) {
+        this.tabelaEnvios = this.tabelaEnvios.slice(0, index).concat(this.tabelaEnvios.slice(index + 1));
+      } else {
+        this.RCMOVRECLAMACAOENVIOSGARANTIDOSService.delete(tab.id).then(
+          res => {
+            this.tabelaEnvios = this.tabelaEnvios.slice(0, index).concat(this.tabelaEnvios.slice(index + 1));
+            //this.uploadedFiles = this.uploadedFiles.slice(0, index).concat(this.uploadedFiles.slice(index + 1));
+          },
+          error => { console.log(error); this.simular(this.inputerro); });
+      }
+    } else if (tabela == "tabelaaccoesimediatas") {
+      var tab = this.tabelaaccoesimediatas[index];
+      if (tab.id == null) {
+        this.tabelaaccoesimediatas = this.tabelaaccoesimediatas.slice(0, index).concat(this.tabelaaccoesimediatas.slice(index + 1));
+        this.atualiza_ordem(tabela);
+      } else {
+        this.RCMOVRECLAMACAOPLANOACCOESIMEDIATASService.delete(tab.id).then(
+          res => {
+            this.tabelaaccoesimediatas = this.tabelaaccoesimediatas.slice(0, index).concat(this.tabelaaccoesimediatas.slice(index + 1));
+            this.atualiza_ordem(tabela);
+          },
+          error => { console.log(error); this.simular(this.inputerro); });
+      }
+    } else if (tabela == "tabelaEquipa") {
+      var tab = this.tabelaEquipa[index];
+      if (tab.id == null) {
+        this.tabelaEquipa = this.tabelaEquipa.slice(0, index).concat(this.tabelaEquipa.slice(index + 1));
+      } else {
+        this.RCMOVRECLAMACAOEQUIPAService.delete(tab.id).then(
+          res => {
+            this.tabelaEquipa = this.tabelaEquipa.slice(0, index).concat(this.tabelaEquipa.slice(index + 1));
+          },
+          error => { console.log(error); this.simular(this.inputerro); });
+      }
+    } else if (tabela == "tabelapreventiva") {
+      var tab = this.tabelapreventiva[index];
+      if (tab.id == null) {
+        this.tabelapreventiva = this.tabelapreventiva.slice(0, index).concat(this.tabelapreventiva.slice(index + 1));
+        this.atualiza_ordem(tabela);
+      } else {
+        this.RCMOVRECLAMACAOPLANOACCOESPREVENTIVASService.delete(tab.id).then(
+          res => {
+            this.tabelapreventiva = this.tabelapreventiva.slice(0, index).concat(this.tabelapreventiva.slice(index + 1));
+            this.atualiza_ordem(tabela);
+          },
+          error => { console.log(error); this.simular(this.inputerro); });
+      }
+    } else if (tabela == "tabelaArtigosSimilar") {
+      var tab = this.tabelaArtigosSimilar[index];
+      if (tab.id == null) {
+        this.tabelaArtigosSimilar = this.tabelaArtigosSimilar.slice(0, index).concat(this.tabelaArtigosSimilar.slice(index + 1));
+      } else {
+        this.RCMOVRECLAMACAOARTIGOSIMILARESService.delete(tab.id).then(
+          res => {
+            this.tabelaArtigosSimilar = this.tabelaArtigosSimilar.slice(0, index).concat(this.tabelaArtigosSimilar.slice(index + 1));
+          },
+          error => { console.log(error); this.simular(this.inputerro); });
+      }
+    } else if (tabela == "tabelaaccoescorretivas") {
+      var tab = this.tabelaaccoescorretivas[index];
+      if (tab.id == null) {
+        this.tabelaaccoescorretivas = this.tabelaaccoescorretivas.slice(0, index).concat(this.tabelaaccoescorretivas.slice(index + 1));
+      } else {
+        this.RCMOVRECLAMACAOPLANOACCOESCORRETIVASService.delete(tab.id).then(
+          res => {
+            this.tabelaaccoescorretivas = this.tabelaaccoescorretivas.slice(0, index).concat(this.tabelaaccoescorretivas.slice(index + 1));
+
+          },
+          error => { console.log(error); this.simular(this.inputerro); });
+      }
+    } else if (tabela == "tabelaEficacia") {
+      var tab = this.tabelaEficacia[index];
+      if (tab.id == null) {
+        this.tabelaEficacia = this.tabelaEficacia.slice(0, index).concat(this.tabelaEficacia.slice(index + 1));
+      } else {
+        this.RCMOVRECLAMACAOPLANOACCOESCORRETIVASService.delete(tab.id).then(
+          res => {
+            this.tabelaEficacia = this.tabelaEficacia.slice(0, index).concat(this.tabelaEficacia.slice(index + 1));
+          },
+          error => { console.log(error); this.simular(this.inputerro); });
+
+      }
+    }
+  }
+
+
+
+  finalizar_linha(tabela, index) {
+
+    if (tabela == "tabelaaccoesimediatas") {
+      var accoes = new RC_MOV_RECLAMACAO_PLANO_ACCOES_IMEDIATAS;
+
+      accoes = this.tabelaaccoesimediatas[index].data;
+
+      if (this.tabelaaccoesimediatas[index].data_REAL == null || this.tabelaaccoesimediatas[index].data_REAL == "") {
+        this.tabelaaccoesimediatas[index].data_REAL = new Date();
+      }
+      accoes.data_REAL = this.tabelaaccoesimediatas[index].data_REAL;
+      accoes.concluido_DATA = new Date();
+      accoes.concluido_UTZ = this.user;
+
+      this.gravarTabelaAccoesImediatas2(accoes, 1, 2, 0, true, index);
+
+    } else if (tabela == "tabelaaccoescorretivas") {
+
+      var accoes1 = new RC_MOV_RECLAMACAO_PLANO_ACCOES_CORRETIVAS;
+
+      accoes1 = this.tabelaaccoescorretivas[index].data;
+
+      if (this.tabelaaccoescorretivas[index].data_REAL == null || this.tabelaaccoescorretivas[index].data_REAL == "") {
+        this.tabelaaccoescorretivas[index].data_REAL = new Date();
+      }
+      accoes1.data_REAL = this.tabelaaccoescorretivas[index].data_REAL;
+      accoes1.concluido_DATA = new Date();
+      accoes1.concluido_UTZ = this.user;
+
+
+      this.gravarTabelaAccoesCorretivas2(accoes1, 1, 2, 0, true, index);
+
+    } else if (tabela == "tabelaEficacia") {
+      var accoes2 = new RC_MOV_RECLAMACAO_PLANO_ACCOES_CORRETIVAS;
+
+      accoes2 = this.tabelaEficacia[index].data;
+
+      if (this.tabelaEficacia[index].data_REAL == null || this.tabelaEficacia[index].data_REAL == "") {
+        this.tabelaEficacia[index].data_REAL = new Date();
+      }
+      accoes2.data_REAL = this.tabelaEficacia[index].data_REAL;
+      accoes2.concluido_DATA = new Date();
+      accoes2.concluido_UTZ = this.user;
+
+      this.gravarTabelaEficacia2(accoes2, 1, 2, 0, true, index);
+
+    }
+  }
+
+  removerficheiroAnalise(id) {
+    var tab = this.fileselectinput[id];
+    if (tab.id == null) {
+      this.UploadService.alterarlocalizacaoFicheiro("report", tab.src, tab.datatype).subscribe(
+        (res) => { });
+      this.fileselectinput[id] = null;
+    } else {
+      this.RCMOVRECLAMACAOFICHEIROSService.delete(tab.id).then(
+        res => {
+          //alterar ficheiro de pasta
+          //alterar ficheiro de pasta
+          this.UploadService.alterarlocalizacaoFicheiro("report", tab.src, tab.datatype).subscribe(
+            (res) => { });
+          this.fileselectinput[id] = null;
+          this.fileselect[id] = [];
+        },
+        error => { console.log(error); this.simular(this.inputerro); });
+    }
+  }
+
+  removerficheiro(index) {
+    var tab = this.uploadedFiles[index];
+    if (tab.id == null) {
+      this.UploadService.alterarlocalizacaoFicheiro("report", tab.src, tab.datatype).subscribe(
+        (res) => { });
+      this.uploadedFiles = this.uploadedFiles.slice(0, index).concat(this.uploadedFiles.slice(index + 1));
+    } else {
+      this.RCMOVRECLAMACAOFICHEIROSService.delete(tab.id).then(
+        res => {
+          //alterar ficheiro de pasta
+          this.UploadService.alterarlocalizacaoFicheiro("report", tab.src, tab.datatype).subscribe(
+            (res) => { });
+          this.uploadedFiles = this.uploadedFiles.slice(0, index).concat(this.uploadedFiles.slice(index + 1));
+        },
+        error => { console.log(error); this.simular(this.inputerro); });
+    }
+
+  }
+
+  atualiza_ordem(tabela) {
+    var ordem = 1;
+    for (var x in this[tabela]) {
+      this[tabela][x].ordem = ordem;
+      ordem++;
+    }
+  }
+
+  onUpload(event) {
+    //let files: FileList = event.files;
+    this.fileInput.progress = 0;
+    this.campo_x = 0;
+    var x = 0;
+    for (let file of event.files) {
+
+      this.fileInput.progress = ((this.campo_x + 1) / event.files.length) * 100;
+      // const index = files.indexOf(files[x]);
+      var type = "img";
+      var str = file.type;
+      var tipo = file.name.split(".");
+
+      if (str.toLowerCase().indexOf("pdf") >= 0) {
+        type = "pdf";
+      } else if (str.toLowerCase().indexOf("audio") >= 0) {
+        type = "audio";
+      } else if (str.toLowerCase().indexOf("video") >= 0) {
+        type = "video";
+      } else if (str.toLowerCase().indexOf("excel") >= 0) {
+        type = "excel";
+      } else if (str.toLowerCase().indexOf("word") >= 0) {
+        type = "word";
+      } else if (str.toLowerCase().indexOf("text") >= 0) {
+        type = "txt";
+      } else if (tipo[1] == "msg") {
+        type = "msg";
+      }
+
+      var nome = this.formatDate() + x;
+
+      this.fileupoad(file, nome, event, type, x);
+      x++;
+    }
+
+  }
+
+  fileupoad(file, nome, event, type, x) {
+    this.UploadService.fileChange(file, nome).subscribe(result => {
+      var tipo = file.name.split(".");
+      this.uploadedFiles.push({ id: null, name: file.name, datatype: file.type, src: nome + '.' + tipo[1], type: type, size: file.size, descricao: this.filedescricao[x] });
+      this.uploadedFiles = this.uploadedFiles.slice();
+      if (this.campo_x + 1 == event.files.length) {
+        this.fileInput.files = [];
+        this.filedescricao = [];
+        this.fileInput.progress = 0;
+      }
+      this.campo_x++;
+    },
+      error => {
+        if (this.campo_x + 1 == event.files.length) {
+          this.fileInput.files = [];
+          this.filedescricao = [];
+          this.fileInput.progress = 0;
+        }
+        this.campo_x++;
+        console.log(error);
+      });
+  }
+
+  //formatar a data para yyyymmddhhmmsss
+  formatDate() {
+    var d = new Date(),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      min = '' + d.getMinutes(),
+      mill = '' + d.getMilliseconds(),
+      hour = '' + d.getHours(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return year + month + day + hour + min + mill;
+  }
+
+
+
+  showDialog(type, srcelement, nomeficheiro, datatype) {
+    this.srcelement = webUrl.link + srcelement;
+    if (type == "pdf" || type == 'txt') {
+      this.srcelement = this.sanitizer.bypassSecurityTrustResourceUrl(this.srcelement)
+    }
+
+    if (type == "excel" || type == "word") {
+      this.download(nomeficheiro, srcelement, datatype)
+    } else if (type == "msg") {
+      this.downloadTXT(nomeficheiro, srcelement)
+    }
+    else {
+      this.nomeficheiro = nomeficheiro;
+      this.type = type;
+      this.display = true;
+    }
+
+  }
+
+  removeFile(file: File, uploader: FileUpload) {
+    const index = uploader.files.indexOf(file);
+    uploader.remove(index);
+  }
+
+  isImage(file: File) {
+    return /^image\//.test(file.type);
+  }
+
+  fileImage(file: File) {
+    var str = file.type;
+    if (str.toLowerCase().indexOf("pdf") >= 0) {
+      return "assets/img/file-pdf.png";
+    } else if (str.toLowerCase().indexOf("excel") >= 0) {
+      return "assets/img/file-excel.png";
+    } else if (str.toLowerCase().indexOf("word") >= 0) {
+      return "assets/img/file-word.png";
+    } else {
+      return "assets/img/file.png";
+    }
+  }
+
+
+  fileChange(event, id) {
+    let fileList: FileList = event.target.files;
+    if (fileList.length > 0) {
+      let file: File = fileList[0];
+      this.fileselectinput[id] = [];
+      this.fileselectinput[id].src = file;
+      this.fileselectinput[id].name = file.name;
+      this.fileselectinput[id].size = file.size;
+      this.fileselectinput[id].datatype = file.type;
+      this.fileselectinput[id].id = null;
+
+      var str = file.type;
+      var type = "img";
+      var tipo = file.name.split(".");
+
+      if (str.toLowerCase().indexOf("pdf") >= 0) {
+        type = "pdf";
+      } else if (str.toLowerCase().indexOf("audio") >= 0) {
+        type = "audio";
+      } else if (str.toLowerCase().indexOf("video") >= 0) {
+        type = "video";
+      } else if (str.toLowerCase().indexOf("excel") >= 0) {
+        type = "excel";
+      } else if (str.toLowerCase().indexOf("word") >= 0) {
+        type = "word";
+      } else if (str.toLowerCase().indexOf("text") >= 0) {
+        type = "txt";
+      } else if (tipo[1] == "msg") {
+        type = "msg";
+      }
+      this.fileselectinput[id].type = type;
+
+      var nome = this.formatDate();
+      this.UploadService.fileChange(file, nome).subscribe(result => {
+        var tipo = file.name.split(".");
+        this.fileselectinput[id].src = nome + '.' + tipo[1];
+      }, error => {
+        console.log(error);
+      });
+
+
+    }
+  }
+
+
+  seguinte() {
+    this.i = this.i + 1;
+    this.i = this.i % this.reclamacoes.length;
+    if (this.reclamacoes.length > 0) {
+      this.inicia(this.reclamacoes[this.i]);
+      this.router.navigate(['reclamacoesclientes/view'], { queryParams: { id: this.reclamacoes[this.i] } });
+    }
+  }
+
+  anterior() {
+    if (this.i === 0) {
+      this.i = this.reclamacoes.length;
+    }
+    this.i = this.i - 1;
+    this.router.navigate(['reclamacoesclientes/view'], { queryParams: { id: this.reclamacoes[this.i] } });
+    if (this.reclamacoes.length > 0) {
+      this.inicia(this.reclamacoes[this.i]);
+    }
+  }
+
+  gravar() {
+
+    var reclamacao = new RC_MOV_RECLAMACAO;
+    
+    if (!this.novo) reclamacao = this.reclamacao_dados;
+    
+    reclamacao.titulo = this.titulo;
+    reclamacao.numero_RECLAMACAO_CLIENTE = this.numero_RECLAMACAO_CLIENTE;
+    reclamacao.data_CRIA = new Date(this.data_CRIA.toDateString() + " " + this.hora_CRIA.slice(0, 5));
+    reclamacao.utz_CRIA = this.utz_CRIA;
+    reclamacao.data_RECLAMACAO = new Date(this.data_RECLAMACAO.toDateString() + " " + this.hora_RECLAMACAO.slice(0, 5));
+    reclamacao.rejeicao = this.rejeicao;
+    reclamacao.id_TIPO_RECLAMACAO = this.tipo_RECLAMACAO;
+    reclamacao.tipo_RECLAMACAO = "C";
+    reclamacao.tipo_CAMPO_LOTE = this.selectedType;
+
+    reclamacao.utz_RESPONSAVEL = this.utz_RESPONSAVEL;
+    reclamacao.grau_IMPORTANCIA = this.grau_IMPORTANCIA;
+    reclamacao.resposta_INICIAL = this.resposta_INICIAL;
+    reclamacao.id_CLIENTE = this.cliente.id;
+    reclamacao.nome_CLIENTE = this.cliente.nome;
+    reclamacao.morada_CLIENTE = this.morada_CLIENTE.nome;
+    reclamacao.etsnum = this.morada_CLIENTE.id;
+    reclamacao.contato_CLIENTE = this.contato_CLIENTE;
+    reclamacao.email_CLIENTE = this.email_CLIENTE;
+    reclamacao.telefone_CLIENTE = this.telefone_CLIENTE;
+    reclamacao.referencia = this.referencia.valor;
+    reclamacao.designacao_REF = this.designacao_REF;
+    reclamacao.familia_REF = this.familia_REF;
+    reclamacao.lote = this.lote;
+    reclamacao.tipo_DEFEITO = this.tipo_DEFEITO;
+    reclamacao.reclamacao_REVISTA = this.reclamacao_REVISTA;
+    reclamacao.qtd_ENVIADA = this.qtd_ENVIADA;
+    reclamacao.qtd_RECUSADA = this.qtd_RECUSADA;
+    reclamacao.devolucao = this.devolucao;
+    reclamacao.observacoes_RECLAMACAO = this.observacoes_RECLAMACAO;
+    reclamacao.step1CONCLUIDO = this.step1CONCLUIDO;
+    reclamacao.step2CONCLUIDO = this.step2CONCLUIDO;
+    reclamacao.step3CONCLUIDO = this.step3CONCLUIDO;
+    reclamacao.step4CONCLUIDO = this.step4CONCLUIDO;
+    reclamacao.step5CONCLUIDO = this.step5CONCLUIDO;
+    reclamacao.step6CONCLUIDO = this.step6CONCLUIDO;
+    reclamacao.step7CONCLUIDO = this.step7CONCLUIDO;
+    reclamacao.step8CONCLUIDO = this.step8CONCLUIDO;
+    reclamacao.descricao_PROBLEMA = this.descricao_PROBLEMA;
+    reclamacao.problema_REPETIDO = this.problema_REPETIDO;
+    reclamacao.numero_RECLAMACAO_REPETIDA = this.numero_RECLAMACAO_REPETIDA;
+    reclamacao.reclamacao_REPETIDA_ACEITE = this.reclamacao_REPETIDA_ACEITE;
+    reclamacao.accoes_EVITAR = this.accoes_EVITAR;
+    reclamacao.seguimento_FORNECEDORES = this.seguimento_FORNECEDORES;
+    reclamacao.amdec = this.amdec;
+    reclamacao.plano_VIGILANCIA = this.plano_VIGILANCIA;
+    reclamacao.formacao_OPERARIO = this.formacao_OPERARIO;
+    reclamacao.plano_MANUTENCAO = this.plano_MANUTENCAO;
+    reclamacao.ref_IGUAIS = this.ref_IGUAIS;
+    reclamacao.observacoes_ACCOES_EVITAR = this.observacoes_ACCOES_EVITAR;
+    reclamacao.causas_PROBLEMA = this.causas_PROBLEMA;
+
+    reclamacao.data_PREVISTA_REPOSTA4 = new Date(this.data_PREVISTA_REPOSTA4.toDateString() + " " + this.hora_PREVISTA_REPOSTA4.slice(0, 5));
+    reclamacao.dias_RESPOSTA4 = this.dias_RESPOSTA4;
+    if (!this.novo) reclamacao.data_REAL_RESPOSTA4 = new Date(this.data_REAL_RESPOSTA4.toDateString() + " " + this.hora_REAL_RESPOSTA4.slice(0, 5));
+    reclamacao.dias_ATRASO4 = this.dias_ATRASO4;
+    reclamacao.responsabilidade_ATRASO4 = this.responsabilidade_ATRASO4;
+    reclamacao.responsabilidade_ATRASO4_DESCRICAO = this.responsabilidade_ATRASO4_DESCRICAO;
+
+    reclamacao.accoes_NECESSARIAS = this.accoes_NECESSARIAS;
+    reclamacao.accoes_NECESSARIAS_TEXTO = this.accoes_NECESSARIAS_TEXTO;
+    reclamacao.reclamacao_ENCERRADA = this.reclamacao_ENCERRADA;
+    reclamacao.data_FECHO = this.data_FECHO;
+    reclamacao.observacoes_RESULTADOS = this.observacoes_RESULTADOS;
+
+    reclamacao.data_PREVISTA_REPOSTA6 = new Date(this.data_PREVISTA_REPOSTA6.toDateString() + " " + this.hora_PREVISTA_REPOSTA6.slice(0, 5));
+    reclamacao.dias_RESPOSTA6 = this.dias_RESPOSTA6;
+    if (!this.novo) reclamacao.data_REAL_RESPOSTA6 = new Date(this.data_REAL_RESPOSTA6.toDateString() + " " + this.hora_REAL_RESPOSTA6.slice(0, 5));
+    reclamacao.dias_ATRASO6 = this.dias_ATRASO6;
+    reclamacao.responsabilidade_ATRASO6 = this.responsabilidade_ATRASO6;
+    reclamacao.responsabilidade_ATRASO6_DESCRICAO = this.responsabilidade_ATRASO6_DESCRICAO;
+
+    reclamacao.custos_DEVOLUCAO = this.custos_DEVOLUCAO;
+    reclamacao.custos_EXTERNA = this.custos_EXTERNA;
+    reclamacao.custos_EXTERNA_QTD_CLASSIF = this.custos_EXTERNA_QTD_CLASSIF;
+    reclamacao.custos_EXTERNA_QTD_REJEITADA = this.custos_EXTERNA_QTD_REJEITADA;
+    reclamacao.custos_INTERNA = this.custos_INTERNA;
+    reclamacao.custos_INTERNA_QTD_CLASSIF = this.custos_INTERNA_QTD_CLASSIF;
+    reclamacao.custos_INTERNA_QTD_REJEITADA = this.custos_INTERNA_QTD_REJEITADA;
+    reclamacao.custos_OUTROS = this.custos_OUTROS;
+    reclamacao.custos_REJEICAO_EXTERNA = this.custos_REJEICAO_EXTERNA;
+    reclamacao.custos_REJEICAO_INTERNA = this.custos_REJEICAO_INTERNA;
+    reclamacao.custos_TOTAL = this.custos_TOTAL;
+
+    reclamacao.inativo = false;
+    reclamacao.utz_ULT_MODIF = this.user;
+    reclamacao.data_ULT_MODIF = new Date();
+
+    if (this.novo) {
+
+      //console.log(reclamacao)
+
+      this.RCMOVRECLAMACAOService.create(reclamacao).subscribe(
+        res => {
+          this.gravarTabelaStocks(res.id_RECLAMACAO);
+        },
+        error => { console.log(error); this.simular(this.inputerro); });
+
+    } else {
+      var id;
+      var sub = this.route
+        .queryParams
+        .subscribe(params => {
+          id = params['id'] || 0;
+        });
+
+      reclamacao.id_RECLAMACAO = id;
+      //console.log(reclamacao)
+      this.RCMOVRECLAMACAOService.update(reclamacao).subscribe(
+        res => {
+          this.gravarTabelaFicheiros(id);
+        },
+        error => { console.log(error); this.simular(this.inputerro); });
+
+    }
+  }
+
+  gravarTabelaStocks(id) {
+    this.RCMOVRECLAMACAOService.getStock(this.referencia.valor).subscribe(
+      response => {
+        var count = Object.keys(response).length;
+        if (count > 0) {
+          //console.log(response)
+          var countc = 0;
+          for (var x in response) {
+            countc++;
+            var stock = new RC_MOV_RECLAMACAO_STOCK
+            stock.data_CRIA = new Date();
+            stock.utz_CRIA = this.user;
+            stock.stoqte = response[x].STOQTE;
+            stock.liecod = response[x].LIECOD;
+            stock.id_RECLAMACAO = id;
+            this.gravarTabelaStocks2(stock, countc, count, id);
+          }
+          this.tabelastock = this.tabelastock.slice();
+
+        } else {
+          this.gravarTabelaFicheiros(id);
+        }
+      }, error => {
+        this.gravarTabelaFicheiros(id);
+        console.log(error);
+      });
+
+  }
+
+  gravarTabelaStocks2(stock, count, total, id) {
+    this.RCMOVRECLAMACAOSTOCKService.update(stock).then(
+      res => {
+        if (count == total) {
+          this.gravarTabelaFicheiros(id);
+        }
+      },
+      error => { console.log(error); if (count == total) { this.gravarTabelaFicheiros(id); } });
+  }
+
+  gravarTabelaFicheiros(id) {
+    if (this.uploadedFiles && this.uploadedFiles.length > 0) {
+
+
+      var count = 0;
+      for (var x in this.uploadedFiles) {
+        var ficheiros = new RC_MOV_RECLAMACAO_FICHEIROS;
+
+        if (this.uploadedFiles[x].id != null) {
+          ficheiros = this.uploadedFiles[x].data;
+        } else {
+          ficheiros.data_CRIA = new Date();
+          ficheiros.utz_CRIA = this.user;
+
+        }
+        ficheiros.id_RECLAMACAO = id;
+        ficheiros.id = this.uploadedFiles[x].id;
+        ficheiros.caminho = this.uploadedFiles[x].src;
+        ficheiros.nome = this.uploadedFiles[x].name;
+        ficheiros.tipo = this.uploadedFiles[x].type;
+        ficheiros.datatype = this.uploadedFiles[x].datatype;
+        ficheiros.tamanho = this.uploadedFiles[x].size;
+        ficheiros.descricao = this.uploadedFiles[x].descricao;
+
+        ficheiros.data_ULT_MODIF = new Date();
+        ficheiros.utz_ULT_MODIF = this.user;
+
+        count++;
+        this.gravarTabelaFicheiros2(ficheiros, count, this.uploadedFiles.length, id);
+
+      }
+    } else {
+      this.gravarTabelaEquipa(id);
+    }
+  }
+
+  gravarTabelaFicheiros2(ficheiros, count, total, id) {
+    this.RCMOVRECLAMACAOFICHEIROSService.update(ficheiros).then(
+      res => {
+        if (count == total) {
+          this.gravarTabelaEquipa(id);
+        }
+      },
+      error => { console.log(error); if (count == total) { this.gravarTabelaEquipa(id); } });
+  }
+
+  gravarTabelaEquipa(id) {
+    if (this.tabelaEquipa && this.tabelaEquipa.length > 0) {
+
+      var count = 0;
+      for (var x in this.tabelaEquipa) {
+
+        var equipa = new RC_MOV_RECLAMACAO_EQUIPA;
+        if (this.tabelaEquipa[x].id != null) {
+          equipa = this.tabelaEquipa[x].data;
+        } else {
+          equipa.data_CRIA = new Date();
+          equipa.utz_CRIA = this.user;
+        }
+
+        equipa.id = this.tabelaEquipa[x].id;
+        equipa.area = this.tabelaEquipa[x].area;
+        equipa.id_UTZ = this.tabelaEquipa[x].responsavel;
+        equipa.email = this.tabelaEquipa[x].email;
+        equipa.telefone = this.tabelaEquipa[x].telefone;
+        equipa.id_RECLAMACAO = id;
+        equipa.area = this.tabelaEquipa[x].area;
+
+        equipa.data_ULT_MODIF = new Date();
+        equipa.utz_ULT_MODIF = this.user;
+
+        count++;
+        this.gravarTabelaEquipa2(equipa, count, this.tabelaEquipa.length, id);
+
+      }
+    } else {
+      this.gravarArtigosSimilares(id);
+    }
+  }
+
+  gravarTabelaEquipa2(equipa, count, total, id) {
+    this.RCMOVRECLAMACAOEQUIPAService.update(equipa).then(
+      res => {
+        if (count == total) {
+          this.gravarArtigosSimilares(id);
+        }
+      },
+      error => { console.log(error); if (count == total) { this.gravarArtigosSimilares(id); } });
+  }
+
+  gravarArtigosSimilares(id) {
+    if (this.tabelaArtigosSimilar && this.tabelaArtigosSimilar.length > 0) {
+
+      var count = 0;
+      for (var x in this.tabelaArtigosSimilar) {
+        var artigos = new RC_MOV_RECLAMACAO_ARTIGO_SIMILARES
+
+        if (this.tabelaArtigosSimilar[x].id != null) {
+          artigos = this.tabelaArtigosSimilar[x].data;
+        } else {
+          artigos.data_CRIA = new Date();
+          artigos.utz_CRIA = this.user;
+        }
+
+        artigos.id = this.tabelaArtigosSimilar[x].id;
+        artigos.codref = this.tabelaArtigosSimilar[x].artigo.valor;
+        artigos.designacao = this.tabelaArtigosSimilar[x].designacao;
+        artigos.ofnum = this.tabelaArtigosSimilar[x].of;
+        artigos.id_RECLAMACAO = id;
+        artigos.quantidade = this.tabelaArtigosSimilar[x].qtd;
+        artigos.onde = this.tabelaArtigosSimilar[x].onde;
+
+        artigos.data_ULT_MODIF = new Date();
+        artigos.utz_ULT_MODIF = this.user;
+
+        count++;
+        this.gravarArtigosSimilares2(artigos, count, this.tabelaArtigosSimilar.length, id);
+
+      }
+    } else {
+      this.gravarTabelaAccoesImediatas(id);
+    }
+  }
+
+  gravarArtigosSimilares2(artigos, count, total, id) {
+    this.RCMOVRECLAMACAOARTIGOSIMILARESService.update(artigos).then(
+      res => {
+        if (count == total) {
+          this.gravarTabelaAccoesImediatas(id);
+        }
+      },
+      error => { console.log(error); if (count == total) { this.gravarTabelaAccoesImediatas(id); } });
+  }
+
+  gravarTabelaAccoesImediatas(id) {
+    if (this.tabelaaccoesimediatas && this.tabelaaccoesimediatas.length > 0) {
+
+      var count = 0;
+      for (var x in this.tabelaaccoesimediatas) {
+        var accoes = new RC_MOV_RECLAMACAO_PLANO_ACCOES_IMEDIATAS;
+
+        if (this.tabelaaccoesimediatas[x].id != null) {
+          accoes = this.tabelaaccoesimediatas[x].data;
+        } else {
+          accoes.data_CRIA = new Date();
+          accoes.utz_CRIA = this.user;
+        }
+
+        accoes.id = this.tabelaaccoesimediatas[x].id;
+        accoes.id_RECLAMACAO = id;
+        accoes.ordem = this.tabelaaccoesimediatas[x].ordem;
+        accoes.descricao = this.tabelaaccoesimediatas[x].descricao;
+
+        //var data = this.tabelaaccoesimediatas[x].data_REAL;
+        //accoes.data_REAL = (data!=null && data != "" )? new Date(data) : null;
+        accoes.data_PREVISTA = new Date(this.tabelaaccoesimediatas[x].data_PREVISTA);
+
+        var id_resp = this.tabelaaccoesimediatas[x].responsavel;
+        var tipo = "";
+        if (this.tabelaaccoesimediatas[x].responsavel.charAt(0) == 'u' || this.tabelaaccoesimediatas[x].responsavel.charAt(0) == 'g') {
+          tipo = this.tabelaaccoesimediatas[x].responsavel.charAt(0);
+          id_resp = this.tabelaaccoesimediatas[x].responsavel.substr(1);
+        }
+
+        accoes.responsavel = id_resp;
+        accoes.tipo_RESPONSAVEL = tipo;
+
+
+        accoes.data_ULT_MODIF = new Date();
+        accoes.utz_ULT_MODIF = this.user;
+        count++;
+        this.gravarTabelaAccoesImediatas2(accoes, count, this.tabelaaccoesimediatas.length, id);
+
+      }
+    } else {
+      this.gravarTabelaAccoesCorretivas(id)
+    }
+  }
+
+  gravarTabelaAccoesImediatas2(accoes, count, total, id, finaliza = false, index = 0) {
+    this.RCMOVRECLAMACAOPLANOACCOESIMEDIATASService.update(accoes).then(
+      res => {
+        if (count == total) {
+          this.gravarTabelaAccoesCorretivas(id);
+        }
+        if (finaliza) this.tabelaaccoesimediatas[index].concluido_UTZ = this.user;
+      },
+      error => { console.log(error); if (count == total) { this.gravarTabelaAccoesCorretivas(id); } });
+  }
+
+  gravarTabelaAccoesCorretivas(id) {
+    if (this.tabelaaccoescorretivas && this.tabelaaccoescorretivas.length > 0) {
+
+      var count = 0;
+      for (var x in this.tabelaaccoescorretivas) {
+        var accoes = new RC_MOV_RECLAMACAO_PLANO_ACCOES_CORRETIVAS;
+
+        if (this.tabelaaccoescorretivas[x].id != null) {
+          accoes = this.tabelaaccoescorretivas[x].data;
+        } else {
+          accoes.data_CRIA = new Date();
+          accoes.utz_CRIA = this.user;
+        }
+
+        accoes.id_RECLAMACAO = id;
+
+        var id_resp = this.tabelaaccoescorretivas[x].responsavel;
+        var tipo = "";
+        if (this.tabelaaccoescorretivas[x].responsavel.charAt(0) == 'u' || this.tabelaaccoescorretivas[x].responsavel.charAt(0) == 'g') {
+          tipo = this.tabelaaccoescorretivas[x].responsavel.charAt(0);
+          id_resp = this.tabelaaccoescorretivas[x].responsavel.substr(1);
+        }
+
+        accoes.responsavel = id_resp;
+        accoes.tipo_RESPONSAVEL = tipo;
+
+        accoes.id = this.tabelaaccoescorretivas[x].id;
+        accoes.descricao = this.tabelaaccoescorretivas[x].descricao;
+
+        //var data = this.tabelaaccoescorretivas[x].data_REAL;
+        //accoes.data_REAL = (data!=null && data != "" )? new Date(data) : null;
+
+        accoes.data_PREVISTA = new Date(this.tabelaaccoescorretivas[x].data_PREVISTA);
+        accoes.tipo = "C";
+
+        accoes.data_ULT_MODIF = new Date();
+        accoes.utz_ULT_MODIF = this.user;
+
+        count++;
+        this.gravarTabelaAccoesCorretivas2(accoes, count, this.tabelaaccoescorretivas.length, id);
+      }
+    } else {
+      this.gravarTabelaFicheirosAnalise(id);
+    }
+  }
+  gravarTabelaAccoesCorretivas2(accoes, count, total, id, finaliza = false, index = 0) {
+
+    this.RCMOVRECLAMACAOPLANOACCOESCORRETIVASService.update(accoes).then(
+      res => {
+        if (count == total) {
+          this.gravarTabelaFicheirosAnalise(id);
+        }
+        if (finaliza) this.tabelaaccoescorretivas[index].concluido_UTZ = this.user;
+
+      },
+      error => { console.log(error); if (count == total) { this.gravarTabelaFicheirosAnalise(id); } });
+  }
+
+  gravarTabelaFicheirosAnalise(id) {
+    if (this.fileselect && (this.fileselect.length - 1) > 0) {
+
+
+      var count = 0;
+      for (var x in this.fileselect) {
+        var ficheiros = new RC_MOV_RECLAMACAO_FICHEIROS;
+
+        count++;
+        if (this.fileselect[x]) {
+          if (this.fileselect[x].id != null) {
+            ficheiros = this.fileselect[x].data;
+          } else {
+            ficheiros.data_CRIA = new Date();
+            ficheiros.utz_CRIA = this.user;
+          }
+
+          ficheiros.caminho = this.fileselectinput[x].src;
+          ficheiros.id = this.fileselectinput[x].id;
+          ficheiros.nome = this.fileselectinput[x].name;
+          ficheiros.tipo = this.fileselectinput[x].type;
+          ficheiros.tamanho = this.fileselectinput[x].size;
+          ficheiros.datatype = this.fileselectinput[x].datatype;
+          ficheiros.checked = this.fileselect[x];
+          ficheiros.id_FICHEIRO = parseInt(x);
+
+
+          ficheiros.data_ULT_MODIF = new Date();
+          ficheiros.utz_ULT_MODIF = this.user;
+          ficheiros.id_RECLAMACAO = id;
+
+
+          this.gravarTabelaFicheirosAnalise2(ficheiros, count, (this.fileselect.length - 1), id);
+        } else {
+          if (count == (this.fileselect.length - 1)) {
+            this.gravarTabelaEficacia(id);
+          }
+        }
+      }
+    } else {
+      this.gravarTabelaEficacia(id);
+    }
+  }
+  gravarTabelaFicheirosAnalise2(ficheiros, count, total, id) {
+    this.RCMOVRECLAMACAOFICHEIROSService.update(ficheiros).then(
+      res => {
+        if (count == total) {
+          this.gravarTabelaEficacia(id);
+        }
+      },
+      error => { console.log(error); if (count == total) { this.gravarTabelaEficacia(id); } });
+
+  }
+
+
+  gravarTabelaEficacia(id) {
+    if (this.tabelaEficacia.length && this.tabelaEficacia.length > 0) {
+
+      var count = 0;
+      for (var x in this.tabelaEficacia) {
+        var eficacia = new RC_MOV_RECLAMACAO_PLANO_ACCOES_CORRETIVAS;
+        if (this.tabelaEficacia[x].id != null) {
+          eficacia = this.tabelaEficacia[x].data;
+        } else {
+          eficacia.data_CRIA = new Date();
+          eficacia.utz_CRIA = this.user;
+        }
+
+        eficacia.id_RECLAMACAO = id;
+
+        var id_resp = this.tabelaEficacia[x].responsavel;
+        var tipo = "";
+        if (this.tabelaEficacia[x].responsavel.charAt(0) == 'u' || this.tabelaEficacia[x].responsavel.charAt(0) == 'g') {
+          tipo = this.tabelaEficacia[x].responsavel.charAt(0);
+          id_resp = this.tabelaEficacia[x].responsavel.substr(1);
+        }
+
+        eficacia.responsavel = id_resp;
+        eficacia.tipo_RESPONSAVEL = tipo;
+
+        eficacia.id = this.tabelaEficacia[x].id;
+        eficacia.descricao = this.tabelaEficacia[x].descricao;
+
+        //var data = this.tabelaEficacia[x].data_REAL;
+        // eficacia.data_REAL = (data!=null && data != "" )? new Date(data) : null;
+
+        eficacia.data_PREVISTA = new Date(this.tabelaEficacia[x].data_PREVISTA);
+        eficacia.tipo = "E";
+
+        eficacia.data_ULT_MODIF = new Date();
+        eficacia.utz_ULT_MODIF = this.user;
+
+        count++;
+        this.gravarTabelaEficacia2(eficacia, count, this.tabelaEficacia.length, id);
+
+      }
+    } else {
+      this.gravarTabelaAccoesPreventivas(id);
+    }
+  }
+
+  gravarTabelaEficacia2(eficacia, count, total, id, finaliza = false, index = 0) {
+    this.RCMOVRECLAMACAOPLANOACCOESCORRETIVASService.update(eficacia).then(
+      res => {
+        if (count == total) {
+          this.gravarTabelaAccoesPreventivas(id);
+        }
+        if (finaliza) this.tabelaEficacia[index].concluido_UTZ = this.user;
+      },
+      error => { console.log(error); if (count == total) { this.gravarTabelaAccoesPreventivas(id); } });
+  }
+
+  gravarTabelaAccoesPreventivas(id) {
+    if (this.tabelapreventiva && this.tabelapreventiva.length > 0) {
+
+      var count = 0;
+      for (var x in this.tabelapreventiva) {
+        var accoes = new RC_MOV_RECLAMACAO_PLANO_ACCOES_PREVENTIVAS;
+        if (this.tabelapreventiva[x].id != null) {
+          accoes = this.tabelapreventiva[x].data;
+        } else {
+          accoes.data_CRIA = new Date();
+          accoes.utz_CRIA = this.user;
+        }
+
+        accoes.id_RECLAMACAO = id;
+
+        var id_resp = this.tabelapreventiva[x].responsavel;
+        var tipo = "";
+        if (this.tabelapreventiva[x].responsavel.charAt(0) == 'u' || this.tabelapreventiva[x].responsavel.charAt(0) == 'g') {
+          tipo = this.tabelapreventiva[x].responsavel.charAt(0);
+          id_resp = this.tabelapreventiva[x].responsavel.substr(1);
+        }
+
+        accoes.tipo_RESPONSAVEL = tipo;
+        accoes.responsavel = id_resp;
+        accoes.descricao = this.tabelapreventiva[x].descricao;
+        accoes.id = this.tabelapreventiva[x].id;
+
+
+        accoes.data_ULT_MODIF = new Date();
+        accoes.utz_ULT_MODIF = this.user;
+        count++;
+        this.gravarTabelaAccoesPreventivas2(accoes, count, this.tabelapreventiva.length, id);
+      }
+    } else {
+      this.gravarTabelaEnviosGarantidos(id);
+    }
+  }
+  gravarTabelaAccoesPreventivas2(accoes, count, total, id) {
+
+    this.RCMOVRECLAMACAOPLANOACCOESPREVENTIVASService.update(accoes).then(
+      res => {
+        if (count == total) {
+          this.gravarTabelaEnviosGarantidos(id);
+        }
+      },
+      error => { console.log(error); if (count == total) { this.gravarTabelaEnviosGarantidos(id); } });
+  }
+
+
+  gravarTabelaEnviosGarantidos(id) {
+    if (this.tabelaEnvios && this.tabelaEnvios.length > 0) {
+
+      var count = 0;
+      for (var x in this.tabelaEnvios) {
+        var envios = new RC_MOV_RECLAMACAO_ENVIOS_GARANTIDOS;
+        if (this.tabelaEnvios[x].id != null) {
+          envios = this.tabelaEnvios[x].data;
+        } else {
+          envios.data_CRIA = new Date();
+          envios.utz_CRIA = this.user;
+        }
+
+        envios.id_RECLAMACAO = id;
+        envios.numero_GUIA = this.tabelaEnvios[x].guia;
+        envios.ordem = this.tabelaEnvios[x].envio;
+        envios.quantidade = this.tabelaEnvios[x].qtd;
+        envios.id = this.tabelaEnvios[x].id;
+
+
+        envios.data_ULT_MODIF = new Date();
+        envios.utz_ULT_MODIF = this.user;
+
+        count++;
+        this.gravarTabelaEnviosGarantidos2(envios, count, this.tabelaEnvios.length, id);
+
+      }
+    } else {
+      console.log("FIM")
+
+      if (this.novo) {
+        this.router.navigate(['reclamacoesclientes/editar'], { queryParams: { id: id } });
+        this.simular(this.inputnotifi);
+      } else {
+        this.simular(this.inputgravou);
+      }
+    }
+  }
+
+  gravarTabelaEnviosGarantidos2(envios, count, total, id) {
+    this.RCMOVRECLAMACAOENVIOSGARANTIDOSService.update(envios).then(
+      res => {
+
+        if (count == total) {
+          if (this.novo) {
+            this.router.navigate(['reclamacoesclientes/editar'], { queryParams: { id: id } });
+            this.simular(this.inputnotifi);
+          } else {
+            this.simular(this.inputgravou);
+          }
+
+        }
+      },
+      error => {
+        console.log(error); if (count == total) {
+          if (this.novo) {
+            this.router.navigate(['reclamacoesclientes/editar'], { queryParams: { id: id } });
+            this.simular(this.inputnotifi);
+          } else {
+            this.simular(this.inputgravou);
+          }
+        }
+      });
+  }
+
+
+
+  //simular click para mostrar mensagem
+  simular(element) {
+    let event = new MouseEvent('click', { bubbles: true });
+    this.renderer.invokeElementMethod(
+      element.nativeElement, 'dispatchEvent', [event]);
+  }
+
+  //ao alterar data reclamação atualiza datas
+  atualizaDatas(event) {
+    if (this.hora_RECLAMACAO == null || this.hora_RECLAMACAO == "") {
+      this.hora_RECLAMACAO = "00:00";
+    }
+    if (this.data_RECLAMACAO == null || this.data_RECLAMACAO == "") {
+      this.data_RECLAMACAO = new Date();
+    }
+    var data = new Date(new Date(this.data_RECLAMACAO).toDateString() + " " + this.hora_RECLAMACAO.slice(0, 5));
+
+    this.data_PREVISTA_REPOSTA4 = new Date(data);
+    this.data_PREVISTA_REPOSTA6 = new Date(data);
+
+    this.data_PREVISTA_REPOSTA4.setDate(data.getDate() + this.temporesposta['step4']);
+    this.data_PREVISTA_REPOSTA6.setDate(data.getDate() + this.temporesposta['step6']);
+
+    this.hora_PREVISTA_REPOSTA4 = this.data_PREVISTA_REPOSTA4.toLocaleTimeString().slice(0, 5);
+    this.hora_PREVISTA_REPOSTA6 = this.data_PREVISTA_REPOSTA4.toLocaleTimeString().slice(0, 5);
+
+    this.temporesposta['step1_data'] = new Date(data);
+    this.temporesposta['step2_data'] = new Date(data);
+    this.temporesposta['step3_data'] = new Date(data);
+    this.temporesposta['step4_data'] = new Date(data);
+    this.temporesposta['step5_data'] = new Date(data);
+    this.temporesposta['step6_data'] = new Date(data);
+    this.temporesposta['step7_data'] = new Date(data);
+    this.temporesposta['step8_data'] = new Date(data);
+
+    this.temporesposta['step1_data'].setDate(data.getDate() + this.temporesposta['step1']);
+    this.temporesposta['step2_data'].setDate(data.getDate() + this.temporesposta['step2']);
+    this.temporesposta['step3_data'].setDate(data.getDate() + this.temporesposta['step3']);
+    this.temporesposta['step4_data'].setDate(data.getDate() + this.temporesposta['step4']);
+    this.temporesposta['step5_data'].setDate(data.getDate() + this.temporesposta['step5']);
+    this.temporesposta['step6_data'].setDate(data.getDate() + this.temporesposta['step6']);
+    this.temporesposta['step7_data'].setDate(data.getDate() + this.temporesposta['step7']);
+    this.temporesposta['step8_data'].setDate(data.getDate() + this.temporesposta['step8']);
+
+    this.atualizaDatasresposta(4);
+    this.atualizaDatasresposta(6)
+    this.atualizadatatabelas(this.temporesposta['step3_data'], this.temporesposta['step4_data'], this.temporesposta['step5_data']);
+  }
+
+  atualizadatatabelas(data1, data2, data3) {
+    for (var x in this.tabelaaccoesimediatas) {
+      this.tabelaaccoesimediatas[x].data_PREVISTA = data1;
+    }
+
+    for (var x in this.tabelaaccoescorretivas) {
+      this.tabelaaccoescorretivas[x].data_PREVISTA = data2;
+    }
+
+    for (var x in this.tabelaEficacia) {
+      this.tabelaEficacia[x].data_PREVISTA = data3;
+    }
+  }
+
+  //devolve node responsavel
+  getResponsavel(id) {
+    var utz = this.drop_utilizadores2.find(item => item.value == id);
+    if (id != null && id.toString().includes("u")) {
+      var utz2 = this.drop_utilizadores.find(item => item.label == "Utilizadores").itens;
+      utz = utz2.find(item => item.value == id);
+    } else if (id != null && id.toString().includes("g")) {
+      var utz2 = this.drop_utilizadores.find(item => item.label == "Grupos").itens;
+      utz = utz2.find(item => item.value == id);
+    }
+    var nome = "---";
+    if (utz) {
+      nome = utz.label;
+    }
+    return nome;
+  }
+  //bt cancelar
+  backview() {
+    this.location.back();
+  }
+  //popup apagar
+  apagar() {
+
+
+    this.confirmationService.confirm({
+      message: 'Tem a certeza que pretende apagar?',
+      header: 'Apagar Confirmação',
+      icon: 'fa fa-trash',
+      accept: () => {
+        var reclamacao = new RC_MOV_RECLAMACAO;
+
+        reclamacao = this.reclamacao_dados;
+
+        reclamacao.utz_ANULACAO = this.user;
+        reclamacao.data_ANULACAO = new Date();
+        reclamacao.inativo = true;
+
+
+        this.RCMOVRECLAMACAOService.update(reclamacao).subscribe(
+          res => {
+            this.router.navigate(['reclamacoesclientes']);
+            this.simular(this.inputapagar);
+          },
+          error => { console.log(error); this.simular(this.inputerro); });
+
+      }
+
+    });
+  }
+
+  imprimir(relatorio, id) {
+
+  }
+
+  getNomeUser(id) {
+    var utz = this.drop_utilizadores2.find(item => item.value == id);
+    var nome = "";
+    if (id != null && utz) {
+      nome = utz.label;
+    }
+    return nome;
+  }
+
+  alteraArtigoSimilares(index, event) {
+    this.tabelaArtigosSimilar[index].designacao = event.value.design;
+  }
+
+  concluirEtapa(etapa) {
+    if (etapa == 1) {
+      var reclamacao = new RC_MOV_RECLAMACAO;
+      reclamacao = this.temp_RECLAMACAO;
+      reclamacao.step1CONCLUIDO_DATA = this.step1CONCLUIDO_DATA;
+      reclamacao.step1CONCLUIDO_DATA_MOD = new Date();
+      reclamacao.step1CONCLUIDO_UTZ = this.user;
+      reclamacao.step1CONCLUIDO = true;
+
+      this.reclamacao_dados.step1CONCLUIDO_DATA = reclamacao.step1CONCLUIDO_DATA;
+      this.reclamacao_dados.step1CONCLUIDO_DATA_MOD = reclamacao.step1CONCLUIDO_DATA_MOD;
+      this.reclamacao_dados.step1CONCLUIDO_UTZ = reclamacao.step1CONCLUIDO_UTZ;
+      this.reclamacao_dados.step1CONCLUIDO = true;
+
+      this.RCMOVRECLAMACAOService.update(reclamacao).subscribe(
+        res => {
+          this.step1CONCLUIDO = true;
+          this.step1CONCLUIDO_UTZ = this.user;
+        },
+        error => { console.log(error); this.simular(this.inputerro); });
+    } else if (etapa == 2) {
+      var reclamacao = new RC_MOV_RECLAMACAO;
+      reclamacao = this.temp_RECLAMACAO;
+      reclamacao.step2CONCLUIDO_DATA = this.step2CONCLUIDO_DATA;
+      reclamacao.step2CONCLUIDO_UTZ = this.user;
+      reclamacao.step2CONCLUIDO_DATA_MOD = new Date();
+      reclamacao.step2CONCLUIDO = true;
+
+      this.reclamacao_dados.step2CONCLUIDO_DATA = reclamacao.step2CONCLUIDO_DATA;
+      this.reclamacao_dados.step2CONCLUIDO_DATA_MOD = reclamacao.step2CONCLUIDO_DATA_MOD;
+      this.reclamacao_dados.step2CONCLUIDO_UTZ = reclamacao.step2CONCLUIDO_UTZ;
+      this.reclamacao_dados.step2CONCLUIDO = true;
+
+      this.RCMOVRECLAMACAOService.update(reclamacao).subscribe(
+        res => {
+          this.step2CONCLUIDO = true;
+          this.step2CONCLUIDO_UTZ = this.user;
+        },
+        error => { console.log(error); this.simular(this.inputerro); });
+
+    } else if (etapa == 3) {
+      var reclamacao = new RC_MOV_RECLAMACAO;
+      reclamacao = this.temp_RECLAMACAO;
+      reclamacao.step3CONCLUIDO_DATA = this.step3CONCLUIDO_DATA;
+      reclamacao.step3CONCLUIDO_UTZ = this.user;
+      reclamacao.step3CONCLUIDO_DATA_MOD = new Date();
+      reclamacao.step3CONCLUIDO = true;
+
+      this.reclamacao_dados.step3CONCLUIDO_DATA = reclamacao.step3CONCLUIDO_DATA;
+      this.reclamacao_dados.step3CONCLUIDO_DATA_MOD = reclamacao.step3CONCLUIDO_DATA_MOD;
+      this.reclamacao_dados.step3CONCLUIDO_UTZ = reclamacao.step3CONCLUIDO_UTZ;
+      this.reclamacao_dados.step3CONCLUIDO = true;
+
+      this.RCMOVRECLAMACAOService.update(reclamacao).subscribe(
+        res => {
+          this.step3CONCLUIDO = true;
+          this.step3CONCLUIDO_UTZ = this.user;
+        },
+        error => { console.log(error); this.simular(this.inputerro); });
+
+    } else if (etapa == 4) {
+      var reclamacao = new RC_MOV_RECLAMACAO;
+      reclamacao = this.temp_RECLAMACAO;
+      reclamacao.step4CONCLUIDO_DATA = this.step4CONCLUIDO_DATA;
+      reclamacao.step4CONCLUIDO_UTZ = this.user;
+      reclamacao.step4CONCLUIDO_DATA_MOD = new Date();
+      reclamacao.step4CONCLUIDO = true;
+
+      this.reclamacao_dados.step4CONCLUIDO_DATA = reclamacao.step4CONCLUIDO_DATA;
+      this.reclamacao_dados.step4CONCLUIDO_DATA_MOD = reclamacao.step4CONCLUIDO_DATA_MOD;
+      this.reclamacao_dados.step4CONCLUIDO_UTZ = reclamacao.step4CONCLUIDO_UTZ;
+      this.reclamacao_dados.step4CONCLUIDO = true;
+
+      this.RCMOVRECLAMACAOService.update(reclamacao).subscribe(
+        res => {
+          this.step4CONCLUIDO = true;
+          this.step4CONCLUIDO_UTZ = this.user;
+        },
+        error => { console.log(error); this.simular(this.inputerro); });
+
+    } else if (etapa == 5) {
+      var reclamacao = new RC_MOV_RECLAMACAO;
+      reclamacao = this.temp_RECLAMACAO;
+      reclamacao.step5CONCLUIDO_DATA = this.step5CONCLUIDO_DATA;
+      reclamacao.step5CONCLUIDO_DATA_MOD = new Date();
+      reclamacao.step5CONCLUIDO_UTZ = this.user;
+      reclamacao.step5CONCLUIDO = true;
+
+      this.reclamacao_dados.step5CONCLUIDO_DATA = reclamacao.step5CONCLUIDO_DATA;
+      this.reclamacao_dados.step5CONCLUIDO_DATA_MOD = reclamacao.step5CONCLUIDO_DATA_MOD;
+      this.reclamacao_dados.step5CONCLUIDO_UTZ = reclamacao.step5CONCLUIDO_UTZ;
+      this.reclamacao_dados.step5CONCLUIDO = true;
+
+      this.RCMOVRECLAMACAOService.update(reclamacao).subscribe(
+        res => {
+          this.step5CONCLUIDO = true;
+          this.step5CONCLUIDO_UTZ = this.user
+        },
+        error => { console.log(error); this.simular(this.inputerro); });
+      ;
+    } else if (etapa == 6) {
+      var reclamacao = new RC_MOV_RECLAMACAO;
+      reclamacao = this.temp_RECLAMACAO;
+      reclamacao.step6CONCLUIDO_DATA = this.step6CONCLUIDO_DATA;
+      reclamacao.step6CONCLUIDO_DATA_MOD = new Date();
+      reclamacao.step6CONCLUIDO_UTZ = this.user;
+      reclamacao.step6CONCLUIDO = true;
+
+      this.reclamacao_dados.step6CONCLUIDO_DATA = reclamacao.step6CONCLUIDO_DATA;
+      this.reclamacao_dados.step6CONCLUIDO_DATA_MOD = reclamacao.step6CONCLUIDO_DATA_MOD;
+      this.reclamacao_dados.step6CONCLUIDO_UTZ = reclamacao.step6CONCLUIDO_UTZ;
+      this.reclamacao_dados.step6CONCLUIDO = true;
+
+      this.RCMOVRECLAMACAOService.update(reclamacao).subscribe(
+        res => {
+          this.step6CONCLUIDO = true;
+          this.step6CONCLUIDO_UTZ = this.user;
+        },
+        error => { console.log(error); this.simular(this.inputerro); });
+
+    } else if (etapa == 7) {
+      var reclamacao = new RC_MOV_RECLAMACAO;
+      reclamacao = this.temp_RECLAMACAO;
+      reclamacao.step7CONCLUIDO_DATA = this.step7CONCLUIDO_DATA;
+      reclamacao.step7CONCLUIDO_UTZ = this.user;
+      reclamacao.step7CONCLUIDO_DATA_MOD = new Date();
+      reclamacao.step7CONCLUIDO = true;
+
+
+      this.reclamacao_dados.step7CONCLUIDO_DATA = reclamacao.step7CONCLUIDO_DATA;
+      this.reclamacao_dados.step7CONCLUIDO_DATA_MOD = reclamacao.step7CONCLUIDO_DATA_MOD;
+      this.reclamacao_dados.step7CONCLUIDO_UTZ = reclamacao.step7CONCLUIDO_UTZ;
+      this.reclamacao_dados.step7CONCLUIDO = true;
+
+      this.RCMOVRECLAMACAOService.update(reclamacao).subscribe(
+        res => {
+          this.step7CONCLUIDO = true;
+          this.step7CONCLUIDO_UTZ = this.user;
+        },
+        error => { console.log(error); this.simular(this.inputerro); });
+
+    } else if (etapa == 8) {
+      var reclamacao = new RC_MOV_RECLAMACAO;
+      reclamacao = this.temp_RECLAMACAO;
+      reclamacao.step8CONCLUIDO_DATA = this.step8CONCLUIDO_DATA;
+      reclamacao.step8CONCLUIDO_DATA_MOD = new Date();
+      reclamacao.step8CONCLUIDO_UTZ = this.user;
+      reclamacao.step8CONCLUIDO = true;
+
+      this.reclamacao_dados.step8CONCLUIDO_DATA = reclamacao.step8CONCLUIDO_DATA;
+      this.reclamacao_dados.step8CONCLUIDO_DATA_MOD = reclamacao.step8CONCLUIDO_DATA_MOD;
+      this.reclamacao_dados.step8CONCLUIDO_UTZ = reclamacao.step8CONCLUIDO_UTZ;
+      this.reclamacao_dados.step8CONCLUIDO = true;
+
+      this.RCMOVRECLAMACAOService.update(reclamacao).subscribe(
+        res => {
+          this.step8CONCLUIDO = true;
+          this.step8CONCLUIDO_UTZ = this.user;
+        },
+        error => { console.log(error); this.simular(this.inputerro); });
+
+    }
+  }
+
+  atualizaDatasresposta(step) {
+    if (step == 4) {
+      var date1 = new Date(new Date(this.data_PREVISTA_REPOSTA4).toDateString() + " " + this.hora_PREVISTA_REPOSTA4.slice(0, 5));
+      var date2 = new Date(new Date(this.data_REAL_RESPOSTA4).toDateString() + " " + this.hora_PREVISTA_REPOSTA4.slice(0, 5));
+      var data = new Date(new Date(this.data_RECLAMACAO).toDateString() + " " + this.hora_RECLAMACAO.slice(0, 5));
+
+      var diff = Math.abs(date1.getTime() - date2.getTime());
+
+      var diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+      if (date1.getTime() - date2.getTime() > 0) diffDays = 0;
+
+      var diff2 = Math.abs(data.getTime() - date2.getTime());
+      var diffDays2 = Math.ceil(diff2 / (1000 * 3600 * 24));
+      if (data.getTime() - date2.getTime() > 0) diffDays2 = 0;
+      this.dias_ATRASO4 = diffDays;
+      this.dias_RESPOSTA4 = diffDays2;
+
+    } else if (step == 6) {
+      var date1 = new Date(new Date(this.data_PREVISTA_REPOSTA6).toDateString() + " " + this.hora_PREVISTA_REPOSTA6.slice(0, 5));
+      var date2 = new Date(new Date(this.data_REAL_RESPOSTA6).toDateString() + " " + this.hora_PREVISTA_REPOSTA6.slice(0, 5));
+      var data = new Date(new Date(this.data_RECLAMACAO).toDateString() + " " + this.hora_RECLAMACAO.slice(0, 5));
+
+      var diff = Math.abs(date1.getTime() - date2.getTime());
+      var diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+      if (date1.getTime() - date2.getTime() > 0) diffDays = 0;
+      if (data.getTime() - date2.getTime() > 0) diffDays2 = 0;
+      var diff2 = Math.abs(data.getTime() - date2.getTime());
+      var diffDays2 = Math.ceil(diff2 / (1000 * 3600 * 24));
+
+      this.dias_ATRASO6 = diffDays;
+      this.dias_RESPOSTA6 = diffDays2;
+
+    }
+
+  }
+
+  //ao alterar cliente atualiza morada
+  getMoradas(event, mor = false) {
+    this.drop_moradas = [];
+    this.drop_referencia = [];
+    this.morada_CLIENTE = "";
+    this.referencia = "";
+    this.designacao_REF = "";
+    this.familia_REF = "";
+
+    this.ABDICCOMPONENTEService.getMoradas(event).subscribe(
+      response => {
+        var count = Object.keys(response).length;
+        if (count > 0) {
+          this.drop_moradas.push({ label: 'Sel. Morada.', value: "" });
+          for (var x in response) {
+            this.drop_moradas.push({ label: response[x].ADRNOM + ' ' + response[x].ADRLIB1, value: { id: response[x].ETSNUM, nome: response[x].ADRNOM + ' ' + response[x].ADRLIB1 } });
+          }
+          this.drop_moradas = this.drop_moradas.slice();
+          if (mor) this.morada_CLIENTE = this.drop_moradas.find(item => item.value.id == this.etsnum).value;
+        } else {
+          this.drop_moradas.push({ label: 'Sem Moradas para o Cliente Seleccionado', value: 0 });
+          this.morada_CLIENTE = 0;
+        }
+      }, error => {
+        console.log(error);
+      });
+  }
+
+  //ao alterar moradas atualiza artigos
+  getArtigos(event, ref = false) {
+
+    if (!ref) {
+      this.designacao_REF = "";
+      this.familia_REF = "";
+    }
+
+    this.ABDICCOMPONENTEService.getComponentesdoCliente(this.cliente.id, event).subscribe(
+      response => {
+        this.drop_referencia = [];
+        var count = Object.keys(response).length;
+        if (count > 0) {
+          this.drop_referencia.push({ label: 'Sel. Ref. Comp.', value: "" });
+          for (var x in response) {
+            this.drop_referencia.push({ label: response[x].PROREF + ' - ' + response[x].PRODES1 + ' ' + response[x].PRODES2, value: { valor: response[x].PROREF, design: response[x].PRODES1, FAMCOD: response[x].FAMCOD } });
+          }
+          this.drop_referencia = this.drop_referencia.slice();
+
+          if (ref) {
+            this.referencia = this.drop_referencia.find(item => item.value.valor == this.referencia_temp).value;
+            this.designacao_REF = this.referencia.design;
+            this.familia_REF = this.referencia.FAMCOD;
+          }
+        } else {
+          this.drop_referencia.push({ label: 'Sem Artigos para a Morada Seleccionada', value: 0 });
+          this.referencia = 0;
+        }
+      }, error => {
+        console.log(error);
+      });
+  }
+
+  download(nome, filename, datatype) {
+    this.UploadService.download("report", filename, datatype).subscribe(
+      (res) => {
+        /*var fileURL: any = URL.createObjectURL(res);
+        fileURL = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+        var myWindow = window.open(fileURL, "", "width=200,height=100");*/
+        // myWindow.close();
+        FileSaver.saveAs(res, nome);
+      }, error => {
+        this.simular(this.inputerroficheiro);
+        console.log(error);
+      }
+
+    );
+  }
+
+  downloadTXT(nomeficheiro, filename) {
+    this.UploadService.downloadTXT(filename).subscribe(
+      (res) => {
+        var fileURL = URL.createObjectURL(res);
+        this.srcelement = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL)
+        this.nomeficheiro = nomeficheiro;
+        this.type = 'txt';
+        this.display = true;
+      }, error => {
+        this.simular(this.inputerroficheiro);
+        console.log(error);
+      }
+
+    );
+  }
+
+  btgravar() {
+    var encontrou = false;
+    for (var x in this.fileselect) {
+
+      if (this.fileselect[x]) {
+        if (this.fileselectinput[x] == undefined || this.fileselectinput[x] == null) encontrou = true;
+      }
+    }
+    if (encontrou) {
+      this.classstep = "step-14";
+      setTimeout(() => {
+        this.simular(this.buttongravar);
+      }, 10);
+
+    } else {
+      this.simular(this.buttongravar);
+    }
+
+  }
+
+
+  // *******************************************************consultas
+  atualizatabelastock() {
+
+    this.displaystock = false;
+    if (this.selectedType2 == "atual") {
+      this.verconsultaStock(this.referencia);
+    } else if (this.selectedType2 == "nadata") {
+      this.verconsultaStock_nadata();
+    }
+  }
+  verconsultaStock(referencia = null) {
+
+    if (!this.novo && referencia == null) {
+      //referencia = this.referencia;
+      this.verconsultaStock_nadata();
+    } else {
+      if (referencia == null) referencia = this.referencia;
+      this.selectedType2 = "atual";
+      this.tabelastock = [];
+      this.displayLoading = true;
+      this.RCMOVRECLAMACAOService.getStock(referencia.valor).subscribe(
+        response => {
+          var count = Object.keys(response).length;
+          if (count > 0) {
+            //console.log(response)
+            for (var x in response) {
+              this.tabelastock.push({ STOQTE: parseFloat(response[x].STOQTE), LIECOD: response[x].LIECOD });
+            }
+            this.tabelastock = this.tabelastock.slice();
+            this.displayLoading = false;
+            this.displaystock = true;
+          } else {
+            this.displayLoading = false;
+            this.displaystock = true;
+          }
+        }, error => {
+          this.displayLoading = false;
+          console.log(error);
+        });
+
+    }
+  }
+
+  verconsultaStock_nadata() {
+    this.selectedType2 = "nadata";
+    this.tabelastock = [];
+    this.RCMOVRECLAMACAOSTOCKService.getbyidreclamacao(this.reclamacao_dados.id_RECLAMACAO).subscribe(
+      response => {
+        var count = Object.keys(response).length;
+        if (count > 0) {
+          //console.log(response)
+          for (var x in response) {
+            this.tabelastock.push({ STOQTE: response[x].stoqte, LIECOD: response[x].liecod });
+          }
+          this.tabelastock = this.tabelastock.slice();
+          this.displayLoading = false;
+          this.displaystock = true;
+        } else {
+          this.displayLoading = false;
+          this.displaystock = true;
+        }
+      }, error => {
+        this.displayLoading = false;
+        console.log(error);
+      });
+  }
+
+  verconsultaEnvios(referencia = null) {
+
+    if (referencia == null) {
+      referencia = this.referencia;
+    }
+
+    this.tabelaEnvios = [];
+    this.displayLoading = true;
+    this.RCMOVRECLAMACAOService.getEnviado(referencia.valor).subscribe(
+      response => {
+        var count = Object.keys(response).length;
+        if (count > 0) {
+          //console.log(response)
+          for (var x in response) {
+            this.tabelaEnvios.push({
+              ADRLIB1: response[x].ADRLIB1,
+              ADRLIB2: response[x].ADRLIB2,
+              ADRNOM: response[x].ADRNOM + ' ' + response[x].ADRLIB1,
+              BLNUM: response[x].BLNUM,
+              CLICOD: response[x].CLICOD,
+              ETSNUM: response[x].ETSNUM,
+              LIPQTL: parseFloat(response[x].LIPQTL),
+              LIVDATDEP: response[x].LIVDATDEP,
+              LIVDATREC: response[x].LIVDATREC,
+              PROREF: response[x].PROREF
+            });
+          }
+          this.tabelaEnvios = this.tabelaEnvios.slice();
+          this.displayLoading = false;
+          this.displayenvios = true;
+        } else {
+          this.displayLoading = false;
+          this.displayenvios = true;
+        }
+      }, error => {
+        this.displayLoading = false;
+        console.log(error);
+      });
+
+  }
+
+  verconsultaPlaneado(referencia = null) {
+
+    if (referencia == null) {
+      referencia = this.referencia;
+    }
+
+    this.tabelaplaneado = [];
+    this.displayLoading = true;
+    this.RCMOVRECLAMACAOService.getPlaneado(referencia.valor).subscribe(
+      response => {
+        var count = Object.keys(response).length;
+        if (count > 0) {
+          //console.log(response)
+          for (var x in response) {
+            this.tabelaplaneado.push({ OFNUM: response[x].OFNUM, OFDATFP: response[x].OFDATFP, QUANTIDADE: parseFloat(response[x].QUANTIDADE), PROREF: response[x].PROREF });
+          }
+          this.tabelaplaneado = this.tabelaplaneado.slice();
+          this.displayLoading = false;
+          this.displayplaneado = true;
+        } else {
+          this.displayLoading = false;
+          this.displayplaneado = true;
+        }
+      }, error => {
+        this.displayLoading = false;
+        console.log(error);
+      });
+
+  }
+
+  verconsultaEncomendado(referencia = null) {
+
+    if (referencia == null) {
+      referencia = this.referencia;
+    }
+
+    this.tabelaencomendado = [];
+    this.displayLoading = true;
+    this.RCMOVRECLAMACAOService.getEncomendasCliente(referencia.valor).subscribe(
+      response => {
+        var count = Object.keys(response).length;
+        if (count > 0) {
+          //console.log(response)
+          for (var x in response) {
+            this.tabelaencomendado.push({
+              ADRLIB1: response[x].ADRLIB1,
+              ADRLIB2: response[x].ADRLIB2,
+              ADRNOM: response[x].ADRNOM + ' ' + response[x].ADRLIB1,
+              CDDDATBES: response[x].CDDDATBES,
+              CLICOD: response[x].CLICOD,
+              ETSNUM: response[x].ETSNUM,
+              PROREF: response[x].PROREF,
+              QUANTIDADE: parseFloat(response[x].QUANTIDADE)
+            });
+          }
+          this.tabelaencomendado = this.tabelaencomendado.slice();
+          this.displayLoading = false;
+          this.displayencomendado = true;
+        } else {
+          this.displayLoading = false;
+          this.displayencomendado = true;
+        }
+      }, error => {
+        this.displayLoading = false;
+        console.log(error);
+      });
+
+  }
+
+  /* VALIDAR LOTE/ GUI / ETIQUETA */
+
+  consulta() {
+    if (this.selectedType == "lote") {
+      this.tabelaConsultaLotes = [];
+      this.displayLoading = true;
+      this.RCMOVRECLAMACAOService.getDadosporLote(this.lote).subscribe(
+        response => {
+          var count = Object.keys(response).length;
+          if (count > 0) {
+            //console.log(response)
+            for (var x in response) {
+              this.tabelaConsultaLotes.push({ PROREF: response[x].PROREF, PRODES1: response[x].PRODES1, LIECOD: response[x].LIECOD, ETQEMBQTE: response[x].ETQEMBQTE, ETQORILOT1: response[x].ETQORILOT1, ETQNUM: response[x].ETQNUM });
+            }
+            this.tabelaConsultaLotes = this.tabelaConsultaLotes.slice();
+            this.displayLoading = false;
+            this.displayconsultaLotes = true;
+          } else {
+            this.displayLoading = false;
+            this.displayconsultaLotes = true;
+          }
+        }, error => {
+          this.displayLoading = false;
+          console.log(error);
+        });
+
+    } else if (this.selectedType == "etiqueta") {
+      this.tabelaConsultaLotes = [];
+      this.displayLoading = true;
+      this.RCMOVRECLAMACAOService.getDadosporEtiqueta(this.lote).subscribe(
+        response => {
+          var count = Object.keys(response).length;
+          if (count > 0) {
+            //console.log(response)
+            for (var x in response) {
+              this.tabelaConsultaLotes.push({ PROREF: response[x].PROREF, PRODES1: response[x].PRODES1, LIECOD: response[x].LIECOD, ETQEMBQTE: response[x].ETQEMBQTE, ETQORILOT1: response[x].ETQORILOT1, ETQNUM: response[x].ETQNUM });
+            }
+            this.tabelaConsultaLotes = this.tabelaConsultaLotes.slice();
+            this.displayLoading = false;
+            this.displayconsultaLotes = true;
+          } else {
+            this.displayLoading = false;
+            this.displayconsultaLotes = true;
+          }
+        }, error => {
+          this.displayLoading = false;
+          console.log(error);
+        });
+
+    } else if (this.selectedType == "guia") {
+      this.tabelaConsultaLotes = [];
+      this.displayLoading = true;
+      this.RCMOVRECLAMACAOService.getDadosporGuia(this.lote).subscribe(
+        response => {
+          var count = Object.keys(response).length;
+          if (count > 0) {
+            //console.log(response)
+            for (var x in response) {
+              this.tabelaConsultaLotes.push({ PROREF: response[x].PROREF, PRODES1: response[x].PRODES1, LIECOD: response[x].LIECOD, ETQEMBQTE: response[x].ETQEMBQTE, ETQORILOT1: response[x].ETQORILOT1, ETQNUM: response[x].ETQNUM });
+            }
+            this.tabelaConsultaLotes = this.tabelaConsultaLotes.slice();
+            this.displayLoading = false;
+            this.displayconsultaLotes = true;
+          } else {
+            this.displayLoading = false;
+            this.displayconsultaLotes = true;
+          }
+        }, error => {
+          this.displayLoading = false;
+          console.log(error);
+        });
+
+    }
+  }
+
+  validar() {
+    this.validaloading = true;
+    if (this.selectedType == "lote") {
+      this.RCMOVRECLAMACAOService.validalote(this.lote).subscribe(
+        response => {
+          var count = Object.keys(response).length;
+          if (count > 0) {
+            this.validaloading = false;
+            this.errovalida = "";
+          } else {
+            this.validaloading = false;
+            this.errovalida = "Número Lote não foi encontrado!";
+            this.displayvalidacao = true;
+          }
+        }, error => {
+          this.validaloading = false;
+          this.errovalida = "Número Lote não foi encontrado!";
+          this.displayvalidacao = true;
+          console.log(error);
+        });
+    } else if (this.selectedType == "etiqueta") {
+      this.RCMOVRECLAMACAOService.validaEtiqueta(this.lote).subscribe(
+        response => {
+          var count = Object.keys(response).length;
+          if (count > 0) {
+            this.errovalida = "";
+            this.validaloading = false;
+            this.errovalida = "";
+          } else {
+            this.errovalida = "Etiqueta não foi encontrada!";
+            this.displayvalidacao = true;
+            this.validaloading = false;
+          }
+        }, error => {
+          this.errovalida = "Etiqueta não foi encontrada!";
+          this.displayvalidacao = true;
+          this.validaloading = false;
+          console.log(error);
+        });
+
+    } else if (this.selectedType == "guia") {
+      this.RCMOVRECLAMACAOService.validaGuia(this.lote).subscribe(
+        response => {
+          var count = Object.keys(response).length;
+          if (count > 0) {
+            //console.log(response)
+            this.errovalida = "";
+            this.validaloading = false;
+          } else {
+            this.validaloading = false;
+            this.errovalida = "Guia não foi encontrada!";
+            this.displayvalidacao = true;
+
+          }
+        }, error => {
+          this.errovalida = "Guia não foi encontrada!";
+          this.displayvalidacao = true;
+          this.validaloading = false;
+          console.log(error);
+        });
+
+    }
+  }
+  /* ADICIONAR ACÇÕES*/
+  //abre popup para adicionar acções
+  showDialogToAdd() {
+    this.novo = true;
+    this.id_selected = 0;
+    this.descricaoeng = "";
+    this.descricaopt = "";
+    this.descricaofr = "";
+    this.displayAddAccao = true;
+  }
+
+  //gravar unidade de zona
+  gravardados() {
+    var ACCOES_RECLAMACAO = new RC_DIC_ACCOES_RECLAMACAO;
+    ACCOES_RECLAMACAO.descricao_ENG = this.descricaoeng;
+    ACCOES_RECLAMACAO.descricao_PT = this.descricaopt;
+    ACCOES_RECLAMACAO.descricao_FR = this.descricaofr;
+    ACCOES_RECLAMACAO.utz_ULT_MODIF = this.user;
+    ACCOES_RECLAMACAO.data_ULT_MODIF = new Date();
+
+    ACCOES_RECLAMACAO.utz_CRIA = this.user;
+    ACCOES_RECLAMACAO.data_CRIA = new Date();
+    this.RCDICACCOESRECLAMACAOService.create(ACCOES_RECLAMACAO).subscribe(response => {
+      this.carregaaccoes(0, false, false);
+      this.displayAddAccao = false;
+      this.simular(this.inputgravou);
+    },
+      error => { console.log(error); this.simular(this.inputerro); });
+
+  }
+
+}
