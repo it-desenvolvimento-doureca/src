@@ -54,5 +54,9 @@ export class MenuComponent implements OnInit {
     //[routerLink]="['/homegestaobanhos']"
   }
 
+  abrirdashboardTarefas() {
+    this.router.navigate(['tarefas']);
+  }
+
 
 }

@@ -44,9 +44,24 @@ export class GERUTILIZADORESService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
+  getGER_UTILIZADORESLDAP() {
+    const url = webUrl.host + '/rest/sirb/getGER_UTILIZADORESLDAP';
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
 
   getbyLogincode(code_user): Observable<GER_UTILIZADORES[]> {
     const url = webUrl.host + '/rest/sirb/getGER_UTILIZADORESbycode_user/' + code_user + '';
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
+  getbyLoginLDAP(code_user): Observable<GER_UTILIZADORES[]> {
+    const url = webUrl.host + '/rest/sirb/getGER_UTILIZADORESbyLDAP/' + code_user + '';
     return this.http
       .get(url)
       .map(this.extractData)
@@ -63,6 +78,15 @@ export class GERUTILIZADORESService {
 
   verifica_code(id, code): Observable<GER_UTILIZADORES[]> {
     const url = webUrl.host + '/rest/sirb/getGER_UTILIZADORESverifica_code/' + id + '/' + code;
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
+  
+  verifica_LDAP(id, code): Observable<GER_UTILIZADORES[]> {
+    const url = webUrl.host + '/rest/sirb/getGER_UTILIZADORESverifica_LDAP/' + id + '/' + code;
     return this.http
       .get(url)
       .map(this.extractData)

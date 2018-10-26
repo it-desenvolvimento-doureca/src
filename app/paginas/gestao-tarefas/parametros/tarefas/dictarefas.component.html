@@ -5,7 +5,7 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-header" data-background-color="red">
-            <h4 class="title">Acções de Reclamações</h4>
+            <h4 class="title">Tarefas</h4>
           </div>
           <div class="card-content">
             <p-dataTable [style]="{'width':'100%'}" [value]="dados" selectionMode="single" (onRowSelect)="onRowSelect($event)"
@@ -53,12 +53,12 @@
           <div class="form-group">
             <label for="descricao">Descrição ENG</label>
             <input type="text" class="form-control" id="descricaoeng" [(ngModel)]="descricaoeng" [ngModelOptions]="{standalone: true}"
-              placeholder="Introduza a Descrição em Inglês" required />
+              placeholder="Introduza a Descrição em Inglês" />
           </div>
           <div class="form-group">
             <label for="descricao">Descrição FR</label>
             <input type="text" class="form-control" id="descricaofr" [(ngModel)]="descricaofr" [ngModelOptions]="{standalone: true}"
-              placeholder="Introduza a Descrição em Francês" required />
+              placeholder="Introduza a Descrição em Francês" />
           </div>
         </div>
         <!-- Modal Footer -->

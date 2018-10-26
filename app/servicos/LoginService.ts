@@ -22,8 +22,8 @@ export class LoginService implements CanActivate {
         node024: "adicoes", node025: "manutencoes", node026: "operacoes", node027: "armazens", node10: "utilizadores", node11: "config", node12: "parametros",
         node13: "eventos", node14: "configjasper", node16: "eventosprogramados", node2: "analisesjasper", node31: "grid", node33: "cartelas", node040: "homegestaobanhos",
         node041: "listagem", node051: "analiseconsumos", node052: "analiseconsumosetiquetas", node060: "correcaoquantidades", node061: "analiseetiquetas",
-        node500: "reclamacoesclientes", node520: "rejeicoes", node521: "tiposreclamacoes", node522: "grausimportancia", node523: "tiposdefeito",
-        node524: "ficheirosanalise", node525: "temposresposta", node526: "accoesreclamacoes", node17: "departamentos", node18: "seccoes", node19: "grupos"
+        node500: "reclamacoesclientes", node520: "rejeicoes", node521: "tiposreclamacoes", node522: "grausimportancia", node523: "tiposdefeito", node6: "tarefas",
+        node524: "ficheirosanalise", node525: "temposresposta", node621: "dictarefas", node17: "departamentos", node18: "seccoes", node19: "grupos"
     };
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
@@ -52,7 +52,7 @@ export class LoginService implements CanActivate {
                 if (this.nodes[x] == urlarray[0]) {
                     if (urlarray[1] != null) {
                         if (urlarray[1].match("editar")) {
-                            if (!access.find(item => item.node == x + "editar")) {
+                            if (x != 'node6' && !access.find(item => item.node == x + "editar")) {
                                 this.router.navigate(['./home']);
                                 return false;
                             }

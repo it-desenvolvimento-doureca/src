@@ -1,4 +1,4 @@
-export class RC_DIC_ACCOES_RECLAMACAO {
+export class GT_DIC_TAREFAS {
 	id: number;
 	descricao_PT: string;
 	descricao_ENG: string;

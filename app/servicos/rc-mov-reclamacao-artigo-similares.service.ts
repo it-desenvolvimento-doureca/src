@@ -43,11 +43,19 @@ export class RCMOVRECLAMACAOARTIGOSIMILARESService {
       .catch(this.handleError);
   }
 
+
+  deleteLinhas(id, id_cab) {
+    return this.http
+      .delete(webUrl.host + '/rest/sirb/deleteLINHASRC_MOV_RECLAMACAO_ARTIGO_SIMILARES/' + id + '/' + id_cab)
+      .toPromise()
+      .then(res => res)
+      .catch(this.handleError);
+  }
+
   update(data: RC_MOV_RECLAMACAO_ARTIGO_SIMILARES) {
     return this.http
       .put(webUrl.host + '/rest/sirb/updateRC_MOV_RECLAMACAO_ARTIGO_SIMILARES', JSON.stringify(data), { headers: this.headers })
-      .toPromise()
-      .then(res => res.json().data)
+      .map(this.extractData)
       .catch(this.handleError);
   }
 

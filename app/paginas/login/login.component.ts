@@ -45,6 +45,50 @@ export class LoginComponent implements OnInit {
 
   }
 
+  iniciauser(response) {
+
+    localStorage.setItem('userapp', JSON.stringify({
+      user: response[0].login,
+      nome: response[0].nome_UTILIZADOR, id: response[0].id_UTILIZADOR, pass: response[0].password,
+      admin: response[0].admin, user_jasper: response[0].user_JASPER, pass_jasper: response[0].pass_JASPER
+    }));
+    localStorage.setItem('time_sgiid', JSON.stringify({ data: new Date() }));
+    if (localStorage.getItem('userapp') || localStorage.getItem('time_sgiid')) {
+      //carregar acessos
+      this.GERPERFILLINService.getbyID_node(JSON.parse(localStorage.getItem('userapp'))["id"], "null").subscribe(
+        response2 => {
+          var count = Object.keys(response2).length;
+          var array = [];
+          if (count > 0) {
+            for (var x in response2) {
+              array.push({ node: response2[x].id_CAMPO });
+              if (!(!JSON.parse(localStorage.getItem('userapp'))["admin"] && response2[x].id_CAMPO == "node1")) {
+                var elem = (<HTMLInputElement>document.getElementById(response2[x].id_CAMPO));
+                if (elem) elem.setAttribute("style", "pointer-events: auto; cursor: pointer; opacity: 1;");
+              }
+            }
+            localStorage.setItem('acessos', JSON.stringify(array));
+            location.reload(true);
+            if (this.url != "" && this.url != null) {
+              this.router.navigateByUrl(this.url);
+            } else {
+              this.router.navigate(['home']);
+            }
+          } else {
+            localStorage.setItem('acessos', JSON.stringify(array));
+            location.reload(true);
+            if (this.url != "" && this.url != null) {
+              this.router.navigateByUrl(this.url);
+            } else {
+              this.router.navigate(['home']);
+            }
+
+          }
+          localStorage.setItem('acessos', JSON.stringify(array));
+        }, error => { console.log(error); });
+    }
+  }
+
   login() {
 
     this.globalVar.setlinha(0);
@@ -54,51 +98,29 @@ export class LoginComponent implements OnInit {
       response => {
         var count = Object.keys(response).length;
         if (count == 1) {
-          if (atob(response[0].password) == this.password) {
-            localStorage.setItem('userapp', JSON.stringify({
-              user: response[0].login,
-              nome: response[0].nome_UTILIZADOR, id: response[0].id_UTILIZADOR, pass: response[0].password,
-              admin: response[0].admin, user_jasper: response[0].user_JASPER, pass_jasper: response[0].pass_JASPER
-            }));
-            localStorage.setItem('time_sgiid', JSON.stringify({ data: new Date() }));
-            if (localStorage.getItem('userapp') || localStorage.getItem('time_sgiid')) {
-              //carregar acessos
-              this.GERPERFILLINService.getbyID_node(JSON.parse(localStorage.getItem('userapp'))["id"], "null").subscribe(
-                response2 => {
-                  var count = Object.keys(response2).length;
-                  var array = [];
-                  if (count > 0) {
-                    for (var x in response2) {
-                      array.push({ node: response2[x].id_CAMPO });
-                      if (!(!JSON.parse(localStorage.getItem('userapp'))["admin"] && response2[x].id_CAMPO == "node1")) {
-                        var elem = (<HTMLInputElement>document.getElementById(response2[x].id_CAMPO));
-                        if (elem) elem.setAttribute("style", "pointer-events: auto; cursor: pointer; opacity: 1;");
-                      }
-                    }
-                    localStorage.setItem('acessos', JSON.stringify(array));
-                    location.reload(true);
-                    if (this.url != "" && this.url != null) {
-                      this.router.navigateByUrl(this.url);
-                    } else {
-                      this.router.navigate(['home']);
-                    }
-                  } else {
-                    localStorage.setItem('acessos', JSON.stringify(array));
-                    location.reload(true);
-                    if (this.url != "" && this.url != null) {
-                      this.router.navigateByUrl(this.url);
-                    } else {
-                      this.router.navigate(['home']);
-                    }
-
-                  }
-                  localStorage.setItem('acessos', JSON.stringify(array));
-                }, error => { console.log(error); });
+          if (response[0].user_WINDOWS == "" || response[0].user_WINDOWS == null) {
+            if (atob(response[0].password) == this.password) {
+              this.iniciauser(response);
+            } else {
+              this.erro = false;
+              this.login_status = false;
             }
-
           } else {
-            this.erro = false;
-            this.login_status = false;
+            //LOGIN LDAP
+            var data = [{ USER: this.user, PASSWORD: btoa(this.password) }];
+            this.GERPERFILLINService.createGER_UTILIZADOREStesteLDAP(data).subscribe(result => {
+              if (result) {
+                this.iniciauser(response);
+              } else {
+                this.erro = false;
+                this.login_status = false;
+              }
+            }, error => {
+              console.log(error);
+              this.erro = false;
+              this.login_status = false;
+            });
+
           }
         } else {
           this.erro = false;

@@ -20,6 +20,7 @@ export class UtlformComponent implements OnInit {
   user_jasper;
   code_user = null;
   users_silver: any = [];
+  users_ldap = [];
   id_modulo = 0;
   modulos = [{ label: "Seleccione Módulo", value: 0 }];
   sourcePerfil: any[];
@@ -46,6 +47,9 @@ export class UtlformComponent implements OnInit {
   @ViewChild('inputgravou') inputgravou: ElementRef;
   @ViewChild('inputapagar') inputapagar: ElementRef;
   @ViewChild('inputerro') inputerro: ElementRef;
+  user_WINDOWS: string;
+  class_numexiste2: string;
+  num_existe2: boolean;
 
   constructor(private GERMODULOService: GERMODULOService, private GERUTZPERFILService: GERUTZPERFILService, private GERPERFILCABService: GERPERFILCABService, private confirmationService: ConfirmationService, private router: Router, private GERUTILIZADORESService: GERUTILIZADORESService, private renderer: Renderer, private route: ActivatedRoute, private globalVar: AppGlobals, private location: Location) { }
 
@@ -138,6 +142,17 @@ export class UtlformComponent implements OnInit {
       },
       error => console.log(error));
 
+    //carregar utilizadores LDAP
+    this.GERUTILIZADORESService.getGER_UTILIZADORESLDAP().subscribe(
+      response => {
+        this.users_ldap.push({ label: '--', value: null });
+        for (var x in response) {
+          this.users_ldap.push({ label: response[x].NOME, value: response[x].ID });
+        }
+        this.users_ldap = this.users_ldap.slice();
+      },
+      error => console.log(error));
+
     this.globalVar.setdisEditar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node10editar"));
     this.globalVar.setdisCriar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node10criar"));
     this.globalVar.setdisApagar(!JSON.parse(localStorage.getItem('acessos')).find(item => item.node == "node10apagar"));
@@ -168,6 +183,7 @@ export class UtlformComponent implements OnInit {
               this.administrador = response[x].admin;
               this.code_user = response[x].cod_UTZ;
               this.user_jasper = response[x].user_JASPER;
+              this.user_WINDOWS = response[x].user_WINDOWS;
               if (response[x].pass_JASPER != null) {
                 this.pass_jasper = atob(response[x].pass_JASPER);
               } else {
@@ -194,6 +210,12 @@ export class UtlformComponent implements OnInit {
     this.num_existe = false;
     this.class_numexiste = "";
   }
+
+  resetclass2() {
+    this.num_existe2 = false;
+    this.class_numexiste2 = "";
+  }
+
   resetclasscode() {
     this.code_existe = false;
     this.class_codexiste = "";
@@ -213,6 +235,7 @@ export class UtlformComponent implements OnInit {
       utilizador.admin = this.administrador;
       utilizador.cod_UTZ = this.code_user;
       utilizador.user_JASPER = this.user_jasper;
+      utilizador.user_WINDOWS = this.user_WINDOWS;
       utilizador.pass_JASPER = btoa(this.pass_jasper);
 
       //verifica se existe utilizador com o mesmo login
@@ -225,10 +248,23 @@ export class UtlformComponent implements OnInit {
               res => {
                 var count2 = Object.keys(res).length;
                 if (count2 == 0) {
-                  this.GERUTILIZADORESService.create(utilizador).subscribe(
-                    res => {
-                      this.simular(this.inputnotifi);
-                      this.router.navigate(['utilizadores/editar'], { queryParams: { id: res.id_UTILIZADOR } });
+
+                  //verifica se existe algum utilizador com o mesmo LDAP
+                  this.GERUTILIZADORESService.getbyLoginLDAP(this.user_WINDOWS).subscribe(
+                    res2 => {
+                      var count3 = Object.keys(res2).length;
+                      if (count3 == 0) {
+
+                        this.GERUTILIZADORESService.create(utilizador).subscribe(
+                          res => {
+                            this.simular(this.inputnotifi);
+                            this.router.navigate(['utilizadores/editar'], { queryParams: { id: res.id_UTILIZADOR } });
+                          },
+                          error => { console.log(error); this.simular(this.inputerro); });
+                      } else {
+                        this.num_existe2 = true;
+                        this.class_numexiste2 = "codeexiste";
+                      }
                     },
                     error => { console.log(error); this.simular(this.inputerro); });
                 } else {
@@ -259,6 +295,7 @@ export class UtlformComponent implements OnInit {
       utilizador.admin = this.administrador;
       utilizador.cod_UTZ = this.code_user;
       utilizador.user_JASPER = this.user_jasper;
+      utilizador.user_WINDOWS = this.user_WINDOWS;
       utilizador.pass_JASPER = btoa(this.pass_jasper);
 
       //verifica se existe utilizador com o mesmo login
@@ -271,10 +308,22 @@ export class UtlformComponent implements OnInit {
               res => {
                 var count2 = Object.keys(res).length;
                 if (count2 == 0) {
-                  this.GERUTILIZADORESService.update(utilizador).then(() => {
-                    this.simular(this.inputgravou);
-                    this.router.navigate(['utilizadores/view'], { queryParams: { id: id } });
-                  });
+
+                  //verifica se existe algum utilizador com o mesmo LDAP
+                  this.GERUTILIZADORESService.verifica_LDAP(id,this.user_WINDOWS).subscribe(
+                    res2 => {
+                      var count3 = Object.keys(res2).length;
+                      if (count3 == 0) {
+                        this.GERUTILIZADORESService.update(utilizador).then(() => {
+                          this.simular(this.inputgravou);
+                          this.router.navigate(['utilizadores/view'], { queryParams: { id: id } });
+                        });
+                      } else {
+                        this.num_existe2 = true;
+                        this.class_numexiste2 = "codeexiste";
+                      }
+                    },
+                    error => { console.log(error); this.simular(this.inputerro); });
                 } else {
                   this.code_existe = true;
                   this.class_codexiste = "codeexiste";

@@ -13,5 +13,6 @@ export class RC_MOV_RECLAMACAO_FICHEIROS {
 	utz_ULT_MODIF: number;
 	checked: boolean;
 	datatype: string;
+	id_TAREFA: string;
 
 }

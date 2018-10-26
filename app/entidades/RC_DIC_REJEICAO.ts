@@ -5,5 +5,6 @@ export class RC_DIC_REJEICAO {
 	utz_CRIA: number;
 	data_ULT_MODIF: Date;
 	utz_ULT_MODIF: number;
+	revisao_RECLAMACAO: boolean;
 
 }

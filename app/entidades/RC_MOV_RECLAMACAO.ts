@@ -112,4 +112,8 @@ export class RC_MOV_RECLAMACAO {
 
 	etsnum: string;
 
+	data_RECLAMACAO_REVISTA: Date;
+	data_PRAZO_REVISAO: Date;
+	reclamacao_COM_REVISAO: Boolean;
+
 }

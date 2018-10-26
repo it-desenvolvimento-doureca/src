@@ -20,4 +20,6 @@ export class AB_DIC_COMPONENTE {
     factor_MULTIPLICACAO_AGUA: number;
     factor_CONVERSAO: number;
     cisterna: boolean;
+    cod_REF_SUBSTITUTA: string;
+    nome_REF_SUBSTITUTA: string;
 }

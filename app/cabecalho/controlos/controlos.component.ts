@@ -159,8 +159,21 @@ export class ControlosComponent implements OnInit {
         // Defaults to 0 if no query param provided.
         page = params['id'] || 0;
       });
+    var back;
+    var sub2 = this.route
+      .queryParams
+      .subscribe(params => {
+        // Defaults to 0 if no query param provided.
+        back = params['redirect'] || 0;
+      });
+
     if (this.globalVar.geteditar()) {
-      this.router.navigate([this.currentpage + '/editar'], { queryParams: { id: page } });
+      if (back != 0) {
+        this.router.navigate([this.currentpage + '/editar'], { queryParams: { id: page, redirect: back } });
+      } else {
+        this.router.navigate([this.currentpage + '/editar'], { queryParams: { id: page } });
+      }
+
     }
 
   }
@@ -174,7 +187,14 @@ export class ControlosComponent implements OnInit {
       });
 
     if (back != 0 && back != 'back') {
-      this.router.navigate([back], { queryParams: { redirect: 1 } });
+      back = back.replace("kvk", "?");
+      if (back.indexOf("?") > 0) {
+        this.router.navigateByUrl(back);
+      } else {
+        this.router.navigate([back], { queryParams: { redirect: 1 } });
+      }
+
+
     } else if (back == 'back') {
       this.location.back();
     }
@@ -217,6 +237,13 @@ export class ControlosComponent implements OnInit {
 
   editarclick(val) {
     this.editar = val;
+  }
+
+  editarclickhidde() {
+    this.editar = false;
+    this.apagar = false;
+    this.seguinte = false;
+    this.anterior = false;
   }
 
   atualizar() {

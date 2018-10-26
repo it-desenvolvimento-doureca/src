@@ -34,10 +34,17 @@ export class GERPERFILLINService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
-  getbyID_node(id,node): Observable<GER_PERFIL_LIN[]> {
-    const url = webUrl.host + '/rest/sirb/getGER_PERFIL_LINbyid_node/' + id + '/'+node;
+  getbyID_node(id, node): Observable<GER_PERFIL_LIN[]> {
+    const url = webUrl.host + '/rest/sirb/getGER_PERFIL_LINbyid_node/' + id + '/' + node;
     return this.http
       .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
+  createGER_UTILIZADOREStesteLDAP(data) {
+    return this.http
+      .post(webUrl.host + '/rest/sirb/createGER_UTILIZADOREStesteLDAP', JSON.stringify(data), { headers: this.headers })
       .map(this.extractData)
       .catch((error: any) => Observable.throw('Server error'));
   }

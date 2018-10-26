@@ -24,7 +24,13 @@
         <b> Banho:</b>
         <br>
         <p-dropdown [required]="true" [options]="banhos" scrollHeight="150px" [(ngModel)]="banho_combo"
-          [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" styleClass="ui-column-filter" filter="true"></p-dropdown>
+          [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" styleClass="ui-column-filter" filter="true">
+          <ng-template let-car pTemplate="item">
+            <span [style.color]="car.font_cor">
+              {{car.label}}
+            </span>
+          </ng-template>
+        </p-dropdown>
       </div>
       <div class="col-md-3 div_header">
         <b>Data Ínicio:</b>

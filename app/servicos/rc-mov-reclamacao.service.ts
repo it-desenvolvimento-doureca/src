@@ -37,10 +37,10 @@ export class RCMOVRECLAMACAOService {
   }
 
 
-  getEncomendasCliente(proref) {
+  getEncomendasCliente(proref, data) {
     const url = webUrl.host + '/rest/sirb/getEncomendasCliente/' + proref;
     return this.http
-      .get(url)
+      .post(url, JSON.stringify(data), { headers: this.headers })
       .map(this.extractData)
       .catch((error: any) => Observable.throw('Server error'));
   }
@@ -108,14 +108,21 @@ export class RCMOVRECLAMACAOService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
-  getEnviado(proref) {
+  getEnviado(proref, data) {
     const url = webUrl.host + '/rest/sirb/getEnviado/' + proref;
     return this.http
-      .get(url)
+      .post(url, JSON.stringify(data), { headers: this.headers })
       .map(this.extractData)
       .catch((error: any) => Observable.throw('Server error'));
   }
 
+  getEnviosGarantidos(proref, data) {
+    const url = webUrl.host + '/rest/sirb/getEnviosGarantidos/' + proref;
+    return this.http
+      .post(url, JSON.stringify(data), { headers: this.headers })
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
 
   getbyID(id): Observable<RC_MOV_RECLAMACAO[]> {
     const url = webUrl.host + '/rest/sirb/getRC_MOV_RECLAMACAObyid/' + id + '';
@@ -142,6 +149,14 @@ export class RCMOVRECLAMACAOService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
+  getEMAILS(id) {
+    const url = webUrl.host + '/rest/sirb/getEMAILS/' + id;
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
   delete(id) {
     return this.http
       .delete(webUrl.host + '/rest/sirb/deleteRC_MOV_RECLAMACAO/' + id + '')
@@ -157,7 +172,12 @@ export class RCMOVRECLAMACAOService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
-
+  atualizaestadosaccoes(id, modulo) {
+    return this.http
+      .get(webUrl.host + '/rest/sirb/deleteRC_MOV_RECLAMACAUPDATEESTADOS/' + id + '/' + modulo)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
 
   private extractData(res: Response) {
     let body = res.json();

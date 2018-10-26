@@ -460,11 +460,13 @@ export class ConstrucaoBanhosComponent implements OnInit {
     //preenche combobox banhos
     var linha = 0;
     if (this.linha != null) linha = this.linha;
-    this.ABDICBANHOService.getAllLINHAbylinha(linha).subscribe(
+    this.ABDICBANHOService.getAllLINHAbylinhatodos(linha).subscribe(
       response => {
         this.banhos.push({ label: 'Seleccione Banho', value: "" });
         for (var x in response) {
-          this.banhos.push({ label: response[x][0].id_BANHO + " / " + response[x][0].nome_BANHO + " - Tina: " + response[x][2].cod_TINA, value: { id: response[x][0].id_BANHO, id_tina: response[x][2].id_TINA, nome_tina: response[x][2].cod_TINA, capacidade: response[x][2].capacidade } });
+          var cor = "";
+          if (!response[x][0].estado) cor = "red";
+          this.banhos.push({ font_cor: cor, label: response[x][0].id_BANHO + " / " + response[x][0].nome_BANHO + " - Tina: " + response[x][2].cod_TINA, value: { id: response[x][0].id_BANHO, id_tina: response[x][2].id_TINA, nome_tina: response[x][2].cod_TINA, capacidade: response[x][2].capacidade } });
         }
         this.banhos = this.banhos.slice();
       },

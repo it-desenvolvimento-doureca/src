@@ -26,6 +26,8 @@ export class RegistoanalisesComponent implements OnInit {
   estados = [{ label: "--", value: 0 }, { label: "Concluída", value: "Concluída" }, { label: "Em Elaboração", value: "Em Elaboração" }, { label: "Validada", value: "Validada" }]
   tipo_analise = [{ label: "--", value: 0 }, { label: "INTERNA", value: "INTERNA" }, { label: "EXTERNA", value: "EXTERNA" }, { label: "PURIFICAÇÃO", value: "PURIFICAÇÃO" }];
   tipo_anali;
+  datacria2: any;
+  datacria1: any;
 
   constructor(private ABMOVANALISELINHAService: ABMOVANALISELINHAService, private ABDICLINHAService: ABDICLINHAService, private router: Router, private globalVar: AppGlobals, private ABMOVANALISEService: ABMOVANALISEService) { }
 
@@ -41,8 +43,14 @@ export class RegistoanalisesComponent implements OnInit {
       this.data_registo = (array['data'] != undefined) ? array['data'].value : "";
       this.banho = (array['nome'] != undefined) ? array['nome'].value : "";
       this.dataTableComponent.filters = array;
+
     }
 
+    var data_fim = new Date();
+    var d = new Date();
+    d.setMonth(d.getMonth() - 2);
+    this.datacria1 = d;
+    this.datacria2 = data_fim;
 
     this.globalVar.setvoltar(false);
     this.globalVar.sethistorico(false);
@@ -81,7 +89,9 @@ export class RegistoanalisesComponent implements OnInit {
 
   preenche_tabela() {
     this.cols = [];
-    this.ABMOVANALISEService.getAll2().subscribe(
+
+    var data = [{ DATA: this.formatDate(this.datacria1), DATA_FIM: this.formatDate(this.datacria2) }];
+    this.ABMOVANALISEService.getAll2(data).subscribe(
       response => {
         var count = Object.keys(response).length;
         if (count == 0) {
@@ -174,6 +184,7 @@ export class RegistoanalisesComponent implements OnInit {
   }
 
   atualizar() {
+    this.mensagemtabela = "A Carregar...";
     this.preenche_tabela();
   }
 

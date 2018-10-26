@@ -12,4 +12,5 @@ export class GER_UTILIZADORES {
     cod_UTZ: string;
     user_JASPER: string;
     pass_JASPER: string;
+    user_WINDOWS: string;
 }

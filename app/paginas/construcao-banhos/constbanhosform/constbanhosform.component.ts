@@ -142,6 +142,8 @@ export class ConstbanhosformComponent implements OnInit {
   @ViewChild('closedialogetiq2') closedialogetiq2: ElementRef;
   @ViewChild('dialogAviso') dialogAviso: ElementRef;
   @ViewChild('closedialoAviso') closedialoAviso: ElementRef;
+  cod_ref_subs: any;
+  adit_design_subst: any;
 
 
 
@@ -506,7 +508,7 @@ export class ConstbanhosformComponent implements OnInit {
               this.arrayForm.find(item => item.pos == pos).aditivos.push(
                 {
                   liecod: response[x][0].liecod, totaletiq: response[x][6],
-                  pos: pos2, cor: cor, factor_CONVERSAO: response[x][1].factor_CONVERSAO, cisterna: response[x][1].cisterna,
+                  pos: pos2, cor: cor, factor_CONVERSAO: response[x][1].factor_CONVERSAO, cisterna: response[x][1].cisterna, nome_REF_SUBSTITUTA: response[x][1].nome_REF_SUBSTITUTA, cod_REF_SUBSTITUTA: response[x][1].cod_REF_SUBSTITUTA,
                   id_LIN: response[x][0].id_MANUTENCAO_LIN, id: response[x][0].id_ADITIVO, nome: response[x][1].nome_COMPONENTE, valor1: valor1.toString().replace(".", ","), valor2: valor2,
                   unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: response[x][0].obs_PLANEAMENTO,
                   stock: stock, cod_REF: response[x][0].cod_REF, nome_REF: response[x][1].nome_REF, unidstock: response[x][0].stkunit, valor_agua: value, factor: response[x][1].factor_MULTIPLICACAO_AGUA
@@ -594,7 +596,7 @@ export class ConstbanhosformComponent implements OnInit {
               if (response[x][1].cod_REF != null) {
                 this.carregaaditivosstock(response, x, pos, pos2, count, array, valor);
               } else {
-                array.push({ liecod: null, pos: pos2, cor: "", factor_CONVERSAO: response[x][1].factor_CONVERSAO, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
+                array.push({ liecod: null, pos: pos2, cor: "", factor_CONVERSAO: response[x][1].factor_CONVERSAO, id_LIN: null, cisterna: response[x][1].cisterna, nome_REF_SUBSTITUTA: response[x][1].nome_REF_SUBSTITUTA, cod_REF_SUBSTITUTA: response[x][1].cod_REF_SUBSTITUTA, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
                 this.ordernar(array);
                 if (pos2 == count) {
                   this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -632,7 +634,7 @@ export class ConstbanhosformComponent implements OnInit {
                 liecod = res1[0].LIECOD;
                 unid = res1[0].UNIUTI;
               }
-              array.push({ liecod: liecod, pos: pos2, cor: '', factor_CONVERSAO: null, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: unid, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
+              array.push({ liecod: liecod, pos: pos2, cor: '', factor_CONVERSAO: null, id_LIN: null, cisterna: response[x][1].cisterna, nome_REF_SUBSTITUTA: response[x][1].nome_REF_SUBSTITUTA, cod_REF_SUBSTITUTA: response[x][1].cod_REF_SUBSTITUTA, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: unid, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
               if (pos2 == total2) {
                 this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -642,7 +644,7 @@ export class ConstbanhosformComponent implements OnInit {
 
             },
             error => {
-              array.push({ liecod: null, pos: pos2, cor: '', factor_CONVERSAO: null, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
+              array.push({ liecod: null, pos: pos2, cor: '', factor_CONVERSAO: null, id_LIN: null, cisterna: response[x][1].cisterna, nome_REF_SUBSTITUTA: response[x][1].nome_REF_SUBSTITUTA, cod_REF_SUBSTITUTA: response[x][1].cod_REF_SUBSTITUTA, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
               this.carrega_script();
               if (pos2 == total2) {
@@ -652,7 +654,7 @@ export class ConstbanhosformComponent implements OnInit {
               console.log(error);
             });
         } else {
-          array.find(item => item.pos == pos).aditivos.push({ liecod: response[x][0].liecod, pos: pos2, cor: '', factor_CONVERSAO: null, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
+          array.find(item => item.pos == pos).aditivos.push({ liecod: response[x][0].liecod, pos: pos2, cor: '', factor_CONVERSAO: null, id_LIN: null, cisterna: response[x][1].cisterna, nome_REF_SUBSTITUTA: response[x][1].nome_REF_SUBSTITUTA, cod_REF_SUBSTITUTA: response[x][1].cod_REF_SUBSTITUTA, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: valor, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
           this.ordernar(array);
           if (pos2 == total2) {
             this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -744,6 +746,10 @@ export class ConstbanhosformComponent implements OnInit {
                     });
                 }
                 this.ABMOVMANUTENCAOCABService.update(MOV_MANUTENCAO_CAB).then(() => {
+                  this.ABMOVMANUTENCAOService.atualizarestados(MOV_MANUTENCAO_CAB.id_MANUTENCAO).subscribe(
+                    response => { }, error => {
+                      console.log(error);
+                    });
                 }, error => {
                   console.log(error); this.simular(this.inputerro);
                 });
@@ -871,6 +877,10 @@ export class ConstbanhosformComponent implements OnInit {
                 MOV_MANUTENCAO.data_ULT_MODIF = new Date();
                 MOV_MANUTENCAO.utz_ULT_MODIF = this.user;
                 this.ABMOVMANUTENCAOService.update(MOV_MANUTENCAO).then(() => {
+                  this.ABMOVMANUTENCAOService.atualizarestados(MOV_MANUTENCAO.id_MANUTENCAO).subscribe(
+                    response => { }, error => {
+                      console.log(error);
+                    });
                 }, error => {
                   console.log(error); this.simular(this.inputerro);
                 });
@@ -1557,6 +1567,10 @@ export class ConstbanhosformComponent implements OnInit {
             if (MOV_MANUTENCAO_CAB.obs_PREPARACAO != "" && MOV_MANUTENCAO_CAB.obs_PREPARACAO != null) this.evento(dados, "Ao Preparar");
 
             this.ABMOVMANUTENCAOService.update(MOV_MANUTENCAO).then(() => {
+              this.ABMOVMANUTENCAOService.atualizarestados(MOV_MANUTENCAO.id_MANUTENCAO).subscribe(
+                response => { }, error => {
+                  console.log(error);
+                });
               this.criarficheiro(id);
               this.inicia(id_manu);
             }, error => {
@@ -2199,15 +2213,16 @@ export class ConstbanhosformComponent implements OnInit {
         var factor_conversao = this.arrayForm.find(item => item.pos == pos).aditivos[x].factor_CONVERSAO;
         var id_lin = this.arrayForm.find(item => item.pos == pos).aditivos[x].id_LIN;
         var adi = this.arrayForm.find(item => item.pos == pos).aditivos[x];
+        var prorefsubstituta = this.arrayForm.find(item => item.pos == pos).aditivos[x].cod_REF_SUBSTITUTA;
         if (factor_conversao == null || factor_conversao == 0) { factor_conversao = 1; }
 
-        this.verificacisterna2(id_manu, ref, etiq, valor1, factor_conversao, id_lin, adi);
+        this.verificacisterna2(id_lin, ref, etiq, valor1, factor_conversao, id_lin, adi, prorefsubstituta);
       }
     }
   }
 
-  verificacisterna2(id_manu, ref, etiq, valor1, factor_conversao, id_lin, adi) {
-    this.ABMOVMANUTENCAOETIQService.getbyRef(id_manu, ref).subscribe(response => {
+  verificacisterna2(id_manu, ref, etiq, valor1, factor_conversao, id_lin, adi, prorefsubstituta) {
+    this.ABMOVMANUTENCAOETIQService.getbyRef2(id_manu).subscribe(response => {
       var count = Object.keys(response).length;
       var encontrou = false;
       var total = 0;
@@ -2223,20 +2238,20 @@ export class ConstbanhosformComponent implements OnInit {
           }
         }
         if (true) {
-          this.adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, true);
+          this.adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, true, prorefsubstituta);
         }
       } else {
-        this.adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, true);
+        this.adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, true, prorefsubstituta);
       }
     }, error => {
       console.log(error);
     });
   }
 
-  adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, cisterna, carrega = false, event = null) {
+  adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, cisterna, prorefsubstituta, carrega = false, event = null) {
     // console.log(ref);
     if (total < valor1) {
-      this.ABMOVMANUTENCAOLINHAService.getDadosEtiquetabyREF(ref, cisterna).subscribe(
+      this.ABMOVMANUTENCAOLINHAService.getDadosEtiquetabyREF(ref, cisterna, prorefsubstituta).subscribe(
         response => {
           var count = Object.keys(response).length;
           if (count > 0) {
@@ -2328,13 +2343,17 @@ export class ConstbanhosformComponent implements OnInit {
   }
 
   /********************ETIQUETAS INDIVIDUAL POR ADITIVO******************* */
-  verEtiquetas(id, ref, nome, unidade, valor, factor_CONVERSAO, pos, event, cisterna, preparado) {
+  verEtiquetas(id, ref, nome, unidade, valor, factor_CONVERSAO, pos, event, cisterna, preparado, prorefsubstituta, nomesubstituta) {
     this.tempgravar = false;
     var factor_conversao = factor_CONVERSAO;
     this.tempcisterna = cisterna;
     if (factor_conversao == null || factor_conversao == 0) { factor_conversao = 1; }
     this.factor_conversao = factor_conversao;
     this.cod_ref = ref;
+
+    this.cod_ref_subs = prorefsubstituta;
+    this.adit_design_subst = nomesubstituta;
+
     this.adit_design = nome;
     this.valor1temp = (valor != null && valor != "") ? valor.replace(",", ".") : "";
     this.unidade1temp = "--";
@@ -2350,7 +2369,7 @@ export class ConstbanhosformComponent implements OnInit {
       var id_manu = this.arrayForm.find(item => item.pos == pos).id;
       var adi = this.arrayForm.find(item => item.pos == pos).aditivos.find(item => item.id_LIN == id);
       this.cisternadisabled = true;
-      this.ABMOVMANUTENCAOETIQService.getbyRef(id_manu, ref).subscribe(response => {
+      this.ABMOVMANUTENCAOETIQService.getbyRef2(id).subscribe(response => {
         var count = Object.keys(response).length;
         var encontrou = false;
         var total = 0;
@@ -2365,10 +2384,10 @@ export class ConstbanhosformComponent implements OnInit {
             }
           }
           if (true) {
-            this.adicionaetiqueta(id_manu, ref, etiq, this.valor1temp.replace(",", "."), total, factor_conversao, id, adi, true, true, event);
+            this.adicionaetiqueta(id_manu, ref, etiq, this.valor1temp.replace(",", "."), total, factor_conversao, id, adi, true, prorefsubstituta, true, event);
           }
         } else {
-          this.adicionaetiqueta(id_manu, ref, etiq, this.valor1temp.replace(",", "."), total, factor_conversao, id, adi, true, true, event);
+          this.adicionaetiqueta(id_manu, ref, etiq, this.valor1temp.replace(",", "."), total, factor_conversao, id, adi, true, prorefsubstituta, true, event);
         }
       }, error => {
         console.log(error);

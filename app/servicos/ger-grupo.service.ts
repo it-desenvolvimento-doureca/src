@@ -36,6 +36,14 @@ export class GERGRUPOService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
+  getByidUsers(id): Observable<GER_GRUPO[]> {
+    const url = webUrl.host + '/rest/sirb/getGER_GRUPObyidUser/' + id;
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
   delete(id) {
     return this.http
       .delete(webUrl.host + '/rest/sirb/deleteGER_GRUPO/' + id + '')

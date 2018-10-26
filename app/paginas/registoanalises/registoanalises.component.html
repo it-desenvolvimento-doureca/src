@@ -9,8 +9,21 @@
             <p class="category"></p>
           </div>
           <div class="card-content table-responsive">
-
-            <p-dataTable [emptyMessage]="mensagemtabela"  [value]="cols" dataKey="id" [rows]="25" [paginator]="true" [pageLinks]="3" (onRowDblclick)="abrir($event)" [rowsPerPageOptions]="[25,50,100,'todos']">
+            <div style="padding: 1px 5px 1px 10px;" class="form-group col-md-12 col-lg-12">
+              <form #form id="formReclama" (ngSubmit)="atualizar()" ngNativeValidate>
+                <label style="display: -webkit-box;">Data Análise Entre:</label>
+                <p-calendar [style]="{'height':'25px','width':'122px','margin-right': '44px'}" dateFormat="yy-mm-dd"
+                  placeholder="yyyy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050"
+                  [(ngModel)]="datacria1" [ngModelOptions]="{standalone: true}" [showIcon]="true" [required]="true"></p-calendar>
+                e
+                <p-calendar [style]="{'height':'25px','width':'122px','margin-left': '21px'}" dateFormat="yy-mm-dd"
+                  placeholder="yyyy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050"
+                  [(ngModel)]="datacria2" [ngModelOptions]="{standalone: true}" [showIcon]="true" [required]="true"></p-calendar>
+                <button type="submit" class="btn btn-success " style="margin: -5px 0 0 39px; height: 25px; padding: 0px 10px 0 10px;">Aplicar</button>
+              </form>
+            </div>
+            <p-dataTable [emptyMessage]="mensagemtabela" [style]="{'min-height':'320px'}" [value]="cols" dataKey="id"
+              [rows]="25" [paginator]="true" [pageLinks]="3" (onRowDblclick)="abrir($event)" [rowsPerPageOptions]="[25,50,100,'todos']">
               <p-column [filter]="true" [sortable]="true" styleclass="text-danger" field="linha" header="Linha">
                 <ng-template pTemplate="filter" let-col>
                   <p-dropdown [options]="linhas" [(ngModel)]="linha" [style]="{'width':'100%'}" (onChange)="filtrar($event.value,col.field)"
@@ -24,14 +37,14 @@
               </p-column>
               <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="id" header="Código. da Análise">
                 <ng-template pTemplate="filter" let-col>
-                  <input class="ui-column-filter ui-inputtext ui-widget ui-state-default ui-corner-all" [(ngModel)]="codigo_analise" #v (ngModelChange)="filtrar(v.value,col.field)"
-                    type="text">
+                  <input class="ui-column-filter ui-inputtext ui-widget ui-state-default ui-corner-all" [(ngModel)]="codigo_analise"
+                    #v (ngModelChange)="filtrar(v.value,col.field)" type="text">
                 </ng-template>
               </p-column>
               <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="nome" header="Banho" [style]="{'width':'18%'}">
                 <ng-template pTemplate="filter" let-col>
-                  <input class="ui-column-filter ui-inputtext ui-widget ui-state-default ui-corner-all" [(ngModel)]="banho" #v2 (ngModelChange)="filtrar(v2.value,col.field)"
-                    type="text">
+                  <input class="ui-column-filter ui-inputtext ui-widget ui-state-default ui-corner-all" [(ngModel)]="banho"
+                    #v2 (ngModelChange)="filtrar(v2.value,col.field)" type="text">
                 </ng-template>
                 <ng-template let-car="rowData" pTemplate="body">
                   <div [style.background]="car['cor_banho']">
@@ -41,14 +54,14 @@
               </p-column>
               <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="tina" header="Tina" [style]="{'width':'8%'}">
                 <ng-template pTemplate="filter" let-col>
-                  <input class="ui-column-filter ui-inputtext ui-widget ui-state-default ui-corner-all" [(ngModel)]="tina" #v3 (ngModelChange)="filtrar(v3.value,col.field)"
-                    type="text">
+                  <input class="ui-column-filter ui-inputtext ui-widget ui-state-default ui-corner-all" [(ngModel)]="tina"
+                    #v3 (ngModelChange)="filtrar(v3.value,col.field)" type="text">
                 </ng-template>
               </p-column>
               <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="data" header="Data Registo">
                 <ng-template pTemplate="filter" let-col>
-                  <input class="ui-column-filter ui-inputtext ui-widget ui-state-default ui-corner-all" [(ngModel)]="data_registo" #v4 (ngModelChange)="filtrar(v4.value,col.field)"
-                    type="text">
+                  <input class="ui-column-filter ui-inputtext ui-widget ui-state-default ui-corner-all" [(ngModel)]="data_registo"
+                    #v4 (ngModelChange)="filtrar(v4.value,col.field)" type="text">
                 </ng-template>
               </p-column>
               <p-column [sortable]="true" [filter]="true" styleclass="text-danger" field="tipo_analise" header="Tipo Análise">
@@ -71,8 +84,9 @@
                   </a>
                 </ng-template>
                 <ng-template let-car="rowData" pTemplate="body">
-                  <a style="color: black; cursor:pointer;" title="Ver mais" [routerLink]="['/registo/view']" [queryParams]="{ id: car.id }">
-                  <i class="material-icons">search</i>
+                  <a style="color: black; cursor:pointer;" title="Ver mais" [routerLink]="['/registo/view']"
+                    [queryParams]="{ id: car.id }">
+                    <i class="material-icons">search</i>
                   </a>
                 </ng-template>
               </p-column>

@@ -21,6 +21,7 @@ export class RejeicoesComponent implements OnInit {
 
   @ViewChild('dialog') dialog: ElementRef;
   @ViewChild('closedialog') closedialog: ElementRef;
+  revisao_RECLAMACAO: boolean;
   constructor(private globalVar: AppGlobals, private RCDICREJEICAOService: RCDICREJEICAOService, private renderer: Renderer) { }
   ngOnInit() {
     this.globalVar.setapagar(false);
@@ -42,6 +43,7 @@ export class RejeicoesComponent implements OnInit {
     this.novo = true;
     this.id_selected = 0;
     this.descricao = "";
+    this.revisao_RECLAMACAO = false;
     this.datacria = null;
     this.utz_cria = null;
     this.simular(this.dialog);
@@ -55,6 +57,7 @@ export class RejeicoesComponent implements OnInit {
     DIC_REJEICAO.descricao = this.descricao;
     DIC_REJEICAO.utz_ULT_MODIF = JSON.parse(localStorage.getItem('userapp'))["id"];
     DIC_REJEICAO.data_ULT_MODIF = new Date();
+    DIC_REJEICAO.revisao_RECLAMACAO = this.revisao_RECLAMACAO;
 
     if (this.novo) {
       DIC_REJEICAO.utz_CRIA = JSON.parse(localStorage.getItem('userapp'))["id"];
@@ -65,7 +68,7 @@ export class RejeicoesComponent implements OnInit {
       },
         error => console.log(error));
     } else {
-      DIC_REJEICAO.id = this.id_selected;      
+      DIC_REJEICAO.id = this.id_selected;
       DIC_REJEICAO.data_CRIA = this.datacria;
       DIC_REJEICAO.utz_CRIA = this.utz_cria;
       this.RCDICREJEICAOService.update(DIC_REJEICAO).then(() => {
@@ -83,7 +86,7 @@ export class RejeicoesComponent implements OnInit {
     this.RCDICREJEICAOService.getAll().subscribe(
       response => {
         for (var x in response) {
-          this.dados.push({ id: response[x].id, nome: response[x].descricao, data_CRIA: response[x].data_CRIA, utz_CRIA: response[x].utz_CRIA });
+          this.dados.push({ id: response[x].id, revisao_RECLAMACAO: response[x].revisao_RECLAMACAO, nome: response[x].descricao, data_CRIA: response[x].data_CRIA, utz_CRIA: response[x].utz_CRIA });
         }
         this.dados = this.dados.slice();
       },
@@ -96,7 +99,7 @@ export class RejeicoesComponent implements OnInit {
   apagar() {
     var DIC_REJEICAO = new RC_DIC_REJEICAO;
     DIC_REJEICAO.descricao = this.descricao;
-    DIC_REJEICAO.id = this.id_selected;;
+    DIC_REJEICAO.id = this.id_selected;
 
     this.RCDICREJEICAOService.delete(DIC_REJEICAO.id).then(() => {
       this.listar();
@@ -112,6 +115,7 @@ export class RejeicoesComponent implements OnInit {
     this.novo = false;
     this.datacria = event.data.data_CRIA;
     this.utz_cria = event.data.utz_CRIA;
+    this.revisao_RECLAMACAO = event.data.revisao_RECLAMACAO;
     this.simular(this.dialog);
   }
 

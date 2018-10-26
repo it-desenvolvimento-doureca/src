@@ -47,6 +47,8 @@ export class CompformComponent implements OnInit {
   @ViewChild('inputgravou') inputgravou: ElementRef;
   @ViewChild('inputapagar') inputapagar: ElementRef;
   @ViewChild('inputerro') inputerro: ElementRef;
+  cod_ref_substituta;
+  nome_ref_substituta = "";
 
 
   constructor(private GERFORNECEDORService: GERFORNECEDORService, private ABUNIDADADEMEDIDAService: ABUNIDADADEMEDIDAService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private confirmationService: ConfirmationService, private router: Router, private renderer: Renderer, private route: ActivatedRoute, private globalVar: AppGlobals, private location: Location) { }
@@ -209,6 +211,12 @@ export class CompformComponent implements OnInit {
     this.medidas_consumo = this.componentes_silver.find(item => item.value == event.value).value.UNISTO;
   }
 
+  //preenche no ref
+  cod_refesubstituta(event) {
+    this.nome_ref_substituta = "";
+    this.nome_ref_substituta = this.componentes_silver.find(item => item.value == event.value).label.split(" - ")[1];
+
+  }
 
   //preenche dados com o id
   inicia(id) {
@@ -228,11 +236,18 @@ export class CompformComponent implements OnInit {
               this.medidas_valor = response[x].id_UNIDADE_COMPONENTE;
               this.obs = response[x].obs;
               var codcod = "";
+              var codcods = "";
               if (this.componentes_silver.find(item => item.value.valor == response[x].cod_REF)) {
                 codcod = this.componentes_silver.find(item => item.value.valor == response[x].cod_REF).value;
               }
+              if (this.componentes_silver.find(item => item.value.valor == response[x].cod_REF_SUBSTITUTA)) {
+                codcods = this.componentes_silver.find(item => item.value.valor == response[x].cod_REF_SUBSTITUTA).value;
+              }
               this.cod_ref = (response[x].cod_REF != null && response[x].cod_REF != "") ? codcod : "";
+
+              this.cod_ref_substituta = (response[x].cod_REF_SUBSTITUTA != null && response[x].cod_REF_SUBSTITUTA != "") ? codcods : "";
               this.nome_ref = response[x].nome_REF;
+              this.nome_ref_substituta = response[x].nome_REF_SUBSTITUTA;
               this.medidas_consumo = response[x].unisto;
               this.id_fornecedor = response[x].id_FORNECEDOR;
               this.medidas_valor_adicao = response[x].id_UNIDADE_ADITIVO;
@@ -300,7 +315,9 @@ export class CompformComponent implements OnInit {
       componente.data_CRIA = new Date();
       componente.inativo = false;
       componente.cod_REF = (this.cod_ref) ? this.cod_ref.valor : "";
+      componente.cod_REF_SUBSTITUTA = (this.cod_ref_substituta) ? this.cod_ref_substituta.valor : "";
       componente.nome_REF = this.nome_ref;
+      componente.nome_REF_SUBSTITUTA = this.nome_ref_substituta;
       componente.unisto = this.medidas_consumo;
       componente.id_FORNECEDOR = this.id_fornecedor;
       componente.id_UNIDADE_ADITIVO = this.medidas_valor_adicao;
@@ -345,7 +362,9 @@ export class CompformComponent implements OnInit {
       componente.data_ULT_MODIF = new Date();
       componente.utz_ULT_MODIF = this.user;
       componente.cod_REF = this.cod_ref.valor;
+      componente.cod_REF_SUBSTITUTA = this.cod_ref_substituta.valor;
       componente.nome_REF = this.nome_ref;
+      componente.nome_REF_SUBSTITUTA = this.nome_ref_substituta;
       componente.unisto = this.medidas_consumo;
       componente.id_FORNECEDOR = this.id_fornecedor;
       componente.id_UNIDADE_ADITIVO = this.medidas_valor_adicao;

@@ -138,6 +138,8 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
   @ViewChild('closedialogetiq2') closedialogetiq2: ElementRef;
   @ViewChild('dialogAviso') dialogAviso: ElementRef;
   @ViewChild('closedialoAviso') closedialoAviso: ElementRef;
+  cod_ref_subs: any;
+  adit_design_subst: any;
 
   constructor(private ABMOVMANUTENCAOETIQService: ABMOVMANUTENCAOETIQService, private UploadService: UploadService, private GERPOSTOSService: GERPOSTOSService, private sanitizer: DomSanitizer, private RelatoriosService: RelatoriosService, private GERUTILIZADORESService: GERUTILIZADORESService, private elementRef: ElementRef, private GERARMAZEMService: GERARMAZEMService, private ADMOVREGPARAMOPERACAOService: ADMOVREGPARAMOPERACAOService, private ABMOVMANUTENCAOLINHAService: ABMOVMANUTENCAOLINHAService, private ABMOVMANUTENCAOCABService: ABMOVMANUTENCAOCABService, private ABMOVANALISEService: ABMOVANALISEService, private ABDICTIPOOPERACAOService: ABDICTIPOOPERACAOService, private ABDICTIPOADICAOService: ABDICTIPOADICAOService, private ABDICBANHOADITIVOService: ABDICBANHOADITIVOService, private ABMOVMANUTENCAOService: ABMOVMANUTENCAOService, private ABDICTURNOService: ABDICTURNOService, private ABDICTIPOMANUTENCAOService: ABDICTIPOMANUTENCAOService, private confirmationService: ConfirmationService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private ABDICBANHOService: ABDICBANHOService, private ABDICLINHAService: ABDICLINHAService, private globalVar: AppGlobals, private ABUNIDADADEMEDIDAService: ABUNIDADADEMEDIDAService, private location: Location, private router: Router, private renderer: Renderer, private route: ActivatedRoute) { }
 
@@ -456,7 +458,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
             this.arrayForm.find(item => item.pos == pos).aditivos.push(
               {
                 disabled: disabled, liecod: response[x][0].liecod,
-                pos: pos2, cisterna: response[x][1].cisterna, cor: cor, factor_CONVERSAO: response[x][1].factor_CONVERSAO,
+                pos: pos2, cisterna: response[x][1].cisterna, nome_REF_SUBSTITUTA: response[x][1].nome_REF_SUBSTITUTA, cod_REF_SUBSTITUTA: response[x][1].cod_REF_SUBSTITUTA, cor: cor, factor_CONVERSAO: response[x][1].factor_CONVERSAO,
                 id_LIN: response[x][0].id_MANUTENCAO_LIN, id: response[x][0].id_ADITIVO, nome: response[x][1].nome_COMPONENTE, valor1: response[x][0].valor1, valor2: response[x][0].valor2,
                 unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: response[x][0].obs_PLANEAMENTO,
                 stock: stock, cod_REF: response[x][0].cod_REF, nome_REF: response[x][1].nome_REF, unidstock: response[x][0].stkunit, valor_agua: value, factor: response[x][1].factor_MULTIPLICACAO_AGUA
@@ -525,7 +527,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
 
               } else {
                 if (!disabled) {
-                  array.push({ liecod: null, disabled: disabled, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
+                  array.push({ liecod: null, disabled: disabled, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, nome_REF_SUBSTITUTA: response[x][1].nome_REF_SUBSTITUTA, cod_REF_SUBSTITUTA: response[x][1].cod_REF_SUBSTITUTA, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
                   this.ordernar(array);
                 }
                 if (pos2 == count) {
@@ -564,7 +566,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
                 liecod = res1[0].LIECOD;
                 unid = res1[0].UNIUTI;
               }
-              array.push({ liecod: liecod, disabled: disabled, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: unid, cod_REF: response[x][1].cod_REF });
+              array.push({ liecod: liecod, disabled: disabled, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, nome_REF_SUBSTITUTA: response[x][1].nome_REF_SUBSTITUTA, cod_REF_SUBSTITUTA: response[x][1].cod_REF_SUBSTITUTA, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: unid, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
               if (pos2 == total2) {
                 this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -573,7 +575,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
 
             },
             error => {
-              array.push({ liecod: null, disabled: disabled, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
+              array.push({ liecod: null, disabled: disabled, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, nome_REF_SUBSTITUTA: response[x][1].nome_REF_SUBSTITUTA, cod_REF_SUBSTITUTA: response[x][1].cod_REF_SUBSTITUTA, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
               this.ordernar(array);
               if (pos2 == total2) {
                 this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -582,7 +584,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
               console.log(error);
             });
         } else {
-          array.find(item => item.pos == pos).aditivos.push({ liecod: response[x][0].liecod, disabled: disabled, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
+          array.find(item => item.pos == pos).aditivos.push({ liecod: response[x][0].liecod, disabled: disabled, pos: pos2, id_LIN: null, cisterna: response[x][1].cisterna, nome_REF_SUBSTITUTA: response[x][1].nome_REF_SUBSTITUTA, cod_REF_SUBSTITUTA: response[x][1].cod_REF_SUBSTITUTA, id: response[x][1].id_COMPONENTE, nome: response[x][1].nome_COMPONENTE, valor1: null, valor2: null, factor: response[x][1].factor_MULTIPLICACAO_AGUA, valor_agua: null, unidade1: response[x][0].id_UNIDADE1, unidade2: response[x][0].id_UNIDADE2, obs: "", stock: total, unidstock: null, nome_REF: response[x][1].nome_REF, cod_REF: response[x][1].cod_REF });
           this.ordernar(array);
           if (pos2 == total2) {
             this.arrayForm.find(item => item.pos == pos).aditivos = array;
@@ -674,6 +676,10 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
                     });
                 }
                 this.ABMOVMANUTENCAOCABService.update(MOV_MANUTENCAO_CAB).then(() => {
+                  this.ABMOVMANUTENCAOService.atualizarestados(MOV_MANUTENCAO_CAB.id_MANUTENCAO).subscribe(
+                    response => { }, error => {
+                      console.log(error);
+                    });
                 }, error => {
                   console.log(error); this.simular(this.inputerro);
                 });
@@ -797,6 +803,10 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
                 MOV_MANUTENCAO.data_ULT_MODIF = new Date();
                 MOV_MANUTENCAO.utz_ULT_MODIF = this.user;
                 this.ABMOVMANUTENCAOService.update(MOV_MANUTENCAO).then(() => {
+                  this.ABMOVMANUTENCAOService.atualizarestados(MOV_MANUTENCAO.id_MANUTENCAO).subscribe(
+                    response => { }, error => {
+                      console.log(error);
+                    });
                 }, error => {
                   console.log(error); this.simular(this.inputerro);
                 });
@@ -1409,6 +1419,10 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
             MOV_MANUTENCAO.data_ULT_MODIF = new Date();
             MOV_MANUTENCAO.utz_ULT_MODIF = this.user;
             this.ABMOVMANUTENCAOService.update(MOV_MANUTENCAO).then(() => {
+              this.ABMOVMANUTENCAOService.atualizarestados(MOV_MANUTENCAO.id_MANUTENCAO).subscribe(
+                response => { }, error => {
+                  console.log(error);
+                });
               this.inicia(id_manu);
             }, error => {
               console.log(error); this.simular(this.inputerro);
@@ -2148,15 +2162,16 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
         var factor_conversao = this.arrayForm.find(item => item.pos == pos).aditivos[x].factor_CONVERSAO;
         var id_lin = this.arrayForm.find(item => item.pos == pos).aditivos[x].id_LIN;
         var adi = this.arrayForm.find(item => item.pos == pos).aditivos[x];
+        var prorefsubstituta = this.arrayForm.find(item => item.pos == pos).aditivos[x].cod_REF_SUBSTITUTA;
         if (factor_conversao == null || factor_conversao == 0) { factor_conversao = 1; }
 
-        this.verificacisterna2(id_manu, ref, etiq, valor1, factor_conversao, id_lin, adi);
+        this.verificacisterna2(id_lin, ref, etiq, valor1, factor_conversao, id_lin, adi, prorefsubstituta);
       }
     }
   }
 
-  verificacisterna2(id_manu, ref, etiq, valor1, factor_conversao, id_lin, adi) {
-    this.ABMOVMANUTENCAOETIQService.getbyRef(id_manu, ref).subscribe(response => {
+  verificacisterna2(id_manu, ref, etiq, valor1, factor_conversao, id_lin, adi, prorefsubstituta) {
+    this.ABMOVMANUTENCAOETIQService.getbyRef2(id_manu).subscribe(response => {
       var count = Object.keys(response).length;
       var encontrou = false;
       var total = 0;
@@ -2172,20 +2187,20 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
           }
         }
         if (true) {
-          this.adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, true);
+          this.adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, true, prorefsubstituta);
         }
       } else {
-        this.adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, true);
+        this.adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, true, prorefsubstituta);
       }
     }, error => {
       console.log(error);
     });
   }
 
-  adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, cisterna, carrega = false, event = null) {
+  adicionaetiqueta(id_manu, ref, etiq, valor1, total, factor_conversao, id_lin, adi, cisterna, prorefsubstituta, carrega = false, event = null) {
     // console.log(ref);
     if (total < valor1) {
-      this.ABMOVMANUTENCAOLINHAService.getDadosEtiquetabyREF(ref, cisterna).subscribe(
+      this.ABMOVMANUTENCAOLINHAService.getDadosEtiquetabyREF(ref, cisterna, prorefsubstituta).subscribe(
         response => {
           var count = Object.keys(response).length;
           if (count > 0) {
@@ -2277,7 +2292,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
   }
 
   /********************ETIQUETAS INDIVIDUAL POR ADITIVO******************* */
-  verEtiquetas(id, ref, nome, unidade, valor, factor_CONVERSAO, pos, event, cisterna, preparado) {
+  verEtiquetas(id, ref, nome, unidade, valor, factor_CONVERSAO, pos, event, cisterna, preparado, prorefsubstituta, nomesubstituta) {
     this.tempgravar = false;
     this.tempcisterna = cisterna;
     this.disaddetiquetas = preparado;
@@ -2285,6 +2300,10 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
     if (factor_conversao == null || factor_conversao == 0) { factor_conversao = 1; }
     this.factor_conversao = factor_conversao;
     this.cod_ref = ref;
+
+    this.cod_ref_subs = prorefsubstituta;
+    this.adit_design_subst = nomesubstituta;
+
     this.adit_design = nome;
     this.valor1temp = (valor != null && valor != "") ? valor.replace(",", ".") : "";
     this.unidade1temp = "--";
@@ -2299,7 +2318,7 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
       var id_manu = this.arrayForm.find(item => item.pos == pos).id;
       var adi = this.arrayForm.find(item => item.pos == pos).aditivos.find(item => item.id_LIN == id);
       this.cisternadisabled = true;
-      this.ABMOVMANUTENCAOETIQService.getbyRef(id_manu, ref).subscribe(response => {
+      this.ABMOVMANUTENCAOETIQService.getbyRef2(id).subscribe(response => {
         var count = Object.keys(response).length;
         var encontrou = false;
         var total = 0;
@@ -2314,10 +2333,10 @@ export class MantencaoNaoProgramadafromComponent implements OnInit {
             }
           }
           if (true) {
-            this.adicionaetiqueta(id_manu, ref, etiq, this.valor1temp.replace(",", "."), total, factor_conversao, id, adi, true, true, event);
+            this.adicionaetiqueta(id_manu, ref, etiq, this.valor1temp.replace(",", "."), total, factor_conversao, id, adi, true, prorefsubstituta, true, event);
           }
         } else {
-          this.adicionaetiqueta(id_manu, ref, etiq, this.valor1temp.replace(",", "."), total, factor_conversao, id, adi, true, true, event);
+          this.adicionaetiqueta(id_manu, ref, etiq, this.valor1temp.replace(",", "."), total, factor_conversao, id, adi, true, prorefsubstituta, true, event);
         }
       }, error => {
         console.log(error);

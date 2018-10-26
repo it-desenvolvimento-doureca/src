@@ -29,10 +29,10 @@ export class ABMOVANALISEService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
-  getAll2(): Observable<AB_MOV_ANALISE[]> {
+  getAll2(data): Observable<AB_MOV_ANALISE[]> {
     const url = webUrl.host + '/rest/sirb/getallAB_MOV_ANALISE/0';
     return this.http
-      .get(url)
+      .post(url, JSON.stringify(data), { headers: this.headers })
       .map(this.extractData)
       .catch((error: any) => Observable.throw('Server error'));
   }
@@ -64,7 +64,7 @@ export class ABMOVANALISEService {
   getbyid_banho_comp(id, inicio, fim, data): Observable<AB_MOV_ANALISE[]> {
     const url = webUrl.host + '/rest/sirb/getallAB_MOV_ANALISEidbanho_comp/' + id + '/' + inicio + '/' + fim;
     return this.http
-    .post(url, JSON.stringify(data), { headers: this.headers })
+      .post(url, JSON.stringify(data), { headers: this.headers })
       .map(this.extractData)
       .catch((error: any) => Observable.throw('Server error'));
   }

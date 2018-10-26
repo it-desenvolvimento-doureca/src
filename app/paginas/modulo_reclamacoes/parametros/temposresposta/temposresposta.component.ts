@@ -22,6 +22,7 @@ export class TemposrespostaComponent implements OnInit {
   @ViewChild('inputgravou') inputgravou: ElementRef;
   @ViewChild('inputerro') inputerro: ElementRef;
   tempo_ID: number;
+  tempo_REVISAO: any;
 
   constructor(private router: Router, private globalVar: AppGlobals, private RCDICTEMPORESPOSTAService: RCDICTEMPORESPOSTAService, private renderer: Renderer) { }
 
@@ -55,6 +56,7 @@ export class TemposrespostaComponent implements OnInit {
           this.tempo_RESPOSTA_STEP6 = response[x].tempo_RESPOSTA_STEP6;
           this.tempo_RESPOSTA_STEP7 = response[x].tempo_RESPOSTA_STEP7;
           this.tempo_RESPOSTA_STEP8 = response[x].tempo_RESPOSTA_STEP8;
+          this.tempo_REVISAO = response[x].tempo_REVISAO;
 
         }
 
@@ -75,6 +77,8 @@ export class TemposrespostaComponent implements OnInit {
     TEMPO_RESPOSTA.tempo_RESPOSTA_STEP6 = this.tempo_RESPOSTA_STEP6;
     TEMPO_RESPOSTA.tempo_RESPOSTA_STEP7 = this.tempo_RESPOSTA_STEP7;
     TEMPO_RESPOSTA.tempo_RESPOSTA_STEP8 = this.tempo_RESPOSTA_STEP8;
+    TEMPO_RESPOSTA.tempo_REVISAO = this.tempo_REVISAO;
+    
 
     TEMPO_RESPOSTA.utz_ULT_MODIF = JSON.parse(localStorage.getItem('userapp'))["id"];
     TEMPO_RESPOSTA.data_ULT_MODIF = new Date();

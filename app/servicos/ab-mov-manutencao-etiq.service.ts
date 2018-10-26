@@ -44,6 +44,14 @@ export class ABMOVMANUTENCAOETIQService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
+  getbyRef2(id): Observable<AB_MOV_MANUTENCAO_ETIQ[]> {
+    const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAO_ETIQbyref2/' + id;
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
   /* getAll(): Observable<AB_MOV_MANUTENCAO_ETIQ[]> {
      const url = webUrl.host + '/rest/sirb/getAB_MOV_MANUTENCAO_ETIQ';
      return this.http

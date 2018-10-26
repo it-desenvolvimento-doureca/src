@@ -3,7 +3,7 @@ import { Http, Headers, Response } from '@angular/http';
 import { Observable } from "rxjs/Observable";
 import { webUrl } from 'assets/config/webUrl';
 import 'rxjs/Rx';
-import { RC_DIC_ACCOES_RECLAMACAO } from '../entidades/RC_DIC_ACCOES_RECLAMACAO';
+import { GT_DIC_TAREFAS } from '../entidades/GT_DIC_TAREFAS';
 
 @Injectable()
 export class RCDICACCOESRECLAMACAOService {
@@ -12,23 +12,23 @@ export class RCDICACCOESRECLAMACAOService {
   private headers = new Headers({ 'Content-Type': 'application/json' });
   constructor(private http: Http) { }
 
-  create(data: RC_DIC_ACCOES_RECLAMACAO) {
+  create(data: GT_DIC_TAREFAS) {
     return this.http
-      .post(webUrl.host + '/rest/sirb/createRC_DIC_ACCOES_RECLAMACAO', JSON.stringify(data), { headers: this.headers })
+      .post(webUrl.host + '/rest/sirb/createGT_DIC_TAREFAS', JSON.stringify(data), { headers: this.headers })
       .map(this.extractData)
       .catch((error: any) => Observable.throw('Server error'));
   }
 
-  getbyid(id): Observable<RC_DIC_ACCOES_RECLAMACAO[]> {
-    const url = webUrl.host + '/rest/sirb/getRC_DIC_ACCOES_RECLAMACAObyid_zona/' + id;
+  getbyid(id): Observable<GT_DIC_TAREFAS[]> {
+    const url = webUrl.host + '/rest/sirb/getGT_DIC_TAREFASbyid_zona/' + id;
     return this.http
       .get(url)
       .map(this.extractData)
       .catch((error: any) => Observable.throw('Server error'));
   }
 
-  getAll(): Observable<RC_DIC_ACCOES_RECLAMACAO[]> {
-    const url = webUrl.host + '/rest/sirb/getRC_DIC_ACCOES_RECLAMACAO';
+  getAll(): Observable<GT_DIC_TAREFAS[]> {
+    const url = webUrl.host + '/rest/sirb/getGT_DIC_TAREFAS';
     return this.http
       .get(url)
       .map(this.extractData)
@@ -37,15 +37,15 @@ export class RCDICACCOESRECLAMACAOService {
 
   delete(id) {
     return this.http
-      .delete(webUrl.host + '/rest/sirb/deleteRC_DIC_ACCOES_RECLAMACAO/' + id + '')
+      .delete(webUrl.host + '/rest/sirb/deleteGT_DIC_TAREFAS/' + id + '')
       .toPromise()
       .then(res => res)
       .catch(this.handleError);
   }
 
-  update(data: RC_DIC_ACCOES_RECLAMACAO) {
+  update(data: GT_DIC_TAREFAS) {
     return this.http
-      .put(webUrl.host + '/rest/sirb/updateRC_DIC_ACCOES_RECLAMACAO', JSON.stringify(data), { headers: this.headers })
+      .put(webUrl.host + '/rest/sirb/updateGT_DIC_TAREFAS', JSON.stringify(data), { headers: this.headers })
       .toPromise()
       .then(res => res.json().data)
       .catch(this.handleError);

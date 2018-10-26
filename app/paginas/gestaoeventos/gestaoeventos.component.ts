@@ -34,7 +34,9 @@ export class GestaoeventosComponent implements OnInit {
   results;
   bt_disable;
   inclui_anexo;
-  text: string = "";;
+  text: string = ""; i: any;
+  gteventos: any;
+  ;
   draggedCar: any;
   @ViewChild('inputgravou') inputgravou: ElementRef;
   @ViewChild('inputerro') inputerro: ElementRef;
@@ -52,8 +54,8 @@ export class GestaoeventosComponent implements OnInit {
     this.globalVar.setvoltar(true);
     this.globalVar.seteditar(true);
     this.globalVar.setapagar(false);
-    this.globalVar.setseguinte(false);
-    this.globalVar.setanterior(false);
+    this.globalVar.setseguinte(true);
+    this.globalVar.setanterior(true);
     this.globalVar.setcriar(false);
     this.globalVar.setduplicar(false);
     this.globalVar.setatualizar(false);
@@ -79,6 +81,8 @@ export class GestaoeventosComponent implements OnInit {
     }
     if (urlarray[1].match("editar")) {
       this.modoedicao = true;
+      this.globalVar.setseguinte(false);
+      this.globalVar.setanterior(false);
     }
     if (id == 0) {
       this.router.navigate(['eventos']);
@@ -93,7 +97,22 @@ export class GestaoeventosComponent implements OnInit {
       },
       error => console.log(error));
     this.getutilizadores();
-    this.inicia(this.id);
+    //this.inicia(this.id);
+    //preenche array para navegar 
+    this.GEREVENTOSCONFService.getAll().subscribe(
+      response => {
+        this.gteventos = [];
+
+        var count = Object.keys(response).length;
+        if (count > 0) {
+          for (var x in response) {
+            this.gteventos.push(response[x][0].id_EVENTO);
+          }
+        }
+
+        this.i = this.gteventos.indexOf(+this.id);
+        this.inicia(this.gteventos[this.i]);
+      }, error => { console.log(error); this.inicia(this.id); });
   }
 
 
@@ -324,6 +343,28 @@ export class GestaoeventosComponent implements OnInit {
     let event = new MouseEvent('click', { bubbles: true });
     this.renderer.invokeElementMethod(
       element.nativeElement, 'dispatchEvent', [event]);
+  }
+
+
+
+  seguinte() {
+    this.i = this.i + 1;
+    this.i = this.i % this.gteventos.length;
+    if (this.gteventos.length > 0) {
+      this.inicia(this.gteventos[this.i]);
+      this.router.navigate(['eventos/view'], { queryParams: { id: this.gteventos[this.i] } });
+    }
+  }
+
+  anterior() {
+    if (this.i === 0) {
+      this.i = this.gteventos.length;
+    }
+    this.i = this.i - 1;
+    this.router.navigate(['eventos/view'], { queryParams: { id: this.gteventos[this.i] } });
+    if (this.gteventos.length > 0) {
+      this.inicia(this.gteventos[this.i]);
+    }
   }
 
 }

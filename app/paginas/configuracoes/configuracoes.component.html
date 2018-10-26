@@ -1508,7 +1508,7 @@
                                     </label>
                                     <label for="node-5-2-5" class="parametros">Tempos de Resposta</label>
                                   </li>
-                                  <li>
+                                  <!--  <li>
                                     <input type="checkbox" id="node-5-2-6" />
                                     <label>
                                       <input type="checkbox" [ngModelOptions]="{standalone: true}" #cbx id="node526"
@@ -1516,11 +1516,49 @@
                                       <span></span>
                                     </label>
                                     <label for="node-5-2-6" class="parametros">Acções de Reclamações</label>
-                                  </li>
+                                  </li>-->
                                 </ul>
                               </li>
                             </ul>
                           </li>
+
+
+
+                          <!-- Módulo Tarefas-->
+                          <li *ngIf="id_modulo == 6">
+                            <input type="checkbox" id="node-6" class="parent" />
+                            <label>
+                              <input type="checkbox" [ngModelOptions]="{standalone: true}" #cbx id="node6" [(ngModel)]="checkbox.node6" />
+                              <span></span>
+                            </label>
+                            <label for="node-6">
+                              <b>Tarefas</b>
+                            </label>
+                            <ul>
+                              <li>
+                                <input type="checkbox" class="parent" id="node-6-2" />
+                                <label>
+                                  <input type="checkbox" [ngModelOptions]="{standalone: true}" #cbx id="node62"
+                                    [(ngModel)]="checkbox.node62" />
+                                  <span></span>
+                                </label>
+                                <label for="node-6-2">Parâmetros</label>
+                                <ul>
+                                  <li>
+                                    <input type="checkbox" id="node-6-2-1" />
+                                    <label>
+                                      <input type="checkbox" [ngModelOptions]="{standalone: true}" #cbx id="node621"
+                                        [(ngModel)]="checkbox.node621" />
+                                      <span></span>
+                                    </label>
+                                    <label for="node-6-2-1" class="parametros">Tarefas</label>
+                                  </li>
+                                </ul>
+                              </li>
+                            </ul>
+
+                          </li>
+
                           <li *ngIf="id_modulo==2">
                             <input type="checkbox" id="node-2" class="parent" />
                             <label>

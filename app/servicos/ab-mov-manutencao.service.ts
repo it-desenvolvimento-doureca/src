@@ -83,6 +83,14 @@ export class ABMOVMANUTENCAOService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
+  atualizarestados(id): Observable<AB_MOV_MANUTENCAO[]> {
+    const url = webUrl.host + '/rest/sirb/atualizarestados/' + id;
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
   delete(id) {
     return this.http
       .delete(webUrl.host + '/rest/sirb/deleteAB_MOV_MANUTENCAO/' + id + '')

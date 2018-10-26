@@ -3,7 +3,7 @@ import { Http, Headers, Response } from '@angular/http';
 import { Observable } from "rxjs/Observable";
 import { webUrl } from 'assets/config/webUrl';
 import 'rxjs/Rx';
-import { RC_MOV_RECLAMACAO_PLANO_ACCOES_CORRETIVAS } from '../entidades/RC_MOV_RECLAMACAO_PLANO_ACCOES_CORRETIVAS';
+import { RC_MOV_RECLAMACAO_PLANOS_ACCOES } from '../entidades/RC_MOV_RECLAMACAO_PLANOS_ACCOES';
 
 @Injectable()
 export class RCMOVRECLAMACAOPLANOACCOESCORRETIVASService {
@@ -12,23 +12,31 @@ export class RCMOVRECLAMACAOPLANOACCOESCORRETIVASService {
   private headers = new Headers({ 'Content-Type': 'application/json' });
   constructor(private http: Http) { }
 
-  create(data: RC_MOV_RECLAMACAO_PLANO_ACCOES_CORRETIVAS) {
+  create(data: RC_MOV_RECLAMACAO_PLANOS_ACCOES) {
     return this.http
-      .post(webUrl.host + '/rest/sirb/createRC_MOV_RECLAMACAO_PLANO_ACCOES_CORRETIVAS', JSON.stringify(data), { headers: this.headers })
+      .post(webUrl.host + '/rest/sirb/createRC_MOV_RECLAMACAO_PLANOS_ACCOES', JSON.stringify(data), { headers: this.headers })
       .map(this.extractData)
       .catch((error: any) => Observable.throw('Server error'));
   }
 
-  getbyidreclamacao(id): Observable<RC_MOV_RECLAMACAO_PLANO_ACCOES_CORRETIVAS[]> {
-    const url = webUrl.host + '/rest/sirb/getRC_MOV_RECLAMACAO_PLANO_ACCOES_CORRETIVASbyid_reclamacao/' + id;
+  getbyidreclamacao(id): Observable<RC_MOV_RECLAMACAO_PLANOS_ACCOES[]> {
+    const url = webUrl.host + '/rest/sirb/getRC_MOV_RECLAMACAO_PLANOS_ACCOESbyid_reclamacao/' + id;
     return this.http
       .get(url)
       .map(this.extractData)
       .catch((error: any) => Observable.throw('Server error'));
   }
 
-  getAll(): Observable<RC_MOV_RECLAMACAO_PLANO_ACCOES_CORRETIVAS[]> {
-    const url = webUrl.host + '/rest/sirb/getRC_MOV_RECLAMACAO_PLANO_ACCOES_CORRETIVAS';
+  getbyid(id): Observable<RC_MOV_RECLAMACAO_PLANOS_ACCOES[]> {
+    const url = webUrl.host + '/rest/sirb/getRC_MOV_RECLAMACAO_PLANOS_ACCOESbyid/' + id;
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
+  getAll(): Observable<RC_MOV_RECLAMACAO_PLANOS_ACCOES[]> {
+    const url = webUrl.host + '/rest/sirb/getRC_MOV_RECLAMACAO_PLANOS_ACCOES';
     return this.http
       .get(url)
       .map(this.extractData)
@@ -37,17 +45,16 @@ export class RCMOVRECLAMACAOPLANOACCOESCORRETIVASService {
 
   delete(id) {
     return this.http
-      .delete(webUrl.host + '/rest/sirb/deleteRC_MOV_RECLAMACAO_PLANO_ACCOES_CORRETIVAS/' + id + '')
+      .delete(webUrl.host + '/rest/sirb/deleteRC_MOV_RECLAMACAO_PLANOS_ACCOES/' + id + '')
       .toPromise()
       .then(res => res)
       .catch(this.handleError);
   }
 
-  update(data: RC_MOV_RECLAMACAO_PLANO_ACCOES_CORRETIVAS) {
+  update(data: RC_MOV_RECLAMACAO_PLANOS_ACCOES) {
     return this.http
-      .put(webUrl.host + '/rest/sirb/updateRC_MOV_RECLAMACAO_PLANO_ACCOES_CORRETIVAS', JSON.stringify(data), { headers: this.headers })
-      .toPromise()
-      .then(res => res.json().data)
+      .put(webUrl.host + '/rest/sirb/updateRC_MOV_RECLAMACAO_PLANOS_ACCOES', JSON.stringify(data), { headers: this.headers })
+      .map(this.extractData)
       .catch(this.handleError);
   }
 

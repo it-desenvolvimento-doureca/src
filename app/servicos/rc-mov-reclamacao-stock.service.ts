@@ -27,6 +27,16 @@ export class RCMOVRECLAMACAOSTOCKService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
+
+  getbyidlinha(id, id_linha): Observable<RC_MOV_RECLAMACAO_STOCK[]> {
+    const url = webUrl.host + '/rest/sirb/getRC_MOV_RECLAMACAO_STOCKbyid_linha/' + id + '/' + id_linha;
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
+
   getAll(): Observable<RC_MOV_RECLAMACAO_STOCK[]> {
     const url = webUrl.host + '/rest/sirb/getRC_MOV_RECLAMACAO_STOCK';
     return this.http

@@ -1,14 +1,14 @@
 import { Component, OnInit, ViewChild, ElementRef, Renderer } from '@angular/core';
-import { RC_DIC_ACCOES_RECLAMACAO } from '../../../../entidades/RC_DIC_ACCOES_RECLAMACAO';
+import { GT_DIC_TAREFAS } from '../../../../entidades/GT_DIC_TAREFAS';
 import { AppGlobals } from '../../../../menu/sidebar.metadata';
 import { RCDICACCOESRECLAMACAOService } from '../../../../servicos/rc-dic-accoes-reclamacao.service';
 
 @Component({
-  selector: 'app-accoes-reclamacao',
-  templateUrl: './accoes-reclamacao.component.html',
-  styleUrls: ['./accoes-reclamacao.component.css']
+  selector: 'app-dictarefas',
+  templateUrl: './dictarefas.component.html',
+  styleUrls: ['./dictarefas.component.css']
 })
-export class AccoesReclamacaoComponent implements OnInit {
+export class GTDICTarefasComponent implements OnInit {
 
   dados: any[];
   descricaopt: string;
@@ -55,7 +55,7 @@ export class AccoesReclamacaoComponent implements OnInit {
 
   //gravar unidade de zona
   gravardados() {
-    var ACCOES_RECLAMACAO = new RC_DIC_ACCOES_RECLAMACAO;
+    var ACCOES_RECLAMACAO = new GT_DIC_TAREFAS;
     ACCOES_RECLAMACAO.descricao_ENG = this.descricaoeng;
     ACCOES_RECLAMACAO.descricao_PT = this.descricaopt;
     ACCOES_RECLAMACAO.descricao_FR = this.descricaofr;
@@ -89,7 +89,7 @@ export class AccoesReclamacaoComponent implements OnInit {
     this.RCDICACCOESRECLAMACAOService.getAll().subscribe(
       response => {
         for (var x in response) {
-          this.dados.push({ id: response[x].id,nomefr: response[x].descricao_FR, nomept: response[x].descricao_PT, nomeeng: response[x].descricao_ENG, data_CRIA: response[x].data_CRIA, utz_CRIA: response[x].utz_CRIA });
+          this.dados.push({ id: response[x].id, nomefr: response[x].descricao_FR, nomept: response[x].descricao_PT, nomeeng: response[x].descricao_ENG, data_CRIA: response[x].data_CRIA, utz_CRIA: response[x].utz_CRIA });
         }
         this.dados = this.dados.slice();
       },
@@ -100,11 +100,11 @@ export class AccoesReclamacaoComponent implements OnInit {
 
   //apagar zona
   apagar() {
-    var ACCOES_RECLAMACAO = new RC_DIC_ACCOES_RECLAMACAO;
+    var ACCOES_RECLAMACAO = new GT_DIC_TAREFAS;
     ACCOES_RECLAMACAO.descricao_ENG = this.descricaoeng;
     ACCOES_RECLAMACAO.descricao_PT = this.descricaopt;
     ACCOES_RECLAMACAO.descricao_FR = this.descricaofr;
-    
+
     ACCOES_RECLAMACAO.id = this.id_selected;
 
 

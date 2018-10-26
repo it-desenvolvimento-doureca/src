@@ -1,9 +1,9 @@
-export class RC_MOV_RECLAMACAO_PLANO_ACCOES_CORRETIVAS {
+export class RC_MOV_RECLAMACAO_PLANOS_ACCOES {
 	id: number;
 	responsavel: number;
 	data_PREVISTA: Date;
 	data_REAL: Date;
-	descricao: string;
+	id_ACCAO: number;
 	id_RECLAMACAO: number;
 	data_CRIA: Date;
 	utz_CRIA: number;
@@ -13,5 +13,10 @@ export class RC_MOV_RECLAMACAO_PLANO_ACCOES_CORRETIVAS {
 	tipo_RESPONSAVEL: string;
 	concluido_DATA: Date;
 	concluido_UTZ: number;
+	ordem: number;
+	observacoes: string;
+	estado: string;
+	id_TAREFA: number;
+	obriga_EVIDENCIAS: boolean;
 
 }

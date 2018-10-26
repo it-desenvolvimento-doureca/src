@@ -8,4 +8,9 @@ export class RC_MOV_RECLAMACAO_ENVIOS_GARANTIDOS {
 	utz_CRIA: number;
 	data_ULT_MODIF: Date;
 	utz_ULT_MODIF: number;
+	envio: boolean;
+	cliente: string;
+	morada: string;
+	data_ENTREGA: Date;
+	data_ENVIO: Date;
 }

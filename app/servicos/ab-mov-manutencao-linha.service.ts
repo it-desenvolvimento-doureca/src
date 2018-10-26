@@ -85,10 +85,10 @@ export class ABMOVMANUTENCAOLINHAService {
       .catch(this.handleError);
   }
 
-  getDadosEtiquetabyREF(ref, cisterna) {
+  getDadosEtiquetabyREF(ref, cisterna, prorefsubstituta) {
     var url = "";
     if (cisterna) {
-      url = webUrl.host + '/rest/sirb/getDadosEtiquetabyREFcisterna/' + ref;
+      url = webUrl.host + '/rest/sirb/getDadosEtiquetabyREFcisterna/' + ref + '/' + prorefsubstituta;
     } else {
       url = webUrl.host + '/rest/sirb/getDadosEtiquetabyREF/' + ref;
     }

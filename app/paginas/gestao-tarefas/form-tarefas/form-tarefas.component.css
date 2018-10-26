@@ -2,9 +2,7 @@
     border-bottom: 2px solid #DDD;
 }
 
-.nav-tabs>li.active>a,
-.nav-tabs>li.active>a:focus,
-.nav-tabs>li.active>a:hover {
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
     border-width: 0;
 }
 
@@ -13,8 +11,7 @@
     color: #666;
 }
 
-.nav-tabs>li.active>a,
-.nav-tabs>li>a:hover {
+.nav-tabs>li.active>a, .nav-tabs>li>a:hover {
     border: none;
     color: #4285F4 !important;
     background: transparent;
@@ -32,8 +29,7 @@
     transform: scale(0);
 }
 
-.nav-tabs>li.active>a::after,
-.nav-tabs>li:hover>a::after {
+.nav-tabs>li.active>a::after, .nav-tabs>li:hover>a::after {
     transform: scale(1);
 }
 
@@ -55,12 +51,13 @@
 }
 
 .tabelauser th {
-    text-align: left  !important;
+    text-align: left !important;
 }
 
 .tabelauser .ui-datatable-scrollable-body {
     overflow-x: auto;
 }
+
 .row-bordered:after {
     content: "";
     display: block;
@@ -276,19 +273,17 @@ div.listatarefas>div:nth-of-type(odd) {
 
 /***** MS / TASKS *****/
 
-.dd-milestone,
-.dd-task,
-.dd-subtask {
+.dd-milestone, .dd-task, .dd-subtask {
     border: 1px solid #e5e5e5;
     padding: 0px;
     margin-bottom: 10px;
     border-radius: 2px;
     -moz-border-radius: 2px;
-    display: -webkit-box;
+    display: grid;
+    /*display: -webkit-box;*/
 }
 
-.dd-task,
-.dd-subtask {
+.dd-task, .dd-subtask {
     margin-bottom: 0;
     margin-top: 10px;
 }
@@ -297,8 +292,7 @@ div.listatarefas>div:nth-of-type(odd) {
     margin-bottom: 0;
 }
 
-.ms-title,
-.dd-task .ms-title {
+.ms-title, .dd-task .ms-title {
     font-size: 14px;
     /*padding-left:10px;*/
     top: -2px;
@@ -307,33 +301,26 @@ div.listatarefas>div:nth-of-type(odd) {
     display: block;
 }
 
-.dd-milestone-actions,
-.dd-task-actions,
-.dd-milestone-status,
-.dd-task-status {
+.dd-milestone-actions, .dd-task-actions, .dd-milestone-status, .dd-task-status {
     float: left;
 }
 
-.dd-milestone-status,
-.dd-task-status {
+.dd-milestone-status, .dd-task-status {
     padding-right: 15px;
 }
 
-.dd-milestone-info,
-.dd-task-info {
+.dd-milestone-info, .dd-task-info {
     padding-top: 6px;
     position: relative;
     font-size: 12px;
 }
 
-.dd-task-info,
-.dd-subtask-info {
+.dd-task-info, .dd-subtask-info {
     padding-bottom: 6px;
     font-size: 12px;
 }
 
-.post-type-cqpim_quote .dd-task-info,
-.post-type-cqpim_quote .dd-subtask-info {
+.post-type-cqpim_quote .dd-task-info, .post-type-cqpim_quote .dd-subtask-info {
     padding-bottom: 0;
 }
 
@@ -367,14 +354,7 @@ div.listatarefas>div:nth-of-type(odd) {
 
 /***** Colorbox *****/
 
-#cboxTopLeft,
-#cboxTopCenter,
-#cboxTopRight,
-#cboxMiddleLeft,
-#cboxMiddleRight,
-#cboxBottomLeft,
-#cboxBottomCenter,
-#cboxBottomRight {
+#cboxTopLeft, #cboxTopCenter, #cboxTopRight, #cboxMiddleLeft, #cboxMiddleRight, #cboxBottomLeft, #cboxBottomCenter, #cboxBottomRight {
     display: none !important
 }
 
@@ -627,8 +607,7 @@ a.nodec {
 
 /* Item Status */
 
-.quote_status tr,
-.quote_status {
+.quote_status tr, .quote_status {
     width: 100%;
 }
 

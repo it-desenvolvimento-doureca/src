@@ -132,9 +132,7 @@ import { RCMOVRECLAMACAOService } from './servicos/rc-mov-reclamacao.service';
 import { TemposrespostaComponent } from './paginas/modulo_reclamacoes/parametros/temposresposta/temposresposta.component';
 import { RCDICTEMPORESPOSTAService } from './servicos/rc-dic-tempo-resposta.service';
 import { RCMOVRECLAMACAOENVIOSGARANTIDOSService } from './servicos/rc-mov-reclamacao-envios-garantidos.service';
-import { RCMOVRECLAMACAOPLANOACCOESPREVENTIVASService } from './servicos/rc-mov-reclamacao-plano-accoes-preventivas.service';
 import { RCMOVRECLAMACAOPLANOACCOESCORRETIVASService } from './servicos/rc-mov-reclamacao-plano-accoes-corretivas.service';
-import { RCMOVRECLAMACAOPLANOACCOESIMEDIATASService } from './servicos/rc-mov-reclamacao-plano-accoes-imediatas.service';
 import { RCMOVRECLAMACAOARTIGOSIMILARESService } from './servicos/rc-mov-reclamacao-artigo-similares.service';
 import { RCMOVRECLAMACAOEQUIPAService } from './servicos/rc-mov-reclamacao-equipa.service';
 import { RCMOVRECLAMACAOFICHEIROSService } from './servicos/rc-mov-reclamacao-ficheiros.service';
@@ -149,9 +147,13 @@ import { GERSECCAOUTZService } from './servicos/ger-seccao-utz.service';
 import { GERGRUPOService } from './servicos/ger-grupo.service';
 import { GERGRUPOUTZService } from './servicos/ger-grupo-utz.service';
 import { GERSECCAOCHEFESService } from './servicos/ger-seccao-chefes.service';
-import { AccoesReclamacaoComponent } from './paginas/modulo_reclamacoes/parametros/accoes-reclamacao/accoes-reclamacao.component';
+import { GTDICTarefasComponent } from './paginas/gestao-tarefas/parametros/tarefas/dictarefas.component';
 import { RCDICACCOESRECLAMACAOService } from './servicos/rc-dic-accoes-reclamacao.service';
 import { RCMOVRECLAMACAOSTOCKService } from './servicos/rc-mov-reclamacao-stock.service';
+import { GTMOVTAREFASService } from './servicos/gt-mov-tarefas.service';
+import { ProcessosComponent } from './paginas/home-modulo/processos/processos.component';
+import { PaginatarefaComponent } from './paginas/gestao-tarefas/paginatarefa/paginatarefa.component';
+import { RCMOVRECLAMACAOENCOMENDASService } from './servicos/rc-mov-reclamacao-encomendas.service';
 
 const routes: Routes = [
   { path: 'dashboard', component: HomeComponent, canActivate: [LoginService] },
@@ -205,7 +207,7 @@ const routes: Routes = [
       { path: 'historico', component: HistoricoAnalisesComponent, canActivate: [LoginService], data: { breadcrumb: "Histórico" } },]
   },
   { path: 'homegestaobanhos', component: GestaoBanhosComponent, canActivate: [LoginService], data: { breadcrumb: "Gestão Banhos" } },
-  { path: 'hometarefas', component: TarefasComponent, canActivate: [LoginService], data: { breadcrumb: "Gestão Tarefas" } },
+  // { path: 'hometarefas', component: TarefasComponent, canActivate: [LoginService], data: { breadcrumb: "Gestão Tarefas" } },
   {
     path: 'manutencao', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Manutenções Planedas" },
     children: [
@@ -276,6 +278,14 @@ const routes: Routes = [
   //{ path: 'reclamacao', component: ReclamacaoCliente8DComponent, canActivate: [LoginService], data: { breadcrumb: "Reclamação Cliente" } },
   { path: 'calendario', component: CalendarioComponent, canActivate: [LoginService], data: { breadcrumb: "Calendário" } },
 
+
+  {
+    path: 'tarefas', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Tarefas" },
+    children: [
+      { path: '', component: TarefasComponent, canActivate: [LoginService], data: { breadcrumb: "Gestão Tarefas" } },
+      { path: 'view', component: PaginatarefaComponent, canActivate: [LoginService], data: { breadcrumb: "Tarefa" } },
+      { path: 'editar', component: PaginatarefaComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } }]
+  },
   {
     path: 'eventosprogramados', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Eventos Programados" },
     children: [
@@ -304,7 +314,7 @@ const routes: Routes = [
 
   { path: 'rejeicoes', component: RejeicoesComponent, canActivate: [LoginService], data: { breadcrumb: "Rejeições" } },
   { path: 'tiposreclamacoes', component: TiposreclamacoesComponent, canActivate: [LoginService], data: { breadcrumb: "Tipos de Reclamações" } },
-  { path: 'accoesreclamacoes', component: AccoesReclamacaoComponent, canActivate: [LoginService], data: { breadcrumb: "Acções de Reclamações" } },
+  { path: 'dictarefas', component: GTDICTarefasComponent, canActivate: [LoginService], data: { breadcrumb: "Tarefas" } },
   { path: 'grausimportancia', component: GrausimportanciaComponent, canActivate: [LoginService], data: { breadcrumb: "Graus de Importância" } },
   { path: 'tiposdefeito', component: TiposdefeitoComponent, canActivate: [LoginService], data: { breadcrumb: "Tipos de Defeito" } },
   { path: 'ficheirosanalise', component: FicheirosanaliseComponent, canActivate: [LoginService], data: { breadcrumb: "Ficheiros de Análise" } },
@@ -316,6 +326,7 @@ const routes: Routes = [
     children: [
       { path: '', component: ListareclamacoesclientesComponent, canActivate: [LoginService], data: { breadcrumb: "" } },
       { path: 'view', component: ReclamacaoCliente8DComponent, canActivate: [LoginService], data: { breadcrumb: "Reclamação Cliente" } },
+      { path: 'duplicar', component: ReclamacaoCliente8DComponent, canActivate: [LoginService], data: { breadcrumb: "Duplicar" } },
       { path: 'editar', component: ReclamacaoCliente8DComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } },
       { path: 'novo', component: ReclamacaoCliente8DComponent, canActivate: [LoginService], data: { breadcrumb: "Novo" } }]
   },
@@ -417,6 +428,7 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     AnaliseEtiquetasComponent,
     AnaliseconsumosetiquetasComponent,
     TarefasComponent,
+    ProcessosComponent,
     ProdutosComponent,
     ReclamacaoCliente8DComponent,
     RejeicoesComponent,
@@ -424,14 +436,15 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     GrausimportanciaComponent,
     TiposdefeitoComponent,
     FicheirosanaliseComponent,
+    DepartamentosComponent,
     ListareclamacoesclientesComponent,
     TemposrespostaComponent,
-    DepartamentosComponent,
     ListaSeccoesComponent,
     FormSeccoesComponent,
     FormGruposComponent,
     ListaGruposComponent,
-    AccoesReclamacaoComponent
+    GTDICTarefasComponent,
+    PaginatarefaComponent
   ],
   imports: [
     BrowserModule,
@@ -522,9 +535,7 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     RCMOVRECLAMACAOService,
     RCDICTEMPORESPOSTAService,
     RCMOVRECLAMACAOENVIOSGARANTIDOSService,
-    RCMOVRECLAMACAOPLANOACCOESPREVENTIVASService,
     RCMOVRECLAMACAOPLANOACCOESCORRETIVASService,
-    RCMOVRECLAMACAOPLANOACCOESIMEDIATASService,
     RCMOVRECLAMACAOARTIGOSIMILARESService,
     RCMOVRECLAMACAOEQUIPAService,
     RCMOVRECLAMACAOFICHEIROSService,
@@ -536,6 +547,8 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     GERSECCAOService,
     GERDEPARTAMENTOService,
     RCMOVRECLAMACAOSTOCKService,
+    GTMOVTAREFASService,
+    RCMOVRECLAMACAOENCOMENDASService,
     GERFORNECEDORService],
   bootstrap: [AppComponent]
 })
