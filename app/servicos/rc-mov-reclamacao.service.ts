@@ -132,6 +132,14 @@ export class RCMOVRECLAMACAOService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
+  getbyIDTotalTarefas(id) {
+    const url = webUrl.host + '/rest/sirb/getRC_MOV_RECLAMACAObyidtotaltarefas/' + id + '';
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
 
   getbyidmodulo(id): Observable<RC_MOV_RECLAMACAO[]> {
     const url = webUrl.host + '/rest/sirb/getRC_MOV_RECLAMACAObyidmodulo/' + id;

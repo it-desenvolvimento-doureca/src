@@ -10,4 +10,12 @@ export class GER_PARAMETROS {
     cartelas_ATIVO: boolean;
     tempo_SINCRO_CARTELAS: number;
     tempo_MAX_PLANEADAS: number;
+
+    tempo_SINCRO_LOGS_SILVER: number;
+    logs_SILVER_ATIVO: boolean;
+    caminho_LOGS_SILVER: string;
+    utilizador_LOGS_SILVER: string;
+    dominio_LOGS_SILVER: string;
+    senha_LOGS_SILVER: string;
+    pasta_DESTINO_ERRO: string;
 }

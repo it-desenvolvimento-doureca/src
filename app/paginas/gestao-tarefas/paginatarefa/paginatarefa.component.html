@@ -35,7 +35,7 @@
                       [(ngModel)]="nome_tarefa" [ngModelOptions]="{standalone: true}">
                   </div>
 
-                  <div style="padding: 1px 5px 1px 10px;" class="form-group col-md-4 col-lg-4">
+                  <div style="padding: 1px 5px 1px 10px;" class="form-group col-md-4 col-lg-5">
                     <label>Origem:</label>
                     <!-- <input [disabled]="!modoedicao" type="text" class="form-control2" [(ngModel)]="origem"
                       [ngModelOptions]="{standalone: true}" style="">-->
@@ -43,7 +43,7 @@
                     <a href="{{caminho_origem}}">{{origem}}</a>
                   </div>
 
-                  <div style="padding: 1px 5px 1px 10px;" class="form-group col-md-4 col-lg-4">
+                  <div style="padding: 1px 5px 1px 10px;" class="form-group col-md-4 col-lg-3">
                     <label>Utilizador Origem:</label>
                     <input [disabled]="true" type="text" class="form-control2" style="background: #efefefba;"
                       [(ngModel)]="utz_origem" [ngModelOptions]="{standalone: true}">
@@ -262,4 +262,31 @@
   <div style="width: 80vw; text-align: -webkit-center;">
     <h6>{{errovalida}}</h6>
   </div>
+</p-dialog>
+
+
+
+<p-dialog header="Motivo Rejeição" [responsive]="true" [positionTop]="0" [style]="{'max-height':'99vh','width': '100%'}"
+  [dismissableMask]="true" appendTo="body" [closeOnEscape]="true" [draggable]="false" [(visible)]="displayMotivoRejeicao"
+  [modal]="true">
+
+  <!-- Modal Header -->
+
+  <form role="form" ngNativeValidate (ngSubmit)="atualizaestadoTarefa(id_tarefa, 'R')">
+    <!-- Modal Body -->
+    <div class="">
+      <div style="padding: 1px 5px 1px 10px; min-height: 50vh;" class="form-group col-md-12 col-lg-12">
+        <label>Motivo:</label>
+        <textarea required="true" rows="6" pInputTextarea [(ngModel)]="mototivoRejeicao" class="form-control2 enabled"
+          [ngModelOptions]="{standalone: true}" style="height: auto; width: 500px;"></textarea>
+      </div>
+
+    </div>
+    <!-- Modal Footer -->
+    <div class="" style="text-align: -webkit-center;">
+      <button type="button" class="btn btn-default" (click)="displayMotivoRejeicao = false">Fechar</button>
+      <button type="submit" class="btn btn-success ">Gravar</button>
+    </div>
+  </form>
+
 </p-dialog>

@@ -33,6 +33,13 @@ export class ParametrosComponent implements OnInit {
   user: any;
   @ViewChild('inputgravou') inputgravou: ElementRef;
   @ViewChild('inputerro') inputerro: ElementRef;
+  logs_SILVER_ATIVO: boolean;
+  caminho_LOGS_SILVER: string;
+  dominio_LOGS_SILVER: string;
+  senha_LOGS_SILVER: string;
+  tempo_SINCRO_LOGS_SILVER: number;
+  utilizador_LOGS_SILVER: string;
+  pasta_DESTINO_ERRO: string;
 
   constructor(private confirmationService: ConfirmationService, private GERPOSTOSService: GERPOSTOSService, private UploadService: UploadService, private renderer: Renderer, private route: ActivatedRoute, private router: Router, private location: Location, private GERPARAMETROSService: GERPARAMETROSService, private globalVar: AppGlobals) { }
 
@@ -100,6 +107,15 @@ export class ParametrosComponent implements OnInit {
           this.tempo_PLANEADAS = response[x].tempo_PLANEADAS;
           this.tempo_MAX_PLANEADAS = response[x].tempo_MAX_PLANEADAS;
           this.pasta_JASPERREPORT = response[x].pasta_JASPERREPORT;
+          this.pasta_DESTINO_ERRO = response[x].pasta_DESTINO_ERRO;
+
+          this.logs_SILVER_ATIVO = response[x].logs_SILVER_ATIVO;
+          this.caminho_LOGS_SILVER = response[x].caminho_LOGS_SILVER;
+          this.dominio_LOGS_SILVER = response[x].dominio_LOGS_SILVER;
+          this.senha_LOGS_SILVER = (response[x].senha_LOGS_SILVER == null) ? null : atob(response[x].senha_LOGS_SILVER);
+          this.tempo_SINCRO_LOGS_SILVER = response[x].tempo_SINCRO_LOGS_SILVER;
+          this.utilizador_LOGS_SILVER = response[x].utilizador_LOGS_SILVER;
+
         }
       },
       error => console.log(error));
@@ -131,10 +147,19 @@ export class ParametrosComponent implements OnInit {
     parametros.tempo_PLANEADAS = this.tempo_PLANEADAS;
     parametros.tempo_MAX_PLANEADAS = this.tempo_MAX_PLANEADAS;
     parametros.pasta_JASPERREPORT = this.pasta_JASPERREPORT.trim();
+    parametros.pasta_DESTINO_ERRO = this.pasta_DESTINO_ERRO.trim();
     parametros.pasta_ETIQUETAS = this.pasta_ETIQUETAS.trim();
     parametros.modelo_REPORT = this.modelo_REPORT.trim();
     parametros.tempo_SINCRO_CARTELAS = this.tempo_SINCRO_CARTELAS;
     parametros.cartelas_ATIVO = this.cartelas_ATIVO;
+
+    parametros.logs_SILVER_ATIVO = this.logs_SILVER_ATIVO;
+    parametros.caminho_LOGS_SILVER = this.caminho_LOGS_SILVER;
+    parametros.dominio_LOGS_SILVER = this.dominio_LOGS_SILVER;
+    parametros.senha_LOGS_SILVER = (this.senha_LOGS_SILVER == null) ? null : btoa(this.senha_LOGS_SILVER);
+    parametros.tempo_SINCRO_LOGS_SILVER = this.tempo_SINCRO_LOGS_SILVER;
+    parametros.utilizador_LOGS_SILVER = this.utilizador_LOGS_SILVER;
+
 
     this.GERPARAMETROSService.update(parametros).then(() => {
       for (var x in this.postos) {

@@ -79,6 +79,9 @@ export class PaginatarefaComponent implements OnInit {
   displayvalidacao: boolean;
   apagarficheiros: any;
   campo_estado: string;
+  displayMotivoRejeicao: boolean;
+  mototivoRejeicao: string;
+  email_utz_origem: any;
 
   constructor(private RCMOVRECLAMACAOFICHEIROSService: RCMOVRECLAMACAOFICHEIROSService, private sanitizer: DomSanitizer, private UploadService: UploadService, private elementRef: ElementRef, private RCMOVRECLAMACAOPLANOACCOESCORRETIVASService: RCMOVRECLAMACAOPLANOACCOESCORRETIVASService, private confirmationService: ConfirmationService, private GERUTILIZADORESService: GERUTILIZADORESService, private renderer: Renderer, private GTMOVTAREFASService: GTMOVTAREFASService, private route: ActivatedRoute, private location: Location, private globalVar: AppGlobals, private router: Router) { }
 
@@ -194,6 +197,7 @@ export class PaginatarefaComponent implements OnInit {
 
     this.GTMOVTAREFASService.getbyFiltros(data).subscribe(resp => {
       var ids = [];
+
       for (var x in resp) {
 
         var estados = this.geEstado(resp[x][8]);
@@ -213,6 +217,7 @@ export class PaginatarefaComponent implements OnInit {
 
         this.nome_tarefa = resp[x][0];
         this.utz_origem = resp[x][1];
+        this.email_utz_origem = (resp[x][26] == null) ? "" : resp[x][26];
         this.dep_origem = "";
         this.data_atribuicao = (resp[x][2] != null) ? this.formatDate(resp[x][2]) + " " + new Date(resp[x][2]).toLocaleTimeString() : null;
         this.atribuido = atribuido;
@@ -224,8 +229,29 @@ export class PaginatarefaComponent implements OnInit {
         this.campo_estado = resp[x][8];
         this.cliente = resp[x][9];
         this.referencia = resp[x][10] + "" + resp[x][11];
-        this.origem = "Reclamações de Clientes : " + resp[x][15];
-        this.caminho_origem = "#/reclamacoesclientes/view?id=" + resp[x][15] + "&redirect=tarefas/viewkvk\id=" + id;
+        var step = "";
+        var nome_step = "";
+        switch (resp[x][27]) {
+          case 'I':
+            step = "step-3";
+            nome_step = " (STEP 3 - ACÇÕES CORRETIVAS IMEDIATAS)";
+            break;
+          case 'C':
+            step = "step-14";
+            nome_step = " (STEP 4 - CAUSA RAÍZ DA NÃO CONFORMIDADE)";
+            break;
+          case 'E':
+            step = "step-4";
+            nome_step = " (STEP 5 - COMPROVAÇÃO DA EFICÁCIA DAS AÇÕES CORRETIVAS)";
+            break;
+          case 'P':
+            step = "step-6";
+            nome_step = " (STEP 7 - MEDIDAS PREVENTIVAS CONTRA REINCIDÊNCIA)";
+            break;
+          default:
+        }
+        this.origem = "Reclamações de Clientes : " + resp[x][15] + nome_step;
+        this.caminho_origem = "#/reclamacoesclientes/view?id=" + resp[x][15] + "&step=" + step + "&redirect=tarefas/viewkvk\id=" + id;
         this.tempo_gasto = resp[x][19];
         this.descricao = resp[x][18]
         this.percentagem_conclusao = resp[x][17];
@@ -564,7 +590,11 @@ export class PaginatarefaComponent implements OnInit {
         header: 'Confirmação',
         icon: 'fa fa-info',
         accept: () => {
-          this.atualizaestadoTarefa(this.id_tarefa, estado);
+          if (estado != 'R') {
+            this.atualizaestadoTarefa(this.id_tarefa, estado);
+          } else {
+            this.displayMotivoRejeicao = true;
+          }
         }
 
       });
@@ -626,13 +656,14 @@ export class PaginatarefaComponent implements OnInit {
         } else if (estado == "R") {
           tarefa.utz_REJEITA = this.user;
           tarefa.data_REJEITA = new Date();
+          tarefa.motivo_REJEICAO = this.mototivoRejeicao;
         } else {
-          tarefa.data_ULT_MODIF = this.user;
+          tarefa.utz_ULT_MODIF = this.user;
           tarefa.data_ULT_MODIF = new Date();
         }
 
         this.GTMOVTAREFASService.update(tarefa).then(response => {
-
+          this.displayMotivoRejeicao = false;
           this.alterarEstadoPLANO(tarefa.id_CAMPO, estado);
           for (var x in data_logs) {
             var logs = new GT_LOGS;
@@ -642,8 +673,18 @@ export class PaginatarefaComponent implements OnInit {
             logs.descricao = data_logs[x].descricao;
             this.criaLogs(logs);
           }
+          if (estado == "C") {
+            this.enviarEvento(this.data_atribuicao, this.descricao, this.id_tarefa, this.atribuido, "Ao Concluir Tarefa",
+              this.email_utz_origem, this.cliente, tarefa.data_CONCLUSAO, tarefa.data_REJEITA, tarefa.data_ANULACAO, this.encaminhado, this.referencia, this.prazo_conclusao, tarefa.motivo_REJEICAO);
+          } else if (estado == "A") {
+            this.enviarEvento(this.data_atribuicao, this.descricao, this.id_tarefa, this.atribuido, "Ao Anular Tarefa",
+              this.email_utz_origem, this.cliente, tarefa.data_CONCLUSAO, tarefa.data_REJEITA, tarefa.data_ANULACAO, this.encaminhado, this.referencia, this.prazo_conclusao, tarefa.motivo_REJEICAO);
+          } else if (estado == "R") {
+            this.enviarEvento(this.data_atribuicao, this.descricao, this.id_tarefa, this.atribuido, "Ao Rejeitar Tarefa",
+              this.email_utz_origem, this.cliente, tarefa.data_CONCLUSAO, tarefa.data_REJEITA, tarefa.data_ANULACAO, this.encaminhado, this.referencia, this.prazo_conclusao, tarefa.motivo_REJEICAO)
+          }
 
-
+          this.simular(this.inputgravou);
         }, error => {
           console.log(error);
 
@@ -879,6 +920,39 @@ export class PaginatarefaComponent implements OnInit {
         error => { console.log(error); this.simular(this.inputerro); });
     }
 
+  }
+
+
+  enviarEvento(data_tarefa, observacao, numero_tarefa, atribui_a, MOMENTO, email_para, cliente, data_conlusao, data_rejeicao, data_cancelou, encaminhado_para, referencia, prazo_conclusao, motivo_rejeicao) {
+    if (observacao == null) {
+      observacao = "";
+    }
+
+    if (encaminhado_para == null) {
+      encaminhado_para = "";
+    }
+
+    var dados = "{observacao::" + observacao
+      + "\n/link::" + webUrl.host + '/#/tarefas/view?id=' + numero_tarefa
+      + "\n/numero_tarefa::" + numero_tarefa
+      + "\n/motivo_rejeicao::" + motivo_rejeicao
+      + "\n/atribui_a::" + atribui_a
+      + "\n/referencia::" + referencia
+      + "\n/encaminhado_para::" + encaminhado_para
+      + "\n/prazo_conclusao::" + new Date(prazo_conclusao).toLocaleDateString()
+      + "\n/data_conlusao::" + new Date(data_conlusao).toLocaleDateString()
+      + "\n/data_rejeicao::" + new Date(data_rejeicao).toLocaleDateString()
+      + "\n/data_cancelou::" + new Date(data_cancelou).toLocaleDateString()
+      + "\n/data_tarefa::" + new Date(data_tarefa).toLocaleDateString()
+      + "\n/cliente::" + cliente + "}";
+
+
+    var data = [{ MODULO: 6, MOMENTO: MOMENTO, PAGINA: "Tarefas", ESTADO: true, DADOS: dados, EMAIL_PARA: email_para }];
+
+    this.UploadService.verficaEventos(data).subscribe(result => {
+    }, error => {
+      console.log(error);
+    });
   }
 
 }

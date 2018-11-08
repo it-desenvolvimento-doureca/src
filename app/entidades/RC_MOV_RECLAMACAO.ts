@@ -45,22 +45,44 @@ export class RC_MOV_RECLAMACAO {
 	formacao_OPERARIO: boolean;
 	plano_MANUTENCAO: boolean;
 	causas_PROBLEMA: string;
-	data_PREVISTA_REPOSTA4: Date;
-	dias_RESPOSTA4: number;
-	data_REAL_RESPOSTA4: Date;
-	dias_ATRASO4: number;
-	responsabilidade_ATRASO4: string;
-	responsabilidade_ATRASO4_DESCRICAO: string;
 	accoes_NECESSARIAS: number;
 	accoes_NECESSARIAS_TEXTO: string;
 	reclamacao_ENCERRADA: boolean;
 	data_FECHO: Date;
-	data_PREVISTA_REPOSTA6: Date;
-	dias_RESPOSTA6: number;
-	data_REAL_RESPOSTA6: Date;
+
+	dias_ATRASO1: number;
+	responsabilidade_ATRASO1: string;
+	responsabilidade_ATRASO1_DESCRICAO: string;
+
+	dias_ATRASO2: number;
+	responsabilidade_ATRASO2: string;
+	responsabilidade_ATRASO2_DESCRICAO: string;
+
+	dias_ATRASO3: number;
+	responsabilidade_ATRASO3: string;
+	responsabilidade_ATRASO3_DESCRICAO: string;
+
+	dias_ATRASO4: number;
+	responsabilidade_ATRASO4: string;
+	responsabilidade_ATRASO4_DESCRICAO: string;
+
+	dias_ATRASO5: number;
+	responsabilidade_ATRASO5: string;
+	responsabilidade_ATRASO5_DESCRICAO: string;
+
 	dias_ATRASO6: number;
 	responsabilidade_ATRASO6: string;
 	responsabilidade_ATRASO6_DESCRICAO: string;
+
+	dias_ATRASO7: number;
+	responsabilidade_ATRASO7: string;
+	responsabilidade_ATRASO7_DESCRICAO: string;
+
+	dias_ATRASO8: number;
+	responsabilidade_ATRASO8: string;
+	responsabilidade_ATRASO8_DESCRICAO: string;
+
+
 	observacoes_RESULTADOS: string;
 	custos_EXTERNA: number;
 	custos_INTERNA: number;
@@ -115,5 +137,10 @@ export class RC_MOV_RECLAMACAO {
 	data_RECLAMACAO_REVISTA: Date;
 	data_PRAZO_REVISAO: Date;
 	reclamacao_COM_REVISAO: Boolean;
+
+	numero_ENVIOS_GARANTIDOS: number;
+	envio_GARANTIDO_POR: string;
+	data_PREVISTA_REPOSTA4: Date;
+	
 
 }

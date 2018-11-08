@@ -27,7 +27,7 @@
               ngNativeValidate>
               <div class="container-fluid" style="padding: 0;">
 
-                <p-panel header="DETALHES DA RECLAMAÇÃO" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
+                <p-panel header="DETALHES DA RECLAMAÇÃO" [toggleable]="true" [style]="{'margin-bottom':'0px'}">
                   <div style="display: inline-block;">
                     <div style="padding: 1px 5px 1px 10px;" class="form-group col-md-6 col-lg-1">
                       <label>Nº:</label>
@@ -111,16 +111,61 @@
                         [required]="true"></p-dropdown>
                     </div>
 
+
+                    <div style="padding: 1px 5px 1px 10px;" class="form-group col-md-6 col-lg-2">
+                      <label for="ny">Reclamação com Revisão:</label>
+                      <div class="ui-g-12">
+                        <p-checkbox [disabled]="!modoedicao" binary="true" [(ngModel)]="reclamacao_COM_REVISAO"
+                          [ngModelOptions]="{standalone: true}"></p-checkbox>
+                      </div>
+                    </div>
+                    <div style="padding: 1px 5px 1px 10px;" class="form-group col-md-6 col-lg-3">
+                      <label style="display: -webkit-box;">Data Limite para Revisão:</label>
+                      <p-calendar [disabled]="true" [style]="{'height':'25px','width':'50%'}" dateFormat="yy-mm-dd"
+                        placeholder="yyyy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050"
+                        [(ngModel)]="data_PRAZO_REVISAO" [ngModelOptions]="{standalone: true}" [showIcon]="true"></p-calendar>
+                      <input [disabled]="true" style="width:72px; margin-left:29px; padding: 5px 4px;height: 25px;"
+                        [(ngModel)]="hora_PRAZO_REVISAO" [ngModelOptions]="{standalone: true}" type="time" class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all"
+                        ng-reflect-ng-class="ui-inputtext ui-widget ui-stat" placeholder="hh:mm">
+                    </div>
+
+                    <div style="padding: 1px 5px 1px 10px;" class="form-group col-md-6 col-lg-2">
+                      <label for="ny">Reclamação Revista:</label>
+                      <div class="ui-g-12">
+                        <p-checkbox [disabled]="!modoedicao" binary="true" (onChange)="atualizadataRevista($event)"
+                          [(ngModel)]="reclamacao_REVISTA" [ngModelOptions]="{standalone: true}"></p-checkbox>
+                      </div>
+                    </div>
+
+                    <div style="padding: 1px 5px 1px 10px;" class="form-group col-md-6 col-lg-3">
+                      <label style="display: -webkit-box;">Data da Revisão:</label>
+                      <p-calendar [disabled]="!modoedicao" [style]=" {'height':'25px','width':'50%'}" dateFormat="yy-mm-dd"
+                        placeholder="yyyy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050"
+                        [(ngModel)]="data_RECLAMACAO_REVISTA" [ngModelOptions]="{standalone: true}" [showIcon]="true"></p-calendar>
+                      <input [disabled]="!modoedicao" style="width:72px; margin-left:29px; padding: 5px 4px;height: 25px;"
+                        [(ngModel)]="hora_RECLAMACAO_REVISTA" [ngModelOptions]="{standalone: true}" type="time" class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all"
+                        ng-reflect-ng-class="ui-inputtext ui-widget ui-stat" placeholder="hh:mm">
+                    </div>
+
                     <div style="padding: 1px 5px 1px 10px;" class="form-group col-md-6 col-lg-12">
-                      <label>Resposta inicial:</label>
+                      <label>Resposta Inicial:</label>
                       <input [disabled]="!modoedicao" type="text" class="form-control2" [(ngModel)]="resposta_INICIAL"
                         [ngModelOptions]="{standalone: true}">
                     </div>
 
-                    <h2 class="text-divider col-md-12">
+                    <!--<h2 class="text-divider col-md-12">
                       <span>Dados do Cliente</span>
-                    </h2>
+                    </h2>-->
 
+
+                    <!--<h2 class="text-divider col-md-12">
+                      <span>Dados da Referência</span>
+                    </h2>-->
+
+                  </div>
+                </p-panel>
+                <p-panel header="DADOS DO CLIENTE" [toggleable]="true" [style]="{'margin-bottom':'0px'}">
+                  <div style="display: inline-block; width: 100%;">
                     <div style="padding: 1px 5px 1px 10px;" class="form-group col-md-6 col-lg-3">
                       <label>Cliente:</label>
                       <br>
@@ -137,7 +182,7 @@
                         [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao || !(drop_moradas.length > 0)"
                         [required]="true"></p-dropdown>
                       <!--<input [disabled]="!modoedicao" type="text" class="form-control2" [(ngModel)]="morada_CLIENTE"
-                        [ngModelOptions]="{standalone: true}">-->
+                      [ngModelOptions]="{standalone: true}">-->
                     </div>
 
                     <div style="padding: 1px 5px 1px 10px;" class="form-group col-md-6 col-lg-2">
@@ -157,11 +202,11 @@
                       <input [disabled]="!modoedicao" type="text" class="form-control2" [(ngModel)]="telefone_CLIENTE"
                         [ngModelOptions]="{standalone: true}">
                     </div>
+                  </div>
+                </p-panel>
 
-                    <h2 class="text-divider col-md-12">
-                      <span>Dados da Peça</span>
-                    </h2>
-
+                <p-panel header="DADOS DA REFERÊNCIA" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
+                  <div style="display: inline-block; width: 100%;">
                     <div style="padding: 1px 5px 1px 10px;" class="form-group col-md-6 col-lg-3">
                       <label>Referência:</label>
                       <p-dropdown [filter]="true" (onChange)="alteraReferencia($event)" [options]="drop_referencia"
@@ -206,7 +251,7 @@
                     </div>
 
                     <!-- Ícons Consultas -->
-                    <div style="padding: 1px 5px 1px 10px;" class="form-group col-md-4 col-lg-2">
+                    <div style="padding: 2px 5px 1px 10px;" class="form-group col-md-4 col-lg-2">
                       <div class="input-group-prepend">
                         <button (click)="verconsultaEncomendado(null,true)" [disabled]="referencia == null || referencia == ''"
                           type="button" class="btn btn-sm" title="Encomendas" id="plus-btn1" style="padding: 0; float: left; width: 16%; margin: 25px 5px 0 0; height: 25px; ">
@@ -227,7 +272,7 @@
                       </div>
                     </div>
 
-                    <div style="padding: 1px 5px 1px 10px; margin-bottom: -3px;" class="form-group col-md-6 col-lg-3">
+                    <div style="padding: 1px 5px 1px 10px; margin-bottom: -3px;" class="form-group col-md-6 col-lg-2">
                       <label>Tipo Defeito:</label>
                       <br>
                       <p-dropdown [filter]="true" [options]="drop_tipo_defeito" [style]="{'width':'100%','height':'25px','background':'white'}"
@@ -248,47 +293,32 @@
                         [ngModelOptions]="{standalone: true}">
                     </div>
 
-                    <div style="padding: 3px 5px 4px 10px;" class="form-group col-md-6 col-lg-4">
+                    <div style="padding: 3px 5px 4px 10px;" class="form-group col-md-6 col-lg-2">
                       <label for="ny1">Devolução:</label>
                       <div class="ui-g-12">
                         <p-checkbox [disabled]="!modoedicao" binary="true" [(ngModel)]="devolucao" [ngModelOptions]="{standalone: true}"></p-checkbox>
                       </div>
                     </div>
-                    <div style="padding: 1px 5px 1px 10px;" class="form-group col-md-6 col-lg-2">
-                      <label for="ny">Reclamação Revista:</label>
-                      <div class="ui-g-12">
-                        <p-checkbox [disabled]="!modoedicao" binary="true" (onChange)="atualizadataRevista($event)"
-                          [(ngModel)]="reclamacao_REVISTA" [ngModelOptions]="{standalone: true}"></p-checkbox>
-                      </div>
-                    </div>
-
-                    <div style="padding: 1px 5px 1px 10px;" class="form-group col-md-6 col-lg-3">
-                      <label style="display: -webkit-box;">Data Reclamação Revista:</label>
-                      <p-calendar [disabled]="!modoedicao" [style]=" {'height':'25px','width':'50%'}" dateFormat="yy-mm-dd"
-                        placeholder="yyyy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050"
-                        [(ngModel)]="data_RECLAMACAO_REVISTA" [ngModelOptions]="{standalone: true}" [showIcon]="true"></p-calendar>
-                      <input [disabled]="!modoedicao" style="width:72px; margin-left:29px; padding: 5px 4px;height: 25px;"
-                        [(ngModel)]="hora_RECLAMACAO_REVISTA" [ngModelOptions]="{standalone: true}" type="time" class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all"
-                        ng-reflect-ng-class="ui-inputtext ui-widget ui-stat" placeholder="hh:mm">
-                    </div>
 
 
 
                     <div style="padding: 1px 5px 1px 10px;" class="form-group col-md-6 col-lg-2">
-                      <label for="ny">Reclamação com Revisão:</label>
-                      <div class="ui-g-12">
-                        <p-checkbox [disabled]="true" binary="true" [(ngModel)]="reclamacao_COM_REVISAO"
-                          [ngModelOptions]="{standalone: true}"></p-checkbox>
-                      </div>
+                      <label>Nº de Envios Garantidos:</label>
+                      <input [disabled]="!modoedicao" type="number" class="form-control2" [(ngModel)]="numero_ENVIOS_GARANTIDOS"
+                        [ngModelOptions]="{standalone: true}">
                     </div>
-                    <div style="padding: 1px 5px 1px 10px;" class="form-group col-md-6 col-lg-3">
-                      <label style="display: -webkit-box;">Prazo para Revisão:</label>
-                      <p-calendar [disabled]="true" [style]="{'height':'25px','width':'50%'}" dateFormat="yy-mm-dd"
-                        placeholder="yyyy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050"
-                        [(ngModel)]="data_PRAZO_REVISAO" [ngModelOptions]="{standalone: true}" [showIcon]="true"></p-calendar>
-                      <input [disabled]="true" style="width:72px; margin-left:29px; padding: 5px 4px;height: 25px;"
-                        [(ngModel)]="hora_PRAZO_REVISAO" [ngModelOptions]="{standalone: true}" type="time" class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all"
-                        ng-reflect-ng-class="ui-inputtext ui-widget ui-stat" placeholder="hh:mm">
+
+                    <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-2">
+                      <label>Envios Garantidos:</label>
+                      <br>
+                      <div class="ui-g-12" style="float: left;">
+                        <p-radioButton [disabled]="!modoedicao" name="groupt" value="cliente" label="Cliente"
+                          [(ngModel)]="envio_GARANTIDO_POR"></p-radioButton>
+                      </div>
+                      <div class="ui-g-12" style="float: left; margin-left: 10px;">
+                        <p-radioButton [disabled]="!modoedicao" name="groupt" value="referencia" label="por Referência"
+                          [(ngModel)]="envio_GARANTIDO_POR"></p-radioButton>
+                      </div>
                     </div>
 
                     <div style="padding: 1px 5px 1px 10px;" class="form-group col-md-6 col-lg-12">
@@ -502,46 +532,53 @@
                               </div>-->
                           <p-dataTable [style]="{'width':'100%'}" [editable]="modoedicao" [value]="uploadedFiles"
                             styleClass="ExcelTable2007">
-                            <p-column [editable]="false" field="name" styleClass="ExcelTable2007tdname" header="NOME">
+                            <p-column [style]="{'width':'20%'}" [editable]="false" field="name" styleClass="ExcelTable2007tdname"
+                              header="NOME">
                               <ng-template let-col let-car="rowData" pTemplate="body">
                                 <span title="{{car['name'] }}">{{car['name'] }}</span>
                               </ng-template>
                             </p-column>
-                            <p-column [editable]="false" field="tamanho" header="TAMANHO">
+                            <p-column [style]="{'width':'10%'}" [editable]="false" field="tamanho" styleClass="ExcelTable2007tdname"
+                              header="TAMANHO">
                               <ng-template let-col let-car="rowData" pTemplate="body">
-                                {{car['size'] }} bytes
+                                <span title=" {{car['size'] }} bytes"> {{car['size'] }} bytes</span>
                               </ng-template>
                             </p-column>
-                            <p-column [editable]="false" field="descricao" header="DESCRIÇÃO">
+                            <p-column [style]="{'width':'10%'}" [editable]="false" field="descricao" styleClass="ExcelTable2007tdname"
+                              header="DESCRIÇÃO">
                               <ng-template let-col let-car="rowData" pTemplate="body">
-                                {{car['descricao']}}
+                                <span title="{{car['descricao']}}">{{car['descricao']}}</span>
                               </ng-template>
                             </p-column>
-                            <p-column [editable]="false" field="datacria" header="DATA">
+                            <p-column [style]="{'width':'15%'}" [editable]="false" field="datacria" header="DATA">
                               <ng-template let-col let-car="rowData" pTemplate="body">
-                                {{car['datacria']}}
+                                <span title="{{car['datacria']}}">{{car['datacria']}}</span>
                               </ng-template>
                             </p-column>
-                            <p-column [editable]="false" field="utilizador" header="UTILIZADOR">
+                            <p-column [style]="{'width':'10%'}" [editable]="false" field="utilizador" styleClass="ExcelTable2007tdname"
+                              header="UTILIZADOR">
                               <ng-template let-col let-car="rowData" pTemplate="body">
-                                {{car['utilizador']}}
+                                <span title="{{car['utilizador']}}">{{car['utilizador']}}</span>
                               </ng-template>
                             </p-column>
-                            <p-column [editable]="false" field="id_TAREFA" header="ORIGEM">
+                            <p-column [style]="{'width':'12%'}" [editable]="false" field="id_TAREFA" styleClass="ExcelTable2007tdname"
+                              header="ORIGEM">
                               <ng-template let-col let-car="rowData" pTemplate="body">
                                 <div *ngIf="car['id_TAREFA'] == null && car['id_FICHEIRO'] == null">
                                   Reclamação
                                 </div>
                                 <div *ngIf="car['id_TAREFA'] != null">
-                                  <a *ngIf="car['id_TAREFA']!=null" (click)="IrPara(car['id_TAREFA'])" class="ui-cell-data">Tarefa:
+                                  <a *ngIf="car['id_TAREFA']!=null" title="Tarefa: {{car['id_TAREFA']}}" (click)="IrPara(car['id_TAREFA'])"
+                                    class="ui-cell-data">Tarefa:
                                     {{car['id_TAREFA']}}</a>
                                 </div>
                                 <div *ngIf="car['id_FICHEIRO'] != null">
-                                  Ficheiros de Análise (Step-4) - {{getficheirodeanalise(car['id_FICHEIRO'])}}
+                                  <span title="Ficheiros de Análise (Step-4) - {{getficheirodeanalise(car['id_FICHEIRO'])}}">Ficheiros
+                                    de Análise (Step-4) - {{getficheirodeanalise(car['id_FICHEIRO'])}}</span>
                                 </div>
                               </ng-template>
                             </p-column>
-                            <p-column [editable]="false" field="descricao" header="">
+                            <p-column [style]="{'width':'105px'}" [editable]="false" field="descricao" header="">
                               <ng-template let-car="rowData" let-index="rowIndex" pTemplate="body">
                                 <button type="button" class="btn btn-default btn-xs" title="Ver Ficheiro" (click)="showDialog(car.type, car.src,car.name,car.datatype)">
                                   <i class="glyphicon glyphicon-zoom-in"></i>
@@ -579,19 +616,46 @@
                               <input type="text" disabled placeholder="Utilizador" value="{{getNomeUser(step1CONCLUIDO_UTZ)}}"
                                 class="form-control2" id="inputSuccess5" style="width: 50%; height: 41px; border-radius: 0; display: -webkit-inline-box; float: left;">
 
-                              <p-calendar [disabled]="!modoedicao || step1CONCLUIDO" [style]="{'height':'41px','width':'47%','float':'left'}"
+                              <p-calendar [disabled]="!modoedicao || step1CONCLUIDO" [style]="{'height':'41px','width':'43%','float':'left'}"
                                 dateFormat="yy-mm-dd" placeholder="yyyy-mm-dd" [monthNavigator]="true" [yearNavigator]="true"
                                 yearRange="2000:2050" [(ngModel)]="step1CONCLUIDO_DATA" [ngModelOptions]="{standalone: true}"
                                 [showIcon]="true" [required]="true"></p-calendar>
+                              <button [hidden]="!modoedicao || !step1CONCLUIDO || (user != utz_RESPONSAVEL && user != utz_CRIA && !adminuser)"
+                                (click)="concluirEtapaGravar(1, true)" pbutton type="button" class="ui-button ui-button-danger ui-widget ui-state-default ui-corner-all ui-button-icon-only"
+                                style="height:41px; background: red;"><span class="ui-button-icon-left ui-c fa fa-fw fa-trash"
+                                  style="font-size: 20px; padding: 5px 0 0 0;"></span></button>
                             </div>
                           </form>
+                          <div class="col-md-12" style=" width: 100%; padding: 0 15px 0 6px;">
+                            <!-- alterar -->
+                            <div style="display: inline-block; text-align: left; padding: 0;" class="col-md-12">
+                              <div style="padding: 1px 5px 1px 6px;" class="form-group col-lg-10">
+                                <label style="float: left; margin-right: 19px;">Responsabilidade do atraso</label>
+                                <div class="ui-g-12" style="float: left;">
+                                  <p-radioButton [disabled]="true" name="group1" value="Cliente" label="Cliente"
+                                    [(ngModel)]="responsabilidade_ATRASO1"></p-radioButton>
+                                </div>
+                                <div class="ui-g-12" style="float: left; margin-left: 10px;">
+                                  <p-radioButton [disabled]="true" name="group1" value="Doureca" label="Doureca"
+                                    [(ngModel)]="responsabilidade_ATRASO1"></p-radioButton>
+                                </div>
+                                <input [disabled]="true" type="text" class="form-control2" [(ngModel)]="responsabilidade_ATRASO1_DESCRICAO"
+                                  [ngModelOptions]="{standalone: true}">
+                              </div>
+                              <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-2">
+                                <label>Dias de atraso</label>
+                                <input [disabled]="true" type="text" class="form-control2" [(ngModel)]="dias_ATRASO1"
+                                  [ngModelOptions]="{standalone: true}">
+                              </div>
+                            </div>
+                          </div>
                         </div>
                         <span class="input-group-btn" style="padding: 0; width: 30%; display: block;">
-                          <button [disabled]="!modoedicao" (click)="displaygrupos = true" class="btn btn-default" type="button"
-                            style="width: 100%;">Adicionar
+                          <button [disabled]="!modoedicao || step1CONCLUIDO" (click)="displaygrupos = true" class="btn btn-default"
+                            type="button" style="width: 100%;">Adicionar
                             a partir de um Grupo</button>
                         </span>
-                        <p-dataTable [style]="{'width':'100%'}" [editable]="modoedicao" [value]="tabelaEquipa"
+                        <p-dataTable [style]="{'width':'100%'}" [editable]="modoedicao && !step1CONCLUIDO" [value]="tabelaEquipa"
                           styleClass="ExcelTable2007">
                           <p-column [editable]="true" field="responsavel" header="Responsável">
                             <ng-template let-col let-car="rowData" pTemplate="body">
@@ -638,15 +702,15 @@
                           </p-column>
                           <p-column>
                             <ng-template let-index="rowIndex" pTemplate="body">
-                              <button type="button" class="btn btn-danger btn-xs" [disabled]="!modoedicao" title="Apagar"
-                                (click)="apagar_linha('tabelaEquipa', index)">
+                              <button type="button" class="btn btn-danger btn-xs" [disabled]="!modoedicao || step1CONCLUIDO"
+                                title="Apagar" (click)="apagar_linha('tabelaEquipa', index)">
                                 <span class="glyphicon glyphicon-trash"></span>
                               </button>
                             </ng-template>
                           </p-column>
                           <p-footer [style]="{'text-align':'center'}">
-                            <a (click)="adicionar_linha('tabelaEquipa')" [class.disabled]="!modoedicao" style="color: black; cursor:pointer; margin-left:10px;"
-                              title="Adicionar nova linha">
+                            <a (click)="adicionar_linha('tabelaEquipa')" [class.disabled]="!modoedicao || step1CONCLUIDO"
+                              style="color: black; cursor:pointer; margin-left:10px;" title="Adicionar nova linha">
                               <i class="material-icons">add</i> Adicionar
                             </a>
                           </p-footer>
@@ -671,39 +735,68 @@
                               <input type="text" disabled placeholder="Utilizador" value="{{getNomeUser(step2CONCLUIDO_UTZ)}}"
                                 class="form-control2" id="inputSuccess5" style="width: 50%; height: 41px; border-radius: 0; display: -webkit-inline-box; float: left;">
 
-                              <p-calendar [disabled]="!modoedicao || step2CONCLUIDO" [style]="{'height':'41px','width':'47%','float':'left'}"
+                              <p-calendar [disabled]="!modoedicao || step2CONCLUIDO" [style]="{'height':'41px','width':'43%','float':'left'}"
                                 dateFormat="yy-mm-dd" placeholder="yyyy-mm-dd" [monthNavigator]="true" [yearNavigator]="true"
                                 yearRange="2000:2050" [(ngModel)]="step2CONCLUIDO_DATA" [ngModelOptions]="{standalone: true}"
                                 [showIcon]="true" [required]="true"></p-calendar>
+                              <button [hidden]="!modoedicao || !step2CONCLUIDO || (user != utz_RESPONSAVEL && user != utz_CRIA && !adminuser)"
+                                (click)="concluirEtapaGravar(2, true)" pbutton type="button" class="ui-button ui-button-danger ui-widget ui-state-default ui-corner-all ui-button-icon-only"
+                                style="height:41px; background: red;"><span class="ui-button-icon-left ui-c fa fa-fw fa-trash"
+                                  style="font-size: 20px; padding: 5px 0 0 0;"></span></button>
                             </div>
                           </form>
+                          <div class="col-md-12" style=" width: 100%; padding: 0 15px 0 6px;">
+                            <!-- alterar -->
+                            <div style="display: inline-block; text-align: left; padding: 0;" class="col-md-12">
+                              <div style="padding: 1px 5px 1px 6px;" class="form-group col-lg-10">
+                                <label style="float: left; margin-right: 19px;">Responsabilidade do atraso</label>
+                                <div class="ui-g-12" style="float: left;">
+                                  <p-radioButton [disabled]="true" name="group2" value="Cliente" label="Cliente"
+                                    [(ngModel)]="responsabilidade_ATRASO2"></p-radioButton>
+                                </div>
+                                <div class="ui-g-12" style="float: left; margin-left: 10px;">
+                                  <p-radioButton [disabled]="true" name="group2" value="Doureca" label="Doureca"
+                                    [(ngModel)]="responsabilidade_ATRASO2"></p-radioButton>
+                                </div>
+                                <input [disabled]="true" type="text" class="form-control2" [(ngModel)]="responsabilidade_ATRASO2_DESCRICAO"
+                                  [ngModelOptions]="{standalone: true}">
+                              </div>
+                              <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-2">
+                                <label>Dias de atraso</label>
+                                <input [disabled]="true" type="text" class="form-control2" [(ngModel)]="dias_ATRASO2"
+                                  [ngModelOptions]="{standalone: true}">
+                              </div>
+                            </div>
+                          </div>
                         </div>
 
                         <div style="display: inline-block;padding-left: 6px; text-align: left;" class="col-md-12">
 
                           <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-6">
                             <label>Descrição do Problema:</label>
-                            <textarea [disabled]="!modoedicao" pInputTextarea [(ngModel)]="descricao_PROBLEMA" class="form-control2"
-                              [ngModelOptions]="{standalone: true}" style="height: 71px; width: 100%;"></textarea>
+                            <textarea [disabled]="!modoedicao || step2CONCLUIDO" pInputTextarea [(ngModel)]="descricao_PROBLEMA"
+                              class="form-control2" [ngModelOptions]="{standalone: true}" style="height: 71px; width: 100%;"></textarea>
                           </div>
 
                           <div style="padding: 1px 5px 1px 10px; width: 168px;" class="form-group col-lg-2">
                             <label>Problema Repetido?</label>
-                            <p-toggleButton [disabled]="!modoedicao" [ngModelOptions]="{standalone: true}" [(ngModel)]="problema_REPETIDO"
-                              onLabel="Sim" offLabel="Não" onIcon="pi; pi-check" offIcon="pi pi-times" [style]="{'width':'55px'}"></p-toggleButton>
+                            <p-toggleButton [disabled]="!modoedicao || step2CONCLUIDO" [ngModelOptions]="{standalone: true}"
+                              [(ngModel)]="problema_REPETIDO" onLabel="Sim" offLabel="Não" onIcon="pi; pi-check"
+                              offIcon="pi pi-times" [style]="{'width':'55px'}"></p-toggleButton>
                           </div>
                           <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-3">
                             <label>Nº Reclamação:</label>
                             <br>
                             <p-dropdown [filter]="true" [options]="drop_numero_reclamacao" [style]="{'width':'100%'}"
-                              [(ngModel)]="numero_RECLAMACAO_REPETIDA" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao || !problema_REPETIDO"
+                              [(ngModel)]="numero_RECLAMACAO_REPETIDA" [ngModelOptions]="{standalone: true}" [disabled]="!modoedicao || !problema_REPETIDO || step2CONCLUIDO"
                               [required]="true"></p-dropdown>
                           </div>
 
                           <div style="padding: 1px 5px 1px 10px; width: 182px;" class="form-group col-lg-4">
                             <label>Aceite?</label>
-                            <p-toggleButton [disabled]="!modoedicao" [ngModelOptions]="{standalone: true}" [(ngModel)]="reclamacao_REPETIDA_ACEITE"
-                              onLabel="Sim" offLabel="Não" onIcon="pi; pi-check" offIcon="pi pi-times" [style]="{'width':'55px'}"></p-toggleButton>
+                            <p-toggleButton [disabled]="!modoedicao || step2CONCLUIDO" [ngModelOptions]="{standalone: true}"
+                              [(ngModel)]="reclamacao_REPETIDA_ACEITE" onLabel="Sim" offLabel="Não" onIcon="pi; pi-check"
+                              offIcon="pi pi-times" [style]="{'width':'55px'}"></p-toggleButton>
                           </div>
 
                         </div>
@@ -711,16 +804,17 @@
                         <div style="display: inline-block; text-align: left;" class="col-md-12">
                           <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-12">
                             <label>Existem Artigos em iguais condições?</label>
-                            <p-toggleButton [disabled]="!modoedicao" [ngModelOptions]="{standalone: true}" [(ngModel)]="ref_IGUAIS"
-                              onLabel="Sim" offLabel="Não" onIcon="pi; pi-check" offIcon="pi pi-times" [style]="{'width':'55px','display': '-webkit-inline-box'}"></p-toggleButton>
+                            <p-toggleButton [disabled]="!modoedicao || step2CONCLUIDO" [ngModelOptions]="{standalone: true}"
+                              [(ngModel)]="ref_IGUAIS" onLabel="Sim" offLabel="Não" onIcon="pi; pi-check" offIcon="pi pi-times"
+                              [style]="{'width':'55px','display': '-webkit-inline-box'}"></p-toggleButton>
                           </div>
 
-                          <p-dataTable [style]="{'width':'100%','padding':'1px 0px 1px 10px'}" [editable]="modoedicao && ref_IGUAIS"
+                          <p-dataTable [style]="{'width':'100%','padding':'1px 0px 1px 10px'}" [editable]="modoedicao && ref_IGUAIS && !step2CONCLUIDO"
                             [value]="tabelaArtigosSimilar" styleClass="ExcelTable2007">
                             <p-column [editable]="false" field="artigo" header="ARTIGO">
                               <ng-template let-index="rowIndex" let-col let-car="rowData" pTemplate="body">
                                 {{car['artigo'] }} - {{car['designacao'] }}
-                                <button type="button" class="btn btn-warning btn-xs" [disabled]="!modoedicao || !ref_IGUAIS"
+                                <button type="button" class="btn btn-warning btn-xs" [disabled]="!modoedicao || !ref_IGUAIS || step2CONCLUIDO"
                                   title="Alterar" (click)="showDialogArtigos(index)" style="float: right; margin-right: 12px;">
                                   <span class="glyphicon glyphicon-pencil"></span>
                                 </button>
@@ -758,14 +852,14 @@
                             </p-column>
                             <p-column>
                               <ng-template let-index="rowIndex" pTemplate="body">
-                                <button type="button" class="btn btn-danger btn-xs" [disabled]="!modoedicao" title="Apagar"
-                                  (click)="apagar_linha('tabelaArtigosSimilar', index)">
+                                <button type="button" class="btn btn-danger btn-xs" [disabled]="!modoedicao || step2CONCLUIDO"
+                                  title="Apagar" (click)="apagar_linha('tabelaArtigosSimilar', index)">
                                   <span class="glyphicon glyphicon-trash"></span>
                                 </button>
                               </ng-template>
                             </p-column>
                             <p-footer [style]="{'text-align':'center'}">
-                              <a (click)="adicionar_linha('tabelaArtigosSimilar')" [class.disabled]="!modoedicao || !ref_IGUAIS"
+                              <a (click)="adicionar_linha('tabelaArtigosSimilar')" [class.disabled]="!modoedicao || !ref_IGUAIS || step2CONCLUIDO"
                                 style="color: black; cursor:pointer; margin-left:10px;" title="Adicionar nova linha">
                                 <i class="material-icons">add</i> Adicionar
                               </a>
@@ -777,14 +871,15 @@
                               Processos</label>
                           </div>
                           <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-1">
-                            <p-toggleButton [disabled]="!modoedicao" [ngModelOptions]="{standalone: true}" [(ngModel)]="accoes_EVITAR"
-                              onLabel="Sim" offLabel="Não" onIcon="pi; pi-check" offIcon="pi pi-times" [style]="{'width':'55px','margin-top':'22px'}"></p-toggleButton>
+                            <p-toggleButton [disabled]="!modoedicao || step2CONCLUIDO" [ngModelOptions]="{standalone: true}"
+                              [(ngModel)]="accoes_EVITAR" onLabel="Sim" offLabel="Não" onIcon="pi; pi-check" offIcon="pi pi-times"
+                              [style]="{'width':'55px','margin-top':'22px'}"></p-toggleButton>
                           </div>
 
                           <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-11">
                             <label>Observações:</label>
-                            <input [disabled]="!modoedicao" type="text" class="form-control2" [(ngModel)]="observacoes_ACCOES_EVITAR"
-                              [ngModelOptions]="{standalone: true}">
+                            <input [disabled]="!modoedicao || step2CONCLUIDO" type="text" class="form-control2"
+                              [(ngModel)]="observacoes_ACCOES_EVITAR" [ngModelOptions]="{standalone: true}">
                           </div>
                         </div>
 
@@ -809,14 +904,41 @@
                               <input type="text" disabled placeholder="Utilizador" value="{{getNomeUser(step3CONCLUIDO_UTZ)}}"
                                 class="form-control2" id="inputSuccess5" style="width: 50%; height: 41px; border-radius: 0; display: -webkit-inline-box; float: left;">
 
-                              <p-calendar [disabled]="!modoedicao || step3CONCLUIDO" [style]="{'height':'41px','width':'47%','float':'left'}"
+                              <p-calendar [disabled]="!modoedicao || step3CONCLUIDO" [style]="{'height':'41px','width':'43%','float':'left'}"
                                 dateFormat="yy-mm-dd" placeholder="yyyy-mm-dd" [monthNavigator]="true" [yearNavigator]="true"
                                 yearRange="2000:2050" [(ngModel)]="step3CONCLUIDO_DATA" [ngModelOptions]="{standalone: true}"
                                 [showIcon]="true" [required]="true"></p-calendar>
+                              <button [hidden]="!modoedicao || !step3CONCLUIDO || (user != utz_RESPONSAVEL && user != utz_CRIA && !adminuser)"
+                                (click)="concluirEtapaGravar(3, true)" pbutton type="button" class="ui-button ui-button-danger ui-widget ui-state-default ui-corner-all ui-button-icon-only"
+                                style="height:41px; background: red;"><span class="ui-button-icon-left ui-c fa fa-fw fa-trash"
+                                  style="font-size: 20px; padding: 5px 0 0 0;"></span></button>
                             </div>
                           </form>
+                          <div class="col-md-12" style=" width: 100%; padding: 0 15px 0 6px;">
+                            <!-- alterar -->
+                            <div style="display: inline-block; text-align: left; padding: 0;" class="col-md-12">
+                              <div style="padding: 1px 5px 1px 6px;" class="form-group col-lg-10">
+                                <label style="float: left; margin-right: 19px;">Responsabilidade do atraso</label>
+                                <div class="ui-g-12" style="float: left;">
+                                  <p-radioButton [disabled]="true" name="group3" value="Cliente" label="Cliente"
+                                    [(ngModel)]="responsabilidade_ATRASO3"></p-radioButton>
+                                </div>
+                                <div class="ui-g-12" style="float: left; margin-left: 10px;">
+                                  <p-radioButton [disabled]="true" name="group3" value="Doureca" label="Doureca"
+                                    [(ngModel)]="responsabilidade_ATRASO3"></p-radioButton>
+                                </div>
+                                <input [disabled]="true" type="text" class="form-control2" [(ngModel)]="responsabilidade_ATRASO3_DESCRICAO"
+                                  [ngModelOptions]="{standalone: true}">
+                              </div>
+                              <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-2">
+                                <label>Dias de atraso</label>
+                                <input [disabled]="true" type="text" class="form-control2" [(ngModel)]="dias_ATRASO3"
+                                  [ngModelOptions]="{standalone: true}">
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <p-dataTable [style]="{'width':'100%'}" [editable]="modoedicao" [value]="tabelaaccoesimediatas"
+                        <p-dataTable [style]="{'width':'100%'}" [editable]="modoedicao && !step3CONCLUIDO" [value]="tabelaaccoesimediatas"
                           styleClass="ExcelTable2007">
                           <p-column [style]="{'width':'45px'}" styleClass="heading" field="ordem">
                             <ng-template let-col let-car="rowData" styleClass="heading" pTemplate="body">
@@ -901,7 +1023,7 @@
                                 <span [hidden]="!car['obriga_EVIDENCIAS']" class="glyphicon glyphicon-check"></span>
                               </button>
 
-                              <button type="button" class="btn btn-danger btn-xs" [disabled]="!modoedicao ||  car['estado'] == 'A' || car['estado'] == 'C'"
+                              <button type="button" class="btn btn-danger btn-xs" [disabled]="!modoedicao ||  car['estado'] == 'A' || car['estado'] == 'C' || step3CONCLUIDO"
                                 title="Apagar" (click)="apagar_linha('tabelaaccoesimediatas', index)">
                                 <span class="glyphicon glyphicon-trash"></span>
                               </button>
@@ -914,8 +1036,8 @@
                             </ng-template>
                           </p-column>
                           <p-footer [style]="{'text-align':'center'}">
-                            <a (click)="adicionar_linha('tabelaaccoesimediatas')" [class.disabled]="!modoedicao" style="color: black; cursor:pointer; margin-left:10px;"
-                              title="Adicionar nova linha">
+                            <a (click)="adicionar_linha('tabelaaccoesimediatas')" [class.disabled]="!modoedicao || step3CONCLUIDO"
+                              style="color: black; cursor:pointer; margin-left:10px;" title="Adicionar nova linha">
                               <i class="material-icons">add</i> Adicionar
                             </a>
                           </p-footer>
@@ -940,17 +1062,44 @@
                               <input type="text" disabled placeholder="Utilizador" value="{{getNomeUser(step4CONCLUIDO_UTZ)}}"
                                 class="form-control2" id="inputSuccess5" style="width: 50%; height: 41px; border-radius: 0; display: -webkit-inline-box; float: left;">
 
-                              <p-calendar [disabled]="!modoedicao || step4CONCLUIDO" [style]="{'height':'41px','width':'47%','float':'left'}"
+                              <p-calendar [disabled]="!modoedicao || step4CONCLUIDO" [style]="{'height':'41px','width':'43%','float':'left'}"
                                 dateFormat="yy-mm-dd" placeholder="yyyy-mm-dd" [monthNavigator]="true" [yearNavigator]="true"
                                 yearRange="2000:2050" [(ngModel)]="step4CONCLUIDO_DATA" [ngModelOptions]="{standalone: true}"
                                 [showIcon]="true" [required]="true"></p-calendar>
+                              <button [hidden]="!modoedicao || !step4CONCLUIDO || (user != utz_RESPONSAVEL && user != utz_CRIA && !adminuser)"
+                                (click)="concluirEtapaGravar(4, true)" pbutton type="button" class="ui-button ui-button-danger ui-widget ui-state-default ui-corner-all ui-button-icon-only"
+                                style="height:41px; background: red;"><span class="ui-button-icon-left ui-c fa fa-fw fa-trash"
+                                  style="font-size: 20px; padding: 5px 0 0 0;"></span></button>
                             </div>
                           </form>
+                          <div class="col-md-12" style=" width: 100%; padding: 0 15px 0 6px;">
+                            <!-- alterar -->
+                            <div style="display: inline-block; text-align: left; padding: 0;" class="col-md-12">
+                              <div style="padding: 1px 5px 1px 6px;" class="form-group col-lg-10">
+                                <label style="float: left; margin-right: 19px;">Responsabilidade do atraso</label>
+                                <div class="ui-g-12" style="float: left;">
+                                  <p-radioButton [disabled]="true" name="group4" value="Cliente" label="Cliente"
+                                    [(ngModel)]="responsabilidade_ATRASO4"></p-radioButton>
+                                </div>
+                                <div class="ui-g-12" style="float: left; margin-left: 10px;">
+                                  <p-radioButton [disabled]="true" name="group4" value="Doureca" label="Doureca"
+                                    [(ngModel)]="responsabilidade_ATRASO4"></p-radioButton>
+                                </div>
+                                <input [disabled]="true" type="text" class="form-control2" [(ngModel)]="responsabilidade_ATRASO4_DESCRICAO"
+                                  [ngModelOptions]="{standalone: true}">
+                              </div>
+                              <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-2">
+                                <label>Dias de atraso</label>
+                                <input [disabled]="true" type="text" class="form-control2" [(ngModel)]="dias_ATRASO4"
+                                  [ngModelOptions]="{standalone: true}">
+                              </div>
+                            </div>
+                          </div>
                         </div>
                         <div class="col-md-5">
                           <div class="col-md-12">
                             <label style="color: black; float: left;">Análise das Causas do Problema</label>
-                            <textarea [disabled]="!modoedicao" rows="6" pInputTextarea [(ngModel)]="causas_PROBLEMA"
+                            <textarea [disabled]="!modoedicao || step4CONCLUIDO" rows="6" pInputTextarea [(ngModel)]="causas_PROBLEMA"
                               class="form-control2" [ngModelOptions]="{standalone: true}" style="height: auto; width: 100%;"></textarea>
                           </div>
                         </div>
@@ -961,12 +1110,12 @@
                             <label style="color: black; float: left;">Ficheiros de Análise</label>
                             <div class=" col-md-12" *ngFor="let file of ficheirodeanalise" style="padding: 0;">
                               <div class="col-md-4" style="padding: 0;">
-                                <p-checkbox [disabled]="!modoedicao" binary="true" label="{{file.label}}" [(ngModel)]="fileselect[file.id]"
-                                  [ngModelOptions]="{standalone: true}"></p-checkbox>
+                                <p-checkbox [disabled]="!modoedicao || step4CONCLUIDO" binary="true" label="{{file.label}}"
+                                  [(ngModel)]="fileselect[file.id]" [ngModelOptions]="{standalone: true}"></p-checkbox>
                               </div>
                               <div class="col-md-8" style="padding: 0;">
-                                <input [disabled]="!modoedicao" *ngIf="fileselectinput[file.id] == null" type="file"
-                                  class="form-control2" (change)="fileChange($event,file.id)" [required]="fileselect[file.id]" />
+                                <input [disabled]="!modoedicao || step4CONCLUIDO" *ngIf="fileselectinput[file.id] == null"
+                                  type="file" class="form-control2" (change)="fileChange($event,file.id)" [required]="fileselect[file.id]" />
                                 <span *ngIf="fileselectinput[file.id] != null">{{fileselectinput[file.id].name}}
                                 </span>
                                 <button style="padding: 3px 0px 3px 12px; margin: 3px 0 3px 0;" *ngIf="fileselectinput[file.id] != null"
@@ -979,8 +1128,8 @@
                                   <i class="glyphicon glyphicon-download"></i>
                                 </a>
                                 <button *ngIf="fileselectinput[file.id] != null" style="padding: 3px 0px 3px 12px; margin: 3px 0 3px 0;"
-                                  type="button" class="btn btn-danger btn-xs" [disabled]="!modoedicao" title="Apagar"
-                                  (click)="removerficheiroAnalise(file.id)">
+                                  type="button" class="btn btn-danger btn-xs" [disabled]="!modoedicao || step4CONCLUIDO"
+                                  title="Apagar" (click)="removerficheiroAnalise(file.id)">
                                   <span class="glyphicon glyphicon-trash"></span>
                                 </button>
                               </div>
@@ -989,7 +1138,7 @@
                         </div>
 
                         <div class="col-md-12">
-                          <p-dataTable [style]="{'width':'100%'}" [editable]="modoedicao" [value]="tabelaaccoescorretivas"
+                          <p-dataTable [style]="{'width':'100%'}" [editable]="modoedicao && !step4CONCLUIDO" [value]="tabelaaccoescorretivas"
                             styleClass="ExcelTable2007">
                             <p-column [editable]="true" field="descricao" header="PLANO ACÇÕES CORRECTIVAS">
 
@@ -1068,7 +1217,7 @@
                                   <span [hidden]="!car['obriga_EVIDENCIAS']" class="glyphicon glyphicon-check"></span>
                                 </button>
 
-                                <button type="button" class="btn btn-danger btn-xs" [disabled]="!modoedicao  ||  car['estado'] == 'A' || car['estado'] == 'C'"
+                                <button type="button" class="btn btn-danger btn-xs" [disabled]="!modoedicao  ||  car['estado'] == 'A' || car['estado'] == 'C' || step4CONCLUIDO"
                                   title="Apagar" (click)="apagar_linha('tabelaaccoescorretivas', index)">
                                   <span class="glyphicon glyphicon-trash"></span>
                                 </button>
@@ -1082,62 +1231,12 @@
 
                             </p-column>
                             <p-footer [style]="{'text-align':'center'}">
-                              <a (click)="adicionar_linha('tabelaaccoescorretivas')" [class.disabled]="!modoedicao"
+                              <a (click)="adicionar_linha('tabelaaccoescorretivas')" [class.disabled]="!modoedicao || step4CONCLUIDO"
                                 style="color: black; cursor:pointer; margin-left:10px;" title="Adicionar nova linha">
                                 <i class="material-icons">add</i> Adicionar
                               </a>
                             </p-footer>
                           </p-dataTable>
-                        </div>
-                        <div class="col-md-12" style=" width: 100%;">
-                          <div style="display: inline-block; text-align: left;" class="col-md-12">
-                            <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-3">
-                              <label>Data prevista resposta:</label><br>
-                              <p-calendar [disabled]="true" [style]="{'height':'25px','width':'56%'}" dateFormat="yy-mm-dd"
-                                placeholder="yyyy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050"
-                                [(ngModel)]="data_PREVISTA_REPOSTA4" [ngModelOptions]="{standalone: true}" [showIcon]="true"></p-calendar>
-                              <input [disabled]="true" style="width:72px; margin-left:29px; padding: 5px 4px;height: 25px;"
-                                [(ngModel)]="hora_PREVISTA_REPOSTA4" [ngModelOptions]="{standalone: true}" type="time"
-                                class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all"
-                                ng-reflect-ng-class="ui-inputtext ui-widget ui-stat" required="true" placeholder="hh:mm">
-                            </div>
-                            <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-3">
-                              <label>Dias resposta:</label>
-                              <input [disabled]="!modoedicao" type="text" class="form-control2" [(ngModel)]="dias_RESPOSTA4"
-                                [ngModelOptions]="{standalone: true}">
-                            </div>
-                            <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-3">
-                              <label>Data real resposta:</label><br>
-                              <p-calendar (onChange)="atualizaDatasresposta(4)" (onInput)="atualizaDatasresposta(4)"
-                                (onSelect)="atualizaDatasresposta(4)" [disabled]="!modoedicao" [style]="{'height':'25px','width':'56%'}"
-                                dateFormat="yy-mm-dd" placeholder="yyyy-mm-dd" [monthNavigator]="true" [yearNavigator]="true"
-                                yearRange="2000:2050" [(ngModel)]="data_REAL_RESPOSTA4" [ngModelOptions]="{standalone: true}"
-                                [showIcon]="true"></p-calendar>
-                              <input (change)="atualizaDatasresposta(4)" style="width:72px; margin-left:29px; padding: 5px 4px;height: 25px;"
-                                [(ngModel)]="hora_REAL_REPOSTA4" [ngModelOptions]="{standalone: true}" type="time"
-                                class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all"
-                                ng-reflect-ng-class="ui-inputtext ui-widget ui-stat" placeholder="hh:mm">
-                            </div>
-                            <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-3">
-                              <label>Dias de atraso</label>
-                              <input [disabled]="!modoedicao" type="text" class="form-control2" [(ngModel)]="dias_ATRASO4"
-                                [ngModelOptions]="{standalone: true}">
-                            </div>
-                            <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-12">
-                              <label>Responsabilidade do atraso</label>
-                              <br>
-                              <div class="ui-g-12" style="float: left;">
-                                <p-radioButton [disabled]="!modoedicao" name="group4" value="Cliente" label="Cliente"
-                                  [(ngModel)]="responsabilidade_ATRASO4"></p-radioButton>
-                              </div>
-                              <div class="ui-g-12" style="float: left; margin-left: 10px;">
-                                <p-radioButton [disabled]="!modoedicao" name="group4" value="Doureca" label="Doureca"
-                                  [(ngModel)]="responsabilidade_ATRASO4"></p-radioButton>
-                              </div>
-                              <input [disabled]="!modoedicao" type="text" class="form-control2" [(ngModel)]="responsabilidade_ATRASO4_DESCRICAO"
-                                [ngModelOptions]="{standalone: true}">
-                            </div>
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -1160,15 +1259,42 @@
                               <input type="text" disabled placeholder="Utilizador" value="{{getNomeUser(step5CONCLUIDO_UTZ)}}"
                                 class="form-control2" id="inputSuccess5" style="width: 50%; height: 41px; border-radius: 0; display: -webkit-inline-box; float: left;">
 
-                              <p-calendar [disabled]="!modoedicao || step5CONCLUIDO" [style]="{'height':'41px','width':'47%','float':'left'}"
+                              <p-calendar [disabled]="!modoedicao || step5CONCLUIDO" [style]="{'height':'41px','width':'43%','float':'left'}"
                                 dateFormat="yy-mm-dd" placeholder="yyyy-mm-dd" [monthNavigator]="true" [yearNavigator]="true"
                                 yearRange="2000:2050" [(ngModel)]="step5CONCLUIDO_DATA" [ngModelOptions]="{standalone: true}"
                                 [showIcon]="true" [required]="true"></p-calendar>
+                              <button [hidden]="!modoedicao || !step5CONCLUIDO || (user != utz_RESPONSAVEL && user != utz_CRIA && !adminuser)"
+                                (click)="concluirEtapaGravar(5, true)" pbutton type="button" class="ui-button ui-button-danger ui-widget ui-state-default ui-corner-all ui-button-icon-only"
+                                style="height:41px; background: red;"><span class="ui-button-icon-left ui-c fa fa-fw fa-trash"
+                                  style="font-size: 20px; padding: 5px 0 0 0;"></span></button>
                             </div>
                           </form>
+                          <div class="col-md-12" style=" width: 100%; padding: 0 15px 0 6px;">
+                            <!-- alterar -->
+                            <div style="display: inline-block; text-align: left; padding: 0;" class="col-md-12">
+                              <div style="padding: 1px 5px 1px 6px;" class="form-group col-lg-10">
+                                <label style="float: left; margin-right: 19px;">Responsabilidade do atraso</label>
+                                <div class="ui-g-12" style="float: left;">
+                                  <p-radioButton [disabled]="true" name="group5" value="Cliente" label="Cliente"
+                                    [(ngModel)]="responsabilidade_ATRASO5"></p-radioButton>
+                                </div>
+                                <div class="ui-g-12" style="float: left; margin-left: 10px;">
+                                  <p-radioButton [disabled]="true" name="group5" value="Doureca" label="Doureca"
+                                    [(ngModel)]="responsabilidade_ATRASO5"></p-radioButton>
+                                </div>
+                                <input [disabled]="true" type="text" class="form-control2" [(ngModel)]="responsabilidade_ATRASO5_DESCRICAO"
+                                  [ngModelOptions]="{standalone: true}">
+                              </div>
+                              <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-2">
+                                <label>Dias de atraso</label>
+                                <input [disabled]="true" type="text" class="form-control2" [(ngModel)]="dias_ATRASO5"
+                                  [ngModelOptions]="{standalone: true}">
+                              </div>
+                            </div>
+                          </div>
                         </div>
 
-                        <p-dataTable [style]="{'width':'100%'}" [editable]="modoedicao" [value]="tabelaEficacia"
+                        <p-dataTable [style]="{'width':'100%'}" [editable]="modoedicao && !step5CONCLUIDO" [value]="tabelaEficacia"
                           styleClass="ExcelTable2007">
                           <p-column [editable]="true" field="descricao" header="COMPROVAÇÃO DA EFICÁCIA ">
                             <ng-template let-col let-car="rowData" pTemplate="body">
@@ -1246,7 +1372,7 @@
                                 <span [hidden]="!car['obriga_EVIDENCIAS']" class="glyphicon glyphicon-check"></span>
                               </button>
 
-                              <button type="button" class="btn btn-danger btn-xs" [disabled]="!modoedicao ||  car['estado'] == 'A' || car['estado'] == 'C'"
+                              <button type="button" class="btn btn-danger btn-xs" [disabled]="!modoedicao ||  car['estado'] == 'A' || car['estado'] == 'C' || step5CONCLUIDO"
                                 title="Apagar" (click)="apagar_linha('tabelaEficacia', index)">
                                 <span class="glyphicon glyphicon-trash"></span>
                               </button>
@@ -1259,8 +1385,8 @@
                             </ng-template>
                           </p-column>
                           <p-footer [style]="{'text-align':'center'}">
-                            <a (click)="adicionar_linha('tabelaEficacia')" [class.disabled]="!modoedicao" style="color: black; cursor:pointer; margin-left:10px;"
-                              title="Adicionar nova linha">
+                            <a (click)="adicionar_linha('tabelaEficacia')" [class.disabled]="!modoedicao || step5CONCLUIDO"
+                              style="color: black; cursor:pointer; margin-left:10px;" title="Adicionar nova linha">
                               <i class="material-icons">add</i> Adicionar
                             </a>
                           </p-footer>
@@ -1287,12 +1413,39 @@
                               <input type="text" disabled placeholder="Utilizador" value="{{getNomeUser(step6CONCLUIDO_UTZ)}}"
                                 class="form-control2" id="inputSuccess5" style="width: 50%; height: 41px; border-radius: 0; display: -webkit-inline-box; float: left;">
 
-                              <p-calendar [disabled]="!modoedicao || step6CONCLUIDO" [style]="{'height':'41px','width':'47%','float':'left'}"
+                              <p-calendar [disabled]="!modoedicao || step6CONCLUIDO" [style]="{'height':'41px','width':'43%','float':'left'}"
                                 dateFormat="yy-mm-dd" placeholder="yyyy-mm-dd" [monthNavigator]="true" [yearNavigator]="true"
                                 yearRange="2000:2050" [(ngModel)]="step6CONCLUIDO_DATA" [ngModelOptions]="{standalone: true}"
                                 [showIcon]="true" [required]="true"></p-calendar>
+                              <button [hidden]="!modoedicao || !step6CONCLUIDO || (user != utz_RESPONSAVEL && user != utz_CRIA && !adminuser)"
+                                (click)="concluirEtapaGravar(6, true)" pbutton type="button" class="ui-button ui-button-danger ui-widget ui-state-default ui-corner-all ui-button-icon-only"
+                                style="height:41px; background: red;"><span class="ui-button-icon-left ui-c fa fa-fw fa-trash"
+                                  style="font-size: 20px; padding: 5px 0 0 0;"></span></button>
                             </div>
                           </form>
+                          <div class="col-md-12" style=" width: 100%; padding: 0 15px 0 6px;">
+                            <!-- alterar -->
+                            <div style="display: inline-block; text-align: left; padding: 0;" class="col-md-12">
+                              <div style="padding: 1px 5px 1px 6px;" class="form-group col-lg-10">
+                                <label style="float: left; margin-right: 19px;">Responsabilidade do atraso</label>
+                                <div class="ui-g-12" style="float: left;">
+                                  <p-radioButton [disabled]="true" name="group6" value="Cliente" label="Cliente"
+                                    [(ngModel)]="responsabilidade_ATRASO6"></p-radioButton>
+                                </div>
+                                <div class="ui-g-12" style="float: left; margin-left: 10px;">
+                                  <p-radioButton [disabled]="true" name="group6" value="Doureca" label="Doureca"
+                                    [(ngModel)]="responsabilidade_ATRASO6"></p-radioButton>
+                                </div>
+                                <input [disabled]="true" type="text" class="form-control2" [(ngModel)]="responsabilidade_ATRASO6_DESCRICAO"
+                                  [ngModelOptions]="{standalone: true}">
+                              </div>
+                              <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-2">
+                                <label>Dias de atraso</label>
+                                <input [disabled]="true" type="text" class="form-control2" [(ngModel)]="dias_ATRASO6"
+                                  [ngModelOptions]="{standalone: true}">
+                              </div>
+                            </div>
+                          </div>
                         </div>
 
                         <div style="display: inline-block; /*border-left: 1px solid black;*/ text-align: center; float: left;"
@@ -1301,92 +1454,47 @@
                             <label style="color: black; width: 100%; text-align: -webkit-left; font-weight: 600;">Ações
                               Necessárias</label>
                             <div class="col-md-6" style="padding-left: 6px;">
-                              <p-checkbox [disabled]="!modoedicao" binary="true" label="Seguimento dos Fornecedores"
+                              <p-checkbox [disabled]="!modoedicao || step6CONCLUIDO" binary="true" label="Seguimento dos Fornecedores"
                                 [(ngModel)]="seguimento_FORNECEDORES" [ngModelOptions]="{standalone: true}"></p-checkbox>
                             </div>
                             <div class="col-md-6">
-                              <p-checkbox [disabled]="!modoedicao" binary="true" label="Formação do Operário"
+                              <p-checkbox [disabled]="!modoedicao || step6CONCLUIDO" binary="true" label="Formação do Operário"
                                 [(ngModel)]="formacao_OPERARIO" [ngModelOptions]="{standalone: true}"></p-checkbox>
                             </div>
                             <div class="col-md-6">
-                              <p-checkbox [disabled]="!modoedicao" binary="true" label="AMDEC Processo/Produtos Similares"
+                              <p-checkbox [disabled]="!modoedicao || step6CONCLUIDO" binary="true" label="AMDEC Processo/Produtos Similares"
                                 [(ngModel)]="amdec" [ngModelOptions]="{standalone: true}"></p-checkbox>
                             </div>
                             <div class="col-md-6">
-                              <p-checkbox [disabled]="!modoedicao" binary="true" label="Plano de Manutenção"
+                              <p-checkbox [disabled]="!modoedicao || step6CONCLUIDO" binary="true" label="Plano de Manutenção"
                                 [(ngModel)]="plano_MANUTENCAO" [ngModelOptions]="{standalone: true}"></p-checkbox>
                             </div>
                             <div class="col-md-6">
-                              <p-checkbox [disabled]="!modoedicao" binary="true" label="Plano de Vigilância"
+                              <p-checkbox [disabled]="!modoedicao || step6CONCLUIDO" binary="true" label="Plano de Vigilância"
                                 [(ngModel)]="plano_VIGILANCIA" [ngModelOptions]="{standalone: true}"></p-checkbox>
                             </div>
                             <div class="col-md-6">
-                              <p-checkbox [disabled]="!modoedicao" binary="true" [(ngModel)]="accoes_NECESSARIAS"
+                              <p-checkbox [disabled]="!modoedicao || step6CONCLUIDO" binary="true" [(ngModel)]="accoes_NECESSARIAS"
                                 [style]="{'float':'left'}" [ngModelOptions]="{standalone: true}"></p-checkbox>
-                              <input [disabled]="!modoedicao" type="text" class="form-control2" [(ngModel)]="accoes_NECESSARIAS_TEXTO"
-                                [ngModelOptions]="{standalone: true}" style="width: 90%; float: left;">
+                              <input [disabled]="!modoedicao || step6CONCLUIDO" type="text" class="form-control2"
+                                [(ngModel)]="accoes_NECESSARIAS_TEXTO" [ngModelOptions]="{standalone: true}" style="width: 90%; float: left;">
                             </div>
                           </div>
+                        </div>
+                        <div class="col-md-6" style="text-align: -webkit-auto; padding-left: 6px;">
                           <label style="color: black; width: 100%; text-align: -webkit-left; font-weight: 600; padding-left: 6px;">Eficácia
                             das Ações</label>
                           <div style="padding: 1px 5px 1px 10px; text-align: -webkit-left;" class="form-group col-md-6">
                             <label>Encerrada?</label>
-                            <p-toggleButton [disabled]="!modoedicao" [ngModelOptions]="{standalone: true}" [(ngModel)]="reclamacao_ENCERRADA"
+                            <p-toggleButton [disabled]="true" [ngModelOptions]="{standalone: true}" [(ngModel)]="reclamacao_ENCERRADA"
                               onLabel="Sim" offLabel="Não" onIcon="pi; pi-check" offIcon="pi pi-times" [style]="{'width':'150px'}"></p-toggleButton>
                           </div>
                           <div style="padding: 1px 5px 1px 10px; text-align: -webkit-left;" class="form-group col-md-6">
                             <label>Data fecho:</label>
-                            <p-calendar [disabled]="!modoedicao" [style]="{'height':'25px','width':'90%'}" dateFormat="yy-mm-dd"
-                              placeholder="yyyy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050"
-                              [(ngModel)]="data_FECHO" [ngModelOptions]="{standalone: true}" [showIcon]="true"></p-calendar>
-                          </div>
-                        </div>
-
-                        <div style="display: inline-block;     text-align: left;" class="col-md-6">
-                          <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-6">
-                            <label>Data prevista resposta:</label><br>
-                            <p-calendar [disabled]="true" [style]="{'height':'25px','width':'56%'}" dateFormat="yy-mm-dd"
-                              placeholder="yyyy-mm-dd" [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050"
-                              [(ngModel)]="data_PREVISTA_REPOSTA6" [ngModelOptions]="{standalone: true}" [showIcon]="true"></p-calendar>
-                            <input [disabled]="true" style="width:72px; margin-left:29px; padding: 5px 4px;height: 24px;"
-                              [(ngModel)]="hora_PREVISTA_REPOSTA6" [ngModelOptions]="{standalone: true}" type="time"
-                              class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all"
-                              ng-reflect-ng-class="ui-inputtext ui-widget ui-stat" required="true" placeholder="hh:mm">
-                          </div>
-                          <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-6">
-                            <label>Dias resposta:</label>
-                            <input [disabled]="!modoedicao" type="text" class="form-control2" [(ngModel)]="dias_RESPOSTA6"
-                              [ngModelOptions]="{standalone: true}">
-                          </div>
-                          <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-6">
-                            <label>Data real resposta:</label><br>
-                            <p-calendar (onChange)="atualizaDatasresposta(6)" (onInput)="atualizaDatasresposta(6)"
-                              (onSelect)="atualizaDatasresposta(6)" [disabled]="!modoedicao" [style]="{'height':'25px','width':'56%'}"
+                            <p-calendar [disabled]="!modoedicao || step6CONCLUIDO" [style]="{'height':'25px','width':'90%'}"
                               dateFormat="yy-mm-dd" placeholder="yyyy-mm-dd" [monthNavigator]="true" [yearNavigator]="true"
-                              yearRange="2000:2050" [(ngModel)]="data_REAL_RESPOSTA6" [ngModelOptions]="{standalone: true}"
+                              yearRange="2000:2050" [(ngModel)]="data_FECHO" [ngModelOptions]="{standalone: true}"
                               [showIcon]="true"></p-calendar>
-                            <input (change)="atualizaDatasresposta(6)" style="width:72px; margin-left:29px; padding: 5px 4px;height: 25px;"
-                              [(ngModel)]="hora_REAL_REPOSTA6" [ngModelOptions]="{standalone: true}" type="time" class="ng-tns-c9-3 ui-inputtext ui-widget ui-state-default ui-corner-all"
-                              ng-reflect-ng-class="ui-inputtext ui-widget ui-stat" placeholder="hh:mm">
-                          </div>
-                          <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-6">
-                            <label>Dias de atraso</label>
-                            <input [disabled]="!modoedicao" type="text" class="form-control2" [(ngModel)]="dias_ATRASO6"
-                              [ngModelOptions]="{standalone: true}">
-                          </div>
-                          <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-12">
-                            <label>Responsabilidade do atraso</label>
-                            <br>
-                            <div class="ui-g-12" style="float: left;">
-                              <p-radioButton [disabled]="!modoedicao" name="group6" value="Cliente" label="Cliente"
-                                [(ngModel)]="responsabilidade_ATRASO6" inputId="opt1"></p-radioButton>
-                            </div>
-                            <div class="ui-g-12" style="float: left; margin-left: 10px;">
-                              <p-radioButton [disabled]="!modoedicao" name="group6" value="Doureca" label="Doureca"
-                                [(ngModel)]="responsabilidade_ATRASO6" inputId="opt2"></p-radioButton>
-                            </div>
-                            <input [disabled]="!modoedicao" type="text" class="form-control2" [(ngModel)]="responsabilidade_ATRASO6_DESCRICAO"
-                              [ngModelOptions]="{standalone: true}">
                           </div>
                         </div>
 
@@ -1411,14 +1519,41 @@
                               <input type="text" disabled placeholder="Utilizador" value="{{getNomeUser(step7CONCLUIDO_UTZ)}}"
                                 class="form-control2" id="inputSuccess5" style="width: 50%; height: 41px; border-radius: 0; display: -webkit-inline-box; float: left;">
 
-                              <p-calendar [disabled]="!modoedicao || step7CONCLUIDO" [style]="{'height':'41px','width':'47%','float':'left'}"
+                              <p-calendar [disabled]="!modoedicao || step7CONCLUIDO" [style]="{'height':'41px','width':'43%','float':'left'}"
                                 dateFormat="yy-mm-dd" placeholder="yyyy-mm-dd" [monthNavigator]="true" [yearNavigator]="true"
                                 yearRange="2000:2050" [(ngModel)]="step7CONCLUIDO_DATA" [ngModelOptions]="{standalone: true}"
                                 [showIcon]="true" [required]="true"></p-calendar>
+                              <button [hidden]="!modoedicao || !step7CONCLUIDO || (user != utz_RESPONSAVEL && user != utz_CRIA && !adminuser)"
+                                (click)="concluirEtapaGravar(7, true)" pbutton type="button" class="ui-button ui-button-danger ui-widget ui-state-default ui-corner-all ui-button-icon-only"
+                                style="height:41px; background: red;"><span class="ui-button-icon-left ui-c fa fa-fw fa-trash"
+                                  style="font-size: 20px; padding: 5px 0 0 0;"></span></button>
                             </div>
                           </form>
+                          <div class="col-md-12" style=" width: 100%; padding: 0 15px 0 6px;">
+                            <!-- alterar -->
+                            <div style="display: inline-block; text-align: left; padding: 0;" class="col-md-12">
+                              <div style="padding: 1px 5px 1px 6px;" class="form-group col-lg-10">
+                                <label style="float: left; margin-right: 19px;">Responsabilidade do atraso</label>
+                                <div class="ui-g-12" style="float: left;">
+                                  <p-radioButton [disabled]="true" name="group7" value="Cliente" label="Cliente"
+                                    [(ngModel)]="responsabilidade_ATRASO7"></p-radioButton>
+                                </div>
+                                <div class="ui-g-12" style="float: left; margin-left: 10px;">
+                                  <p-radioButton [disabled]="true" name="group7" value="Doureca" label="Doureca"
+                                    [(ngModel)]="responsabilidade_ATRASO7"></p-radioButton>
+                                </div>
+                                <input [disabled]="true" type="text" class="form-control2" [(ngModel)]="responsabilidade_ATRASO7_DESCRICAO"
+                                  [ngModelOptions]="{standalone: true}">
+                              </div>
+                              <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-2">
+                                <label>Dias de atraso</label>
+                                <input [disabled]="true" type="text" class="form-control2" [(ngModel)]="dias_ATRASO7"
+                                  [ngModelOptions]="{standalone: true}">
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <p-dataTable [style]="{'width':'100%'}" [editable]="modoedicao" [value]="tabelapreventiva"
+                        <p-dataTable [style]="{'width':'100%'}" [editable]="modoedicao && !step7CONCLUIDO" [value]="tabelapreventiva"
                           styleClass="ExcelTable2007">
                           <p-column [style]="{'width':'45px'}" styleClass="heading" field="ordem">
                             <ng-template let-col let-car="rowData" styleClass="heading" pTemplate="body">
@@ -1501,7 +1636,7 @@
                                 <span [hidden]="!car['obriga_EVIDENCIAS']" class="glyphicon glyphicon-check"></span>
                               </button>
 
-                              <button type="button" class="btn btn-danger btn-xs" [disabled]="!modoedicao ||  car['estado'] == 'A' || car['estado'] == 'C'"
+                              <button type="button" class="btn btn-danger btn-xs" [disabled]="!modoedicao ||  car['estado'] == 'A' || car['estado'] == 'C' || step7CONCLUIDO"
                                 title="Apagar" (click)="apagar_linha('tabelapreventiva', index)">
                                 <span class="glyphicon glyphicon-trash"></span>
                               </button>
@@ -1515,8 +1650,8 @@
                             </ng-template>
                           </p-column>
                           <p-footer [style]="{'text-align':'center'}">
-                            <a (click)="adicionar_linha('tabelapreventiva')" [class.disabled]="!modoedicao" style="color: black; cursor:pointer; margin-left:10px;"
-                              title="Adicionar nova linha">
+                            <a (click)="adicionar_linha('tabelapreventiva')" [class.disabled]="!modoedicao || step7CONCLUIDO"
+                              style="color: black; cursor:pointer; margin-left:10px;" title="Adicionar nova linha">
                               <i class="material-icons">add</i> Adicionar
                             </a>
                           </p-footer>
@@ -1542,14 +1677,41 @@
                               <input type="text" disabled placeholder="Utilizador" value="{{getNomeUser(step8CONCLUIDO_UTZ)}}"
                                 class="form-control2" id="inputSuccess5" style="width: 50%; height: 41px; border-radius: 0; display: -webkit-inline-box; float: left;">
 
-                              <p-calendar [disabled]="!modoedicao || step8CONCLUIDO" [style]="{'height':'41px','width':'47%','float':'left'}"
+                              <p-calendar [disabled]="!modoedicao || step8CONCLUIDO" [style]="{'height':'41px','width':'43%','float':'left'}"
                                 dateFormat="yy-mm-dd" placeholder="yyyy-mm-dd" [monthNavigator]="true" [yearNavigator]="true"
                                 yearRange="2000:2050" [(ngModel)]="step8CONCLUIDO_DATA" [ngModelOptions]="{standalone: true}"
                                 [showIcon]="true" [required]="true"></p-calendar>
+                              <button [hidden]="!modoedicao || !step8CONCLUIDO || (user != utz_RESPONSAVEL && user != utz_CRIA && !adminuser)"
+                                (click)="concluirEtapaGravar(8, true)" pbutton type="button" class="ui-button ui-button-danger ui-widget ui-state-default ui-corner-all ui-button-icon-only"
+                                style="height:41px; background: red;"><span class="ui-button-icon-left ui-c fa fa-fw fa-trash"
+                                  style="font-size: 20px; padding: 5px 0 0 0;"></span></button>
                             </div>
                           </form>
+                          <div class="col-md-12" style=" width: 100%; padding: 0 15px 0 6px;">
+                            <!-- alterar -->
+                            <div style="display: inline-block; text-align: left; padding: 0;" class="col-md-12">
+                              <div style="padding: 1px 5px 1px 6px;" class="form-group col-lg-10">
+                                <label style="float: left; margin-right: 19px;">Responsabilidade do atraso</label>
+                                <div class="ui-g-12" style="float: left;">
+                                  <p-radioButton [disabled]="true" name="group8" value="Cliente" label="Cliente"
+                                    [(ngModel)]="responsabilidade_ATRASO8"></p-radioButton>
+                                </div>
+                                <div class="ui-g-12" style="float: left; margin-left: 10px;">
+                                  <p-radioButton [disabled]="true" name="group8" value="Doureca" label="Doureca"
+                                    [(ngModel)]="responsabilidade_ATRASO8"></p-radioButton>
+                                </div>
+                                <input [disabled]="true" type="text" class="form-control2" [(ngModel)]="responsabilidade_ATRASO8_DESCRICAO"
+                                  [ngModelOptions]="{standalone: true}">
+                              </div>
+                              <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-2">
+                                <label>Dias de atraso</label>
+                                <input [disabled]="true" type="text" class="form-control2" [(ngModel)]="dias_ATRASO8"
+                                  [ngModelOptions]="{standalone: true}">
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <textarea [disabled]="!modoedicao" rows="6" pInputTextarea [(ngModel)]="observacoes_RESULTADOS"
+                        <textarea [disabled]="!modoedicao || step8CONCLUIDO" rows="6" pInputTextarea [(ngModel)]="observacoes_RESULTADOS"
                           class="form-control2" [ngModelOptions]="{standalone: true}" style="height: auto; width: 100%;"></textarea>
                       </div>
                     </div>
@@ -1559,6 +1721,11 @@
                   <div class="row setup-content step " [ngClass]="classstep == 'step-8'? 'activeStepInfo' : 'hiddenStepInfo' ">
                     <div class="col-xs-12">
                       <div class="">
+                        <div class="col-md-12" style="height: 37px;">
+                          <!-- <p-selectButton (onChange)="carregatabelasEnvios(numero_RECLAMACAO)" [options]="types2"
+                            [style]="{'position':'absolute'}" [(ngModel)]="selectedType2" [ngModelOptions]="{standalone: true}">
+                          </p-selectButton>-->
+                        </div>
                         <p-dataTable [style]="{'width':'100%'}" [editable]="modoedicao" [value]="tabelaEnviosGarantidos"
                           styleClass="ExcelTable2007">
                           <p-column [editable]="false" field="envio" header="ENVIO GARANTIDO">
@@ -1571,6 +1738,8 @@
                                 [ngModelOptions]="{standalone: true}" appendTo="body" style="width: 88%; float: left;" />
                             </ng-template>
                           </p-column>
+                          <!--<p-column [editable]="false" field="PROREF" header="REFERÊNCIA">
+                          </p-column>-->
                           <p-column [editable]="false" field="qtd" header="QUANTIDADE">
                             <ng-template let-col let-car="rowData" pTemplate="body">
                               {{car[col.field] }}
@@ -1765,6 +1934,8 @@
               </p-panel>
               -->
 
+
+              <button type="button" (click)="btconcluir()" class="btn btn-success pull-right" [hidden]="novo || !modoedicao || reclamacao_ENCERRADA">Concluir</button>
               <button type="reset" (click)="backview()" class="btn btn-danger pull-right" [hidden]="!modoedicao">Cancelar</button>
               <button type="submit" class="btn btn-success pull-right" #buttongravar [hidden]="true">Gravar</button>
               <button type="button" (click)="btgravar()" class="btn btn-success pull-right" [hidden]="!modoedicao">Gravar</button>
@@ -1809,9 +1980,19 @@
 </p-dialog>
 
 
-<p-dialog header="Title" [responsive]="true" [positionTop]="0" [style]="{'max-height':'99vh'}" [dismissableMask]="true"
-  appendTo="body" [closeOnEscape]="true" [draggable]="false" [(visible)]="displaysctockref" [modal]="true">
+<p-dialog header="Aviso" [responsive]="true" [positionTop]="0" [style]="{'max-height':'99vh'}" [dismissableMask]="true"
+  appendTo="body" [closeOnEscape]="true" [draggable]="false" [(visible)]="displayverificar" [modal]="true">
+  <form role="form">
+    <!-- Modal Body -->
+    <div style="padding: 0px 50px 0px 50px">
+      <span [innerHTML]="mensagem_verifica" style="font-size: 17px;"></span>
+    </div>
+    <!-- Modal Footer -->
+    <div class="" style="text-align: -webkit-center;">
+      <button type="button" class="btn btn-default" (click)="displayverificar = false">Fechar</button>
 
+    </div>
+  </form>
 </p-dialog>
 
 
@@ -1868,7 +2049,7 @@
     styleClass="ExcelTable2007" [rows]="15" [paginator]="true" [pageLinks]="3" [rowsPerPageOptions]="[15,25,50,100,'todos']">
     <p-column field="LIECOD" header="ARMAZÉM">
     </p-column>
-    <p-column field="STOQTE" header="QUANTIDADE À DATA">
+    <p-column field="STOQTE" header="QUANTIDADE À DATA DA RECLAMAÇÃO">
     </p-column>
     <p-column field="STOQTE2" header="QUANTIDADE ATUAL">
     </p-column>
@@ -1946,9 +2127,9 @@
     </p-column>
     <p-column field="ADRLIB2" header="MORADA">
     </p-column>
-    <p-column field="QUANTIDADE" header="QUANTIDADE À DATA">
+    <p-column field="QUANTIDADE" header="QUANTIDADE À DATA DA RECLAMAÇÃO">
     </p-column>
-    <p-column field="CDDDATBES" header="DATA À DATA">
+    <p-column field="CDDDATBES" header="DATA À DATA DA RECLAMAÇÃO">
     </p-column>
     <p-column field="QUANTIDADE2" header="QUANTIDADE ATUAL">
     </p-column>
@@ -2047,4 +2228,51 @@
   <p-footer>
     <button style="float: right; margin-right: 17px;" type="button" class="btn btn-default" (click)="displaygrupos = false">Fechar</button>
   </p-footer>
+</p-dialog>
+
+
+<!-- ADICIONAR ACÇÔES -->
+
+
+
+<p-dialog header="Acções de Reclamações" [responsive]="true" [positionTop]="0" [style]="{'max-height':'99vh','width': '600px'}"
+  [dismissableMask]="true" appendTo="body" [closeOnEscape]="true" [draggable]="false" [(visible)]="displayResponsabilidade"
+  [modal]="true">
+
+  <!-- Modal Header -->
+
+  <form role="form" ngNativeValidate (ngSubmit)="concluirEtapaGravar(temp_ETAPA)">
+    <!-- Modal Body -->
+    <div class="">
+      <div class="col-md-12" style=" width: 100%;">
+        <div style="display: inline-block; text-align: left;" class="col-md-12">
+          <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-12">
+            <label>Dias de atraso</label>
+            <input [disabled]="true" type="text" required class="form-control2" [(ngModel)]="tempo_ATRASO"
+              [ngModelOptions]="{standalone: true}">
+          </div>
+          <div style="padding: 1px 5px 1px 10px;" class="form-group col-lg-12">
+            <label>Responsabilidade do atraso</label>
+            <br>
+            <div class="ui-g-12" style="float: left;">
+              <p-radioButton required [disabled]="!modoedicao" name="grouprr" value="Cliente" label="Cliente"
+                [(ngModel)]="temp_RESPONSABILIDADE_ATRASADO"></p-radioButton>
+            </div>
+            <div class="ui-g-12" style="float: left; margin-left: 10px;">
+              <p-radioButton required [disabled]="!modoedicao" name="grouprr" value="Doureca" label="Doureca"
+                [(ngModel)]="temp_RESPONSABILIDADE_ATRASADO"></p-radioButton>
+            </div>
+            <textarea [disabled]="!modoedicao" type="text" rows="6" pInputTextarea class="form-control2" [(ngModel)]="temp_MOTIVO_ATRASO"
+              [ngModelOptions]="{standalone: true}" style="height: auto; width: 100%;" required> </textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal Footer -->
+    <div class="" style="text-align: center;">
+      <button type="button" class="btn btn-default" (click)="displayResponsabilidade = false">Fechar</button>
+      <button type="submit" class="btn btn-success ">Gravar</button>
+    </div>
+  </form>
+
 </p-dialog>

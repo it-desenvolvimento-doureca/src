@@ -305,6 +305,7 @@ const routes: Routes = [
   { path: 'cartelas', component: CartelasComponent, canActivate: [LoginService], data: { breadcrumb: "Cartelas" } },
   { path: 'analisesjasper', component: ViewerComponent, canActivate: [LoginService], data: { breadcrumb: "Análises Jasper" } },
   { path: 'gestaobanhos_relatorios', component: ViewerComponent, canActivate: [LoginService], data: { breadcrumb: "Relatórios Gestão" } },
+  { path: 'reclamacoes_relatorios', component: ViewerComponent, canActivate: [LoginService], data: { breadcrumb: "Relatórios Gestão" } },
   { path: 'lmep_relatorios', component: ViewerComponent, canActivate: [LoginService], data: { breadcrumb: "Relatórios Gestão" } },
   { path: 'configjasper', component: ConfComponent, canActivate: [LoginService], data: { breadcrumb: "Configurações Jasper" } },
   { path: 'parametrosraks', component: ParametrosRaksComponent, canActivate: [LoginService], data: { breadcrumb: "Parâmetros Raks" } },

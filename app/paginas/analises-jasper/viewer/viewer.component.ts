@@ -45,6 +45,8 @@ export class ViewerComponent implements OnInit {
       this.id_modulo = 2;
     }else if (this.currentpage == "lmep_relatorios"){
       this.id_modulo = 3;
+    }else if( this.currentpage =="reclamacoes_relatorios"){
+      this.id_modulo = 5;
     }
 
     //j_username=jasperadmin&j_password=DourecA&

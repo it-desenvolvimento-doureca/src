@@ -70,7 +70,7 @@ export class ReclamacaoCliente8DComponent implements OnInit {
   filedescricao = [];
   fileselectinput = [];
   display: boolean = false;
-  displaysctockref = false;
+  displayverificar = false;
   srcelement;
   type: string;
   numero_RECLAMACAO;
@@ -99,6 +99,7 @@ export class ReclamacaoCliente8DComponent implements OnInit {
   qtd_RECUSADA;
   devolucao;
   observacoes_RECLAMACAO;
+  numero_ENVIOS_GARANTIDOS = 0;
   step1CONCLUIDO;
   step2CONCLUIDO;
   step3CONCLUIDO;
@@ -114,20 +115,19 @@ export class ReclamacaoCliente8DComponent implements OnInit {
   accoes_EVITAR;
   observacoes_ACCOES_EVITAR;
   causas_PROBLEMA;
-  data_PREVISTA_REPOSTA4;
-  dias_RESPOSTA4;
-  data_REAL_RESPOSTA4;
+
   dias_ATRASO4;
   responsabilidade_ATRASO4;
+
+  dias_ATRASO6;
+  responsabilidade_ATRASO6;
+
   accoes_NECESSARIAS;
   accoes_NECESSARIAS_TEXTO;
   reclamacao_ENCERRADA;
   data_FECHO;
-  data_PREVISTA_REPOSTA6;
-  dias_RESPOSTA6;
-  data_REAL_RESPOSTA6;
-  dias_ATRASO6;
-  responsabilidade_ATRASO6;
+
+
   custos_EXTERNA;
   custos_INTERNA;
   custos_DEVOLUCAO;
@@ -157,6 +157,7 @@ export class ReclamacaoCliente8DComponent implements OnInit {
   @ViewChild('buttongravar') buttongravar: ElementRef;
   @ViewChild('alteraeditar') alteraeditar: ElementRef;
   @ViewChild('inputartigoexiste') inputartigoexiste: ElementRef;
+
 
   reclamacao_dados: RC_MOV_RECLAMACAO;
   hora_CRIA: string;
@@ -190,10 +191,6 @@ export class ReclamacaoCliente8DComponent implements OnInit {
   acessoSTEP7 = false;
   acessoSTEP8 = false;
   acessoadicionarACCAO = false;
-  hora_PREVISTA_REPOSTA4: string;
-  hora_REAL_RESPOSTA4: string;
-  hora_PREVISTA_REPOSTA6: string;
-  hora_REAL_RESPOSTA6: string;
   temp_RECLAMACAO: RC_MOV_RECLAMACAO;
   step1CONCLUIDO_DATA: Date;
   step8CONCLUIDO_DATA: Date;
@@ -249,6 +246,31 @@ export class ReclamacaoCliente8DComponent implements OnInit {
   tabelaencomendado2: any;
   motraopcao2: any;
   tabelaEnviosGarantidos: any;
+  envio_GARANTIDO_POR = "cliente";
+  mensagem_verifica: string;
+  dias_ATRASO5: number;
+  responsabilidade_ATRASO5: string;
+  responsabilidade_ATRASO5_DESCRICAO: string;
+  dias_ATRASO1: number;
+  responsabilidade_ATRASO1: string;
+  responsabilidade_ATRASO1_DESCRICAO: string;
+  dias_ATRASO2: number;
+  responsabilidade_ATRASO2: string;
+  responsabilidade_ATRASO2_DESCRICAO: string;
+  dias_ATRASO3: number;
+  responsabilidade_ATRASO3: string;
+  responsabilidade_ATRASO3_DESCRICAO: string;
+  dias_ATRASO7: number;
+  responsabilidade_ATRASO7: string;
+  responsabilidade_ATRASO7_DESCRICAO: string;
+  dias_ATRASO8: number;
+  responsabilidade_ATRASO8: string;
+  responsabilidade_ATRASO8_DESCRICAO: string;
+  tempo_ATRASO: number;
+  temp_MOTIVO_ATRASO;
+  temp_RESPONSABILIDADE_ATRASADO;
+  displayResponsabilidade: boolean;
+  temp_ETAPA: any;
 
   constructor(private RCMOVRECLAMACAOENCOMENDASService: RCMOVRECLAMACAOENCOMENDASService, private elementRef: ElementRef, private GTMOVTAREFASService: GTMOVTAREFASService, private confirmationService: ConfirmationService, private RCMOVRECLAMACAOSTOCKService: RCMOVRECLAMACAOSTOCKService, private RCDICACCOESRECLAMACAOService: RCDICACCOESRECLAMACAOService, private GERGRUPOService: GERGRUPOService, private GERUTILIZADORESService: GERUTILIZADORESService, private RCDICFICHEIROSANALISEService: RCDICFICHEIROSANALISEService, private RCMOVRECLAMACAOENVIOSGARANTIDOSService: RCMOVRECLAMACAOENVIOSGARANTIDOSService, private RCMOVRECLAMACAOPLANOACCOESCORRETIVASService: RCMOVRECLAMACAOPLANOACCOESCORRETIVASService, private RCMOVRECLAMACAOARTIGOSIMILARESService: RCMOVRECLAMACAOARTIGOSIMILARESService, private RCMOVRECLAMACAOEQUIPAService: RCMOVRECLAMACAOEQUIPAService
     , private RCMOVRECLAMACAOFICHEIROSService: RCMOVRECLAMACAOFICHEIROSService, private RCDICTEMPORESPOSTAService: RCDICTEMPORESPOSTAService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private RCDICTIPODEFEITOService: RCDICTIPODEFEITOService, private RCDICTIPORECLAMACAOService: RCDICTIPORECLAMACAOService, private RCDICREJEICAOService: RCDICREJEICAOService, private RCDICGRAUIMPORTANCIAService: RCDICGRAUIMPORTANCIAService, private renderer: Renderer, private RCMOVRECLAMACAOService: RCMOVRECLAMACAOService, private route: ActivatedRoute, private location: Location, private sanitizer: DomSanitizer, private UploadService: UploadService, private globalVar: AppGlobals, private router: Router) { }
@@ -266,10 +288,11 @@ export class ReclamacaoCliente8DComponent implements OnInit {
     ];
 
     this.types2 = [
-      { label: 'Atual', value: 'atual', icon: 'fa-close' },
-      { label: 'À data', value: 'nadata', icon: 'fa-close' }
+      { label: 'Referência', value: 'referencia', icon: 'fa-close' },
+      { label: 'Cliente', value: 'cliente', icon: 'fa-close' }
     ];
 
+    this.selectedType2 = "referencia";
 
     this.globalVar.setapagar(true);
     this.globalVar.seteditar(true);
@@ -290,6 +313,14 @@ export class ReclamacaoCliente8DComponent implements OnInit {
     var url = this.router.routerState.snapshot.url;
     url = url.slice(1);
     var urlarray = url.split("/");
+
+    var step;
+    var substep = this.route
+      .queryParams
+      .subscribe(params => {
+        step = params['step'] || 0;
+      });
+    if (step != 0) { this.classstep = step; }
 
     if (urlarray[1].match("editar") || urlarray[1].match("view")) {
       this.novo = false;
@@ -652,15 +683,17 @@ export class ReclamacaoCliente8DComponent implements OnInit {
             this.qtd_ENVIADA = response[x].qtd_ENVIADA;
             this.qtd_RECUSADA = response[x].qtd_RECUSADA;
 
-            this.data_RECLAMACAO_REVISTA = (response[x].data_RECLAMACAO_REVISTA == null) ? "" : new Date(response[x].data_RECLAMACAO_REVISTA);
-            this.hora_RECLAMACAO_REVISTA = new Date(response[x].data_RECLAMACAO_REVISTA).toLocaleTimeString().slice(0, 5);
+            this.data_RECLAMACAO_REVISTA = (response[x].data_RECLAMACAO_REVISTA == null) ? null : new Date(response[x].data_RECLAMACAO_REVISTA);
+            this.hora_RECLAMACAO_REVISTA = (response[x].data_RECLAMACAO_REVISTA == null) ? null : new Date(response[x].data_RECLAMACAO_REVISTA).toLocaleTimeString().slice(0, 5);
 
-            this.data_PRAZO_REVISAO = (response[x].data_PRAZO_REVISAO == null) ? "" : new Date(response[x].data_PRAZO_REVISAO);
-            this.hora_PRAZO_REVISAO = new Date(response[x].data_PRAZO_REVISAO).toLocaleTimeString().slice(0, 5);
+            this.data_PRAZO_REVISAO = (response[x].data_PRAZO_REVISAO == null) ? null : new Date(response[x].data_PRAZO_REVISAO);
+            this.hora_PRAZO_REVISAO = (response[x].data_PRAZO_REVISAO == null) ? null : new Date(response[x].data_PRAZO_REVISAO).toLocaleTimeString().slice(0, 5);
 
             this.reclamacao_COM_REVISAO = response[x].reclamacao_COM_REVISAO;
             this.devolucao = response[x].devolucao;
             this.observacoes_RECLAMACAO = response[x].observacoes_RECLAMACAO;
+            this.numero_ENVIOS_GARANTIDOS = (response[x].numero_ENVIOS_GARANTIDOS == null) ? 0 : response[x].numero_ENVIOS_GARANTIDOS;
+            this.envio_GARANTIDO_POR = (response[x].envio_GARANTIDO_POR == null) ? "cliente" : response[x].envio_GARANTIDO_POR;
 
             if (!this.duplica) this.step1CONCLUIDO = response[x].step1CONCLUIDO;
             if (!this.duplica) this.step2CONCLUIDO = response[x].step2CONCLUIDO;
@@ -704,26 +737,46 @@ export class ReclamacaoCliente8DComponent implements OnInit {
             this.observacoes_ACCOES_EVITAR = response[x].observacoes_ACCOES_EVITAR;
             this.causas_PROBLEMA = response[x].causas_PROBLEMA;
 
-            this.data_PREVISTA_REPOSTA4 = new Date(response[x].data_PREVISTA_REPOSTA4);
-            this.hora_PREVISTA_REPOSTA4 = new Date(response[x].data_PREVISTA_REPOSTA4).toLocaleTimeString().slice(0, 5);
-            this.dias_RESPOSTA4 = response[x].dias_RESPOSTA4;
-            this.data_REAL_RESPOSTA4 = (response[x].data_REAL_RESPOSTA4 != null) ? new Date(response[x].data_REAL_RESPOSTA4) : null;
-            this.hora_REAL_RESPOSTA4 = new Date(response[x].data_REAL_RESPOSTA4).toLocaleTimeString().slice(0, 5);
-            this.dias_ATRASO4 = response[x].dias_ATRASO4;
-            this.responsabilidade_ATRASO4 = response[x].responsabilidade_ATRASO4;
-            this.responsabilidade_ATRASO4_DESCRICAO = response[x].responsabilidade_ATRASO4_DESCRICAO;
+            if (!this.duplica) this.dias_ATRASO1 = response[x].dias_ATRASO1;
+            if (!this.duplica) this.responsabilidade_ATRASO1 = response[x].responsabilidade_ATRASO1;
+            if (!this.duplica) this.responsabilidade_ATRASO1_DESCRICAO = response[x].responsabilidade_ATRASO1_DESCRICAO;
+
+            if (!this.duplica) this.dias_ATRASO2 = response[x].dias_ATRASO2;
+            if (!this.duplica) this.responsabilidade_ATRASO2 = response[x].responsabilidade_ATRASO2;
+            if (!this.duplica) this.responsabilidade_ATRASO2_DESCRICAO = response[x].responsabilidade_ATRASO2_DESCRICAO;
+
+            if (!this.duplica) this.dias_ATRASO3 = response[x].dias_ATRASO3;
+            if (!this.duplica) this.responsabilidade_ATRASO3 = response[x].responsabilidade_ATRASO3;
+            if (!this.duplica) this.responsabilidade_ATRASO3_DESCRICAO = response[x].responsabilidade_ATRASO3_DESCRICAO;
+
+
+            if (!this.duplica) this.dias_ATRASO4 = response[x].dias_ATRASO4;
+            if (!this.duplica) this.responsabilidade_ATRASO4 = response[x].responsabilidade_ATRASO4;
+            if (!this.duplica) this.responsabilidade_ATRASO4_DESCRICAO = response[x].responsabilidade_ATRASO4_DESCRICAO;
+
+            if (!this.duplica) this.dias_ATRASO5 = response[x].dias_ATRASO5;
+            if (!this.duplica) this.responsabilidade_ATRASO5 = response[x].responsabilidade_ATRASO5;
+            if (!this.duplica) this.responsabilidade_ATRASO5_DESCRICAO = response[x].responsabilidade_ATRASO5_DESCRICAO;
+
+            if (!this.duplica) this.dias_ATRASO6 = response[x].dias_ATRASO6;
+            if (!this.duplica) this.responsabilidade_ATRASO6 = response[x].responsabilidade_ATRASO6;
+            if (!this.duplica) this.responsabilidade_ATRASO6_DESCRICAO = response[x].responsabilidade_ATRASO6_DESCRICAO;
+
+            if (!this.duplica) this.dias_ATRASO7 = response[x].dias_ATRASO7;
+            if (!this.duplica) this.responsabilidade_ATRASO7 = response[x].responsabilidade_ATRASO7;
+            if (!this.duplica) this.responsabilidade_ATRASO7_DESCRICAO = response[x].responsabilidade_ATRASO7_DESCRICAO;
+
+            if (!this.duplica) this.dias_ATRASO8 = response[x].dias_ATRASO8;
+            if (!this.duplica) this.responsabilidade_ATRASO8 = response[x].responsabilidade_ATRASO8;
+            if (!this.duplica) this.responsabilidade_ATRASO8_DESCRICAO = response[x].responsabilidade_ATRASO8_DESCRICAO;
 
             this.accoes_NECESSARIAS = response[x].accoes_NECESSARIAS;
             this.accoes_NECESSARIAS_TEXTO = response[x].accoes_NECESSARIAS_TEXTO;
             this.reclamacao_ENCERRADA = response[x].reclamacao_ENCERRADA;
-            this.data_FECHO = new Date(response[x].data_FECHO);
+            this.data_FECHO = (response[x].data_FECHO != null) ? new Date(response[x].data_FECHO) : null;
             this.observacoes_RESULTADOS = response[x].observacoes_RESULTADOS;
 
-            this.data_PREVISTA_REPOSTA6 = new Date(response[x].data_PREVISTA_REPOSTA6);
-            this.hora_PREVISTA_REPOSTA6 = new Date(response[x].data_PREVISTA_REPOSTA4).toLocaleTimeString().slice(0, 5);
-            this.dias_RESPOSTA6 = response[x].dias_RESPOSTA6;
-            this.data_REAL_RESPOSTA6 = (response[x].data_REAL_RESPOSTA6 != null) ? new Date(response[x].data_REAL_RESPOSTA6) : null;
-            this.hora_REAL_RESPOSTA6 = new Date(response[x].data_REAL_RESPOSTA6).toLocaleTimeString().slice(0, 5);
+
             this.dias_ATRASO6 = response[x].dias_ATRASO6;
             this.responsabilidade_ATRASO6 = response[x].responsabilidade_ATRASO6;
             this.responsabilidade_ATRASO6_DESCRICAO = response[x].responsabilidade_ATRASO6_DESCRICAO;
@@ -1019,8 +1072,8 @@ export class ReclamacaoCliente8DComponent implements OnInit {
             }
 
           }
-          this.ordernar_ordem(this.tabelaaccoesimediatas);
-          this.ordernar_ordem(this.tabelapreventiva);
+          //this.ordernar_ordem(this.tabelaaccoesimediatas);
+          //this.ordernar_ordem(this.tabelapreventiva);
           this.tabelaEficacia = this.tabelaEficacia.slice();
           this.tabelaaccoescorretivas = this.tabelaaccoescorretivas.slice();
           this.tabelaaccoesimediatas = this.tabelaaccoesimediatas.slice();
@@ -1065,6 +1118,7 @@ export class ReclamacaoCliente8DComponent implements OnInit {
     this.tabelaEnviosGarantidos = [];
     this.RCMOVRECLAMACAOENVIOSGARANTIDOSService.getbyidreclamacao(id).subscribe(
       response => {
+        this.tabelaEnviosGarantidos = [];
         var count = Object.keys(response).length;
         if (count > 0) {
           let sum = 0;
@@ -1074,7 +1128,7 @@ export class ReclamacaoCliente8DComponent implements OnInit {
             if (this.tabelaEnviosGarantidos.length > 0) sum = this.tabelaEnviosGarantidos.reduce((max, b) => Math.max(max, b.envio), this.tabelaEnviosGarantidos[0].envio)
             if (!this.duplica) id2 = response[x].id;
             this.tabelaEnviosGarantidos.push({
-              data: response[x], cliente: response[x].cliente, morada: response[x].morada,
+              data: response[x], cliente: response[x].cliente, morada: response[x].morada, PROREF: (response[x].proref == null) ? this.referencia.valor : response[x].proref,
               data_entrega: this.formatDate2(new Date(response[x].data_ENTREGA)), data_envio: this.formatDate2(new Date(response[x].data_ENVIO)),
               id: id2, envio: response[x].envio, qtd: response[x].quantidade, guia: response[x].numero_GUIA
             });
@@ -1087,17 +1141,28 @@ export class ReclamacaoCliente8DComponent implements OnInit {
 
       }, error => { console.log(error); this.carregatabelasEnviosSilver(); });
   }
+
   carregatabelasEnviosSilver() {
+
+
     var data_r = (this.data_RECLAMACAO != null) ? new Date(this.data_RECLAMACAO) : new Date();
 
     var d = data_r;
-    d.setMonth(d.getMonth() - 3);
+    //d.setMonth(d.getMonth() - 3);
 
     var data_fim = new Date();
     if (this.step8CONCLUIDO_DATA != null) data_fim = new Date(this.step8CONCLUIDO_DATA);
-    var data = [{ DATA: this.formatDate2(d), DATA_FIM: this.formatDate2(data_fim) }];
+    var data = null;
 
-    this.RCMOVRECLAMACAOService.getEnviosGarantidos(this.referencia.valor, data).subscribe(
+    var REF = 0;
+    if (this.selectedType2 == "referencia") {
+      data = [{ DATA: this.formatDate2(d), DATA_FIM: this.formatDate2(data_fim) }];
+      REF = this.referencia.valor;
+    } else if (this.selectedType2 == "cliente") {
+      data = [{ DATA: this.formatDate2(d), DATA_FIM: this.formatDate2(data_fim), ETSNUM: this.etsnum, CLICODLIV: this.cliente.id }];
+    }
+
+    this.RCMOVRECLAMACAOService.getEnviosGarantidos(REF, data).subscribe(
       response => {
         var count = Object.keys(response).length;
         if (count > 0) {
@@ -1105,9 +1170,9 @@ export class ReclamacaoCliente8DComponent implements OnInit {
           //console.log(response)
           for (var x in response) {
             if (this.tabelaEnviosGarantidos.length > 0) sum = this.tabelaEnviosGarantidos.reduce((max, b) => Math.max(max, b.envio), this.tabelaEnviosGarantidos[0].envio)
-            if (!this.tabelaEnviosGarantidos.find(item => item.guia == response[x].BLNUM)) {
+            if (!this.tabelaEnviosGarantidos.find(item => item.guia == response[x].BLNUM) || !this.tabelaEnviosGarantidos.find(item => item.PROREF == response[x].BLNUM)) {
               this.tabelaEnviosGarantidos.push({
-                data: response[x], cliente: response[x].ADRNOM + ' ' + response[x].ADRLIB1
+                data: response[x], cliente: response[x].ADRNOM + ' ' + response[x].ADRLIB1, PROREF: response[x].PROREF
                 , morada: response[x].ADRLIB2, data_entrega: response[x].LIVDATREC, data_envio: response[x].LIVDATDEP,
                 id: null, envio: false, qtd: parseFloat(response[x].LIPQTL), guia: response[x].BLNUM
               });
@@ -1727,6 +1792,8 @@ export class ReclamacaoCliente8DComponent implements OnInit {
     reclamacao.qtd_RECUSADA = this.qtd_RECUSADA;
     reclamacao.devolucao = this.devolucao;
     reclamacao.observacoes_RECLAMACAO = this.observacoes_RECLAMACAO;
+    reclamacao.numero_ENVIOS_GARANTIDOS = this.numero_ENVIOS_GARANTIDOS;
+    reclamacao.envio_GARANTIDO_POR = this.envio_GARANTIDO_POR;
     reclamacao.step1CONCLUIDO = this.step1CONCLUIDO;
     reclamacao.step2CONCLUIDO = this.step2CONCLUIDO;
     reclamacao.step3CONCLUIDO = this.step3CONCLUIDO;
@@ -1749,25 +1816,13 @@ export class ReclamacaoCliente8DComponent implements OnInit {
     reclamacao.observacoes_ACCOES_EVITAR = this.observacoes_ACCOES_EVITAR;
     reclamacao.causas_PROBLEMA = this.causas_PROBLEMA;
 
-    reclamacao.data_PREVISTA_REPOSTA4 = new Date(this.data_PREVISTA_REPOSTA4.toDateString() + " " + this.hora_PREVISTA_REPOSTA4.slice(0, 5));
-    reclamacao.dias_RESPOSTA4 = this.dias_RESPOSTA4;
-    if (!this.novo) reclamacao.data_REAL_RESPOSTA4 = (this.data_REAL_RESPOSTA4 != null) ? new Date(this.data_REAL_RESPOSTA4.toDateString() + " " + this.hora_REAL_RESPOSTA4.slice(0, 5)) : null;
-    reclamacao.dias_ATRASO4 = this.dias_ATRASO4;
-    reclamacao.responsabilidade_ATRASO4 = this.responsabilidade_ATRASO4;
-    reclamacao.responsabilidade_ATRASO4_DESCRICAO = this.responsabilidade_ATRASO4_DESCRICAO;
+
 
     reclamacao.accoes_NECESSARIAS = this.accoes_NECESSARIAS;
     reclamacao.accoes_NECESSARIAS_TEXTO = this.accoes_NECESSARIAS_TEXTO;
     reclamacao.reclamacao_ENCERRADA = this.reclamacao_ENCERRADA;
     reclamacao.data_FECHO = this.data_FECHO;
     reclamacao.observacoes_RESULTADOS = this.observacoes_RESULTADOS;
-
-    reclamacao.data_PREVISTA_REPOSTA6 = new Date(this.data_PREVISTA_REPOSTA6.toDateString() + " " + this.hora_PREVISTA_REPOSTA6.slice(0, 5));
-    reclamacao.dias_RESPOSTA6 = this.dias_RESPOSTA6;
-    if (!this.novo) reclamacao.data_REAL_RESPOSTA6 = (this.data_REAL_RESPOSTA6 != null) ? new Date(this.data_REAL_RESPOSTA6.toDateString() + " " + this.hora_REAL_RESPOSTA6.slice(0, 5)) : null;
-    reclamacao.dias_ATRASO6 = this.dias_ATRASO6;
-    reclamacao.responsabilidade_ATRASO6 = this.responsabilidade_ATRASO6;
-    reclamacao.responsabilidade_ATRASO6_DESCRICAO = this.responsabilidade_ATRASO6_DESCRICAO;
 
     reclamacao.custos_DEVOLUCAO = this.custos_DEVOLUCAO;
     reclamacao.custos_EXTERNA = this.custos_EXTERNA;
@@ -2533,6 +2588,7 @@ export class ReclamacaoCliente8DComponent implements OnInit {
         envios.morada = this.tabelaEnviosGarantidos[x].morada;
         envios.data_ENTREGA = this.tabelaEnviosGarantidos[x].data_entrega;
         envios.data_ENVIO = this.tabelaEnviosGarantidos[x].data_envio;
+        envios.proref = this.tabelaEnviosGarantidos[x].PROREF;
         if (!this.duplica) envios.id = this.tabelaEnviosGarantidos[x].id;
 
 
@@ -2671,15 +2727,6 @@ export class ReclamacaoCliente8DComponent implements OnInit {
     }
     var data = new Date(new Date(this.data_RECLAMACAO).toDateString() + " " + this.hora_RECLAMACAO.slice(0, 5));
 
-    this.data_PREVISTA_REPOSTA4 = new Date(data);
-    this.data_PREVISTA_REPOSTA6 = new Date(data);
-
-    this.data_PREVISTA_REPOSTA4.setDate(data.getDate() + this.temporesposta['step4']);
-    this.data_PREVISTA_REPOSTA6.setDate(data.getDate() + this.temporesposta['step6']);
-
-    this.hora_PREVISTA_REPOSTA4 = this.data_PREVISTA_REPOSTA4.toLocaleTimeString().slice(0, 5);
-    this.hora_PREVISTA_REPOSTA6 = this.data_PREVISTA_REPOSTA4.toLocaleTimeString().slice(0, 5);
-
     this.temporesposta['step1_data'] = new Date(data);
     this.temporesposta['step2_data'] = new Date(data);
     this.temporesposta['step3_data'] = new Date(data);
@@ -2700,8 +2747,6 @@ export class ReclamacaoCliente8DComponent implements OnInit {
     this.data_PRAZO_REVISAO.setDate(data.getDate() + this.temporesposta['revisao']);
     this.hora_PRAZO_REVISAO = this.data_PRAZO_REVISAO.toLocaleTimeString().slice(0, 5);
 
-    this.atualizaDatasresposta(4);
-    this.atualizaDatasresposta(6)
     this.atualizadatatabelas(this.temporesposta['step3_data'], this.temporesposta['step4_data'], this.temporesposta['step5_data'], this.temporesposta['step7_data']);
   }
 
@@ -2819,164 +2864,90 @@ export class ReclamacaoCliente8DComponent implements OnInit {
     this.tabelaArtigosSimilar[index].designacao = event.value.design;
   }
 
+  //validar ao concluir
   concluirEtapa(etapa) {
-    if (etapa == 1) {
-      var reclamacao = new RC_MOV_RECLAMACAO;
-      reclamacao = this.temp_RECLAMACAO;
-      reclamacao.step1CONCLUIDO_DATA = this.step1CONCLUIDO_DATA;
-      reclamacao.step1CONCLUIDO_DATA_MOD = new Date();
-      reclamacao.step1CONCLUIDO_UTZ = this.user;
-      reclamacao.step1CONCLUIDO = true;
+    this.temp_RESPONSABILIDADE_ATRASADO = null;
+    this.temp_MOTIVO_ATRASO = null;
 
-      this.reclamacao_dados.step1CONCLUIDO_DATA = reclamacao.step1CONCLUIDO_DATA;
-      this.reclamacao_dados.step1CONCLUIDO_DATA_MOD = reclamacao.step1CONCLUIDO_DATA_MOD;
-      this.reclamacao_dados.step1CONCLUIDO_UTZ = reclamacao.step1CONCLUIDO_UTZ;
-      this.reclamacao_dados.step1CONCLUIDO = true;
+    var atraso = this.atualizaDatasresposta(etapa, this['step' + etapa + 'CONCLUIDO_DATA']);
+    if (atraso > 0) {
+      this.temp_RESPONSABILIDADE_ATRASADO = "Doureca";
+      this.tempo_ATRASO = atraso;
+      this.displayResponsabilidade = true;
+      this.temp_ETAPA = etapa;
+    } else {
+      this.tempo_ATRASO = 0;
+      this.concluirEtapaGravar(etapa);
+    }
 
-      this.RCMOVRECLAMACAOService.update(reclamacao).subscribe(
-        res => {
-          this.step1CONCLUIDO = true;
-          this.step1CONCLUIDO_UTZ = this.user;
-        },
-        error => { console.log(error); this.simular(this.inputerro); });
-    } else if (etapa == 2) {
-      var reclamacao = new RC_MOV_RECLAMACAO;
-      reclamacao = this.temp_RECLAMACAO;
-      reclamacao.step2CONCLUIDO_DATA = this.step2CONCLUIDO_DATA;
-      reclamacao.step2CONCLUIDO_UTZ = this.user;
-      reclamacao.step2CONCLUIDO_DATA_MOD = new Date();
-      reclamacao.step2CONCLUIDO = true;
+  }
 
-      this.reclamacao_dados.step2CONCLUIDO_DATA = reclamacao.step2CONCLUIDO_DATA;
-      this.reclamacao_dados.step2CONCLUIDO_DATA_MOD = reclamacao.step2CONCLUIDO_DATA_MOD;
-      this.reclamacao_dados.step2CONCLUIDO_UTZ = reclamacao.step2CONCLUIDO_UTZ;
-      this.reclamacao_dados.step2CONCLUIDO = true;
+  //verifica  se quer apagar
+  concluirEtapaGravar(etapa, apagar = false) {
+    if (apagar) {
+      this.confirmationService.confirm({
+        message: 'Tem a certeza que pretende anular os dados?',
+        header: 'Apagar Confirmação',
+        icon: 'fa fa-trash',
+        accept: () => {
+          this.concluirEtapaGravarDados(etapa, apagar);
+        }
 
-      this.RCMOVRECLAMACAOService.update(reclamacao).subscribe(
-        res => {
-          this.step2CONCLUIDO = true;
-          this.step2CONCLUIDO_UTZ = this.user;
-        },
-        error => { console.log(error); this.simular(this.inputerro); });
+      });
+    } else {
+      this.concluirEtapaGravarDados(etapa, apagar);
+    }
+  }
 
-    } else if (etapa == 3) {
-      var reclamacao = new RC_MOV_RECLAMACAO;
-      reclamacao = this.temp_RECLAMACAO;
-      reclamacao.step3CONCLUIDO_DATA = this.step3CONCLUIDO_DATA;
-      reclamacao.step3CONCLUIDO_UTZ = this.user;
-      reclamacao.step3CONCLUIDO_DATA_MOD = new Date();
-      reclamacao.step3CONCLUIDO = true;
+  //grava dados step
+  concluirEtapaGravarDados(etapa, apagar = false) {
 
-      this.reclamacao_dados.step3CONCLUIDO_DATA = reclamacao.step3CONCLUIDO_DATA;
-      this.reclamacao_dados.step3CONCLUIDO_DATA_MOD = reclamacao.step3CONCLUIDO_DATA_MOD;
-      this.reclamacao_dados.step3CONCLUIDO_UTZ = reclamacao.step3CONCLUIDO_UTZ;
-      this.reclamacao_dados.step3CONCLUIDO = true;
+    var reclamacao = new RC_MOV_RECLAMACAO;
+    reclamacao = this.temp_RECLAMACAO;
 
-      this.RCMOVRECLAMACAOService.update(reclamacao).subscribe(
-        res => {
-          this.step3CONCLUIDO = true;
-          this.step3CONCLUIDO_UTZ = this.user;
-        },
-        error => { console.log(error); this.simular(this.inputerro); });
+    var concluido = true;
+    var utilizador = this.user;
+    if (apagar) {
+      concluido = false;
+      utilizador = null;
+      this['step' + etapa + 'CONCLUIDO_DATA'] = null;
+      reclamacao['step' + etapa + 'CONCLUIDO_DATA'] = null;
+      reclamacao['step' + etapa + 'CONCLUIDO_DATA_MOD'] = null
+      reclamacao['step' + etapa + 'CONCLUIDO_UTZ'] = utilizador;
+      reclamacao['step' + etapa + 'CONCLUIDO'] = concluido;
 
-    } else if (etapa == 4) {
-      var reclamacao = new RC_MOV_RECLAMACAO;
-      reclamacao = this.temp_RECLAMACAO;
-      reclamacao.step4CONCLUIDO_DATA = this.step4CONCLUIDO_DATA;
-      reclamacao.step4CONCLUIDO_UTZ = this.user;
-      reclamacao.step4CONCLUIDO_DATA_MOD = new Date();
-      reclamacao.step4CONCLUIDO = true;
+      reclamacao['responsabilidade_ATRASO' + etapa] = null
+      reclamacao['responsabilidade_ATRASO' + etapa + '_DESCRICAO'] = null
+      reclamacao['dias_ATRASO' + etapa] = null;
+    } else {
+      reclamacao['step' + etapa + 'CONCLUIDO_DATA'] = this['step' + etapa + 'CONCLUIDO_DATA'];
+      reclamacao['step' + etapa + 'CONCLUIDO_DATA_MOD'] = new Date();
+      reclamacao['step' + etapa + 'CONCLUIDO_UTZ'] = utilizador;
+      reclamacao['step' + etapa + 'CONCLUIDO'] = concluido;
 
-      this.reclamacao_dados.step4CONCLUIDO_DATA = reclamacao.step4CONCLUIDO_DATA;
-      this.reclamacao_dados.step4CONCLUIDO_DATA_MOD = reclamacao.step4CONCLUIDO_DATA_MOD;
-      this.reclamacao_dados.step4CONCLUIDO_UTZ = reclamacao.step4CONCLUIDO_UTZ;
-      this.reclamacao_dados.step4CONCLUIDO = true;
+      reclamacao['responsabilidade_ATRASO' + etapa] = this.temp_RESPONSABILIDADE_ATRASADO;
+      reclamacao['responsabilidade_ATRASO' + etapa + '_DESCRICAO'] = this.temp_MOTIVO_ATRASO;
+      reclamacao['dias_ATRASO' + etapa] = this.tempo_ATRASO;
+    }
 
-      this.RCMOVRECLAMACAOService.update(reclamacao).subscribe(
-        res => {
-          this.step4CONCLUIDO = true;
-          this.step4CONCLUIDO_UTZ = this.user;
-        },
-        error => { console.log(error); this.simular(this.inputerro); });
+    this.reclamacao_dados['responsabilidade_ATRASO' + etapa] = reclamacao['responsabilidade_ATRASO' + etapa];
+    this.reclamacao_dados['responsabilidade_ATRASO' + etapa + '_DESCRICAO'] = reclamacao['responsabilidade_ATRASO' + etapa + '_DESCRICAO'];
+    this.reclamacao_dados['dias_ATRASO' + etapa] = reclamacao['dias_ATRASO' + etapa];
 
-    } else if (etapa == 5) {
-      var reclamacao = new RC_MOV_RECLAMACAO;
-      reclamacao = this.temp_RECLAMACAO;
-      reclamacao.step5CONCLUIDO_DATA = this.step5CONCLUIDO_DATA;
-      reclamacao.step5CONCLUIDO_DATA_MOD = new Date();
-      reclamacao.step5CONCLUIDO_UTZ = this.user;
-      reclamacao.step5CONCLUIDO = true;
+    this.reclamacao_dados['step' + etapa + 'CONCLUIDO_DATA'] = reclamacao['step' + etapa + 'CONCLUIDO_DATA'];
+    this.reclamacao_dados['step' + etapa + 'CONCLUIDO_DATA_MOD'] = reclamacao['step' + etapa + 'CONCLUIDO_DATA_MOD'];
+    this.reclamacao_dados['step' + etapa + 'CONCLUIDO_UTZ'] = reclamacao['step' + etapa + 'CONCLUIDO_UTZ'];
+    this.reclamacao_dados['step' + etapa + 'CONCLUIDO'] = concluido;
 
-      this.reclamacao_dados.step5CONCLUIDO_DATA = reclamacao.step5CONCLUIDO_DATA;
-      this.reclamacao_dados.step5CONCLUIDO_DATA_MOD = reclamacao.step5CONCLUIDO_DATA_MOD;
-      this.reclamacao_dados.step5CONCLUIDO_UTZ = reclamacao.step5CONCLUIDO_UTZ;
-      this.reclamacao_dados.step5CONCLUIDO = true;
-
-      this.RCMOVRECLAMACAOService.update(reclamacao).subscribe(
-        res => {
-          this.step5CONCLUIDO = true;
-          this.step5CONCLUIDO_UTZ = this.user
-        },
-        error => { console.log(error); this.simular(this.inputerro); });
-      ;
-    } else if (etapa == 6) {
-      var reclamacao = new RC_MOV_RECLAMACAO;
-      reclamacao = this.temp_RECLAMACAO;
-      reclamacao.step6CONCLUIDO_DATA = this.step6CONCLUIDO_DATA;
-      reclamacao.step6CONCLUIDO_DATA_MOD = new Date();
-      reclamacao.step6CONCLUIDO_UTZ = this.user;
-      reclamacao.step6CONCLUIDO = true;
-
-      this.reclamacao_dados.step6CONCLUIDO_DATA = reclamacao.step6CONCLUIDO_DATA;
-      this.reclamacao_dados.step6CONCLUIDO_DATA_MOD = reclamacao.step6CONCLUIDO_DATA_MOD;
-      this.reclamacao_dados.step6CONCLUIDO_UTZ = reclamacao.step6CONCLUIDO_UTZ;
-      this.reclamacao_dados.step6CONCLUIDO = true;
-
-      this.RCMOVRECLAMACAOService.update(reclamacao).subscribe(
-        res => {
-          this.step6CONCLUIDO = true;
-          this.step6CONCLUIDO_UTZ = this.user;
-        },
-        error => { console.log(error); this.simular(this.inputerro); });
-
-    } else if (etapa == 7) {
-      var reclamacao = new RC_MOV_RECLAMACAO;
-      reclamacao = this.temp_RECLAMACAO;
-      reclamacao.step7CONCLUIDO_DATA = this.step7CONCLUIDO_DATA;
-      reclamacao.step7CONCLUIDO_UTZ = this.user;
-      reclamacao.step7CONCLUIDO_DATA_MOD = new Date();
-      reclamacao.step7CONCLUIDO = true;
-
-
-      this.reclamacao_dados.step7CONCLUIDO_DATA = reclamacao.step7CONCLUIDO_DATA;
-      this.reclamacao_dados.step7CONCLUIDO_DATA_MOD = reclamacao.step7CONCLUIDO_DATA_MOD;
-      this.reclamacao_dados.step7CONCLUIDO_UTZ = reclamacao.step7CONCLUIDO_UTZ;
-      this.reclamacao_dados.step7CONCLUIDO = true;
-
-      this.RCMOVRECLAMACAOService.update(reclamacao).subscribe(
-        res => {
-          this.step7CONCLUIDO = true;
-          this.step7CONCLUIDO_UTZ = this.user;
-        },
-        error => { console.log(error); this.simular(this.inputerro); });
-
-    } else if (etapa == 8) {
-      var reclamacao = new RC_MOV_RECLAMACAO;
-      reclamacao = this.temp_RECLAMACAO;
-      reclamacao.step8CONCLUIDO_DATA = this.step8CONCLUIDO_DATA;
-      reclamacao.step8CONCLUIDO_DATA_MOD = new Date();
-      reclamacao.step8CONCLUIDO_UTZ = this.user;
-      reclamacao.step8CONCLUIDO = true;
-
-      this.reclamacao_dados.step8CONCLUIDO_DATA = reclamacao.step8CONCLUIDO_DATA;
-      this.reclamacao_dados.step8CONCLUIDO_DATA_MOD = reclamacao.step8CONCLUIDO_DATA_MOD;
-      this.reclamacao_dados.step8CONCLUIDO_UTZ = reclamacao.step8CONCLUIDO_UTZ;
-      this.reclamacao_dados.step8CONCLUIDO = true;
-
-      this.RCMOVRECLAMACAOService.update(reclamacao).subscribe(
-        res => {
-          this.step8CONCLUIDO = true;
-          this.step8CONCLUIDO_UTZ = this.user;
+    this.RCMOVRECLAMACAOService.update(reclamacao).subscribe(
+      res => {
+        this['step' + etapa + 'CONCLUIDO'] = concluido;
+        this['step' + etapa + 'CONCLUIDO_UTZ'] = utilizador;
+        this['responsabilidade_ATRASO' + etapa] = reclamacao['responsabilidade_ATRASO' + etapa];
+        this['responsabilidade_ATRASO' + etapa + '_DESCRICAO'] = reclamacao['responsabilidade_ATRASO' + etapa + '_DESCRICAO'];
+        this['dias_ATRASO' + etapa] = reclamacao['dias_ATRASO' + etapa];
+        this.displayResponsabilidade = false;
+        if (etapa == 8 && !apagar) {
           var email_para = [];
           email_para.push(this.drop_utilizadores2.find(item => item.value == this.utz_RESPONSAVEL).email);
           for (var x in this.tabelaEquipa) {
@@ -2992,58 +2963,32 @@ export class ReclamacaoCliente8DComponent implements OnInit {
                     email_para.push(resp[x][0]);
                 }
                 this.enviarEventoResponsaveis(reclamacao.data_RECLAMACAO, reclamacao.observacoes_RECLAMACAO, reclamacao.id_RECLAMACAO, reclamacao.nome_CLIENTE, reclamacao.referencia + " - " + reclamacao.designacao_REF,
-                  "Ao Concluir Step-8", email_para.toString(), new Date(reclamacao.step8CONCLUIDO_DATA).toLocaleDateString(), reclamacao.observacoes_RESULTADOS);
+                  "Ao Concluir Step-8", email_para.toString(), new Date(reclamacao.step8CONCLUIDO_DATA).toLocaleDateString(), ((reclamacao.observacoes_RESULTADOS != null) ? reclamacao.observacoes_RESULTADOS : ""));
               } else {
                 this.enviarEventoResponsaveis(reclamacao.data_RECLAMACAO, reclamacao.observacoes_RECLAMACAO, reclamacao.id_RECLAMACAO, reclamacao.nome_CLIENTE, reclamacao.referencia + " - " + reclamacao.designacao_REF,
-                  "Ao Concluir Step-8", email_para.toString(), new Date(reclamacao.step8CONCLUIDO_DATA).toLocaleDateString(), reclamacao.observacoes_RESULTADOS);
+                  "Ao Concluir Step-8", email_para.toString(), new Date(reclamacao.step8CONCLUIDO_DATA).toLocaleDateString(), ((reclamacao.observacoes_RESULTADOS != null) ? reclamacao.observacoes_RESULTADOS : ""));
               }
             },
             error => {
               console.log(error);
               this.simular(this.inputerro);
               this.enviarEventoResponsaveis(reclamacao.data_RECLAMACAO, reclamacao.observacoes_RECLAMACAO, reclamacao.id_RECLAMACAO, reclamacao.nome_CLIENTE, reclamacao.referencia + " - " + reclamacao.designacao_REF,
-                "Ao Concluir Step-8", email_para.toString(), new Date(reclamacao.step8CONCLUIDO_DATA).toLocaleDateString(), reclamacao.observacoes_RESULTADOS);
+                "Ao Concluir Step-8", email_para.toString(), new Date(reclamacao.step8CONCLUIDO_DATA).toLocaleDateString(), ((reclamacao.observacoes_RESULTADOS != null) ? reclamacao.observacoes_RESULTADOS : ""));
             });
+        }
 
-        },
-        error => { console.log(error); this.simular(this.inputerro); });
-
-    }
+      },
+      error => { console.log(error); this.simular(this.inputerro); this.displayResponsabilidade = false; });
   }
 
-  atualizaDatasresposta(step) {
-    if (step == 4) {
-      var date1 = new Date(new Date(this.data_PREVISTA_REPOSTA4).toDateString() + " " + this.hora_PREVISTA_REPOSTA4.slice(0, 5));
-      var date2 = new Date(new Date(this.data_REAL_RESPOSTA4).toDateString() + " " + this.hora_PREVISTA_REPOSTA4.slice(0, 5));
-      var data = new Date(new Date(this.data_RECLAMACAO).toDateString() + " " + this.hora_RECLAMACAO.slice(0, 5));
 
-      var diff = Math.abs(date1.getTime() - date2.getTime());
-
-      var diffDays = Math.ceil(diff / (1000 * 3600 * 24));
-      if (date1.getTime() - date2.getTime() > 0) diffDays = 0;
-
-      var diff2 = Math.abs(data.getTime() - date2.getTime());
-      var diffDays2 = Math.ceil(diff2 / (1000 * 3600 * 24));
-      if (data.getTime() - date2.getTime() > 0) diffDays2 = 0;
-      this.dias_ATRASO4 = diffDays;
-      this.dias_RESPOSTA4 = diffDays2;
-
-    } else if (step == 6) {
-      var date1 = new Date(new Date(this.data_PREVISTA_REPOSTA6).toDateString() + " " + this.hora_PREVISTA_REPOSTA6.slice(0, 5));
-      var date2 = new Date(new Date(this.data_REAL_RESPOSTA6).toDateString() + " " + this.hora_PREVISTA_REPOSTA6.slice(0, 5));
-      var data = new Date(new Date(this.data_RECLAMACAO).toDateString() + " " + this.hora_RECLAMACAO.slice(0, 5));
-
-      var diff = Math.abs(date1.getTime() - date2.getTime());
-      var diffDays = Math.ceil(diff / (1000 * 3600 * 24));
-      if (date1.getTime() - date2.getTime() > 0) diffDays = 0;
-      var diff2 = Math.abs(data.getTime() - date2.getTime());
-      var diffDays2 = Math.ceil(diff2 / (1000 * 3600 * 24));
-      if (data.getTime() - date2.getTime() > 0) diffDays2 = 0;
-      this.dias_ATRASO6 = diffDays;
-      this.dias_RESPOSTA6 = diffDays2;
-
-    }
-
+  atualizaDatasresposta(step, data) {
+    var date1 = new Date(this.temporesposta['step' + step + '_data']);
+    var date2 = new Date(data);
+    var diff = Math.abs(date1.getTime() - date2.getTime());
+    var diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+    if (date1.getTime() - date2.getTime() > 0) diffDays = 0;
+    return diffDays;
   }
 
   //ao alterar cliente atualiza morada
@@ -3192,7 +3137,7 @@ export class ReclamacaoCliente8DComponent implements OnInit {
 
     } else {
       if (referencia == null) referencia = this.referencia.valor;
-      this.selectedType2 = "atual";
+
       this.tabelastock = [];
       this.displayLoading = true;
       this.RCMOVRECLAMACAOService.getStock(referencia).subscribe(
@@ -3754,7 +3699,7 @@ export class ReclamacaoCliente8DComponent implements OnInit {
     if (observacao == null) {
       observacao = "";
     }
-    var dados = "{observacao::" + observacao + "\n/numero_reclamacao::" + numero_reclamacao + "\n/cliente::" + cliente
+    var dados = "{observacao::" + observacao + "\n/link::" + webUrl.host + '/#/reclamacoesclientes/view?id=' + numero_reclamacao + "\n/numero_reclamacao::" + numero_reclamacao + "\n/cliente::" + cliente
       + "\n/data_reclamacao::" + new Date(data_reclamacao).toLocaleDateString() + "\n/referencia::" + referencia + "\n/data_conclusao::" + data_conclusao + "\n/observacao_conclusao::" + observacao_conclusao + "}";
 
 
@@ -3921,4 +3866,78 @@ export class ReclamacaoCliente8DComponent implements OnInit {
 
       });
   }
+
+  //ao concluir
+  btconcluir() {
+    this.confirmationService.confirm({
+      message: "Deseja Concluir a Reclamação?",
+      header: 'Confirmação',
+      icon: 'fa fa-info',
+      accept: () => {
+        this.verificar();
+      }
+
+    });
+  }
+
+  //verificar se os envios garantidos estão marcados, se cada etapa está fechada, se obriga a
+  //revisão então verifica se a reclamação está revista e a data de revisão preenchida, se todas as tarefas/ações estão
+  //concluídas, canceladas ou rejeitadas.
+  verificar() {
+    this.mensagem_verifica = "";
+    var count = 0;
+    for (var x in this.tabelaEnviosGarantidos) {
+      if (this.tabelaEnviosGarantidos[x].envio) {
+        if (this.envio_GARANTIDO_POR == "cliente") {
+          if (this.tabelaEnviosGarantidos[x].cliente.trim() == this.cliente.nome.trim()) count++;
+        } else if (this.envio_GARANTIDO_POR == "referencia") {
+          if (this.tabelaEnviosGarantidos[x].PROREF.trim() == this.referencia.valor.trim()) count++;
+        }
+      }
+    }
+
+    if (this.numero_ENVIOS_GARANTIDOS > 0 && count != this.numero_ENVIOS_GARANTIDOS) this.mensagem_verifica += "<li class='list-group-item list-group-item-danger'>Falta Verificar Envios Garantidos</li>"
+
+
+    if (this.reclamacao_COM_REVISAO) {
+      if (!this.reclamacao_REVISTA || this.data_RECLAMACAO_REVISTA == null) {
+        this.mensagem_verifica += "<li class='list-group-item list-group-item-danger'>Falta Revisar a Reclamação</li>";
+      }
+    }
+
+    if (!this.step1CONCLUIDO) this.mensagem_verifica += "<li class='list-group-item list-group-item-danger'>Falta Concluir Step-1</li>";
+    if (!this.step2CONCLUIDO) this.mensagem_verifica += "<li class='list-group-item list-group-item-danger'>Falta Concluir Step-2</li>";
+    if (!this.step3CONCLUIDO) this.mensagem_verifica += "<li class='list-group-item list-group-item-danger'>Falta Concluir Step-3</li>";
+    if (!this.step4CONCLUIDO) this.mensagem_verifica += "<li class='list-group-item list-group-item-danger'>Falta Concluir Step-4</li>";
+    if (!this.step5CONCLUIDO) this.mensagem_verifica += "<li class='list-group-item list-group-item-danger'>Falta Concluir Step-5</li>";
+    if (!this.step6CONCLUIDO) this.mensagem_verifica += "<li class='list-group-item list-group-item-danger'>Falta Concluir Step-6</li>";
+    if (!this.step7CONCLUIDO) this.mensagem_verifica += "<li class='list-group-item list-group-item-danger'>Falta Concluir Step-7</li>";
+    if (!this.step8CONCLUIDO) this.mensagem_verifica += "<li class='list-group-item list-group-item-danger'>Falta Concluir Step-8</li>";
+
+    this.RCMOVRECLAMACAOService.getbyIDTotalTarefas(this.numero_RECLAMACAO).subscribe(
+      response => {
+        if (parseInt(response[0]) > 0) { this.mensagem_verifica += "<li class='list-group-item list-group-item-danger'>Falta Concluir " + response[0] + " Tarefa(s)</li>"; }
+
+        if (this.mensagem_verifica != "") {
+          this.displayverificar = true;
+        } else {
+          this.data_FECHO = new Date();
+          this.reclamacao_ENCERRADA = true;
+          this.btgravar();
+        }
+      }, error => {
+        console.log(error);
+        if (this.mensagem_verifica != "") {
+          this.displayverificar = true;
+        } else {
+          this.data_FECHO = new Date();
+          this.reclamacao_ENCERRADA = true;
+          this.btgravar();
+        }
+      });
+
+
+
+  }
+
 }

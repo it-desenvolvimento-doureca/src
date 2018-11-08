@@ -13,4 +13,5 @@ export class RC_MOV_RECLAMACAO_ENVIOS_GARANTIDOS {
 	morada: string;
 	data_ENTREGA: Date;
 	data_ENVIO: Date;
+	proref: string;
 }

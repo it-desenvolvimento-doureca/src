@@ -203,7 +203,7 @@
                 <!-- MENU RECLAMAÇÕES-->
                 <!---->
                 <div class="panel panel-default">
-                    <div class="panel-heading" [ngClass]="{ 'active': router.isActive('/reclamacoesclientes',true) || router.isActive('/temposresposta',true) || router.isActive('/rejeicoes',true)  || router.isActive('/tiposreclamacoes',true) || router.isActive('/grausimportancia',true)|| router.isActive('/tiposdefeito',true) || router.isActive('/ficheirosanalise',true) }">
+                    <div class="panel-heading" [ngClass]="{ 'active': router.isActive('/reclamacoes_relatorios',true) || router.isActive('/reclamacoesclientes',true) || router.isActive('/temposresposta',true) || router.isActive('/rejeicoes',true)  || router.isActive('/tiposreclamacoes',true) || router.isActive('/grausimportancia',true)|| router.isActive('/tiposdefeito',true) || router.isActive('/ficheirosanalise',true) }">
                         <h4 class="panel-title">
                             <a id="node5" data-toggle="collapse" data-parent="#accordion" href="#collapsereclamacoes">
                                 <span class="glyphicon glyphicon-list-alt ">
@@ -234,11 +234,11 @@
                                 <tr>
                                     <td>
                                         <li id="node53" data-toggle="collapse" [routerLinkActive]="['active']">
-                                            <a [routerLink]="['/gestaobanhos_relatorios']">Relatórios de Gestão</a>
+                                            <a [routerLink]="['/reclamacoes_relatorios']">Relatórios de Gestão</a>
                                         </li>
                                     </td>
                                 </tr>
-                                <tr>
+                                <!--<tr>
                                     <td>
                                         <li id="node55" data-toggle="collapse" data-target="#rrrclam" class="collapsed"
                                             [ngClass]="{ 'active': router.isActive('/analiseconsumos',true)}">
@@ -246,16 +246,16 @@
                                                 <span class="arrow"></span>
                                             </a>
                                         </li>
-                                        <!--<ul class="sub-menu collapse" id="rrrclam">
+                                        <ul class="sub-menu collapse" id="rrrclam">
                                             <li id="node551" [routerLinkActive]="['active']" [routerLink]="['/analiseconsumos']">
                                                 <a>Análise de Consumos</a>
                                             </li>
                                             <li id="node552" [routerLinkActive]="['active']" [routerLink]="['/analiseconsumosetiquetas']">
                                                 <a>Análise Cons. Etiquetas</a>
                                             </li>
-                                        </ul>-->
+                                        </ul>
                                     </td>
-                                </tr>
+                                </tr>-->
                                 <tr>
                                     <td>
                                         <li id="node52" data-toggle="collapse" data-target="#parametrosrecl" class="collapsed"

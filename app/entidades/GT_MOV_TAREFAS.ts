@@ -29,5 +29,6 @@ export class GT_MOV_TAREFAS {
     descricao: string;
     data_REJEITA: Date;
     utz_REJEITA: Date;
+    motivo_REJEICAO: string;
 
 }
