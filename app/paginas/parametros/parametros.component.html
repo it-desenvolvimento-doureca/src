@@ -15,7 +15,7 @@
                   <form role="form" ngNativeValidate (ngSubmit)="gravar()">
                     <!-- Modal Body -->
                     <div class="col-md-12 " style="padding: 6px">
-                      <h5 style="margin: 0; font-weight: 450;">GERAL</h5>
+                      <h5 style="margin: 0; font-weight: 450; background: lightgray; padding: 3px 0 0 8px;">Geral</h5>
                       <hr style="margin: 0px 0 7px 0; border:2; border-top: 2px solid #d5d3d3;" />
                       <div class="form-group col-md-6" style="padding: 0px 18px 0 0;">
                         <label for="pasta_ficheiro">Pasta Destino Interface Silver:</label>
@@ -54,7 +54,7 @@
                       </div>
                     </div>
                     <div class="col-md-12 " style="padding: 6px">
-                      <h5 style="margin: 0; font-weight: 450;">MANUTENÇÕES</h5>
+                      <h5 style="margin: 0; font-weight: 450; background: lightgray; padding: 3px 0 0 8px;">Manutenções</h5>
                       <hr style="margin: 0px 0 7px 0; border:2; border-top: 2px solid #d5d3d3;" />
                       <div class="form-group col-md-6" style="padding: 0px 18px 0 0;">
                         <label for="tempo_PLANEADAS">Tempo mínimo para visualizar as fichas planeadas (minutos):</label>
@@ -70,7 +70,8 @@
                     </div>
 
                     <div class="col-md-12 " style="padding: 6px">
-                      <h5 style="margin: 0; font-weight: 450;">Erros Batch - Interface Silver</h5>
+                      <h5 style="margin: 0; font-weight: 450; background: lightgray; padding: 3px 0 0 8px;">Erros Batch
+                        - Interface Silver</h5>
                       <hr style="margin: 0px 0 7px 0; border:2; border-top: 2px solid #d5d3d3;" />
                       <div class="form-group col-md-4" style="padding: 0px 18px 0 0;">
                         <label for="caminho_LOGS_SILVER">Ficheiro:</label>
@@ -111,7 +112,73 @@
                     </div>
 
                     <div class="col-md-12 " style="padding: 6px">
-                      <h5 style="margin: 0; font-weight: 450;">CARTELAS</h5>
+                      <h5 style="margin: 0; font-weight: 450; background: lightgray; padding: 3px 0 0 8px;">Sincronismo
+                        Silver BI</h5>
+                      <hr style="margin: 0px 0 7px 0; border:2; border-top: 2px solid #d5d3d3;" />
+
+                      <div class="form-group col-md-4" style="padding: 0px 18px 0 0;">
+                        <label for="dominio_LOGS_SILVER">Dia da Semana:</label>
+                        <br>
+                        <p-dropdown [filter]="true" [options]="dias_semana" [style]="{'width':'100%','background':'white'}"
+                          [(ngModel)]="atualizacao_SILVER_BI_DIA_DA_SEMANA" [ngModelOptions]="{standalone: true}"
+                          [disabled]="!modoedicao" [required]="true"></p-dropdown>
+                      </div>
+                      <div class="form-group col-md-4" style="padding: 0px 18px 0 0;">
+                        <label for="atualizacao_SILVER_BI_HORAS">Horas:</label>
+                        <input required [disabled]="!modoedicao" type="time" class="form-control" id="atualizacao_SILVER_BI_HORAS"
+                          [(ngModel)]="atualizacao_SILVER_BI_HORAS" [ngModelOptions]="{standalone: true}" />
+                      </div>
+                      <div class="form-group col-md-4" style="padding: 0px;">
+                        <div class="checkbox col-md-6" style="float: none; margin-left: 14px;">
+                          <input [disabled]="!modoedicao" type="checkbox" name="atualizacao_SILVER_BI_ATIVO" id="radiosaa"
+                            [(ngModel)]="atualizacao_SILVER_BI_ATIVO">
+                          <label for="radiosaa" style="color:black">
+                            Sincronismo Ativo
+                          </label>
+                        </div>
+                      </div>
+                      <p-dataTable [style]="{'width':'100%'}" [editable]="modoedicao" [value]="tabelasSincronismo"
+                        styleClass="tabelaPostos">
+                        <p-column [editable]="true" field="tabela" header="TABELA">
+                          <ng-template let-col let-car="rowData" pTemplate="body">
+                            {{car[col.field] }}
+                          </ng-template>
+                          <ng-template let-col let-car="rowData" pTemplate="editor">
+                            <input [disabled]="!modoedicao" type="text" class="form-control" [(ngModel)]="car['tabela']"
+                              [ngModelOptions]="{standalone: true}" placeholder="Nome Tabela" appendTo="body" />
+                          </ng-template>
+                        </p-column>
+                        <p-column [editable]="true" field="dias" header="NÚMERO DIAS SINCRONISMO">
+                          <ng-template let-col let-car="rowData" pTemplate="body">
+                            {{car[col.field] }}
+                          </ng-template>
+                          <ng-template let-col let-car="rowData" pTemplate="editor">
+                            <input [disabled]="!modoedicao" type="text" class="form-control" [(ngModel)]="car['dias']"
+                              [ngModelOptions]="{standalone: true}" placeholder="" appendTo="body" />
+                          </ng-template>
+                        </p-column>
+                        <p-column field="total" header="SINCRONISMO TOTAL">
+                          <ng-template let-col let-car="rowData" pTemplate="body">
+                            <input [disabled]="!modoedicao" type="checkbox" [(ngModel)]="car['total']" [ngModelOptions]="{standalone: true}">
+                          </ng-template>
+                        </p-column>
+                        <p-column>
+                          <ng-template let-index="rowIndex" pTemplate="body">
+                            <button [disabled]="!modoedicao" type="button" pButton (click)="apagar_linha( index)" class="ui-button-warning"
+                              icon="fa-trash"></button>
+                          </ng-template>
+                        </p-column>
+                        <p-footer>
+                          <a (click)="adicionar_linha2()" [class.disabled]="!modoedicao" style="color: black; cursor:pointer; margin-left:10px;"
+                            title="Adicionar nova linha">
+                            <i class="material-icons">add</i> Adicionar
+                          </a>
+                        </p-footer>
+                      </p-dataTable>
+                    </div>
+
+                    <div class="col-md-12 " style="padding: 6px">
+                      <h5 style="margin: 0; font-weight: 450; background: lightgray; padding: 3px 0 0 8px;">Cartelas</h5>
                       <hr style="margin: 0px 0 7px 0; border:2; border-top: 2px solid #d5d3d3;" />
                       <div class="form-group col-md-6" style="padding: 0px 18px 0 0;">
                         <label for="tempo_SINCRO_CARTELAS">Tempo Sincronização (minutos):</label>
@@ -128,7 +195,7 @@
                       </div>
                     </div>
                     <div class="col-md-12">
-                      <h5 style="margin: 0; font-weight: 450;">POSTOS</h5>
+                      <h5 style="margin: 0; font-weight: 450; background: lightgray; padding: 3px 0 0 8px;">Postos</h5>
                       <hr style="margin: 0px 0 7px 0; border:2; border-top: 2px solid #d5d3d3;" />
                       <p-dataTable [style]="{'width':'100%'}" [editable]="modoedicao" [value]="postos" styleClass="tabelaPostos">
                         <p-column [editable]="true" field="descricao" header="POSTO">

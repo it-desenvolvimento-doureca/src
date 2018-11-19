@@ -8,6 +8,8 @@ import { UploadService } from 'app/servicos/upload.service';
 import { GERPOSTOSService } from 'app/servicos/ger-postos.service';
 import { GER_POSTOS } from 'app/entidades/GER_POSTOS';
 import { ConfirmationService } from 'primeng/primeng';
+import { GERATUALIZACAOSILVERBITABELASService } from 'app/servicos/ger-atualizacao-silver-bi-tabelas.service';
+import { GER_ATUALIZACAO_SILVER_BI_TABELAS } from 'app/entidades/GER_ATUALIZACAO_SILVER_BI_TABELAS';
 
 @Component({
   selector: 'app-parametros',
@@ -40,13 +42,29 @@ export class ParametrosComponent implements OnInit {
   tempo_SINCRO_LOGS_SILVER: number;
   utilizador_LOGS_SILVER: string;
   pasta_DESTINO_ERRO: string;
+  atualizacao_SILVER_BI_ATIVO: boolean;
+  atualizacao_SILVER_BI_DIA_DA_SEMANA: number;
+  atualizacao_SILVER_BI_HORAS;
+  dias_semana: { label: string; value: any; }[];
+  tabelasSincronismo = [];
 
-  constructor(private confirmationService: ConfirmationService, private GERPOSTOSService: GERPOSTOSService, private UploadService: UploadService, private renderer: Renderer, private route: ActivatedRoute, private router: Router, private location: Location, private GERPARAMETROSService: GERPARAMETROSService, private globalVar: AppGlobals) { }
+  constructor(private GERATUALIZACAOSILVERBITABELASService: GERATUALIZACAOSILVERBITABELASService, private confirmationService: ConfirmationService, private GERPOSTOSService: GERPOSTOSService, private UploadService: UploadService, private renderer: Renderer, private route: ActivatedRoute, private router: Router, private location: Location, private GERPARAMETROSService: GERPARAMETROSService, private globalVar: AppGlobals) { }
 
   ngOnInit() {
     this.impressoras = [
       { label: 'Seleccionar Impressora', value: null },
     ];
+
+    this.dias_semana = [
+      { label: 'Segunda-Feira', value: 2 },
+      { label: 'Terça-Feira', value: 3 },
+      { label: 'Quarta-Feira', value: 4 },
+      { label: 'Quinta-Feira', value: 5 },
+      { label: 'Sexta-Feira', value: 6 },
+      { label: 'Sábado', value: 7 },
+      { label: 'Domingo', value: 1 },
+    ];
+
     this.globalVar.setvoltar(false);
     this.globalVar.seteditar(true);
     this.globalVar.setapagar(false);
@@ -116,10 +134,15 @@ export class ParametrosComponent implements OnInit {
           this.tempo_SINCRO_LOGS_SILVER = response[x].tempo_SINCRO_LOGS_SILVER;
           this.utilizador_LOGS_SILVER = response[x].utilizador_LOGS_SILVER;
 
+          this.atualizacao_SILVER_BI_ATIVO = response[x].atualizacao_SILVER_BI_ATIVO;
+          this.atualizacao_SILVER_BI_DIA_DA_SEMANA = response[x].atualizacao_SILVER_BI_DIA_DA_SEMANA;
+          this.atualizacao_SILVER_BI_HORAS = response[x].atualizacao_SILVER_BI_HORAS;
+
         }
       },
       error => console.log(error));
     this.tabelaPostos();
+    this.tabelaAtualizacao();
   }
 
   //atualizar tabela postos
@@ -134,9 +157,24 @@ export class ParametrosComponent implements OnInit {
           });
         }
         this.postos = this.postos.slice();
+
+      },
+      error => { console.log(error); });
+  }
+
+  //atualizar tabela das tabelas
+  tabelaAtualizacao() {
+    this.GERATUALIZACAOSILVERBITABELASService.getAll().subscribe(
+      response => {
+        this.tabelasSincronismo = [];
+        for (var x in response) {
+          this.tabelasSincronismo.push({ data: response[x], id: response[x].id, total: response[x].total, dias: response[x].dias, tabela: response[x].tabela });
+        }
+        this.tabelasSincronismo = this.tabelasSincronismo.slice();
       },
       error => console.log(error));
   }
+
 
   gravar() {
 
@@ -161,6 +199,10 @@ export class ParametrosComponent implements OnInit {
     parametros.utilizador_LOGS_SILVER = this.utilizador_LOGS_SILVER;
 
 
+    parametros.atualizacao_SILVER_BI_ATIVO = this.atualizacao_SILVER_BI_ATIVO;
+    parametros.atualizacao_SILVER_BI_DIA_DA_SEMANA = this.atualizacao_SILVER_BI_DIA_DA_SEMANA;
+    parametros.atualizacao_SILVER_BI_HORAS = this.atualizacao_SILVER_BI_HORAS;
+
     this.GERPARAMETROSService.update(parametros).then(() => {
       for (var x in this.postos) {
         if (this.postos[x].id_POSTO.toString().substring(0, 1) == "P") {
@@ -169,12 +211,26 @@ export class ParametrosComponent implements OnInit {
           this.atualiza_posto(this.postos[x]);
         }
       }
+      for (var x in this.tabelasSincronismo) {
+        if (this.tabelasSincronismo[x].id == null) {
+          this.cria_tabelas(this.tabelasSincronismo[x]);
+        } else {
+          this.atualiza_tabelas(this.tabelasSincronismo[x]);
+        }
+      }
+      var horas = this.atualizacao_SILVER_BI_HORAS.toString().split(':');
+      var hora = (horas[0] == "00") ? 0 : parseInt(horas[0]);
+      var minutos = (horas[1] == "00") ? 0 : parseInt(horas[1]);
+      this.GERPARAMETROSService.atualizaData(hora, minutos, this.atualizacao_SILVER_BI_DIA_DA_SEMANA).subscribe(() => {
+      },
+        error => { console.log(error); this.simular(this.inputerro); });
       this.simular(this.inputgravou);
       //this.location.back();
       this.router.navigate(['parametros']);
     },
       error => { console.log(error); this.simular(this.inputerro); });
   }
+
   atualiza_posto(data) {
     if (data.descricao != null && data.descricao != "") {
       var posto = new GER_POSTOS;
@@ -194,6 +250,32 @@ export class ParametrosComponent implements OnInit {
         this.postos = this.postos.slice();
       },
         error => { console.log(error); this.simular(this.inputerro); });
+    }
+  }
+
+  atualiza_tabelas(data) {
+    if (data.tabela != null && data.tabela != "") {
+      var tabelas = new GER_ATUALIZACAO_SILVER_BI_TABELAS;
+      tabelas = data.data;
+      tabelas.tabela = data.tabela;
+      tabelas.total = data.total;
+      tabelas.dias = data.dias;
+      this.GERATUALIZACAOSILVERBITABELASService.update(tabelas).then(() => {
+      });
+    }
+  }
+
+  cria_tabelas(data) {
+    if (data.tabela != null && data.tabela != "") {
+      var tabelas = new GER_ATUALIZACAO_SILVER_BI_TABELAS;
+      tabelas.data_CRIA = new Date();
+      tabelas.utz_CRIA = this.user;
+      tabelas.tabela = data.tabela;
+      tabelas.total = data.total;
+      tabelas.dias = data.dias;
+      this.GERATUALIZACAOSILVERBITABELASService.update(tabelas).then(() => {
+      },
+        error => { console.log(error); });
     }
   }
 
@@ -218,6 +300,24 @@ export class ParametrosComponent implements OnInit {
     this.postos = this.postos.slice();
   }
 
+  //adicionar linha às tabelas
+  adicionar_linha2() {
+    this.tabelasSincronismo.push({ id: null, total: false, dias: 0, tabela: false });
+    this.tabelasSincronismo = this.tabelasSincronismo.slice();
+  }
+
+  apagar_linha(index) {
+    var tab = this.tabelasSincronismo[index];
+    if (tab.id == null) {
+      this.tabelasSincronismo = this.tabelasSincronismo.slice(0, index).concat(this.tabelasSincronismo.slice(index + 1));
+    } else {
+      this.GERATUALIZACAOSILVERBITABELASService.delete(tab.id).then(
+        res => {
+          this.tabelasSincronismo = this.tabelasSincronismo.slice(0, index).concat(this.tabelasSincronismo.slice(index + 1));
+        },
+        error => { console.log(error); this.simular(this.inputerro); });
+    }
+  }
 
   eliminar(posto: GER_POSTOS) {
     this.confirmationService.confirm({

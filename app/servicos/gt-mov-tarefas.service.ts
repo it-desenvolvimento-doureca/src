@@ -28,7 +28,7 @@ export class GTMOVTAREFASService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
-  getAllbyidUser(id,data): Observable<GT_MOV_TAREFAS[]> {
+  getAllbyidUser(id, data): Observable<GT_MOV_TAREFAS[]> {
     const url = webUrl.host + '/rest/sirb/getGT_MOV_TAREFASAllbyUser/' + id;
     return this.http
       .post(url, JSON.stringify(data), { headers: this.headers })
@@ -44,10 +44,10 @@ export class GTMOVTAREFASService {
       .catch((error: any) => Observable.throw('Server error'));
   }
 
-  getAtulizaTarefasd(id, modulo): Observable<GT_MOV_TAREFAS[]> {
+  getAtulizaTarefasd(id, modulo, link): Observable<GT_MOV_TAREFAS[]> {
     const url = webUrl.host + '/rest/sirb/getGT_MOV_TAREFASAtualizaAccao/' + id + '/' + modulo;
     return this.http
-      .get(url)
+      .post(url, link, { headers: this.headers })
       .map(this.extractData)
       .catch((error: any) => Observable.throw('Server error'));
   }

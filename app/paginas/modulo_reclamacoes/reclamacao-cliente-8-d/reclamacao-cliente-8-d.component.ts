@@ -37,6 +37,9 @@ import { GT_MOV_TAREFAS } from '../../../entidades/GT_MOV_TAREFAS';
 import { GT_LOGS } from '../../../entidades/GT_LOGS';
 import { RCMOVRECLAMACAOENCOMENDASService } from 'app/servicos/rc-mov-reclamacao-encomendas.service';
 import { RC_MOV_RECLAMACAO_ENCOMENDAS } from 'app/entidades/RC_MOV_RECLAMACAO_ENCOMENDAS';
+import { RCMOVRECLAMACAOTIPONAODETECAOService } from 'app/servicos/rc-mov-reclamacao-tipo-nao-detecao.service';
+import { RCMOVRECLAMACAOTIPOOCORRENCIAService } from 'app/servicos/rc-mov-reclamacao-tipo-ocorrencia.service';
+
 
 @Component({
   selector: 'app-reclamacao-cliente-8-d',
@@ -112,8 +115,7 @@ export class ReclamacaoCliente8DComponent implements OnInit {
   problema_REPETIDO;
   numero_RECLAMACAO_REPETIDA;
   reclamacao_REPETIDA_ACEITE;
-  accoes_EVITAR;
-  observacoes_ACCOES_EVITAR;
+
   causas_PROBLEMA;
 
   dias_ATRASO4;
@@ -156,6 +158,7 @@ export class ReclamacaoCliente8DComponent implements OnInit {
   @ViewChild('inputerroficheiro') inputerroficheiro: ElementRef;
   @ViewChild('buttongravar') buttongravar: ElementRef;
   @ViewChild('alteraeditar') alteraeditar: ElementRef;
+  @ViewChild('alteracancelar') alteracancelar: ElementRef;
   @ViewChild('inputartigoexiste') inputartigoexiste: ElementRef;
 
 
@@ -166,11 +169,7 @@ export class ReclamacaoCliente8DComponent implements OnInit {
   tabelaEficacia: any[] = [];
   responsabilidade_ATRASO4_DESCRICAO: string;
   responsabilidade_ATRASO6_DESCRICAO: string;
-  seguimento_FORNECEDORES: boolean;
-  amdec: boolean;
-  plano_VIGILANCIA: boolean;
-  formacao_OPERARIO: boolean;
-  plano_MANUTENCAO: boolean;
+
   disimprimir: boolean;
   drop_utilizadores2: any;
   step1CONCLUIDO_UTZ: any;
@@ -271,8 +270,17 @@ export class ReclamacaoCliente8DComponent implements OnInit {
   temp_RESPONSABILIDADE_ATRASADO;
   displayResponsabilidade: boolean;
   temp_ETAPA: any;
+  estado = "A";
+  utz_FECHO: any;
+  texto_estado = "";
+  tabelaTipoOcorrencia: any;
+  tabelaTipoNaoDetecao: any;
+  data_FECHO_texto: string;
+  obriga_revisao: any;
+  tipo_NAO_DETECAO: number;
+  tipo_OCORRENCIA: number;
 
-  constructor(private RCMOVRECLAMACAOENCOMENDASService: RCMOVRECLAMACAOENCOMENDASService, private elementRef: ElementRef, private GTMOVTAREFASService: GTMOVTAREFASService, private confirmationService: ConfirmationService, private RCMOVRECLAMACAOSTOCKService: RCMOVRECLAMACAOSTOCKService, private RCDICACCOESRECLAMACAOService: RCDICACCOESRECLAMACAOService, private GERGRUPOService: GERGRUPOService, private GERUTILIZADORESService: GERUTILIZADORESService, private RCDICFICHEIROSANALISEService: RCDICFICHEIROSANALISEService, private RCMOVRECLAMACAOENVIOSGARANTIDOSService: RCMOVRECLAMACAOENVIOSGARANTIDOSService, private RCMOVRECLAMACAOPLANOACCOESCORRETIVASService: RCMOVRECLAMACAOPLANOACCOESCORRETIVASService, private RCMOVRECLAMACAOARTIGOSIMILARESService: RCMOVRECLAMACAOARTIGOSIMILARESService, private RCMOVRECLAMACAOEQUIPAService: RCMOVRECLAMACAOEQUIPAService
+  constructor(private RCMOVRECLAMACAOTIPOOCORRENCIAService: RCMOVRECLAMACAOTIPOOCORRENCIAService, private RCMOVRECLAMACAOTIPONAODETECAOService: RCMOVRECLAMACAOTIPONAODETECAOService, private RCMOVRECLAMACAOENCOMENDASService: RCMOVRECLAMACAOENCOMENDASService, private elementRef: ElementRef, private GTMOVTAREFASService: GTMOVTAREFASService, private confirmationService: ConfirmationService, private RCMOVRECLAMACAOSTOCKService: RCMOVRECLAMACAOSTOCKService, private RCDICACCOESRECLAMACAOService: RCDICACCOESRECLAMACAOService, private GERGRUPOService: GERGRUPOService, private GERUTILIZADORESService: GERUTILIZADORESService, private RCDICFICHEIROSANALISEService: RCDICFICHEIROSANALISEService, private RCMOVRECLAMACAOENVIOSGARANTIDOSService: RCMOVRECLAMACAOENVIOSGARANTIDOSService, private RCMOVRECLAMACAOPLANOACCOESCORRETIVASService: RCMOVRECLAMACAOPLANOACCOESCORRETIVASService, private RCMOVRECLAMACAOARTIGOSIMILARESService: RCMOVRECLAMACAOARTIGOSIMILARESService, private RCMOVRECLAMACAOEQUIPAService: RCMOVRECLAMACAOEQUIPAService
     , private RCMOVRECLAMACAOFICHEIROSService: RCMOVRECLAMACAOFICHEIROSService, private RCDICTEMPORESPOSTAService: RCDICTEMPORESPOSTAService, private ABDICCOMPONENTEService: ABDICCOMPONENTEService, private RCDICTIPODEFEITOService: RCDICTIPODEFEITOService, private RCDICTIPORECLAMACAOService: RCDICTIPORECLAMACAOService, private RCDICREJEICAOService: RCDICREJEICAOService, private RCDICGRAUIMPORTANCIAService: RCDICGRAUIMPORTANCIAService, private renderer: Renderer, private RCMOVRECLAMACAOService: RCMOVRECLAMACAOService, private route: ActivatedRoute, private location: Location, private sanitizer: DomSanitizer, private UploadService: UploadService, private globalVar: AppGlobals, private router: Router) { }
 
   ngOnInit() {
@@ -335,10 +343,9 @@ export class ReclamacaoCliente8DComponent implements OnInit {
         this.reclamacoes = this.globalVar.getfiltros("reclamacaocliente_id");
         this.i = this.reclamacoes.indexOf(+id);
         this.carregaDados(true, this.reclamacoes[this.i]);
-        //preenche array para navegar 
+        //preenche combo reclamações
         this.RCMOVRECLAMACAOService.getAll().subscribe(
           response => {
-            this.reclamacoes = [];
             var count = Object.keys(response).length;
             if (count > 0) {
               for (var x in response) {
@@ -346,8 +353,8 @@ export class ReclamacaoCliente8DComponent implements OnInit {
               }
             }
           }, error => { console.log(error); });
-      }
-      else {
+
+      } else {
         //preenche array para navegar 
         this.RCMOVRECLAMACAOService.getAll().subscribe(
           response => {
@@ -663,10 +670,15 @@ export class ReclamacaoCliente8DComponent implements OnInit {
             this.resposta_INICIAL = response[x].resposta_INICIAL;
             this.cliente = this.drop_cliente.find(item => item.value.id == response[x].id_CLIENTE).value;
 
-            if (!this.duplica && (!this.adminuser && this.user != response[x].utz_RESPONSAVEL && this.user != response[x].utz_CRIA)) {
+            if (!this.duplica) this.estado = response[x].estado;
+
+            this.texto_estado = this.getESTADO(this.estado);
+
+            if ((!this.duplica && (!this.adminuser && this.user != response[x].utz_RESPONSAVEL && this.user != response[x].utz_CRIA)) || this.estado == 'R' || this.estado == 'C') {
               this.modoedicao = false;
               this.simular(this.alteraeditar);
             }
+            if (this.modoedicao && !this.novo) { this.simular(this.alteracancelar); }
             //this.morada_CLIENTE = response[x].morada_CLIENTE;
 
             this.contato_CLIENTE = response[x].contato_CLIENTE;
@@ -679,6 +691,8 @@ export class ReclamacaoCliente8DComponent implements OnInit {
             this.familia_REF = response[x].familia_REF;
             this.lote = response[x].lote;
             this.tipo_DEFEITO = response[x].tipo_DEFEITO;
+            this.tipo_NAO_DETECAO = response[x].tipo_NAO_DETECAO;
+            this.tipo_OCORRENCIA = response[x].tipo_OCORRENCIA;
             this.reclamacao_REVISTA = (response[x].reclamacao_REVISTA == null) ? false : response[x].reclamacao_REVISTA;
             this.qtd_ENVIADA = response[x].qtd_ENVIADA;
             this.qtd_RECUSADA = response[x].qtd_RECUSADA;
@@ -690,6 +704,8 @@ export class ReclamacaoCliente8DComponent implements OnInit {
             this.hora_PRAZO_REVISAO = (response[x].data_PRAZO_REVISAO == null) ? null : new Date(response[x].data_PRAZO_REVISAO).toLocaleTimeString().slice(0, 5);
 
             this.reclamacao_COM_REVISAO = response[x].reclamacao_COM_REVISAO;
+            var valor = this.drop_rejeicao.find(item => item.value == this.rejeicao).revisao_RECLAMACAO;
+            this.obriga_revisao = valor;
             this.devolucao = response[x].devolucao;
             this.observacoes_RECLAMACAO = response[x].observacoes_RECLAMACAO;
             this.numero_ENVIOS_GARANTIDOS = (response[x].numero_ENVIOS_GARANTIDOS == null) ? 0 : response[x].numero_ENVIOS_GARANTIDOS;
@@ -722,19 +738,16 @@ export class ReclamacaoCliente8DComponent implements OnInit {
             if (!this.duplica) this.step7CONCLUIDO_UTZ = response[x].step7CONCLUIDO_UTZ;
             if (!this.duplica) this.step8CONCLUIDO_UTZ = response[x].step8CONCLUIDO_UTZ;
 
+            if (!this.duplica) this.estado = response[x].estado;
+
+            this.texto_estado = this.getESTADO(this.estado);
+
             this.descricao_PROBLEMA = response[x].descricao_PROBLEMA;
             this.problema_REPETIDO = response[x].problema_REPETIDO;
             this.numero_RECLAMACAO_REPETIDA = response[x].numero_RECLAMACAO_REPETIDA;
             this.reclamacao_REPETIDA_ACEITE = response[x].reclamacao_REPETIDA_ACEITE;
             this.ref_IGUAIS = response[x].ref_IGUAIS;
 
-            this.seguimento_FORNECEDORES = response[x].seguimento_FORNECEDORES;
-            this.amdec = response[x].amdec;
-            this.plano_VIGILANCIA = response[x].plano_VIGILANCIA;
-            this.formacao_OPERARIO = response[x].formacao_OPERARIO;
-            this.plano_MANUTENCAO = response[x].plano_MANUTENCAO;
-            this.accoes_EVITAR = response[x].accoes_EVITAR;
-            this.observacoes_ACCOES_EVITAR = response[x].observacoes_ACCOES_EVITAR;
             this.causas_PROBLEMA = response[x].causas_PROBLEMA;
 
             if (!this.duplica) this.dias_ATRASO1 = response[x].dias_ATRASO1;
@@ -773,13 +786,15 @@ export class ReclamacaoCliente8DComponent implements OnInit {
             this.accoes_NECESSARIAS = response[x].accoes_NECESSARIAS;
             this.accoes_NECESSARIAS_TEXTO = response[x].accoes_NECESSARIAS_TEXTO;
             this.reclamacao_ENCERRADA = response[x].reclamacao_ENCERRADA;
-            this.data_FECHO = (response[x].data_FECHO != null) ? new Date(response[x].data_FECHO) : null;
+            if (!this.duplica) this.data_FECHO = (response[x].data_FECHO != null) ? new Date(response[x].data_FECHO) : null;
+            if (!this.duplica) this.data_FECHO_texto = (response[x].data_FECHO != null) ? this.formatDate2(new Date(response[x].data_FECHO)) + " " + new Date(response[x].data_FECHO).toLocaleTimeString().slice(0, 5) : null;
+            if (!this.duplica) this.utz_FECHO = response[x].utz_FECHO;
             this.observacoes_RESULTADOS = response[x].observacoes_RESULTADOS;
 
 
-            this.dias_ATRASO6 = response[x].dias_ATRASO6;
-            this.responsabilidade_ATRASO6 = response[x].responsabilidade_ATRASO6;
-            this.responsabilidade_ATRASO6_DESCRICAO = response[x].responsabilidade_ATRASO6_DESCRICAO;
+            if (!this.duplica) this.dias_ATRASO6 = response[x].dias_ATRASO6;
+            if (!this.duplica) this.responsabilidade_ATRASO6 = response[x].responsabilidade_ATRASO6;
+            if (!this.duplica) this.responsabilidade_ATRASO6_DESCRICAO = response[x].responsabilidade_ATRASO6_DESCRICAO;
 
 
             this.custos_DEVOLUCAO = response[x].custos_DEVOLUCAO;
@@ -1080,15 +1095,58 @@ export class ReclamacaoCliente8DComponent implements OnInit {
           this.tabelapreventiva = this.tabelapreventiva.slice();
         }
         //this.carregatabelapreventivas(id);
-        this.carregatabelasEnvios(id);
+        this.carregatabelaTipoOcorrencia(id);
       }, error => {
         //this.carregatabelapreventivas(id);
-        this.carregatabelasEnvios(id);
+        this.carregatabelaTipoOcorrencia(id);
         console.log(error);
       });
   }
 
+  carregatabelaTipoOcorrencia(id) {
+    this.tabelaTipoOcorrencia = [];
+    this.RCMOVRECLAMACAOTIPOOCORRENCIAService.getAll().subscribe(
+      response => {
+        this.tabelaTipoOcorrencia = [];
+        this.tabelaTipoOcorrencia.push({
+          label: "Seleccionar Tipo Ocorrência", value: null
+        });
+        var count = Object.keys(response).length;
+        if (count > 0) {
+          for (var x in response) {
+            this.tabelaTipoOcorrencia.push({
+              label: response[x].codigo + " -" + response[x].descricao, value: response[x].id
+            });
+          }
 
+          this.tabelaTipoOcorrencia = this.tabelaTipoOcorrencia.slice();
+        }
+        this.carregatabelaTipoNaoDetecao(id);
+
+      }, error => { console.log(error); this.carregatabelaTipoNaoDetecao(id); });
+  }
+
+  carregatabelaTipoNaoDetecao(id) {
+    this.tabelaTipoNaoDetecao = [];
+    this.RCMOVRECLAMACAOTIPONAODETECAOService.getAll().subscribe(
+      response => {
+        this.tabelaTipoNaoDetecao = [];
+        this.tabelaTipoNaoDetecao.push({
+          label: "Seleccionar Tipo Não Deteção", value: null
+        });
+        var count = Object.keys(response).length;
+        if (count > 0) {
+          for (var x in response) {
+            this.tabelaTipoNaoDetecao.push({
+              label: response[x].codigo + " -" + response[x].descricao, value: response[x].id
+            });
+          }
+          this.tabelaTipoNaoDetecao = this.tabelaTipoNaoDetecao.slice();
+        }
+        this.carregatabelasEnvios(id);
+
+      }, error => { console.log(error); this.carregatabelasEnvios(id); });
+  }
 
   /************************************************************ */
   /* carregatabelapreventivas(id) {
@@ -1109,8 +1167,8 @@ export class ReclamacaoCliente8DComponent implements OnInit {
            }
            this.tabelapreventiva = this.tabelapreventiva.slice();
          }
-         this.carregatabelasEnvios(id);
-       }, error => { this.carregatabelasEnvios(id); console.log(error); });
+         this.carregatabelasEnvisos(id);
+       }, error => { this.carregatsabelasEnvios(id); console.log(error); });
    }*/
 
   /************************************************************************ */
@@ -1257,12 +1315,41 @@ export class ReclamacaoCliente8DComponent implements OnInit {
     } else if (tabela == "tabelaEficacia") {
       this.tabelaEficacia.push({ obriga_EVIDENCIAS: false, id: null, responsavel: null, concluido_UTZ: null, descricao: "", id_ACCOES: null, observacoes: "", estado: "P", id_TAREFA: null, nome_estado: "Pendente", data_REAL: "", data_PREVISTA: this.temporesposta['step5_data'] });
       this.tabelaEficacia = this.tabelaEficacia.slice();
+    } else if (tabela == "tabelaTipoNaoDetecao") {
+      this.tabelaTipoNaoDetecao.push({ id: null, responsavel: null, codigo: null, descricao: null });
+      this.tabelaTipoNaoDetecao = this.tabelaTipoNaoDetecao.slice();
+    } else if (tabela == "tabelaTipoOcorrencia") {
+      this.tabelaTipoOcorrencia.push({ id: null, responsavel: null, codigo: null, descricao: null });
+      this.tabelaTipoOcorrencia = this.tabelaTipoOcorrencia.slice();
     }
 
   }
 
   apagar_linha(tabela, index) {
-    if (tabela == "tabelaEnviosGarantidos") {
+
+    if (tabela == "tabelaTipoOcorrencia") {
+      var tab = this.tabelaTipoOcorrencia[index];
+      if (tab.id == null) {
+        this.tabelaTipoOcorrencia = this.tabelaTipoOcorrencia.slice(0, index).concat(this.tabelaTipoOcorrencia.slice(index + 1));
+      } else {
+        this.RCMOVRECLAMACAOTIPOOCORRENCIAService.delete(tab.id).then(
+          res => {
+            this.tabelaTipoOcorrencia = this.tabelaTipoOcorrencia.slice(0, index).concat(this.tabelaTipoOcorrencia.slice(index + 1));
+          },
+          error => { console.log(error); this.simular(this.inputerro); });
+      }
+    } else if (tabela == "tabelaTipoNaoDetecao") {
+      var tab = this.tabelaTipoNaoDetecao[index];
+      if (tab.id == null) {
+        this.tabelaTipoNaoDetecao = this.tabelaTipoNaoDetecao.slice(0, index).concat(this.tabelaTipoNaoDetecao.slice(index + 1));
+      } else {
+        this.RCMOVRECLAMACAOTIPONAODETECAOService.delete(tab.id).then(
+          res => {
+            this.tabelaTipoNaoDetecao = this.tabelaTipoNaoDetecao.slice(0, index).concat(this.tabelaTipoNaoDetecao.slice(index + 1));
+          },
+          error => { console.log(error); this.simular(this.inputerro); });
+      }
+    } else if (tabela == "tabelaEnviosGarantidos") {
       var tab = this.tabelaEnviosGarantidos[index];
       if (tab.id == null) {
         this.tabelaEnviosGarantidos = this.tabelaEnviosGarantidos.slice(0, index).concat(this.tabelaEnviosGarantidos.slice(index + 1));
@@ -1538,7 +1625,7 @@ export class ReclamacaoCliente8DComponent implements OnInit {
         type = "audio";
       } else if (str.toLowerCase().indexOf("video") >= 0) {
         type = "video";
-      } else if (str.toLowerCase().indexOf("excel") >= 0) {
+      } else if (str.toLowerCase().indexOf("excel") >= 0 || str.toLowerCase().indexOf("sheet") >= 0) {
         type = "excel";
       } else if (str.toLowerCase().indexOf("word") >= 0) {
         type = "word";
@@ -1560,11 +1647,31 @@ export class ReclamacaoCliente8DComponent implements OnInit {
     this.UploadService.fileChange(file, nome).subscribe(result => {
       var tipo = file.name.split(".");
       var data = new Date();
-      this.uploadedFiles.push({
-        data_CRIA: data,
-        id_TAREFA: null, utilizador: this.user_nome, datacria: this.formatDate2(data) + " " + new Date(data).toLocaleTimeString(), id_FICHEIRO: null,
-        id: null, name: file.name, datatype: file.type, src: nome + '.' + tipo[1], type: type, size: file.size, descricao: this.filedescricao[x]
-      });
+
+      if (!this.duplica) {
+        var ficheiros = new RC_MOV_RECLAMACAO_FICHEIROS;
+        ficheiros.data_CRIA = data;
+        ficheiros.utz_CRIA = this.user;
+        ficheiros.id_RECLAMACAO = this.numero_RECLAMACAO;
+        ficheiros.caminho = nome + '.' + tipo[1];
+        ficheiros.nome = file.name;
+        ficheiros.tipo = type;
+        ficheiros.datatype = file.type;
+        ficheiros.tamanho = file.size;
+        ficheiros.descricao = this.filedescricao[x];
+
+        ficheiros.data_ULT_MODIF = new Date();
+        ficheiros.utz_ULT_MODIF = this.user;
+        this.gravarTabelaFicheiros2(ficheiros, 0, 0, 0);
+
+      } else {
+        this.uploadedFiles.push({
+          data_CRIA: data,
+          id_TAREFA: null, utilizador: this.user_nome, datacria: this.formatDate2(data) + " " + new Date(data).toLocaleTimeString(), id_FICHEIRO: null,
+          id: null, name: file.name, datatype: file.type, src: nome + '.' + tipo[1], type: type, size: file.size, descricao: this.filedescricao[x]
+        });
+      }
+
       this.uploadedFiles = this.uploadedFiles.slice();
       if (this.campo_x + 1 == event.files.length) {
         this.fileInput.files = [];
@@ -1645,7 +1752,7 @@ export class ReclamacaoCliente8DComponent implements OnInit {
     var str = file.type;
     if (str.toLowerCase().indexOf("pdf") >= 0) {
       return "assets/img/file-pdf.png";
-    } else if (str.toLowerCase().indexOf("excel") >= 0) {
+    } else if (str.toLowerCase().indexOf("excel") >= 0 || str.toLowerCase().indexOf("sheet") >= 0) {
       return "assets/img/file-excel.png";
     } else if (str.toLowerCase().indexOf("word") >= 0) {
       return "assets/img/file-word.png";
@@ -1679,7 +1786,7 @@ export class ReclamacaoCliente8DComponent implements OnInit {
         type = "audio";
       } else if (str.toLowerCase().indexOf("video") >= 0) {
         type = "video";
-      } else if (str.toLowerCase().indexOf("excel") >= 0) {
+      } else if (str.toLowerCase().indexOf("excel") >= 0 || str.toLowerCase().indexOf("sheet") >= 0) {
         type = "excel";
       } else if (str.toLowerCase().indexOf("word") >= 0) {
         type = "word";
@@ -1787,7 +1894,10 @@ export class ReclamacaoCliente8DComponent implements OnInit {
     reclamacao.familia_REF = this.familia_REF;
     reclamacao.lote = this.lote;
     reclamacao.tipo_DEFEITO = this.tipo_DEFEITO;
+    reclamacao.tipo_NAO_DETECAO = this.tipo_NAO_DETECAO;
+    reclamacao.tipo_OCORRENCIA = this.tipo_OCORRENCIA;
     reclamacao.reclamacao_REVISTA = this.reclamacao_REVISTA;
+    reclamacao.reclamacao_COM_REVISAO = this.reclamacao_COM_REVISAO;
     reclamacao.qtd_ENVIADA = this.qtd_ENVIADA;
     reclamacao.qtd_RECUSADA = this.qtd_RECUSADA;
     reclamacao.devolucao = this.devolucao;
@@ -1806,22 +1916,12 @@ export class ReclamacaoCliente8DComponent implements OnInit {
     reclamacao.problema_REPETIDO = this.problema_REPETIDO;
     reclamacao.numero_RECLAMACAO_REPETIDA = this.numero_RECLAMACAO_REPETIDA;
     reclamacao.reclamacao_REPETIDA_ACEITE = this.reclamacao_REPETIDA_ACEITE;
-    reclamacao.accoes_EVITAR = this.accoes_EVITAR;
-    reclamacao.seguimento_FORNECEDORES = this.seguimento_FORNECEDORES;
-    reclamacao.amdec = this.amdec;
-    reclamacao.plano_VIGILANCIA = this.plano_VIGILANCIA;
-    reclamacao.formacao_OPERARIO = this.formacao_OPERARIO;
-    reclamacao.plano_MANUTENCAO = this.plano_MANUTENCAO;
-    reclamacao.ref_IGUAIS = this.ref_IGUAIS;
-    reclamacao.observacoes_ACCOES_EVITAR = this.observacoes_ACCOES_EVITAR;
-    reclamacao.causas_PROBLEMA = this.causas_PROBLEMA;
-
-
 
     reclamacao.accoes_NECESSARIAS = this.accoes_NECESSARIAS;
     reclamacao.accoes_NECESSARIAS_TEXTO = this.accoes_NECESSARIAS_TEXTO;
     reclamacao.reclamacao_ENCERRADA = this.reclamacao_ENCERRADA;
     reclamacao.data_FECHO = this.data_FECHO;
+    reclamacao.utz_FECHO = this.utz_FECHO;
     reclamacao.observacoes_RESULTADOS = this.observacoes_RESULTADOS;
 
     reclamacao.custos_DEVOLUCAO = this.custos_DEVOLUCAO;
@@ -1839,18 +1939,19 @@ export class ReclamacaoCliente8DComponent implements OnInit {
     reclamacao.inativo = false;
     reclamacao.utz_ULT_MODIF = this.user;
     reclamacao.data_ULT_MODIF = new Date();
+    reclamacao.estado = this.estado;
 
     if (this.novo) {
 
       //console.log(reclamacao)
-
+      reclamacao.estado = "A";
       this.RCMOVRECLAMACAOService.create(reclamacao).subscribe(
         res => {
           var email_para = [];
           email_para.push(this.drop_utilizadores2.find(item => item.value == this.utz_RESPONSAVEL).email);
 
           this.enviarEventoResponsaveis(reclamacao.data_RECLAMACAO, reclamacao.observacoes_RECLAMACAO, res.id_RECLAMACAO, reclamacao.nome_CLIENTE, reclamacao.referencia + " - " + reclamacao.designacao_REF,
-            "Ao Criar Reclamação", email_para.toString(), null, null);
+            "Ao Criar Reclamação", email_para.toString(), null, null, null);
           this.gravarTabelaStocks(res.id_RECLAMACAO);
         },
         error => { console.log(error); this.simular(this.inputerro); this.displayLoading = false; });
@@ -1977,9 +2078,7 @@ export class ReclamacaoCliente8DComponent implements OnInit {
 
 
   gravarTabelaFicheiros(id) {
-    if (this.uploadedFiles && this.uploadedFiles.length > 0) {
-
-
+    if (this.duplica && this.uploadedFiles && this.uploadedFiles.length > 0) {
       var count = 0;
       for (var x in this.uploadedFiles) {
         var ficheiros = new RC_MOV_RECLAMACAO_FICHEIROS;
@@ -2014,16 +2113,24 @@ export class ReclamacaoCliente8DComponent implements OnInit {
     } else {
       this.gravarTabelaEquipa(id);
     }
+
   }
 
   gravarTabelaFicheiros2(ficheiros, count, total, id) {
     this.RCMOVRECLAMACAOFICHEIROSService.update(ficheiros).then(
       res => {
-        if (count == total) {
+        if (count == total && this.duplica) {
           this.gravarTabelaEquipa(id);
+        } else if (!this.duplica) {
+          this.uploadedFiles.push({
+            data_CRIA: ficheiros.data_CRIA,
+            id_TAREFA: null, utilizador: this.user_nome, datacria: this.formatDate2(ficheiros.data_CRIA) + " " + new Date(ficheiros.data_CRIA).toLocaleTimeString(), id_FICHEIRO: null,
+            id: ficheiros.id, name: ficheiros.nome, datatype: ficheiros.datatype, src: ficheiros.caminho, type: ficheiros.tipo, size: ficheiros.tamanho, descricao: ficheiros.descricao
+          });
+          this.uploadedFiles = this.uploadedFiles.slice();
         }
       },
-      error => { console.log(error); if (count == total) { this.gravarTabelaEquipa(id); } });
+      error => { console.log(error); if (count == total && this.duplica) { this.gravarTabelaEquipa(id); } });
   }
 
   gravarTabelaEquipa(id) {
@@ -2047,7 +2154,6 @@ export class ReclamacaoCliente8DComponent implements OnInit {
         equipa.email = this.tabelaEquipa[x].email;
         equipa.telefone = this.tabelaEquipa[x].telefone;
         equipa.id_RECLAMACAO = id;
-        equipa.area = this.tabelaEquipa[x].area;
 
         equipa.data_ULT_MODIF = new Date();
         equipa.utz_ULT_MODIF = this.user;
@@ -2065,7 +2171,7 @@ export class ReclamacaoCliente8DComponent implements OnInit {
       if (email_para.length > 0) {
         var data = new Date(this.data_RECLAMACAO.toDateString() + " " + this.hora_RECLAMACAO.slice(0, 5));
         this.enviarEventoResponsaveis(data, this.observacoes_RECLAMACAO, this.numero_RECLAMACAO, this.cliente.nome, this.referencia.valor + " - " + this.designacao_REF,
-          "Ao Adicionar Utilizador à Reclamação", email_para.toString(), null, null);
+          "Ao Adicionar Utilizador à Reclamação", email_para.toString(), null, null, null);
       }
 
     } else {
@@ -2706,8 +2812,14 @@ export class ReclamacaoCliente8DComponent implements OnInit {
       });
   }
 
-  IrPara(id) {
-    this.router.navigateByUrl('tarefas/view?id=' + id + "&redirect=reclamacoesclientes/viewkvk\id=" + this.numero_RECLAMACAO);
+  IrPara(id, responsavel) {
+    var id_r = null;
+    if (responsavel.charAt(0) == 'u') {
+      id_r = responsavel.substr(1);
+    }
+    if (this.adminuser || this.user == this.utz_RESPONSAVEL || this.user == this.utz_CRIA || id_r == this.user) {
+      this.router.navigateByUrl('tarefas/view?id=' + id + "&redirect=reclamacoesclientes/viewkvk\id=" + this.numero_RECLAMACAO);
+    }
   }
 
   //simular click para mostrar mensagem
@@ -2770,7 +2882,7 @@ export class ReclamacaoCliente8DComponent implements OnInit {
 
   //devolve node responsavel
   getResponsavel(id) {
-    var utz = this.drop_utilizadores2.find(item => item.value == id);
+    if (id != null) var utz = this.drop_utilizadores2.find(item => item.value == id);
     if (id != null && id.toString().includes("u")) {
       var utz2 = this.drop_utilizadores.find(item => item.label == "Utilizadores").itens;
       utz = utz2.find(item => item.value == id);
@@ -2814,7 +2926,7 @@ export class ReclamacaoCliente8DComponent implements OnInit {
         reclamacao.utz_ANULACAO = this.user;
         reclamacao.data_ANULACAO = new Date();
         reclamacao.inativo = true;
-
+        reclamacao.estado = "R";
 
         this.RCMOVRECLAMACAOService.update(reclamacao).subscribe(
           res => {
@@ -2822,6 +2934,65 @@ export class ReclamacaoCliente8DComponent implements OnInit {
               res => { }, error => { console.log(error); });
             this.router.navigate(['reclamacoesclientes']);
             this.simular(this.inputapagar);
+          },
+          error => { console.log(error); this.simular(this.inputerro); });
+
+      }
+
+    });
+  }
+
+
+  //popup cancelar
+  cancelar() {
+
+
+    this.confirmationService.confirm({
+      message: 'Tem a certeza que pretende Cancelar?',
+      header: 'Apagar Confirmação',
+      icon: 'fa fa-trash',
+      accept: () => {
+        var reclamacao = new RC_MOV_RECLAMACAO;
+
+        reclamacao = this.reclamacao_dados;
+
+        reclamacao.utz_CANCELADA = this.user;
+        reclamacao.data_CANCELADA = new Date();
+        reclamacao.estado = "C";
+
+        this.RCMOVRECLAMACAOService.update(reclamacao).subscribe(
+          res => {
+            this.RCMOVRECLAMACAOService.atualizaestadosaccoes(reclamacao.id_RECLAMACAO, 5).subscribe(
+              res => { }, error => { console.log(error); });
+            var email_para = [];
+            email_para.push(this.drop_utilizadores2.find(item => item.value == this.utz_RESPONSAVEL).email);
+            for (var x in this.tabelaEquipa) {
+              if (this.tabelaEquipa[x].email != "" && this.tabelaEquipa[x].email != null && (email_para.indexOf(this.tabelaEquipa[x].email) < 0))
+                email_para.push(this.tabelaEquipa[x].email);
+            }
+            this.RCMOVRECLAMACAOService.getEMAILS(reclamacao.id_RECLAMACAO).subscribe(
+              resp => {
+                var count = Object.keys(resp).length;
+                if (count > 0) {
+                  for (var x in resp) {
+                    if ((email_para.indexOf(resp[x][0]) < 0))
+                      email_para.push(resp[x][0]);
+                  }
+                  this.enviarEventoResponsaveis(reclamacao.data_RECLAMACAO, reclamacao.observacoes_RECLAMACAO, reclamacao.id_RECLAMACAO, reclamacao.nome_CLIENTE, reclamacao.referencia + " - " + reclamacao.designacao_REF,
+                    "Ao Cancelar Reclamação", email_para.toString(), null, ((reclamacao.observacoes_RESULTADOS != null) ? reclamacao.observacoes_RESULTADOS : ""), new Date(reclamacao.data_CANCELADA).toLocaleDateString());
+                } else {
+                  this.enviarEventoResponsaveis(reclamacao.data_RECLAMACAO, reclamacao.observacoes_RECLAMACAO, reclamacao.id_RECLAMACAO, reclamacao.nome_CLIENTE, reclamacao.referencia + " - " + reclamacao.designacao_REF,
+                    "Ao Cancelar Reclamação", email_para.toString(), null, ((reclamacao.observacoes_RESULTADOS != null) ? reclamacao.observacoes_RESULTADOS : ""), new Date(reclamacao.data_CANCELADA).toLocaleDateString());
+                }
+              },
+              error => {
+                console.log(error);
+                this.simular(this.inputerro);
+                this.enviarEventoResponsaveis(reclamacao.data_RECLAMACAO, reclamacao.observacoes_RECLAMACAO, reclamacao.id_RECLAMACAO, reclamacao.nome_CLIENTE, reclamacao.referencia + " - " + reclamacao.designacao_REF,
+                  "Ao Cancelar Reclamação", email_para.toString(), null, ((reclamacao.observacoes_RESULTADOS != null) ? reclamacao.observacoes_RESULTADOS : ""), new Date(reclamacao.data_CANCELADA).toLocaleDateString());
+              });
+            this.router.navigate(['reclamacoesclientes']);
+            this.simular(this.inputgravou);
           },
           error => { console.log(error); this.simular(this.inputerro); });
 
@@ -2845,7 +3016,7 @@ export class ReclamacaoCliente8DComponent implements OnInit {
   }
 
   imprimir(relatorio, id) {
-
+    this.router.navigate(['relatorio'], { queryParams: { id: id, relatorio: relatorio } });
   }
 
   getNomeUser(id) {
@@ -2963,17 +3134,17 @@ export class ReclamacaoCliente8DComponent implements OnInit {
                     email_para.push(resp[x][0]);
                 }
                 this.enviarEventoResponsaveis(reclamacao.data_RECLAMACAO, reclamacao.observacoes_RECLAMACAO, reclamacao.id_RECLAMACAO, reclamacao.nome_CLIENTE, reclamacao.referencia + " - " + reclamacao.designacao_REF,
-                  "Ao Concluir Step-8", email_para.toString(), new Date(reclamacao.step8CONCLUIDO_DATA).toLocaleDateString(), ((reclamacao.observacoes_RESULTADOS != null) ? reclamacao.observacoes_RESULTADOS : ""));
+                  "Ao Concluir Step-8", email_para.toString(), new Date(reclamacao.step8CONCLUIDO_DATA).toLocaleDateString(), ((reclamacao.observacoes_RESULTADOS != null) ? reclamacao.observacoes_RESULTADOS : ""), null);
               } else {
                 this.enviarEventoResponsaveis(reclamacao.data_RECLAMACAO, reclamacao.observacoes_RECLAMACAO, reclamacao.id_RECLAMACAO, reclamacao.nome_CLIENTE, reclamacao.referencia + " - " + reclamacao.designacao_REF,
-                  "Ao Concluir Step-8", email_para.toString(), new Date(reclamacao.step8CONCLUIDO_DATA).toLocaleDateString(), ((reclamacao.observacoes_RESULTADOS != null) ? reclamacao.observacoes_RESULTADOS : ""));
+                  "Ao Concluir Step-8", email_para.toString(), new Date(reclamacao.step8CONCLUIDO_DATA).toLocaleDateString(), ((reclamacao.observacoes_RESULTADOS != null) ? reclamacao.observacoes_RESULTADOS : ""), null);
               }
             },
             error => {
               console.log(error);
               this.simular(this.inputerro);
               this.enviarEventoResponsaveis(reclamacao.data_RECLAMACAO, reclamacao.observacoes_RECLAMACAO, reclamacao.id_RECLAMACAO, reclamacao.nome_CLIENTE, reclamacao.referencia + " - " + reclamacao.designacao_REF,
-                "Ao Concluir Step-8", email_para.toString(), new Date(reclamacao.step8CONCLUIDO_DATA).toLocaleDateString(), ((reclamacao.observacoes_RESULTADOS != null) ? reclamacao.observacoes_RESULTADOS : ""));
+                "Ao Concluir Step-8", email_para.toString(), new Date(reclamacao.step8CONCLUIDO_DATA).toLocaleDateString(), ((reclamacao.observacoes_RESULTADOS != null) ? reclamacao.observacoes_RESULTADOS : ""), null);
             });
         }
 
@@ -3695,12 +3866,15 @@ export class ReclamacaoCliente8DComponent implements OnInit {
     this.tabelaEquipa[index].email = this.drop_utilizadores2.find(item => item.value == event.value).email;
   }
 
-  enviarEventoResponsaveis(data_reclamacao, observacao, numero_reclamacao, cliente, referencia, MOMENTO, email_para, data_conclusao, observacao_conclusao) {
+  enviarEventoResponsaveis(data_reclamacao, observacao, numero_reclamacao, cliente, referencia, MOMENTO, email_para, data_conclusao, observacao_conclusao, data_cancelamento) {
     if (observacao == null) {
       observacao = "";
     }
-    var dados = "{observacao::" + observacao + "\n/link::" + webUrl.host + '/#/reclamacoesclientes/view?id=' + numero_reclamacao + "\n/numero_reclamacao::" + numero_reclamacao + "\n/cliente::" + cliente
-      + "\n/data_reclamacao::" + new Date(data_reclamacao).toLocaleDateString() + "\n/referencia::" + referencia + "\n/data_conclusao::" + data_conclusao + "\n/observacao_conclusao::" + observacao_conclusao + "}";
+    var dados = "{observacao::" + observacao + "\n/link::" + webUrl.host + '/#/reclamacoesclientes/view?id=' + numero_reclamacao
+      + "\n/numero_reclamacao::" + numero_reclamacao + "\n/cliente::" + cliente
+      + "\n/data_reclamacao::" + new Date(data_reclamacao).toLocaleDateString() + "\n/referencia::" + referencia
+      + "\n/data_cancelamento::" + data_cancelamento
+      + "\n/data_conclusao::" + data_conclusao + "\n/observacao_conclusao::" + observacao_conclusao + "}";
 
 
     var data = [{ MODULO: 5, MOMENTO: MOMENTO, PAGINA: "Reclamações Clientes", ESTADO: true, DADOS: dados, EMAIL_PARA: email_para }];
@@ -3713,7 +3887,8 @@ export class ReclamacaoCliente8DComponent implements OnInit {
 
   //atualiza ou cria tarefa
   criaTarefas(id, modulo) {
-    this.GTMOVTAREFASService.getAtulizaTarefasd(id, modulo).subscribe(
+    var link = webUrl.host + '/#/tarefas/view?id=';
+    this.GTMOVTAREFASService.getAtulizaTarefasd(id, modulo, link).subscribe(
       response => {
 
       }, error => { console.log(error); });
@@ -3841,6 +4016,7 @@ export class ReclamacaoCliente8DComponent implements OnInit {
   atualizadataRejeicao(event) {
     var valor = this.drop_rejeicao.find(item => item.value == event.value).revisao_RECLAMACAO;
     this.reclamacao_COM_REVISAO = valor;
+    this.obriga_revisao = valor;
   }
 
   //adicionar utilizadores à tabela equipa
@@ -3923,6 +4099,8 @@ export class ReclamacaoCliente8DComponent implements OnInit {
         } else {
           this.data_FECHO = new Date();
           this.reclamacao_ENCERRADA = true;
+          this.estado = "F";
+          this.utz_FECHO = this.user;
           this.btgravar();
         }
       }, error => {
@@ -3932,12 +4110,23 @@ export class ReclamacaoCliente8DComponent implements OnInit {
         } else {
           this.data_FECHO = new Date();
           this.reclamacao_ENCERRADA = true;
+          this.estado = "F";
+          this.utz_FECHO = this.user;
           this.btgravar();
         }
       });
+  }
 
-
-
+  getESTADO(estado) {
+    if (estado == "A") {
+      return "Aberta";
+    } else if (estado == "F") {
+      return "Fechada";
+    } else if (estado == "C") {
+      return "Cancelada";
+    } else if (estado == "R") {
+      return "Anulada";
+    }
   }
 
 }

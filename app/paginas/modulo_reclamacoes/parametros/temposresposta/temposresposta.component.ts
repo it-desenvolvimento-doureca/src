@@ -38,6 +38,8 @@ export class TemposrespostaComponent implements OnInit {
     this.globalVar.setcriarmanutencao(false);
     this.globalVar.setdisCriarmanutencao(true);
     this.globalVar.setcriar(false);
+    this.globalVar.setduplicar(false);
+
     this.listar();
   }
 
@@ -78,7 +80,7 @@ export class TemposrespostaComponent implements OnInit {
     TEMPO_RESPOSTA.tempo_RESPOSTA_STEP7 = this.tempo_RESPOSTA_STEP7;
     TEMPO_RESPOSTA.tempo_RESPOSTA_STEP8 = this.tempo_RESPOSTA_STEP8;
     TEMPO_RESPOSTA.tempo_REVISAO = this.tempo_REVISAO;
-    
+
 
     TEMPO_RESPOSTA.utz_ULT_MODIF = JSON.parse(localStorage.getItem('userapp'))["id"];
     TEMPO_RESPOSTA.data_ULT_MODIF = new Date();

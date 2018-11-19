@@ -203,7 +203,8 @@
                 <!-- MENU RECLAMAÇÕES-->
                 <!---->
                 <div class="panel panel-default">
-                    <div class="panel-heading" [ngClass]="{ 'active': router.isActive('/reclamacoes_relatorios',true) || router.isActive('/reclamacoesclientes',true) || router.isActive('/temposresposta',true) || router.isActive('/rejeicoes',true)  || router.isActive('/tiposreclamacoes',true) || router.isActive('/grausimportancia',true)|| router.isActive('/tiposdefeito',true) || router.isActive('/ficheirosanalise',true) }">
+                    <div class="panel-heading" [ngClass]="{ 'active': router.isActive('/reclamacoes_relatorios',true) || router.isActive('/reclamacoesfornecedores',true) || router.isActive('/reclamacoesclientes',true) || router.isActive('/temposresposta',true) 
+                    || router.isActive('/rejeicoes',true)  || router.isActive('/tiposreclamacoes',true) || router.isActive('/grausimportancia',true)|| router.isActive('/tiposdefeito',true) || router.isActive('/ficheirosanalise',true) || router.isActive('/tiposocorrencia',true) ||  router.isActive('/tiposnaodetecao',true) }">
                         <h4 class="panel-title">
                             <a id="node5" data-toggle="collapse" data-parent="#accordion" href="#collapsereclamacoes">
                                 <span class="glyphicon glyphicon-list-alt ">
@@ -216,7 +217,7 @@
                                 <tr>
                                     <td>
                                         <li id="node50" data-toggle="collapse" data-target="#movi3" class="collapsed"
-                                            [ngClass]="{'active':router.isActive('/reclamacoesclientes',true) }">
+                                            [ngClass]="{'active':router.isActive('/reclamacoesclientes',true) || router.isActive('/reclamacoesfornecedores',true) }">
                                             <a>Movimentos
                                                 <span class="arrow"></span>
                                             </a>
@@ -225,7 +226,7 @@
                                             <li id="node500" [routerLinkActive]="['active']" [routerLink]="['/reclamacoesclientes']">
                                                 <a>Reclamações Clientes</a>
                                             </li>
-                                            <li id="node501" [routerLinkActive]="['active']" [routerLink]="['/manutencao']">
+                                            <li id="node501" [routerLinkActive]="['active']" [routerLink]="['/reclamacoesfornecedores']">
                                                 <a>Reclamações For.</a>
                                             </li>
                                         </ul>
@@ -259,7 +260,7 @@
                                 <tr>
                                     <td>
                                         <li id="node52" data-toggle="collapse" data-target="#parametrosrecl" class="collapsed"
-                                            [ngClass]="{ 'active': router.isActive('/temposresposta',true) || router.isActive('/rejeicoes',true) || router.isActive('/accoesreclamacoes',true)  || router.isActive('/tiposreclamacoes',true) || router.isActive('/grausimportancia',true)|| router.isActive('/tiposdefeito',true) || router.isActive('/ficheirosanalise',true) }">
+                                            [ngClass]="{ 'active':  router.isActive('/tiposocorrencia',true) ||  router.isActive('/tiposnaodetecao',true) || router.isActive('/temposresposta',true) || router.isActive('/rejeicoes',true) || router.isActive('/accoesreclamacoes',true)  || router.isActive('/tiposreclamacoes',true) || router.isActive('/grausimportancia',true)|| router.isActive('/tiposdefeito',true) || router.isActive('/ficheirosanalise',true) }">
                                             <a>Parâmetros
                                                 <span class="arrow"></span>
                                             </a>
@@ -283,9 +284,12 @@
                                             <li id="node525" [routerLinkActive]="['active']" [routerLink]="['/temposresposta']">
                                                 <a>Tempos de Resposta</a>
                                             </li>
-                                            <!--<li id="node526" [routerLinkActive]="['active']" [routerLink]="['/accoesreclamacoes']">
-                                                <a>Acções de Reclamações</a>
-                                            </li>-->
+                                            <li id="node526" [routerLinkActive]="['active']" [routerLink]="['/tiposocorrencia']">
+                                                <a>Tipos de Ocorrência</a>
+                                            </li>
+                                            <li id="node527" [routerLinkActive]="['active']" [routerLink]="['/tiposnaodetecao']">
+                                                <a>Tipos Não Deteção</a>
+                                            </li>
                                         </ul>
                                     </td>
                                 </tr>

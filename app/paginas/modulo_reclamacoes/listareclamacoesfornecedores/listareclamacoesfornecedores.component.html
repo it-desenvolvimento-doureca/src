@@ -5,7 +5,7 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-header" data-background-color="red">
-            <h4 class="title">Reclamações de Reposição</h4>
+            <h4 class="title">Reclamações Fornecedor</h4>
             <p class="category"></p>
           </div>
           <div class="card-content table-responsive">
@@ -51,7 +51,7 @@
                   </a>
                 </ng-template>
                 <ng-template let-car="rowData" pTemplate="body">
-                  <a style="color: black; cursor:pointer;" title="Ver mais" [routerLink]="['/reclamacoesclientes/view']"
+                  <a style="color: black; cursor:pointer;" title="Ver mais" [routerLink]="['/reclamacoesfornecedores/view']"
                     [queryParams]="{ id: car.id }">
                     <i class="material-icons">search</i>
                   </a>

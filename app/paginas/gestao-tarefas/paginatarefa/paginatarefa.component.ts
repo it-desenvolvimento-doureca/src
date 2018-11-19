@@ -237,12 +237,12 @@ export class PaginatarefaComponent implements OnInit {
             nome_step = " (STEP 3 - ACÇÕES CORRETIVAS IMEDIATAS)";
             break;
           case 'C':
-            step = "step-14";
-            nome_step = " (STEP 4 - CAUSA RAÍZ DA NÃO CONFORMIDADE)";
+            step = "step-4";
+            nome_step = " (STEP 5 - AÇÕES CORRETIVAS)";
             break;
           case 'E':
-            step = "step-4";
-            nome_step = " (STEP 5 - COMPROVAÇÃO DA EFICÁCIA DAS AÇÕES CORRETIVAS)";
+            step = "step-5";
+            nome_step = " (STEP 6 - COMPROVAÇÃO DA EFICÁCIA DAS AÇÕES CORRETIVAS)";
             break;
           case 'P':
             step = "step-6";
@@ -284,7 +284,7 @@ export class PaginatarefaComponent implements OnInit {
           this.discancelar = true;
           this.disconcluir = true;
           this.disencaminhar = true;
-
+          this.disrejeitar = true;
           this.modoedicao = false;
           this.simular(this.alteraeditar);
         }
@@ -804,7 +804,7 @@ export class PaginatarefaComponent implements OnInit {
     var str = file.type;
     if (str.toLowerCase().indexOf("pdf") >= 0) {
       return "assets/img/file-pdf.png";
-    } else if (str.toLowerCase().indexOf("excel") >= 0) {
+    } else if (str.toLowerCase().indexOf("excel") >= 0 || str.toLowerCase().indexOf("sheet") >= 0) {
       return "assets/img/file-excel.png";
     } else if (str.toLowerCase().indexOf("word") >= 0) {
       return "assets/img/file-word.png";
@@ -832,7 +832,7 @@ export class PaginatarefaComponent implements OnInit {
         type = "audio";
       } else if (str.toLowerCase().indexOf("video") >= 0) {
         type = "video";
-      } else if (str.toLowerCase().indexOf("excel") >= 0) {
+      } else if (str.toLowerCase().indexOf("excel") >= 0 || str.toLowerCase().indexOf("sheet") >= 0) {
         type = "excel";
       } else if (str.toLowerCase().indexOf("word") >= 0) {
         type = "word";

@@ -37,9 +37,11 @@ export class ControlosComponent implements OnInit {
   @Output() seguintebt: EventEmitter<any> = new EventEmitter();
   @Output() apagarbt: EventEmitter<any> = new EventEmitter();
   @Output() duplicarbt: EventEmitter<any> = new EventEmitter();
+  @Output() cancelarbt: EventEmitter<any> = new EventEmitter();
   @Output() atualiza: EventEmitter<any> = new EventEmitter();
   @Output() validarbt: EventEmitter<any> = new EventEmitter();
   @Output() hitoricobt: EventEmitter<any> = new EventEmitter();
+  cancela: boolean;
 
   constructor(private route: ActivatedRoute, private router: Router, private globalVar: AppGlobals, location: Location) {
     this.location = location;
@@ -59,6 +61,7 @@ export class ControlosComponent implements OnInit {
     this.pesquisar = this.globalVar.getatualizar();
     this.duplica = this.globalVar.getduplicar();
     this.historico = this.globalVar.gethistorico();
+    this.cancela = false;
 
     this.disCriar = this.globalVar.getdisCriar();
     this.disCriarmanutencao = this.globalVar.getdisCriarmanutencao();
@@ -227,6 +230,10 @@ export class ControlosComponent implements OnInit {
     this.duplicarbt.emit()
   }
 
+  cancelar() {
+    this.cancelarbt.emit()
+  }
+
   valida() {
     this.validarbt.emit()
   }
@@ -237,6 +244,10 @@ export class ControlosComponent implements OnInit {
 
   editarclick(val) {
     this.editar = val;
+  }
+
+  cancelarclick() {
+    this.cancela = true;
   }
 
   editarclickhidde() {

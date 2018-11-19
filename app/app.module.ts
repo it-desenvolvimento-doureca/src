@@ -154,6 +154,13 @@ import { GTMOVTAREFASService } from './servicos/gt-mov-tarefas.service';
 import { ProcessosComponent } from './paginas/home-modulo/processos/processos.component';
 import { PaginatarefaComponent } from './paginas/gestao-tarefas/paginatarefa/paginatarefa.component';
 import { RCMOVRECLAMACAOENCOMENDASService } from './servicos/rc-mov-reclamacao-encomendas.service';
+import { RCMOVRECLAMACAOTIPONAODETECAOService } from './servicos/rc-mov-reclamacao-tipo-nao-detecao.service';
+import { RCMOVRECLAMACAOTIPOOCORRENCIAService } from './servicos/rc-mov-reclamacao-tipo-ocorrencia.service';
+import { GERATUALIZACAOSILVERBITABELASService } from './servicos/ger-atualizacao-silver-bi-tabelas.service';
+import { ReclamacaoFornecedorComponent } from './paginas/modulo_reclamacoes/reclamacao-fornecedor/reclamacao-fornecedor.component';
+import { ListareclamacoesfornecedoresComponent } from './paginas/modulo_reclamacoes/listareclamacoesfornecedores/listareclamacoesfornecedores.component';
+import { TiponaodetecaoComponent } from './paginas/modulo_reclamacoes/parametros/tiponaodetecao/tiponaodetecao.component';
+import { TipoocorrenciaComponent } from './paginas/modulo_reclamacoes/parametros/tipoocorrencia/tipoocorrencia.component';
 
 const routes: Routes = [
   { path: 'dashboard', component: HomeComponent, canActivate: [LoginService] },
@@ -320,6 +327,8 @@ const routes: Routes = [
   { path: 'tiposdefeito', component: TiposdefeitoComponent, canActivate: [LoginService], data: { breadcrumb: "Tipos de Defeito" } },
   { path: 'ficheirosanalise', component: FicheirosanaliseComponent, canActivate: [LoginService], data: { breadcrumb: "Ficheiros de Análise" } },
   { path: 'temposresposta', component: TemposrespostaComponent, canActivate: [LoginService], data: { breadcrumb: "Tempos de Resposta" } },
+  { path: 'tiposnaodetecao', component: TiponaodetecaoComponent, canActivate: [LoginService], data: { breadcrumb: "Tipos Não Deteção" } },
+  { path: 'tiposocorrencia', component: TipoocorrenciaComponent, canActivate: [LoginService], data: { breadcrumb: "Tipos Ocorrência" } },
   { path: 'departamentos', component: DepartamentosComponent, canActivate: [LoginService], data: { breadcrumb: "Departamentos" } },
 
   {
@@ -330,6 +339,15 @@ const routes: Routes = [
       { path: 'duplicar', component: ReclamacaoCliente8DComponent, canActivate: [LoginService], data: { breadcrumb: "Duplicar" } },
       { path: 'editar', component: ReclamacaoCliente8DComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } },
       { path: 'novo', component: ReclamacaoCliente8DComponent, canActivate: [LoginService], data: { breadcrumb: "Novo" } }]
+  },
+  {
+    path: 'reclamacoesfornecedores', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Reclamações Fornecedor" },
+    children: [
+      { path: '', component: ListareclamacoesfornecedoresComponent, canActivate: [LoginService], data: { breadcrumb: "" } },
+      { path: 'view', component: ReclamacaoFornecedorComponent, canActivate: [LoginService], data: { breadcrumb: "Reclamação Fornecedor" } },
+      { path: 'duplicar', component: ReclamacaoFornecedorComponent, canActivate: [LoginService], data: { breadcrumb: "Duplicar" } },
+      { path: 'editar', component: ReclamacaoFornecedorComponent, canActivate: [LoginService], data: { breadcrumb: "Editar" } },
+      { path: 'novo', component: ReclamacaoFornecedorComponent, canActivate: [LoginService], data: { breadcrumb: "Novo" } }]
   },
   {
     path: 'seccoes', component: RouterComponent, canActivate: [LoginService], data: { breadcrumb: "Secções" },
@@ -445,7 +463,11 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     FormGruposComponent,
     ListaGruposComponent,
     GTDICTarefasComponent,
-    PaginatarefaComponent
+    PaginatarefaComponent,
+    ReclamacaoFornecedorComponent,
+    ListareclamacoesfornecedoresComponent,
+    TiponaodetecaoComponent,
+    TipoocorrenciaComponent
   ],
   imports: [
     BrowserModule,
@@ -550,6 +572,9 @@ export const routing = RouterModule.forRoot(routes, { useHash: true });
     RCMOVRECLAMACAOSTOCKService,
     GTMOVTAREFASService,
     RCMOVRECLAMACAOENCOMENDASService,
+    RCMOVRECLAMACAOTIPONAODETECAOService,
+    RCMOVRECLAMACAOTIPOOCORRENCIAService,
+    GERATUALIZACAOSILVERBITABELASService,
     GERFORNECEDORService],
   bootstrap: [AppComponent]
 })

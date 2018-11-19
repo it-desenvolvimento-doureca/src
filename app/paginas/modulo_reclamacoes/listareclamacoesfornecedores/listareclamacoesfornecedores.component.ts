@@ -4,12 +4,13 @@ import { Router } from '@angular/router';
 import { AppGlobals } from '../../../menu/sidebar.metadata';
 import { RCMOVRECLAMACAOService } from '../../../servicos/rc-mov-reclamacao.service';
 
+
 @Component({
-  selector: 'app-listareclamacoesclientes',
-  templateUrl: './listareclamacoesclientes.component.html',
-  styleUrls: ['./listareclamacoesclientes.component.css']
+  selector: 'app-listareclamacoesfornecedores',
+  templateUrl: './listareclamacoesfornecedores.component.html',
+  styleUrls: ['./listareclamacoesfornecedores.component.css']
 })
-export class ListareclamacoesclientesComponent implements OnInit {
+export class ListareclamacoesfornecedoresComponent implements OnInit {
 
   mensagemtabela: string;
   acessoplaneamento = true;
@@ -40,7 +41,7 @@ export class ListareclamacoesclientesComponent implements OnInit {
 
   ngOnInit() {
     this.filtroval = true;
-    var array = this.globalVar.getfiltros("reclamacaocliente");
+    var array = this.globalVar.getfiltros("reclamacaofornecedor");
     if (array) {
 
 
@@ -131,9 +132,9 @@ export class ListareclamacoesclientesComponent implements OnInit {
     this.dataTableComponent.filter("", "", "");
 
     var count = 0;
-    if (this.globalVar.getfiltros("reclamacaoclienteidbanho")) count = 1;
+    if (this.globalVar.getfiltros("reclamacaofornecedoridbanho")) count = 1;
     if (count > 0) {
-      this.globalVar.setfiltros("reclamacaoclienteidbanho", null);
+      this.globalVar.setfiltros("reclamacaofornecedoridbanho", null);
       this.carregarlista();
     }
   }
@@ -159,7 +160,7 @@ export class ListareclamacoesclientesComponent implements OnInit {
 
     this.dataTableComponent.filter(value.toString(), coluna, filtro);
 
-    this.globalVar.setfiltros("reclamacaocliente", this.dataTableComponent.filters);
+    this.globalVar.setfiltros("reclamacaofornecedor", this.dataTableComponent.filters);
     var ids = [];
     for (var x in this.dataTableComponent.dataToRender) {
       ids.push(this.dataTableComponent.dataToRender[x].id);
@@ -168,7 +169,7 @@ export class ListareclamacoesclientesComponent implements OnInit {
       this.mensagemtabela = "Nenhum Registo foi encontrado...";
     }
 
-    this.globalVar.setfiltros("reclamacaocliente_id", ids);
+    this.globalVar.setfiltros("reclamacaofornecedor_id", ids);
   }
 
   atualizaids() {
@@ -176,12 +177,12 @@ export class ListareclamacoesclientesComponent implements OnInit {
     for (var x in this.dataTableComponent.dataToRender) {
       ids.push(this.dataTableComponent.dataToRender[x].id);
     }
-    this.globalVar.setfiltros("reclamacaocliente_id", ids);
+    this.globalVar.setfiltros("reclamacaofornecedor_id", ids);
   }
 
   //clicar 2 vezes na tabela abre linha
   abrir(event) {
-    this.router.navigate(['reclamacoesclientes/view'], { queryParams: { id: event.data.id } });
+    this.router.navigate(['reclamacoesfornecedores/view'], { queryParams: { id: event.data.id } });
   }
 
   //simular click para mostrar mensagem

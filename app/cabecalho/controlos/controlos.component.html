@@ -50,6 +50,13 @@
                             <div class="ripple-container"></div>
                         </a>
                     </li>
+                    <li [hidden]="!cancela">
+                        <button id="cancelaclick" (click)="cancelarclick()" [hidden]="true"></button>
+                        <a (click)="cancelar()">
+                            <i class="material-icons">cancel</i>Cancelar
+                            <div class="ripple-container"></div>
+                        </a>
+                    </li>
                     <li [class.disabled]="disApagar" [hidden]="!apagar" style="float: right;">
                         <a (click)="apagar_func()">
                             <i class="material-icons">delete</i>Apagar

@@ -38,6 +38,7 @@ export class DepartamentosComponent implements OnInit {
     this.globalVar.seteditar(false);
     this.globalVar.setseguinte(false);
     this.globalVar.setanterior(false);
+    this.globalVar.setduplicar(false);
     this.globalVar.setatualizar(false);
     this.globalVar.sethistorico(false);
     this.globalVar.setcriarmanutencao(false);

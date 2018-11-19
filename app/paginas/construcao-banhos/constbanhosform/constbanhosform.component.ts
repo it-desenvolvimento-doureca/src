@@ -2895,8 +2895,8 @@ export class ConstbanhosformComponent implements OnInit {
           var qtdf2 = (this.etiquetasaditivo[y].quant_FINAL2).replace(",", ".");
           var consumir = (this.etiquetasaditivo[y].consumir).replace(",", ".");
 
-          if (this.etiquetasaditivo[y].ETQORIQTE1 >= ((qtdf2 / this.factor_conversao) + parseFloat(consumir))) {
-            this.etiquetasaditivo[y].quant_FINAL = (qtdf2 / this.factor_conversao).toString();
+          if (this.etiquetasaditivo[y].ETQORIQTE1 >= ((qtdf2 * this.factor_conversao) + parseFloat(consumir))) {
+            this.etiquetasaditivo[y].quant_FINAL = (qtdf2 * this.factor_conversao).toString();
           } else {
             this.mensagem_aviso = "O máximo de quantidade da etiqueta foi ultrapassado!";
             this.mensagem_aviso2 = "";
@@ -2911,9 +2911,9 @@ export class ConstbanhosformComponent implements OnInit {
             elm2.style.bottom = 'none';
 
             this.simular(this.dialogAviso);
-
+            consumir = parseFloat(consumir) * this.factor_conversao;
             this.etiquetasaditivo[y].quant_FINAL = maximo - parseFloat(consumir);
-            this.etiquetasaditivo[y].quant_FINAL2 = ((maximo - parseFloat(consumir)) * this.factor_conversao).toString();
+            this.etiquetasaditivo[y].quant_FINAL2 = ((maximo - parseFloat(consumir)) / this.factor_conversao).toString();
           }
 
         }

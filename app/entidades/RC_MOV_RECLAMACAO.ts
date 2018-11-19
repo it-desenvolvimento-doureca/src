@@ -36,19 +36,17 @@ export class RC_MOV_RECLAMACAO {
 	problema_REPETIDO: boolean;
 	numero_RECLAMACAO_REPETIDA: number;
 	reclamacao_REPETIDA_ACEITE: boolean;
-	accoes_EVITAR: boolean;
+
 	ref_IGUAIS: boolean;
-	seguimento_FORNECEDORES: boolean;
-	amdec: boolean;
-	plano_VIGILANCIA: boolean;
-	observacoes_ACCOES_EVITAR: string; ean;
-	formacao_OPERARIO: boolean;
-	plano_MANUTENCAO: boolean;
+	estado: string;
+	utz_CANCELADA: number;
+	data_CANCELADA: Date;
 	causas_PROBLEMA: string;
 	accoes_NECESSARIAS: number;
 	accoes_NECESSARIAS_TEXTO: string;
 	reclamacao_ENCERRADA: boolean;
 	data_FECHO: Date;
+	utz_FECHO: number;
 
 	dias_ATRASO1: number;
 	responsabilidade_ATRASO1: string;
@@ -141,6 +139,10 @@ export class RC_MOV_RECLAMACAO {
 	numero_ENVIOS_GARANTIDOS: number;
 	envio_GARANTIDO_POR: string;
 	data_PREVISTA_REPOSTA4: Date;
-	
+
+	tipo_OCORRENCIA: number;
+	tipo_NAO_DETECAO: number;
+
+
 
 }

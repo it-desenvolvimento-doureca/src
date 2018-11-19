@@ -31,6 +31,7 @@ export class FicheirosanaliseComponent implements OnInit {
     this.globalVar.sethistorico(false);
     this.globalVar.setcriarmanutencao(false);
     this.globalVar.setdisCriarmanutencao(true);
+    this.globalVar.setduplicar(false);
     this.globalVar.setcriar(false);
     this.listar();
   }

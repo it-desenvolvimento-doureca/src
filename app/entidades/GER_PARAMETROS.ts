@@ -18,4 +18,8 @@ export class GER_PARAMETROS {
     dominio_LOGS_SILVER: string;
     senha_LOGS_SILVER: string;
     pasta_DESTINO_ERRO: string;
+
+    atualizacao_SILVER_BI_DIA_DA_SEMANA: number;
+    atualizacao_SILVER_BI_HORAS: string;
+    atualizacao_SILVER_BI_ATIVO: boolean;
 }

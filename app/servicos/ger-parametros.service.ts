@@ -34,6 +34,14 @@ export class GERPARAMETROSService {
       .catch(this.handleError);
   }
 
+  atualizaData(hora, minutos, semana) {
+    const url = webUrl.host + '/rest/sirb/getGER_PARAMETROSATUALIZADATA/' + hora + '/' + minutos + '/' + semana;
+    return this.http
+      .get(url)
+      .map(this.extractData)
+      .catch((error: any) => Observable.throw('Server error'));
+  }
+
   private extractData(res: Response) {
     let body = res.json();
     return body;
